@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  Archive,
+  BarChart3,
   CalendarDays,
   CirclePlus,
   ExternalLink,
@@ -12,7 +14,14 @@ import {
 
 import Header from "@/src/components/home/Header";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
+import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
+import {
+  getEventBucket,
+  parseDashboardFilter,
+  type DashboardEventStatus,
+  type DashboardFilter,
+} from "@/src/lib/dashboardEvents";
 import { createClient } from "@/src/lib/supabase/server";
 
 type DashboardEvent = {
@@ -22,24 +31,83 @@ type DashboardEvent = {
   municipality: string;
   location_name: string | null;
   start_at: string;
+  end_at: string | null;
   image_url: string | null;
-  status: "draft" | "pending" | "published" | "rejected";
+  status: DashboardEventStatus;
   is_free: boolean;
   price_from: number | string | null;
+  views_count: number | null;
 };
 
-const statusLabels: Record<DashboardEvent["status"], string> = {
+type DashboardPageProps = {
+  searchParams: Promise<{
+    filtro?: string | string[];
+  }>;
+};
+
+const statusLabels: Record<DashboardEventStatus, string> = {
   draft: "Bozza",
   pending: "In revisione",
   published: "Pubblicato",
   rejected: "Non approvato",
 };
 
-const statusClasses: Record<DashboardEvent["status"], string> = {
+const statusClasses: Record<DashboardEventStatus, string> = {
   draft: "bg-slate-100 text-slate-700",
   pending: "bg-amber-100 text-amber-800",
   published: "bg-emerald-100 text-emerald-800",
   rejected: "bg-red-100 text-red-700",
+};
+
+const filters: {
+  id: DashboardFilter;
+  label: string;
+  description: string;
+  icon: typeof TicketCheck;
+  accent: string;
+}[] = [
+  {
+    id: "pubblicati",
+    label: "Pubblicati",
+    description: "Online e ancora attivi",
+    icon: TicketCheck,
+    accent: "text-emerald-600",
+  },
+  {
+    id: "bozze",
+    label: "Bozze",
+    description: "Da completare o ripubblicare",
+    icon: FileText,
+    accent: "text-amber-600",
+  },
+  {
+    id: "scaduti",
+    label: "Scaduti",
+    description: "Eventi già conclusi",
+    icon: Archive,
+    accent: "text-slate-500",
+  },
+];
+
+const emptyCopy: Record<
+  DashboardFilter,
+  { title: string; body: string; cta: string }
+> = {
+  pubblicati: {
+    title: "Nessun evento pubblicato",
+    body: "Quando pubblichi un evento attivo, lo trovi qui.",
+    cta: "Pubblica un evento",
+  },
+  bozze: {
+    title: "Nessuna bozza",
+    body: "Le bozze e gli eventi non ancora online compaiono in questa sezione.",
+    cta: "Crea un evento",
+  },
+  scaduti: {
+    title: "Nessun evento scaduto",
+    body: "Gli eventi pubblicati già conclusi restano qui per consultarli o duplicarli.",
+    cta: "Pubblica un evento",
+  },
 };
 
 function formatDate(value: string) {
@@ -70,8 +138,12 @@ function formatPrice(event: DashboardEvent) {
   }).format(price)}`;
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: DashboardPageProps) {
   const supabase = await createClient();
+  const params = await searchParams;
+  const activeFilter = parseDashboardFilter(params.filtro);
 
   const {
     data: { user },
@@ -84,7 +156,7 @@ export default async function DashboardPage() {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, municipality, location_name, start_at, image_url, status, is_free, price_from",
+      "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count",
     )
     .eq("organizer_id", user.id)
     .order("created_at", { ascending: false });
@@ -94,10 +166,23 @@ export default async function DashboardPage() {
   }
 
   const events = (data ?? []) as DashboardEvent[];
-  const publishedCount = events.filter(
-    (event) => event.status === "published",
-  ).length;
-  const draftCount = events.filter((event) => event.status === "draft").length;
+  const now = Date.now();
+
+  const counts = {
+    pubblicati: 0,
+    bozze: 0,
+    scaduti: 0,
+  } satisfies Record<DashboardFilter, number>;
+
+  for (const event of events) {
+    counts[getEventBucket(event, now)] += 1;
+  }
+
+  const filteredEvents = events.filter(
+    (event) => getEventBucket(event, now) === activeFilter,
+  );
+
+  const empty = emptyCopy[activeFilter];
 
   return (
     <>
@@ -116,8 +201,8 @@ export default async function DashboardPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-lg text-slate-600">
-                Controlla gli eventi pubblicati e gestisci le tue attività su
-                EVERAS.
+                Controlla pubblicati, bozze e scaduti, poi modifica, elimina,
+                duplica o consulta le statistiche.
               </p>
             </div>
 
@@ -137,38 +222,37 @@ export default async function DashboardPage() {
 
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <FileText aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
-              <p className="mt-4 text-3xl font-black text-slate-900">
-                {events.length}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">
-                Eventi totali
-              </p>
-            </div>
+            {filters.map((filter) => {
+              const Icon = filter.icon;
+              const isActive = activeFilter === filter.id;
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <TicketCheck
-                aria-hidden="true"
-                className="h-6 w-6 text-emerald-600"
-              />
-              <p className="mt-4 text-3xl font-black text-slate-900">
-                {publishedCount}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">
-                Pubblicati
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <FileText aria-hidden="true" className="h-6 w-6 text-amber-600" />
-              <p className="mt-4 text-3xl font-black text-slate-900">
-                {draftCount}
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">
-                Bozze
-              </p>
-            </div>
+              return (
+                <Link
+                  key={filter.id}
+                  href={`/dashboard?filtro=${filter.id}`}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`rounded-3xl border bg-white p-6 shadow-sm transition ${
+                    isActive
+                      ? "border-[#075EAE] ring-4 ring-blue-50"
+                      : "border-slate-200 hover:border-[#075EAE]/60"
+                  }`}
+                >
+                  <Icon
+                    aria-hidden="true"
+                    className={`h-6 w-6 ${filter.accent}`}
+                  />
+                  <p className="mt-4 text-3xl font-black text-slate-900">
+                    {counts[filter.id]}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">
+                    {filter.label}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {filter.description}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
 
           {events.length === 0 ? (
@@ -191,92 +275,130 @@ export default async function DashboardPage() {
                 Crea il primo evento
               </Link>
             </div>
+          ) : filteredEvents.length === 0 ? (
+            <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+              <h2 className="text-2xl font-bold text-slate-900">
+                {empty.title}
+              </h2>
+              <p className="mx-auto mt-2 max-w-xl text-slate-600">
+                {empty.body}
+              </p>
+              <Link
+                href="/pubblica"
+                className="mt-6 inline-flex rounded-2xl bg-[#FF7A00] px-6 py-3 font-bold text-white"
+              >
+                {empty.cta}
+              </Link>
+            </div>
           ) : (
             <div className="mt-8 space-y-4">
-              {events.map((event) => (
-                <article
-                  key={event.id}
-                  className="grid overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid-cols-[220px_minmax(0,1fr)]"
-                >
-                  <div className="h-52 bg-slate-100 md:h-full">
-                    {event.image_url ? (
-                      <img
-                        src={event.image_url}
-                        alt={event.title}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="grid h-full place-items-center text-sm text-slate-400">
-                        Nessuna immagine
-                      </div>
-                    )}
-                  </div>
+              {filteredEvents.map((event) => {
+                const bucket = getEventBucket(event, now);
+                const showOnline =
+                  event.status === "published" && bucket !== "scaduti";
 
-                  <div className="flex min-w-0 flex-col p-6">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <span
-                          className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusClasses[event.status]}`}
-                        >
-                          {statusLabels[event.status]}
-                        </span>
-                        <h2 className="mt-3 text-2xl font-bold text-slate-900">
-                          {event.title}
-                        </h2>
-                      </div>
-
-                      <p className="font-bold text-[#FF7A00]">
-                        {formatPrice(event)}
-                      </p>
+                return (
+                  <article
+                    key={event.id}
+                    className="grid overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm md:grid-cols-[220px_minmax(0,1fr)]"
+                  >
+                    <div className="h-52 bg-slate-100 md:h-full">
+                      {event.image_url ? (
+                        <img
+                          src={event.image_url}
+                          alt={event.title}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="grid h-full place-items-center text-sm text-slate-400">
+                          Nessuna immagine
+                        </div>
+                      )}
                     </div>
 
-                    <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                      <p className="flex items-start gap-2">
-                        <CalendarDays
-                          aria-hidden="true"
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
-                        />
-                        {formatDate(event.start_at)}
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <MapPin
-                          aria-hidden="true"
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
-                        />
-                        {event.location_name || event.municipality}
-                      </p>
-                    </div>
+                    <div className="flex min-w-0 flex-col p-6">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${statusClasses[event.status]}`}
+                            >
+                              {statusLabels[event.status]}
+                            </span>
+                            {bucket === "scaduti" && (
+                              <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
+                                Scaduto
+                              </span>
+                            )}
+                          </div>
+                          <h2 className="mt-3 text-2xl font-bold text-slate-900">
+                            {event.title}
+                          </h2>
+                        </div>
 
-                    <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
-                      <Link
-                        href={`/dashboard/eventi/${event.id}/modifica`}
-                        className="inline-flex items-center gap-2 rounded-xl bg-[#FF7A00] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#E86F00]"
-                      >
-                        <Pencil aria-hidden="true" className="h-4 w-4" />
-                        Modifica evento
-                      </Link>
+                        <p className="font-bold text-[#FF7A00]">
+                          {formatPrice(event)}
+                        </p>
+                      </div>
 
-                      {event.status === "published" && (
+                      <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+                        <p className="flex items-start gap-2">
+                          <CalendarDays
+                            aria-hidden="true"
+                            className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
+                          />
+                          {formatDate(event.start_at)}
+                        </p>
+                        <p className="flex items-start gap-2">
+                          <MapPin
+                            aria-hidden="true"
+                            className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
+                          />
+                          {event.location_name || event.municipality}
+                        </p>
+                      </div>
+
+                      <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
                         <Link
-                          href={`/eventi/${event.slug}`}
+                          href={`/dashboard/eventi/${event.id}/modifica`}
+                          className="inline-flex items-center gap-2 rounded-xl bg-[#FF7A00] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#E86F00]"
+                        >
+                          <Pencil aria-hidden="true" className="h-4 w-4" />
+                          Modifica
+                        </Link>
+
+                        <DuplicateEventButton eventId={event.id} />
+
+                        <Link
+                          href={`/dashboard/eventi/${event.id}/statistiche`}
                           className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
                         >
-                          Vedi online
-                          <ExternalLink
-                            aria-hidden="true"
-                            className="h-4 w-4"
-                          />
+                          <BarChart3 aria-hidden="true" className="h-4 w-4" />
+                          Statistiche
                         </Link>
-                      )}
 
-                      <DeleteEventButton
-                        eventId={event.id}
-                        imageUrl={event.image_url}
-                      />
+                        {showOnline && (
+                          <Link
+                            href={`/eventi/${event.slug}`}
+                            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+                          >
+                            Vedi online
+                            <ExternalLink
+                              aria-hidden="true"
+                              className="h-4 w-4"
+                            />
+                          </Link>
+                        )}
+
+                        <DeleteEventButton
+                          eventId={event.id}
+                          imageUrl={event.image_url}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
@@ -284,4 +406,3 @@ export default async function DashboardPage() {
     </>
   );
 }
-

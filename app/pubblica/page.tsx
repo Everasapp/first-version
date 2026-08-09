@@ -24,6 +24,7 @@ import {
   normalizeTicketUrl,
   parsePrice,
 } from "@/src/lib/eventForm";
+import { createSlug } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 
 const steps = [
@@ -37,16 +38,6 @@ const steps = [
 type PricingType = "free" | "paid";
 
 type FormErrors = Record<string, string>;
-
-function createSlug(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 export default function PublishEventPage() {
   const router = useRouter();

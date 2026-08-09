@@ -185,6 +185,8 @@ export default async function EventDetailPage({
 
   const event = data as EventRow;
 
+  await supabase.rpc("increment_event_views", { event_id: event.id });
+
   const { data: similarData, error: similarError } = await supabase
     .from("events")
     .select(
