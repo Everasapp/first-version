@@ -248,26 +248,26 @@ export default async function DashboardPage() {
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
+                      <Link
+                        href={`/dashboard/eventi/${event.id}/modifica`}
+                        className="inline-flex items-center gap-2 rounded-xl bg-[#FF7A00] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#E86F00]"
+                      >
+                        <Pencil aria-hidden="true" className="h-4 w-4" />
+                        Modifica evento
+                      </Link>
+
                       {event.status === "published" && (
                         <Link
                           href={`/eventi/${event.slug}`}
                           className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
                         >
-                          Apri evento
+                          Vedi online
                           <ExternalLink
                             aria-hidden="true"
                             className="h-4 w-4"
                           />
                         </Link>
                       )}
-
-                      <Link
-                        href={`/dashboard/eventi/${event.id}/modifica`}
-                        className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
-                      >
-                        <Pencil aria-hidden="true" className="h-4 w-4" />
-                        Modifica
-                      </Link>
 
                       <DeleteEventButton
                         eventId={event.id}

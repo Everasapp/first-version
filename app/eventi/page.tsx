@@ -1,10 +1,12 @@
 import Header from "@/src/components/home/Header";
+import EventSearchForm from "@/src/components/home/EventSearchForm";
 import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import { createClient } from "@/src/lib/supabase/server";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import { eventMatchesQuery } from "@/src/utils/nearby-city";
 
 type EventsPageProps = {
   searchParams: Promise<{
@@ -12,6 +14,7 @@ type EventsPageProps = {
     city?: string;
     category?: string;
     date?: string;
+    q?: string;
   }>;
 };
 
@@ -142,6 +145,11 @@ export default async function EventsPage({
   const selectedCity = params.city ?? "";
   const selectedCategory = params.category ?? "";
   const selectedDate = params.date ?? "";
+  const searchQuery = params.q?.trim() ?? "";
+
+  const categoryNameBySlug = new Map(
+    categories.map((category) => [category.slug, category.name]),
+  );
 
   const selectedAreaLabel =
     selectedArea && selectedArea !== "tutta-sardegna"
@@ -212,17 +220,21 @@ export default async function EventsPage({
         (eventStartDate >= dateRange.start &&
           eventStartDate < dateRange.end);
 
-      return matchesArea && matchesCity && matchesCategory && matchesDate;
+      const matchesText = eventMatchesQuery(
+        event,
+        searchQuery,
+        categoryNameBySlug,
+      );
+
+      return (
+        matchesArea &&
+        matchesCity &&
+        matchesCategory &&
+        matchesDate &&
+        matchesText
+      );
     })
     .map(mapDatabaseEvent);
-
-  const availableCities = (
-    selectedAreaLabel
-      ? cities.filter((city) => city.area === selectedAreaLabel)
-      : cities
-  )
-    .slice()
-    .sort((a, b) => a.city.localeCompare(b.city, "it"));
 
   return (
     <>
@@ -240,96 +252,18 @@ export default async function EventsPage({
             </h1>
 
             <p className="mt-4 max-w-2xl text-lg text-slate-600">
-              Cerca eventi per zona, città, categoria e periodo.
+              Cerca per parola chiave, zona, categoria e periodo. Usa «Vicino a
+              me» per trovare eventi nella città più vicina.
             </p>
 
-            <form
-              action="/eventi"
-              method="GET"
-              className="mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_auto]"
-            >
-              <label className="rounded-2xl border border-slate-200 px-4 py-3">
-                <span className="block text-xs font-bold text-slate-900">
-                  Area
-                </span>
-
-                <select
-                  name="area"
-                  defaultValue={selectedArea}
-                  className="mt-1 w-full bg-transparent text-sm text-slate-600 outline-none"
-                >
-                  <option value="">Tutta la Sardegna</option>
-                  <option value="nord-sardegna">Nord Sardegna</option>
-                  <option value="centro-sardegna">Centro Sardegna</option>
-                  <option value="sud-sardegna">Sud Sardegna</option>
-                </select>
-              </label>
-
-              <label className="rounded-2xl border border-slate-200 px-4 py-3">
-                <span className="block text-xs font-bold text-slate-900">
-                  Città
-                </span>
-
-                <select
-                  name="city"
-                  defaultValue={selectedCity}
-                  className="mt-1 w-full bg-transparent text-sm text-slate-600 outline-none"
-                >
-                  <option value="">Tutte le città</option>
-
-                  {availableCities.map((city) => (
-                    <option key={city.id} value={city.city}>
-                      {city.city} ({city.province})
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="rounded-2xl border border-slate-200 px-4 py-3">
-                <span className="block text-xs font-bold text-slate-900">
-                  Categoria
-                </span>
-
-                <select
-                  name="category"
-                  defaultValue={selectedCategory}
-                  className="mt-1 w-full bg-transparent text-sm text-slate-600 outline-none"
-                >
-                  <option value="">Tutte le categorie</option>
-
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.slug}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="rounded-2xl border border-slate-200 px-4 py-3">
-                <span className="block text-xs font-bold text-slate-900">
-                  Quando
-                </span>
-
-                <select
-                  name="date"
-                  defaultValue={selectedDate}
-                  className="mt-1 w-full bg-transparent text-sm text-slate-600 outline-none"
-                >
-                  <option value="">Qualsiasi data</option>
-                  <option value="oggi">Oggi</option>
-                  <option value="domani">Domani</option>
-                  <option value="weekend">Questo weekend</option>
-                  <option value="settimana">Questa settimana</option>
-                </select>
-              </label>
-
-              <button
-                type="submit"
-                className="rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00]"
-              >
-                Cerca
-              </button>
-            </form>
+            <EventSearchForm
+              variant="page"
+              initialQuery={searchQuery}
+              initialArea={selectedArea}
+              initialCity={selectedCity}
+              initialCategory={selectedCategory}
+              initialDate={selectedDate}
+            />
           </div>
         </section>
 
@@ -365,7 +299,8 @@ export default async function EventsPage({
                 </h3>
 
                 <p className="mt-3 text-slate-600">
-                  Prova a cambiare zona, città, categoria o data.
+                  Prova un&apos;altra parola chiave o modifica zona, categoria o
+                  data.
                 </p>
               </div>
             )}
