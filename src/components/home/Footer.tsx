@@ -56,7 +56,7 @@ export default function Footer() {
             </Link>
 
             <a
-              href="https://www.instagram.com/everas"
+              href="https://www.instagram.com/everas.app/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="EVERAS su Instagram"
