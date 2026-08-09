@@ -23,6 +23,9 @@ type PricingType = "free" | "paid";
 
 type FormErrors = Record<string, string>;
 
+const fieldClassName =
+  "mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-base text-slate-900 outline-none placeholder:text-slate-400";
+
 export type EditableEvent = {
   id: string;
   slug: string;
@@ -366,7 +369,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
       </Link>
 
       <form
-        className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9"
+        className="everas-light-fields mt-6 rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-sm [color-scheme:light] sm:p-9"
         onSubmit={(submitEvent) => {
           submitEvent.preventDefault();
           void handleSave();
@@ -410,7 +413,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 setTitle(changeEvent.target.value);
                 clearError("title");
               }}
-              className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none focus:ring-2 ${
+              className={`${fieldClassName} focus:ring-2 ${
                 errors.title
                   ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                   : "border-slate-300 focus:border-[#075EAE] focus:ring-blue-100"
@@ -429,7 +432,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 setCategorySlug(changeEvent.target.value);
                 clearError("category");
               }}
-              className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 outline-none ${
+              className={`${fieldClassName} ${
                 errors.category ? "border-red-400" : "border-slate-300"
               }`}
             >
@@ -499,7 +502,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   setStartDate(changeEvent.target.value);
                   clearError("startDate");
                 }}
-                className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none ${
+                className={`${fieldClassName} ${
                   errors.startDate ? "border-red-400" : "border-slate-300"
                 }`}
               />
@@ -520,7 +523,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   setStartTime(changeEvent.target.value);
                   clearError("startTime");
                 }}
-                className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none ${
+                className={`${fieldClassName} ${
                   errors.startTime ? "border-red-400" : "border-slate-300"
                 }`}
               />
@@ -539,7 +542,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   clearError("area");
                   clearError("city");
                 }}
-                className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 outline-none ${
+                className={`${fieldClassName} ${
                   errors.area ? "border-red-400" : "border-slate-300"
                 }`}
               >
@@ -561,7 +564,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   setCity(changeEvent.target.value);
                   clearError("city");
                 }}
-                className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 outline-none ${
+                className={`${fieldClassName} ${
                   errors.city ? "border-red-400" : "border-slate-300"
                 }`}
               >
@@ -589,7 +592,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   setVenue(changeEvent.target.value);
                   clearError("venue");
                 }}
-                className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none ${
+                className={`${fieldClassName} ${
                   errors.venue ? "border-red-400" : "border-slate-300"
                 }`}
               />
@@ -659,7 +662,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                     setPrice(changeEvent.target.value);
                     clearError("price");
                   }}
-                  className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none ${
+                  className={`${fieldClassName} ${
                     errors.price ? "border-red-400" : "border-slate-300"
                   }`}
                 />
@@ -680,7 +683,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                     setTicketUrl(changeEvent.target.value);
                     clearError("ticketUrl");
                   }}
-                  className={`mt-2 w-full rounded-2xl border px-4 py-3 outline-none ${
+                  className={`${fieldClassName} ${
                     errors.ticketUrl ? "border-red-400" : "border-slate-300"
                   }`}
                 />
@@ -700,7 +703,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 setDescription(changeEvent.target.value);
                 clearError("description");
               }}
-              className={`mt-2 w-full resize-y rounded-2xl border px-4 py-3 outline-none ${
+              className={`${fieldClassName} resize-y ${
                 errors.description ? "border-red-400" : "border-slate-300"
               }`}
             />

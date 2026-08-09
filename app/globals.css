@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Campi su sfondo chiaro (es. modifica evento): testo leggibile anche con dark mode di sistema (iOS). */
+.everas-light-fields input:not([type="file"]):not([type="checkbox"]):not([type="radio"]),
+.everas-light-fields select,
+.everas-light-fields textarea {
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
+  background-color: #ffffff;
+}
