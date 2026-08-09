@@ -19,6 +19,11 @@ import {
 import Header from "@/src/components/home/Header";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import {
+  isValidTicketUrl,
+  normalizeTicketUrl,
+  parsePrice,
+} from "@/src/lib/eventForm";
 import { createClient } from "@/src/lib/supabase/client";
 
 const steps = [
@@ -101,11 +106,13 @@ export default function PublishEventPage() {
     return startTime ? `${formatted} · ${startTime}` : formatted;
   }, [startDate, startTime]);
 
+  const parsedPreviewPrice = parsePrice(price);
+
   const formattedPrice =
     pricing === "free"
       ? "Gratuito"
-      : price
-        ? `Da €${Number(price).toFixed(2).replace(".", ",")}`
+      : parsedPreviewPrice !== null
+        ? `Da €${parsedPreviewPrice.toFixed(2).replace(".", ",")}`
         : "Prezzo da definire";
 
   function clearError(field: string) {
@@ -118,15 +125,6 @@ export default function PublishEventPage() {
       delete nextErrors[field];
       return nextErrors;
     });
-  }
-
-  function isValidUrl(value: string) {
-    try {
-      const url = new URL(value);
-      return url.protocol === "http:" || url.protocol === "https:";
-    } catch {
-      return false;
-    }
   }
 
   function validateStep(step: number) {
@@ -169,16 +167,16 @@ export default function PublishEventPage() {
     }
 
     if (step === 2 && pricing === "paid") {
-      const numericPrice = Number(price);
-
-      if (!price || Number.isNaN(numericPrice) || numericPrice <= 0) {
-        nextErrors.price = "Inserisci un prezzo maggiore di zero.";
+      if (parsePrice(price) === null) {
+        nextErrors.price =
+          "Inserisci un prezzo maggiore di zero (es. 15 oppure 15,50).";
       }
 
       if (!ticketUrl.trim()) {
         nextErrors.ticketUrl = "Inserisci il link per acquistare il biglietto.";
-      } else if (!isValidUrl(ticketUrl)) {
-        nextErrors.ticketUrl = "Inserisci un link valido che inizi con http:// o https://.";
+      } else if (!isValidTicketUrl(ticketUrl)) {
+        nextErrors.ticketUrl =
+          "Inserisci un link valido (es. www.ticketone.it).";
       }
     }
 
@@ -271,7 +269,9 @@ export default function PublishEventPage() {
         .getPublicUrl(uploadedPath);
 
       const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
-      const numericPrice = pricing === "paid" ? Number(price) : null;
+      const numericPrice = pricing === "paid" ? parsePrice(price) : null;
+      const normalizedTicketUrl =
+        pricing === "paid" ? normalizeTicketUrl(ticketUrl) : null;
 
       const { data: createdEvent, error: insertError } = await supabase
         .from("events")
@@ -291,7 +291,7 @@ export default function PublishEventPage() {
           image_url: publicUrlData.publicUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
-          ticket_url: pricing === "paid" ? ticketUrl.trim() : null,
+          ticket_url: normalizedTicketUrl,
           status: "published",
           is_featured: false,
         })
@@ -860,16 +860,16 @@ export default function PublishEventPage() {
                           </span>
 
                           <input
-                            type="number"
+                            type="text"
                             name="price"
-                            min="0"
-                            step="0.01"
+                            inputMode="decimal"
+                            autoComplete="off"
                             value={price}
                             onChange={(event) => {
                               setPrice(event.target.value);
                               clearError("price");
                             }}
-                            placeholder="0,00"
+                            placeholder="15,00"
                             aria-invalid={Boolean(errors.price)}
                             className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
                               errors.price
@@ -894,12 +894,22 @@ export default function PublishEventPage() {
                           <input
                             type="url"
                             name="ticketUrl"
+                            inputMode="url"
+                            autoCapitalize="none"
+                            autoCorrect="off"
                             value={ticketUrl}
                             onChange={(event) => {
                               setTicketUrl(event.target.value);
                               clearError("ticketUrl");
                             }}
-                            placeholder="https://..."
+                            onBlur={() => {
+                              if (!ticketUrl.trim()) {
+                                return;
+                              }
+
+                              setTicketUrl(normalizeTicketUrl(ticketUrl));
+                            }}
+                            placeholder="www.ticketone.it"
                             aria-invalid={Boolean(errors.ticketUrl)}
                             className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
                               errors.ticketUrl
@@ -915,8 +925,8 @@ export default function PublishEventPage() {
                           )}
 
                           <p className="mt-2 text-sm text-slate-500">
-                            Può essere un link TicketOne, Eventbrite o al sito
-                            dell&apos;organizzatore.
+                            Basta un indirizzo come www.ticketone.it — se manca
+                            https:// lo aggiungiamo noi.
                           </p>
                         </label>
                       </>

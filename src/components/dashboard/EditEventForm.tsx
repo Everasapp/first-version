@@ -17,6 +17,11 @@ import {
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import {
+  isValidTicketUrl,
+  normalizeTicketUrl,
+  parsePrice,
+} from "@/src/lib/eventForm";
 import { createClient } from "@/src/lib/supabase/client";
 
 type PricingType = "free" | "paid";
@@ -81,15 +86,6 @@ function toTimeInputValue(iso: string) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
-}
-
-function isValidUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 export default function EditEventForm({ event }: EditEventFormProps) {
@@ -185,17 +181,16 @@ export default function EditEventForm({ event }: EditEventFormProps) {
     }
 
     if (pricing === "paid") {
-      const numericPrice = Number(price);
-
-      if (!price || Number.isNaN(numericPrice) || numericPrice <= 0) {
-        nextErrors.price = "Inserisci un prezzo maggiore di zero.";
+      if (parsePrice(price) === null) {
+        nextErrors.price =
+          "Inserisci un prezzo maggiore di zero (es. 15 oppure 15,50).";
       }
 
       if (!ticketUrl.trim()) {
         nextErrors.ticketUrl = "Inserisci il link per acquistare il biglietto.";
-      } else if (!isValidUrl(ticketUrl)) {
+      } else if (!isValidTicketUrl(ticketUrl)) {
         nextErrors.ticketUrl =
-          "Inserisci un link valido che inizi con http:// o https://.";
+          "Inserisci un link valido (es. www.ticketone.it).";
       }
     }
 
@@ -292,7 +287,9 @@ export default function EditEventForm({ event }: EditEventFormProps) {
 
       const selectedCity = cities.find((item) => item.city === city);
       const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
-      const numericPrice = pricing === "paid" ? Number(price) : null;
+      const numericPrice = pricing === "paid" ? parsePrice(price) : null;
+      const normalizedTicketUrl =
+        pricing === "paid" ? normalizeTicketUrl(ticketUrl) : null;
 
       const { error: updateError } = await supabase
         .from("events")
@@ -308,7 +305,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
           image_url: nextImageUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
-          ticket_url: pricing === "paid" ? ticketUrl.trim() : null,
+          ticket_url: normalizedTicketUrl,
         })
         .eq("id", event.id)
         .eq("organizer_id", user.id);
@@ -654,14 +651,15 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                   Prezzo a partire da
                 </span>
                 <input
-                  type="number"
-                  min="0"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
                   value={price}
                   onChange={(changeEvent) => {
                     setPrice(changeEvent.target.value);
                     clearError("price");
                   }}
+                  placeholder="15,00"
                   className={`${fieldClassName} ${
                     errors.price ? "border-red-400" : "border-slate-300"
                   }`}
@@ -678,11 +676,22 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 </span>
                 <input
                   type="url"
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   value={ticketUrl}
                   onChange={(changeEvent) => {
                     setTicketUrl(changeEvent.target.value);
                     clearError("ticketUrl");
                   }}
+                  onBlur={() => {
+                    if (!ticketUrl.trim()) {
+                      return;
+                    }
+
+                    setTicketUrl(normalizeTicketUrl(ticketUrl));
+                  }}
+                  placeholder="www.ticketone.it"
                   className={`${fieldClassName} ${
                     errors.ticketUrl ? "border-red-400" : "border-slate-300"
                   }`}
@@ -690,6 +699,10 @@ export default function EditEventForm({ event }: EditEventFormProps) {
                 {errors.ticketUrl && (
                   <p className="mt-2 text-sm text-red-600">{errors.ticketUrl}</p>
                 )}
+                <p className="mt-2 text-sm text-slate-500">
+                  Basta un indirizzo come www.ticketone.it — se manca https:// lo
+                  aggiungiamo noi.
+                </p>
               </label>
             </>
           )}
