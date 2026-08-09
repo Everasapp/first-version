@@ -7,6 +7,25 @@ const legalLinks = [
   { href: "/termini", label: "Termini di utilizzo" },
 ] as const;
 
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
@@ -23,45 +42,51 @@ export default function Footer() {
           />
         </Link>
 
-        <p className="mt-5 max-w-md text-base text-slate-600">
-          Scopri gli eventi più belli della Sardegna.
-        </p>
+        <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+          <p className="max-w-md text-base text-slate-600">
+            Scopri gli eventi più belli della Sardegna.
+          </p>
 
-        <div className="mt-6 flex flex-col gap-3 text-sm font-semibold">
-          <a
-            href="mailto:info@everas.it"
-            className="w-fit text-slate-800 transition hover:text-[#075EAE]"
-          >
-            Contattaci
-          </a>
-          <a
-            href="https://www.instagram.com/everas"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-fit text-slate-800 transition hover:text-[#075EAE]"
-          >
-            Instagram
-          </a>
+          <div className="flex shrink-0 items-center gap-5 self-start sm:self-auto">
+            <Link
+              href="/contatti"
+              className="text-sm font-semibold text-slate-800 transition hover:text-[#075EAE]"
+            >
+              Contattaci
+            </Link>
+
+            <a
+              href="https://www.instagram.com/everas"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="EVERAS su Instagram"
+              className="inline-flex text-slate-800 transition hover:text-[#075EAE]"
+            >
+              <InstagramIcon className="h-5 w-5" />
+            </a>
+          </div>
         </div>
 
-        <p className="mt-10 text-sm text-slate-500">
-          © {year} EVERAS. Tutti i diritti riservati.
-        </p>
+        <div className="mt-10 flex flex-col gap-4 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <p className="text-sm text-slate-500">
+            © {year} EVERAS. Tutti i diritti riservati.
+          </p>
 
-        <nav
-          aria-label="Informazioni legali"
-          className="mt-4 flex flex-col gap-2 text-sm font-semibold sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2"
-        >
-          {legalLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="w-fit text-slate-700 transition hover:text-[#075EAE]"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+          <nav
+            aria-label="Informazioni legali"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold"
+          >
+            {legalLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-slate-700 transition hover:text-[#075EAE]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   );
