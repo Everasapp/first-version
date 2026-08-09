@@ -42,9 +42,13 @@ export default function EventSearchForm({
   const isHero = variant === "hero";
 
   const [query, setQuery] = useState(initialQuery);
-  const [selectedArea, setSelectedArea] = useState(
-    initialArea || (isHero ? "tutta-sardegna" : ""),
-  );
+  const [selectedArea, setSelectedArea] = useState(() => {
+    if (!initialArea || initialArea === "tutta-sardegna") {
+      return "";
+    }
+
+    return initialArea;
+  });
   const [selectedCity, setSelectedCity] = useState(initialCity);
   const [geoMessage, setGeoMessage] = useState("");
   const [isLocating, setIsLocating] = useState(false);
@@ -79,7 +83,7 @@ export default function EventSearchForm({
       params.set("q", trimmedQuery);
     }
 
-    if (area && area !== "tutta-sardegna") {
+    if (area) {
       params.set("area", area);
     }
 
@@ -148,24 +152,23 @@ export default function EventSearchForm({
     );
   }
 
-  const labelClass = isHero
-    ? "flex items-center gap-1.5 text-xs font-bold text-slate-900"
-    : "block text-xs font-bold text-slate-900";
+  const labelClass =
+    "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900";
 
   const fieldClass = isHero
-    ? "rounded-2xl border-t border-slate-100 px-4 py-2 md:border-l md:border-t-0"
-    : "rounded-2xl border border-slate-200 px-4 py-3";
+    ? "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-2 md:border-l md:border-t-0"
+    : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3";
 
   const firstFieldClass = isHero
-    ? "rounded-2xl px-4 py-2 sm:col-span-2 xl:col-span-2"
-    : "rounded-2xl border border-slate-200 px-4 py-3 sm:col-span-2 xl:col-span-2";
+    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2 sm:col-span-2 xl:col-span-2"
+    : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3 lg:col-span-full";
 
   const inputClass =
-    "mt-1 w-full bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
+    "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
 
   const formClass = isHero
-    ? "mt-10 grid max-w-6xl gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-2 xl:grid-cols-[1.2fr_1.2fr_1fr_1fr_1fr_auto]"
-    : "mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm md:grid-cols-2 xl:grid-cols-[1.2fr_1.2fr_1fr_1fr_1fr_auto]";
+    ? "mt-10 grid max-w-6xl gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-2 xl:grid-cols-[1.2fr_1.2fr_1fr_1fr_1fr_auto] xl:items-end"
+    : "mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
 
   return (
     <>
@@ -179,9 +182,9 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Search
               aria-hidden="true"
-              className="h-4 w-4 text-[#075EAE]"
+              className="h-4 w-4 shrink-0 text-[#075EAE]"
             />
-            Cerca per testo
+            {isHero ? "Cerca per testo" : "Testo"}
           </span>
           <input
             type="search"
@@ -194,9 +197,12 @@ export default function EventSearchForm({
           />
         </label>
 
-        <label className={isHero ? "rounded-2xl px-4 py-2" : fieldClass}>
+        <label className={isHero ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2" : fieldClass}>
           <span className={labelClass}>
-            <MapPin aria-hidden="true" className="h-4 w-4 text-[#075EAE]" />
+            <MapPin
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-[#075EAE]"
+            />
             Area
           </span>
           <select
@@ -205,11 +211,7 @@ export default function EventSearchForm({
             onChange={handleAreaChange}
             className={inputClass}
           >
-            {isHero ? (
-              <option value="tutta-sardegna">Tutta la Sardegna</option>
-            ) : (
-              <option value="">Tutta la Sardegna</option>
-            )}
+            <option value="">Tutta la Sardegna</option>
             <option value="nord-sardegna">Nord Sardegna</option>
             <option value="centro-sardegna">Centro Sardegna</option>
             <option value="sud-sardegna">Sud Sardegna</option>
@@ -218,7 +220,10 @@ export default function EventSearchForm({
 
         <label className={fieldClass}>
           <span className={labelClass}>
-            <Building2 aria-hidden="true" className="h-4 w-4 text-[#075EAE]" />
+            <Building2
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-[#075EAE]"
+            />
             Città
           </span>
           <select
@@ -238,7 +243,10 @@ export default function EventSearchForm({
 
         <label className={fieldClass}>
           <span className={labelClass}>
-            <Compass aria-hidden="true" className="h-4 w-4 text-[#075EAE]" />
+            <Compass
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-[#075EAE]"
+            />
             Categoria
           </span>
           <select
@@ -259,7 +267,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <CalendarDays
               aria-hidden="true"
-              className="h-4 w-4 text-[#075EAE]"
+              className="h-4 w-4 shrink-0 text-[#075EAE]"
             />
             Quando?
           </span>
@@ -282,8 +290,8 @@ export default function EventSearchForm({
           type="submit"
           className={
             isHero
-              ? "flex items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00] xl:col-span-1"
-              : "rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00]"
+              ? "flex items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00]"
+              : "flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00] sm:col-span-2 lg:col-span-1 xl:min-h-0"
           }
         >
           <Search aria-hidden="true" className="h-5 w-5" />
