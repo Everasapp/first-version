@@ -1,0 +1,151 @@
+import Link from "next/link";
+import {
+  CalendarDays,
+  Heart,
+  MapPin,
+  Radio,
+  Share2,
+  Star,
+} from "lucide-react";
+
+export type EventCardData = {
+  id: string;
+  title: string;
+  category: string;
+
+  date: string;
+  startDate: string;
+  endDate?: string;
+
+  location: string;
+  area?: string;
+
+  imageUrl: string;
+
+  isFree: boolean;
+  priceFrom?: number;
+
+  isFeatured?: boolean;
+  happeningNow?: boolean;
+  statusLabel?: string;
+};
+
+type EventCardProps = {
+  event: EventCardData;
+};
+
+export default function EventCard({ event }: EventCardProps) {
+  const formattedPrice =
+    event.isFree || event.priceFrom === undefined
+      ? "Gratuito"
+      : `Da €${event.priceFrom.toFixed(2).replace(".", ",")}`;
+
+  return (
+    <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+        <img
+          src={event.imageUrl}
+          alt={event.title}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        />
+
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          {event.happeningNow && (
+            <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+              </span>
+
+              <Radio aria-hidden="true" className="h-3.5 w-3.5" />
+
+              {event.statusLabel ?? "In corso"}
+            </span>
+          )}
+
+          {event.isFeatured && (
+            <span className="flex items-center gap-1.5 rounded-full bg-[#FF7A00] px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+              <Star
+                aria-hidden="true"
+                className="h-3.5 w-3.5 fill-white text-white"
+              />
+              In evidenza
+            </span>
+          )}
+
+          {event.isFree && (
+            <span className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+              Gratuito
+            </span>
+          )}
+        </div>
+
+        <div className="absolute right-4 top-4 flex gap-2">
+          <button
+            type="button"
+            aria-label={`Salva ${event.title} nei preferiti`}
+            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#FF7A00]"
+          >
+            <Heart aria-hidden="true" className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            aria-label={`Condividi ${event.title}`}
+            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#075EAE]"
+          >
+            <Share2 aria-hidden="true" className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#075EAE]">
+          {event.category}
+        </p>
+
+        <h3 className="mt-2 line-clamp-2 text-xl font-bold leading-snug text-slate-900">
+          {event.title}
+        </h3>
+
+        <div className="mt-4 space-y-2 text-sm text-slate-600">
+          <div className="flex items-start gap-2">
+            <CalendarDays
+              aria-hidden="true"
+              className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
+            />
+            <span>{event.date}</span>
+          </div>
+
+          <div className="flex items-start gap-2">
+            <MapPin
+              aria-hidden="true"
+              className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
+            />
+            <span>
+              {event.location}
+              {event.area ? ` · ${event.area}` : ""}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+          <span
+            className={`font-bold ${
+              event.isFree ? "text-emerald-600" : "text-[#FF7A00]"
+            }`}
+          >
+            {formattedPrice}
+          </span>
+
+          <Link
+            href={`/eventi/${event.id}`}
+            className="font-bold text-[#075EAE] transition hover:underline"
+          >
+            Scopri →
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
