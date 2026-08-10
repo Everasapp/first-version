@@ -1,57 +1,22 @@
-import { type EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-import { createClient } from "@/src/lib/supabase/server";
-
-function safeInternalPath(next: string | null): string {
-  const fallback = "/dashboard";
-
-  if (!next) {
-    return fallback;
-  }
-
-  // Allow absolute RedirectTo from Supabase email templates
-  try {
-    if (next.startsWith("http://") || next.startsWith("https://")) {
-      const url = new URL(next);
-      const path = `${url.pathname}${url.search}`;
-      if (path.startsWith("/") && !path.startsWith("//")) {
-        return path || fallback;
-      }
-      return fallback;
-    }
-  } catch {
-    return fallback;
-  }
-
-  if (!next.startsWith("/") || next.startsWith("//") || next.includes("://")) {
-    return fallback;
-  }
-
-  return next;
-}
-
+/**
+ * Avoid verifying on GET: email scanners often prefetch links and burn the token.
+ * Forward users (and params) to a page that confirms only on explicit click.
+ */
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const token_hash = searchParams.get("token_hash");
-  const type = searchParams.get("type") as EmailOtpType | null;
-  const next = safeInternalPath(
-    searchParams.get("next") ?? searchParams.get("redirect_to"),
-  );
+  const forward = new URLSearchParams();
 
-  if (token_hash && type) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.verifyOtp({
-      type,
-      token_hash,
-    });
-
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+  for (const key of ["token_hash", "type", "next", "redirect_to", "confirmation_url"]) {
+    const value = searchParams.get(key);
+    if (value) {
+      forward.set(key === "redirect_to" ? "next" : key, value);
     }
-
-    console.error("Conferma email fallita:", error.message);
   }
 
-  return NextResponse.redirect(`${origin}/accedi?error=conferma`);
+  const query = forward.toString();
+  return NextResponse.redirect(
+    `${origin}/conferma-email${query ? `?${query}` : ""}`,
+  );
 }

@@ -59,7 +59,7 @@ export default function RegistratiPage() {
     }
 
     setSuccessMessage(
-      "Registrazione completata. Controlla la tua email e clicca sul link di conferma per attivare l’account.",
+      "Registrazione completata. Controlla la tua email, apri il messaggio di EVERAS e tocca «Conferma email» nella pagina che si apre.",
     );
     setFullName("");
     setEmail("");
