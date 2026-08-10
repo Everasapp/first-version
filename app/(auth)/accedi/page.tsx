@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -13,6 +13,15 @@ export default function AccediPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error") === "conferma") {
+      setErrorMessage(
+        "Il link di conferma non è valido o è scaduto. Richiedi una nuova email di conferma oppure registrati di nuovo.",
+      );
+    }
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,7 +39,7 @@ export default function AccediPage() {
     if (error) {
       setErrorMessage(
         error.message === "Invalid login credentials"
-          ? "Email o password non corretti."
+          ? "Email o password non corretti. Se ti sei appena registrato, conferma prima la tua email."
           : error.message,
       );
 

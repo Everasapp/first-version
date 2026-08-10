@@ -10,20 +10,12 @@ function safeInternalPath(next: string | null): string {
     return fallback;
   }
 
+  // Allow absolute RedirectTo from Supabase email templates
   try {
     if (next.startsWith("http://") || next.startsWith("https://")) {
       const url = new URL(next);
-      const nestedNext = url.searchParams.get("next");
-      if (nestedNext?.startsWith("/") && !nestedNext.startsWith("//")) {
-        return nestedNext;
-      }
-
       const path = `${url.pathname}${url.search}`;
       if (path.startsWith("/") && !path.startsWith("//")) {
-        // Avoid looping on auth callback/confirm endpoints
-        if (path.startsWith("/auth/")) {
-          return fallback;
-        }
         return path || fallback;
       }
       return fallback;
@@ -41,24 +33,14 @@ function safeInternalPath(next: string | null): string {
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = safeInternalPath(searchParams.get("next"));
-
-  const supabase = await createClient();
-
-  if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
-    }
-
-    console.error("Scambio codice auth fallito:", error.message);
-  }
+  const next = safeInternalPath(
+    searchParams.get("next") ?? searchParams.get("redirect_to"),
+  );
 
   if (token_hash && type) {
+    const supabase = await createClient();
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
@@ -68,7 +50,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}${next}`);
     }
 
-    console.error("Verifica OTP auth fallita:", error.message);
+    console.error("Conferma email fallita:", error.message);
   }
 
   return NextResponse.redirect(`${origin}/accedi?error=conferma`);
