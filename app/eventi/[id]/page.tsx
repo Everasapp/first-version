@@ -283,49 +283,44 @@ export default async function EventDetailPage({
 
       <main className="min-h-screen bg-white">
         <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
-          <div className="relative overflow-hidden rounded-[32px]">
-          <img
-  src={event.image_url ?? "/images/event-placeholder.jpg"}
-  alt={event.title}
-  className="h-[360px] w-full object-cover sm:h-[520px]"
-/>
+          <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
+            <img
+              src={event.image_url ?? "/images/event-placeholder.jpg"}
+              alt={event.title}
+              className="h-[360px] w-full object-cover sm:h-[520px]"
+            />
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-5 sm:bottom-8 sm:left-8 sm:right-8">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/85">
-                  {event.category}
-                </p>
-
-                <h1 className="mt-2 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-                  {event.title}
-                </h1>
-              </div>
-
-              <div className="flex shrink-0 flex-wrap justify-end gap-3">
-                <FavoriteButton
-                  eventId={event.id}
-                  eventTitle={event.title}
-                  initialIsFavorite={isFavorite}
-                  size="md"
-                  className="shadow-lg"
-                />
-                <CalendarButton
-                  eventId={event.id}
-                  eventTitle={event.title}
-                  initialInCalendar={inCalendar}
-                  size="md"
-                  className="shadow-lg"
-                />
-                <ShareEventButton
-                  title={event.title}
-                  slug={event.slug}
-                  size="md"
-                  className="shadow-lg"
-                />
-              </div>
+            <div className="absolute right-4 top-4 flex gap-2 sm:right-6 sm:top-6">
+              <FavoriteButton
+                eventId={event.id}
+                eventTitle={event.title}
+                initialIsFavorite={isFavorite}
+                size="md"
+                className="shadow-lg"
+              />
+              <CalendarButton
+                eventId={event.id}
+                eventTitle={event.title}
+                initialInCalendar={inCalendar}
+                size="md"
+                className="shadow-lg"
+              />
+              <ShareEventButton
+                title={event.title}
+                slug={event.slug}
+                size="md"
+                className="shadow-lg"
+              />
             </div>
+          </div>
+
+          <div className="mt-6 sm:mt-8">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
+              {event.category}
+            </p>
+            <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+              {event.title}
+            </h1>
           </div>
         </section>
 
