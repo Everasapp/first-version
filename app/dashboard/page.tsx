@@ -10,6 +10,7 @@ import {
   Heart,
   MapPin,
   Pencil,
+  Sparkles,
   TicketCheck,
   Users,
 } from "lucide-react";
@@ -21,6 +22,7 @@ import EventCard, {
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
+import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
 import { requireProfile } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
 import {
@@ -31,6 +33,12 @@ import {
 } from "@/src/lib/dashboardEvents";
 import { getFavoriteEvents } from "@/src/lib/favorites";
 import { getFollowedOrganizers } from "@/src/lib/follows";
+import {
+  PLAN_SELECT,
+  canPromoteEvents,
+  getPlanDisplayName,
+  type Plan,
+} from "@/src/lib/plans";
 import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
@@ -46,6 +54,7 @@ type DashboardEvent = {
   is_free: boolean;
   price_from: number | string | null;
   views_count: number | null;
+  is_featured: boolean;
 };
 
 type DashboardPageProps = {
@@ -366,20 +375,32 @@ async function OrganizerDashboard({
   const params = await searchParams;
   const activeFilter = parseDashboardFilter(params.filtro);
 
-  const { data, error } = await supabase
-    .from("events")
-    .select(
-      "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count",
-    )
-    .eq("organizer_id", userId)
-    .order("created_at", { ascending: false });
+  const [{ data, error }, planResult] = await Promise.all([
+    supabase
+      .from("events")
+      .select(
+        "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count, is_featured",
+      )
+      .eq("organizer_id", userId)
+      .order("created_at", { ascending: false }),
+    profile.plan_id
+      ? supabase
+          .from("plans")
+          .select(PLAN_SELECT)
+          .eq("id", profile.plan_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
 
   if (error) {
     throw new Error(`Impossibile caricare la dashboard: ${error.message}`);
   }
 
+  const plan = (planResult.data as Plan | null) ?? null;
+  const canPromote = canPromoteEvents(plan);
   const events = (data ?? []) as DashboardEvent[];
   const now = Date.now();
+  const featuredCount = events.filter((event) => event.is_featured).length;
 
   const counts = {
     pubblicati: 0,
@@ -419,10 +440,35 @@ async function OrganizerDashboard({
                 {organizerLabel}: controlla pubblicati, bozze e scaduti, poi
                 modifica, elimina, duplica o consulta le statistiche.
               </p>
+              <p className="mt-2 text-sm text-slate-500">
+                Piano{" "}
+                <span className="font-semibold text-slate-700">
+                  {getPlanDisplayName(plan?.slug)}
+                </span>
+                {plan?.featured_events_limit
+                  ? ` · ${featuredCount}/${plan.featured_events_limit} eventi in evidenza`
+                  : " · promuovi eventi con Plus o Pro"}
+              </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <LogoutButton />
+
+              <Link
+                href="/dashboard/profilo"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <Building2 aria-hidden="true" className="h-5 w-5" />
+                Profilo
+              </Link>
+
+              <Link
+                href="/dashboard/piano"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <Sparkles aria-hidden="true" className="h-5 w-5" />
+                Piano
+              </Link>
 
               <Link
                 href="/dashboard/preferiti"
@@ -564,6 +610,15 @@ async function OrganizerDashboard({
                             >
                               {statusLabels[event.status]}
                             </span>
+                            {event.is_featured ? (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#E67E22]">
+                                <Sparkles
+                                  aria-hidden="true"
+                                  className="h-3.5 w-3.5"
+                                />
+                                In evidenza
+                              </span>
+                            ) : null}
                             {bucket === "scaduti" && (
                               <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
                                 Scaduto
@@ -607,6 +662,14 @@ async function OrganizerDashboard({
                         </Link>
 
                         <DuplicateEventButton eventId={event.id} />
+
+                        {showOnline ? (
+                          <PromoteEventButton
+                            eventId={event.id}
+                            isFeatured={event.is_featured}
+                            canPromote={canPromote}
+                          />
+                        ) : null}
 
                         <Link
                           href={`/dashboard/eventi/${event.id}/statistiche`}

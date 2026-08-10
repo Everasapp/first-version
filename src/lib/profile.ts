@@ -10,12 +10,13 @@ export type Profile = {
   business_name: string | null;
   vat_number: string | null;
   organizer_since: string | null;
+  plan_id: string | null;
   created_at: string;
   updated_at: string;
 };
 
 export const PROFILE_SELECT =
-  "id, full_name, role, avatar_url, municipality, province, business_name, vat_number, organizer_since, created_at, updated_at";
+  "id, full_name, role, avatar_url, municipality, province, business_name, vat_number, organizer_since, plan_id, created_at, updated_at";
 
 export function isOrganizerRole(role: UserRole | null | undefined) {
   return role === "organizzatore" || role === "admin";

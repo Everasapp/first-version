@@ -6,6 +6,16 @@ import {
 } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
 
+function isAuthSessionError(message: string) {
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("jwt") ||
+    normalized.includes("session") ||
+    normalized.includes("unauthorized") ||
+    normalized.includes("not authenticated")
+  );
+}
+
 export async function requireUser(redirectTo: string) {
   const supabase = await createClient();
   const {
@@ -30,6 +40,11 @@ export async function getProfileForUser(
     .maybeSingle();
 
   if (error) {
+    if (isAuthSessionError(error.message)) {
+      await supabase.auth.signOut();
+      return null;
+    }
+
     throw new Error(`Impossibile caricare il profilo: ${error.message}`);
   }
 
@@ -41,7 +56,8 @@ export async function requireProfile(redirectTo: string) {
   const profile = await getProfileForUser(supabase, user.id);
 
   if (!profile) {
-    throw new Error("Profilo non trovato. Esci e accedi di nuovo.");
+    await supabase.auth.signOut();
+    redirect(`/accedi?redirect=${encodeURIComponent(redirectTo)}`);
   }
 
   return { supabase, user, profile };
