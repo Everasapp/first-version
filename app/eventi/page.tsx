@@ -6,6 +6,7 @@ import EventCard, {
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 
@@ -113,8 +114,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
   const happeningNow =
     startDate <= now && endDate !== null && endDate >= now;
 
-  const numericPrice =
-    event.price_from === null ? undefined : Number(event.price_from);
+  const pricing = resolveEventPricing(event.is_free, event.price_from);
 
   return {
     id: event.slug || event.id,
@@ -127,11 +127,8 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     location: event.municipality || event.location_name || "Sardegna",
     area: getEventArea(event.municipality),
     imageUrl: event.image_url || "/images/concert.png",
-    isFree: event.is_free,
-    priceFrom:
-      numericPrice !== undefined && !Number.isNaN(numericPrice)
-        ? numericPrice
-        : undefined,
+    isFree: pricing.isFree,
+    priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     happeningNow,
     statusLabel: happeningNow ? "In corso adesso" : undefined,

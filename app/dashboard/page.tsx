@@ -40,6 +40,7 @@ import {
   getPlanDisplayName,
   type Plan,
 } from "@/src/lib/plans";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
@@ -141,20 +142,7 @@ function formatDate(value: string) {
 }
 
 function formatPrice(event: DashboardEvent) {
-  if (event.is_free) {
-    return "Gratuito";
-  }
-
-  const price = event.price_from === null ? null : Number(event.price_from);
-
-  if (price === null || !Number.isFinite(price)) {
-    return "A pagamento";
-  }
-
-  return `Da ${new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(price)}`;
+  return resolveEventPricing(event.is_free, event.price_from).label;
 }
 
 function formatFavoriteDate(startAt: string) {
@@ -172,8 +160,7 @@ function toFavoriteCards(
   favorites: Awaited<ReturnType<typeof getFavoriteEvents>>,
 ): EventCardData[] {
   return favorites.map((event) => {
-    const numericPrice =
-      event.price_from === null ? undefined : Number(event.price_from);
+    const pricing = resolveEventPricing(event.is_free, event.price_from);
 
     return {
       id: event.slug,
@@ -185,11 +172,8 @@ function toFavoriteCards(
       endDate: event.end_at ?? undefined,
       location: event.location_name || event.municipality,
       imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-      isFree: event.is_free,
-      priceFrom:
-        numericPrice !== undefined && Number.isFinite(numericPrice)
-          ? numericPrice
-          : undefined,
+      isFree: pricing.isFree,
+      priceFrom: pricing.priceFrom,
       isFavorite: true,
     };
   });

@@ -8,6 +8,7 @@ import {
 
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 
 export type EventCardData = {
   /** Slug used in `/eventi/[slug]` links */
@@ -40,10 +41,7 @@ type EventCardProps = {
 };
 
 export default function EventCard({ event }: EventCardProps) {
-  const formattedPrice =
-    event.isFree || event.priceFrom === undefined
-      ? "Gratuito"
-      : `Da €${event.priceFrom.toFixed(2).replace(".", ",")}`;
+  const pricing = resolveEventPricing(event.isFree, event.priceFrom);
 
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -78,7 +76,7 @@ export default function EventCard({ event }: EventCardProps) {
             </span>
           )}
 
-          {event.isFree && (
+          {pricing.isFree && (
             <span className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               Gratuito
             </span>
@@ -128,10 +126,10 @@ export default function EventCard({ event }: EventCardProps) {
         <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <span
             className={`font-bold ${
-              event.isFree ? "text-emerald-600" : "text-[#E67E22]"
+              pricing.isFree ? "text-emerald-600" : "text-[#E67E22]"
             }`}
           >
-            {formattedPrice}
+            {pricing.label}
           </span>
 
           <Link

@@ -6,6 +6,7 @@ import EventCard, {
 import Header from "@/src/components/home/Header";
 import { categories } from "@/src/data/categories";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 
 type CategoriesPageProps = {
@@ -42,8 +43,7 @@ function formatEventDate(startAt: string) {
 }
 
 function mapEvent(event: EventRow, isFavorite: boolean): EventCardData {
-  const numericPrice =
-    event.price_from === null ? undefined : Number(event.price_from);
+  const pricing = resolveEventPricing(event.is_free, event.price_from);
 
   const categoryName =
     categories.find((category) => category.slug === event.category)?.name ??
@@ -60,11 +60,8 @@ function mapEvent(event: EventRow, isFavorite: boolean): EventCardData {
     location: event.location_name || event.municipality,
     area: event.province ?? undefined,
     imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-    isFree: event.is_free,
-    priceFrom:
-      numericPrice !== undefined && Number.isFinite(numericPrice)
-        ? numericPrice
-        : undefined,
+    isFree: pricing.isFree,
+    priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     isFavorite,
   };

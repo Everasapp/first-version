@@ -305,6 +305,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
           image_url: nextImageUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
+          price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
         })
         .eq("id", event.id)

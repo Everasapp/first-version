@@ -13,6 +13,8 @@ import {
   getCurrentUserFollowedOrganizerIds,
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
+import { categories } from "@/src/data/categories";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isOrganizerRole, PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -97,25 +99,24 @@ export default async function OrganizerPublicPage({
       return end >= now;
     })
     .map((event) => {
-      const numericPrice =
-        event.price_from === null ? undefined : Number(event.price_from);
+      const pricing = resolveEventPricing(event.is_free, event.price_from);
+      const categoryName =
+        categories.find((category) => category.slug === event.category)?.name ??
+        event.category;
 
       return {
         id: event.slug,
         eventId: event.id,
         title: event.title,
-        category: event.category,
+        category: categoryName,
         date: formatEventDate(event.start_at),
         startDate: event.start_at,
         endDate: event.end_at ?? undefined,
         location: event.location_name || event.municipality,
         area: event.province ?? undefined,
         imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-        isFree: event.is_free,
-        priceFrom:
-          numericPrice !== undefined && Number.isFinite(numericPrice)
-            ? numericPrice
-            : undefined,
+        isFree: pricing.isFree,
+        priceFrom: pricing.priceFrom,
         isFeatured: event.is_featured,
         isFavorite: favoriteIds.has(event.id),
       };

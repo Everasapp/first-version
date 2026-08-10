@@ -8,6 +8,7 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventRow = {
@@ -88,8 +89,7 @@ function mapEvent(
   event: EventRow,
   options?: { happeningNow?: boolean },
 ): EventCardData {
-  const numericPrice =
-    event.price_from === null ? undefined : Number(event.price_from);
+  const pricing = resolveEventPricing(event.is_free, event.price_from);
 
   const categoryName =
     categories.find((category) => category.slug === event.category)?.name ??
@@ -106,11 +106,8 @@ function mapEvent(
     location: event.location_name || event.municipality,
     area: getArea(event),
     imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-    isFree: event.is_free,
-    priceFrom:
-      numericPrice !== undefined && Number.isFinite(numericPrice)
-        ? numericPrice
-        : undefined,
+    isFree: pricing.isFree,
+    priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     happeningNow: options?.happeningNow,
     statusLabel: options?.happeningNow ? "In corso" : undefined,

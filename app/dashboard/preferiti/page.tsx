@@ -7,6 +7,7 @@ import EventCard, {
 import Header from "@/src/components/home/Header";
 import { requireProfile } from "@/src/lib/auth";
 import { getFavoriteEvents } from "@/src/lib/favorites";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isOrganizer } from "@/src/lib/profile";
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -49,8 +50,7 @@ export default async function PreferitiPage() {
   const favorites = await getFavoriteEvents(user.id);
 
   const cards: EventCardData[] = favorites.map((event) => {
-    const numericPrice =
-      event.price_from === null ? undefined : Number(event.price_from);
+    const pricing = resolveEventPricing(event.is_free, event.price_from);
 
     return {
       id: event.slug,
@@ -62,11 +62,8 @@ export default async function PreferitiPage() {
       endDate: event.end_at ?? undefined,
       location: event.location_name || event.municipality,
       imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-      isFree: event.is_free,
-      priceFrom:
-        numericPrice !== undefined && Number.isFinite(numericPrice)
-          ? numericPrice
-          : undefined,
+      isFree: pricing.isFree,
+      priceFrom: pricing.priceFrom,
       isFavorite: true,
     };
   });

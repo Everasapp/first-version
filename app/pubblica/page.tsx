@@ -282,6 +282,7 @@ export default function PublishEventPage() {
           image_url: publicUrlData.publicUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
+          price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
           status: "published",
           is_featured: false,

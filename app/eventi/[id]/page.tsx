@@ -23,6 +23,7 @@ import {
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventDetailPageProps = {
@@ -97,8 +98,7 @@ function formatEventDate(startAt: string, endAt: string | null) {
 }
 
 function mapEventForCard(event: EventRow, isFavorite = false) {
-  const numericPrice =
-    event.price_from === null ? undefined : Number(event.price_from);
+  const pricing = resolveEventPricing(event.is_free, event.price_from);
 
   return {
     id: event.slug,
@@ -111,11 +111,8 @@ function mapEventForCard(event: EventRow, isFavorite = false) {
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
     imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
-    isFree: event.is_free,
-    priceFrom:
-      numericPrice !== undefined && Number.isFinite(numericPrice)
-        ? numericPrice
-        : undefined,
+    isFree: pricing.isFree,
+    priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     isFavorite,
   };
@@ -244,16 +241,14 @@ export default async function EventDetailPage({
     mapEventForCard(item, favoriteIds.has(item.id)),
   );
 
-  const numericPrice =
-    event.price_from === null ? null : Number(event.price_from);
-  const formattedPrice = event.is_free
-    ? "Gratuito"
-    : numericPrice !== null && Number.isFinite(numericPrice)
+  const pricing = resolveEventPricing(event.is_free, event.price_from);
+  const formattedPrice =
+    pricing.priceFrom !== undefined
       ? `Da ${new Intl.NumberFormat("it-IT", {
           style: "currency",
           currency: "EUR",
-        }).format(numericPrice)}`
-      : "A pagamento";
+        }).format(pricing.priceFrom)}`
+      : pricing.label;
 
   const eventLocation = event.location_name || event.municipality;
   const locationDetails = [event.address, event.municipality, event.province]
@@ -459,7 +454,7 @@ export default async function EventDetailPage({
 
               <p
                 className={`mt-2 text-3xl font-black ${
-                  event.is_free ? "text-emerald-600" : "text-[#E67E22]"
+                  pricing.isFree ? "text-emerald-600" : "text-[#E67E22]"
                 }`}
               >
                 {formattedPrice}
@@ -474,7 +469,7 @@ export default async function EventDetailPage({
                     className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 text-center font-bold text-white transition hover:bg-[#C96A1A]"
                   >
                     <Ticket aria-hidden="true" className="h-5 w-5" />
-                    {event.is_free ? "Partecipa" : "Acquista il biglietto"}
+                    {pricing.isFree ? "Partecipa" : "Acquista il biglietto"}
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   </a>
                 )}
