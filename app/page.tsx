@@ -1,5 +1,6 @@
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
+import HappeningToday from "@/src/components/home/HappeningToday";
 import FeaturedEvents from "@/src/components/home/FeaturedEvents";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
@@ -24,6 +25,28 @@ type EventRow = {
   price_from: number | string | null;
   is_featured: boolean;
 };
+
+function formatRomeDayKey(value: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
+function isHappeningOnRomeDay(event: EventRow, dayKey: string) {
+  const startKey = formatRomeDayKey(new Date(event.start_at));
+  const endKey = formatRomeDayKey(new Date(event.end_at || event.start_at));
+  return startKey <= dayKey && endKey >= dayKey;
+}
+
+function isHappeningNow(event: EventRow, now: Date) {
+  const start = new Date(event.start_at).getTime();
+  const end = new Date(event.end_at || event.start_at).getTime();
+  const current = now.getTime();
+  return current >= start && current <= end;
+}
 
 function formatEventDate(startAt: string) {
   return new Intl.DateTimeFormat("it-IT", {
@@ -61,7 +84,10 @@ function getArea(event: EventRow) {
   return "Sud Sardegna";
 }
 
-function mapEvent(event: EventRow): EventCardData {
+function mapEvent(
+  event: EventRow,
+  options?: { happeningNow?: boolean },
+): EventCardData {
   const numericPrice =
     event.price_from === null ? undefined : Number(event.price_from);
 
@@ -86,6 +112,8 @@ function mapEvent(event: EventRow): EventCardData {
         ? numericPrice
         : undefined,
     isFeatured: event.is_featured,
+    happeningNow: options?.happeningNow,
+    statusLabel: options?.happeningNow ? "In corso" : undefined,
   };
 }
 
@@ -108,7 +136,10 @@ export default async function Home() {
   }
 
   const now = new Date();
-  const events = ((data ?? []) as EventRow[])
+  const todayKey = formatRomeDayKey(now);
+  const rows = (data ?? []) as EventRow[];
+
+  const events = rows
     .filter((event) => {
       const eventEnd = event.end_at
         ? new Date(event.end_at)
@@ -121,12 +152,41 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
+  const todayEvents = rows
+    .filter((event) => {
+      if (!isHappeningOnRomeDay(event, todayKey)) {
+        return false;
+      }
+
+      const eventEnd = event.end_at
+        ? new Date(event.end_at)
+        : new Date(event.start_at);
+
+      return eventEnd >= now;
+    })
+    .sort((a, b) => {
+      const aNow = isHappeningNow(a, now) ? 0 : 1;
+      const bNow = isHappeningNow(b, now) ? 0 : 1;
+      if (aNow !== bNow) return aNow - bNow;
+      if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
+      return (
+        new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
+      );
+    })
+    .slice(0, 4)
+    .map((event) => ({
+      ...mapEvent(event, { happeningNow: isHappeningNow(event, now) }),
+      isFavorite: favoriteIds.has(event.id),
+    }));
+
   return (
     <>
       <Header />
 
       <main>
         <Hero />
+
+        <HappeningToday events={todayEvents} />
 
         <FeaturedEvents events={events} />
 

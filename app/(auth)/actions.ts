@@ -81,6 +81,11 @@ export async function registerAction(
   const password = String(formData.get("password") ?? "");
   const passwordConfirm = String(formData.get("password_confirm") ?? "");
   const privacyAccepted = formData.get("privacy") === "on";
+  const newsletterOptIn = formData.get("newsletter") === "on";
+  const newsletterCity = String(formData.get("newsletter_city") ?? "").trim();
+  const newsletterCategory = String(
+    formData.get("newsletter_category") ?? "",
+  ).trim();
 
   if (!fullName || !email || !password || !passwordConfirm) {
     return { error: "Compila tutti i campi obbligatori." };
@@ -104,6 +109,12 @@ export async function registerAction(
     };
   }
 
+  if (newsletterOptIn && (!newsletterCity || !newsletterCategory)) {
+    return {
+      error: "Per la newsletter scegli città e categoria preferita.",
+    };
+  }
+
   const origin = await getOrigin();
   const supabase = await createClient();
 
@@ -113,6 +124,9 @@ export async function registerAction(
     options: {
       data: {
         full_name: fullName,
+        newsletter_opt_in: newsletterOptIn,
+        newsletter_city: newsletterOptIn ? newsletterCity : null,
+        newsletter_category: newsletterOptIn ? newsletterCategory : null,
       },
       emailRedirectTo: `${origin}/auth/callback?next=/accedi`,
     },
