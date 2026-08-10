@@ -290,8 +290,8 @@ export default function EventSearchForm({
           type="submit"
           className={
             isHero
-              ? "flex items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00]"
-              : "flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-7 py-4 font-bold text-white transition hover:bg-[#E86F00] sm:col-span-2 lg:col-span-1 xl:min-h-0"
+              ? "flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-7 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
+              : "flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-7 py-4 font-bold text-white transition hover:bg-[#C96A1A] sm:col-span-2 lg:col-span-1 xl:min-h-0"
           }
         >
           <Search aria-hidden="true" className="h-5 w-5" />

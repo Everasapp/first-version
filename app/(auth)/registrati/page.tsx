@@ -182,7 +182,7 @@ export default function RegistratiPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-[#E67E22] px-5 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading ? "Registrazione in corso..." : "Registrati"}
             </button>

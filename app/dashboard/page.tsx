@@ -211,7 +211,7 @@ export default async function DashboardPage({
 
               <Link
                 href="/pubblica"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-6 py-4 font-bold text-white transition hover:bg-[#E86F00]"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
               >
                 <CirclePlus aria-hidden="true" className="h-5 w-5" />
                 Pubblica un evento
@@ -270,7 +270,7 @@ export default async function DashboardPage({
               </p>
               <Link
                 href="/pubblica"
-                className="mt-6 inline-flex rounded-2xl bg-[#FF7A00] px-6 py-3 font-bold text-white"
+                className="mt-6 inline-flex rounded-2xl bg-[#E67E22] px-6 py-3 font-bold text-white"
               >
                 Crea il primo evento
               </Link>
@@ -285,7 +285,7 @@ export default async function DashboardPage({
               </p>
               <Link
                 href="/pubblica"
-                className="mt-6 inline-flex rounded-2xl bg-[#FF7A00] px-6 py-3 font-bold text-white"
+                className="mt-6 inline-flex rounded-2xl bg-[#E67E22] px-6 py-3 font-bold text-white"
               >
                 {empty.cta}
               </Link>
@@ -336,7 +336,7 @@ export default async function DashboardPage({
                           </h2>
                         </div>
 
-                        <p className="font-bold text-[#FF7A00]">
+                        <p className="font-bold text-[#E67E22]">
                           {formatPrice(event)}
                         </p>
                       </div>
@@ -361,7 +361,7 @@ export default async function DashboardPage({
                       <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
                         <Link
                           href={`/dashboard/eventi/${event.id}/modifica`}
-                          className="inline-flex items-center gap-2 rounded-xl bg-[#FF7A00] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#E86F00]"
+                          className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
                         >
                           <Pencil aria-hidden="true" className="h-4 w-4" />
                           Modifica

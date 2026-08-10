@@ -135,7 +135,7 @@ export default async function StatisticheEventoPage({
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <BarChart3
                 aria-hidden="true"
-                className="h-6 w-6 text-[#FF7A00]"
+                className="h-6 w-6 text-[#E67E22]"
               />
               <p className="mt-4 text-3xl font-black text-slate-900">
                 {statusLabels[status]}
@@ -207,7 +207,7 @@ export default async function StatisticheEventoPage({
             <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
               <Link
                 href={`/dashboard/eventi/${event.id}/modifica`}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#FF7A00] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#E86F00]"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
               >
                 <Pencil aria-hidden="true" className="h-4 w-4" />
                 Modifica evento

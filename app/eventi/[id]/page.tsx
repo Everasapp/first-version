@@ -270,7 +270,7 @@ export default async function EventDetailPage({
                 <button
                   type="button"
                   aria-label="Salva evento"
-                  className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-800 shadow-lg transition hover:text-[#FF7A00]"
+                  className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-800 shadow-lg transition hover:text-[#E67E22]"
                 >
                   <Heart aria-hidden="true" className="h-5 w-5" />
                 </button>
@@ -385,7 +385,7 @@ export default async function EventDetailPage({
 
               <p
                 className={`mt-2 text-3xl font-black ${
-                  event.is_free ? "text-emerald-600" : "text-[#FF7A00]"
+                  event.is_free ? "text-emerald-600" : "text-[#E67E22]"
                 }`}
               >
                 {formattedPrice}
@@ -397,7 +397,7 @@ export default async function EventDetailPage({
                     href={event.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-6 py-4 text-center font-bold text-white transition hover:bg-[#E86F00]"
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 text-center font-bold text-white transition hover:bg-[#C96A1A]"
                   >
                     <Ticket aria-hidden="true" className="h-5 w-5" />
                     {event.is_free ? "Partecipa" : "Acquista il biglietto"}

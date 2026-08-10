@@ -401,7 +401,7 @@ export default function PublishEventPage() {
                         aria-current={isActive ? "step" : undefined}
                         className={`relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full text-sm font-bold transition ${
                           isCompleted
-                            ? "bg-[#FF7A00] text-white hover:bg-[#E86F00]"
+                            ? "bg-[#E67E22] text-white hover:bg-[#C96A1A]"
                             : isActive
                               ? "bg-[#075EAE] text-white ring-4 ring-blue-100"
                               : "cursor-not-allowed border border-slate-300 bg-white text-slate-400"
@@ -417,7 +417,7 @@ export default function PublishEventPage() {
                       {index < steps.length - 1 && (
                         <div className="mx-2 h-1 flex-1 overflow-hidden rounded-full bg-slate-200 sm:mx-3">
                           <div
-                            className={`h-full rounded-full bg-[#FF7A00] transition-all duration-500 ${
+                            className={`h-full rounded-full bg-[#E67E22] transition-all duration-500 ${
                               index < currentStep ? "w-full" : "w-0"
                             }`}
                           />
@@ -449,7 +449,7 @@ export default function PublishEventPage() {
                       index === currentStep
                         ? "text-[#075EAE]"
                         : index < currentStep
-                          ? "text-[#FF7A00] hover:text-[#E86F00]"
+                          ? "text-[#E67E22] hover:text-[#C96A1A]"
                           : "cursor-not-allowed text-slate-400"
                     }`}
                   >
@@ -1071,7 +1071,7 @@ export default function PublishEventPage() {
                     type="button"
                     onClick={handlePublish}
                     disabled={isPublishing}
-                    className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-6 py-4 font-bold text-white transition hover:bg-[#E86F00] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <Ticket className="h-5 w-5" />
                     {isPublishing ? "Pubblicazione in corso..." : "Pubblica evento"}
@@ -1192,7 +1192,7 @@ export default function PublishEventPage() {
                       className={`font-bold ${
                         pricing === "free"
                           ? "text-emerald-600"
-                          : "text-[#FF7A00]"
+                          : "text-[#E67E22]"
                       }`}
                     >
                       {formattedPrice}

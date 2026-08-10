@@ -729,7 +729,7 @@ export default function EditEventForm({ event }: EditEventFormProps) {
         <button
           type="submit"
           disabled={isSaving}
-          className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A00] px-6 py-4 font-bold text-white transition hover:bg-[#E86F00] disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSaving ? (
             <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />

@@ -53,7 +53,7 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-3 md:ml-8">
           <Link
             href="/pubblica"
-            className="hidden h-11 items-center justify-center rounded-xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600 sm:inline-flex"
+            className="hidden h-11 items-center justify-center rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] sm:inline-flex"
           >
             Pubblica un evento
           </Link>

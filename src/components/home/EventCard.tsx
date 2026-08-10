@@ -64,7 +64,7 @@ export default function EventCard({ event }: EventCardProps) {
           )}
 
           {event.isFeatured && (
-            <span className="flex items-center gap-1.5 rounded-full bg-[#FF7A00] px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+            <span className="flex items-center gap-1.5 rounded-full bg-[#E67E22] px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               <Star
                 aria-hidden="true"
                 className="h-3.5 w-3.5 fill-white text-white"
@@ -84,7 +84,7 @@ export default function EventCard({ event }: EventCardProps) {
           <button
             type="button"
             aria-label={`Salva ${event.title} nei preferiti`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#FF7A00]"
+            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#E67E22]"
           >
             <Heart aria-hidden="true" className="h-5 w-5" />
           </button>
@@ -132,7 +132,7 @@ export default function EventCard({ event }: EventCardProps) {
         <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <span
             className={`font-bold ${
-              event.isFree ? "text-emerald-600" : "text-[#FF7A00]"
+              event.isFree ? "text-emerald-600" : "text-[#E67E22]"
             }`}
           >
             {formattedPrice}
