@@ -141,11 +141,11 @@ export default async function CategoriesPage({
                 : "Scegli una categoria oppure sfoglia subito tutti gli eventi."}
             </p>
 
-            <div className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mt-8 flex flex-wrap gap-2 sm:gap-2.5">
               <Link
                 href="/categorie"
                 aria-current={!selectedCategory ? "page" : undefined}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${
+                className={`rounded-full px-3.5 py-2 text-sm font-bold transition sm:px-4 ${
                   !selectedCategory
                     ? "bg-[#075EAE] text-white"
                     : "border border-slate-300 bg-white text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
@@ -162,7 +162,7 @@ export default async function CategoriesPage({
                     key={category.id}
                     href={`/categorie?category=${encodeURIComponent(category.slug)}`}
                     aria-current={isActive ? "page" : undefined}
-                    className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ${
+                    className={`rounded-full px-3.5 py-2 text-sm font-bold transition sm:px-4 ${
                       isActive
                         ? "bg-[#075EAE] text-white"
                         : "border border-slate-300 bg-white text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
