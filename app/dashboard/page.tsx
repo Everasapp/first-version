@@ -11,6 +11,7 @@ import {
   MapPin,
   Pencil,
   TicketCheck,
+  Users,
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
@@ -21,6 +22,7 @@ import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import { requireProfile } from "@/src/lib/auth";
+import { getCalendarEvents } from "@/src/lib/calendar";
 import {
   getEventBucket,
   parseDashboardFilter,
@@ -28,6 +30,7 @@ import {
   type DashboardFilter,
 } from "@/src/lib/dashboardEvents";
 import { getFavoriteEvents } from "@/src/lib/favorites";
+import { getFollowedOrganizers } from "@/src/lib/follows";
 import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
@@ -185,9 +188,13 @@ function toFavoriteCards(
 function UserDashboard({
   profile,
   favoriteCards,
+  calendarCount,
+  followingCount,
 }: {
   profile: Profile;
   favoriteCards: EventCardData[];
+  calendarCount: number;
+  followingCount: number;
 }) {
   const firstName =
     profile.full_name?.trim().split(/\s+/)[0] || "benvenuto/a";
@@ -207,9 +214,8 @@ function UserDashboard({
                 Ciao, {firstName}
               </h1>
               <p className="mt-3 max-w-2xl text-lg text-slate-600">
-                Da qui gestisci i preferiti e il tuo account Everas. Se vuoi
-                pubblicare eventi, attiva il profilo organizzatore: resta lo
-                stesso account.
+                Preferiti, calendario e organizzatori seguiti: tutto sul tuo
+                stesso account Everas.
               </p>
             </div>
 
@@ -217,67 +223,105 @@ function UserDashboard({
               <LogoutButton />
               <Link
                 href="/dashboard/preferiti"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
               >
                 <Heart aria-hidden="true" className="h-5 w-5" />
                 Preferiti
+              </Link>
+              <Link
+                href="/dashboard/calendario"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <CalendarDays aria-hidden="true" className="h-5 w-5" />
+                Calendario
               </Link>
             </div>
           </div>
         </section>
 
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-            <article className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
               <div className="flex items-start gap-3">
                 <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-50 text-[#E67E22]">
                   <Building2 aria-hidden="true" className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900">
                     Vuoi pubblicare un evento?
                   </h2>
                   <p className="mt-2 text-slate-600">
-                    Diventa organizzatore in un minuto: inserisci il nome
-                    dell’attività e, se ce l’hai, la partita IVA. Poi puoi
-                    creare, modificare e monitorare i tuoi eventi.
+                    Diventa organizzatore con lo stesso account e pubblica in
+                    pochi passaggi.
                   </p>
                 </div>
               </div>
 
               <Link
                 href="/diventa-organizzatore?next=/pubblica"
-                className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-5 py-3.5 font-bold text-white transition hover:bg-[#C96A1A]"
               >
                 <Building2 aria-hidden="true" className="h-5 w-5" />
                 Diventa organizzatore
               </Link>
             </article>
 
-            <article className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-              <Heart
-                aria-hidden="true"
-                className="h-6 w-6 text-[#E67E22]"
-              />
-              <h2 className="mt-4 text-xl font-bold text-slate-900">
-                Preferiti
-              </h2>
-              <p className="mt-2 text-slate-600">
+            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Heart aria-hidden="true" className="h-6 w-6 text-[#E67E22]" />
+              <h2 className="mt-4 text-lg font-bold text-slate-900">Preferiti</h2>
+              <p className="mt-2 text-sm text-slate-600">
                 {favoriteCards.length === 0
-                  ? "Non hai ancora salvato eventi. Tocca il cuore sulle card per iniziare."
-                  : `Hai salvato ${favoriteCards.length} event${
-                      favoriteCards.length === 1 ? "o" : "i"
+                  ? "Nessun evento salvato."
+                  : `${favoriteCards.length} salvati`}
+              </p>
+              <Link
+                href="/dashboard/preferiti"
+                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
+              >
+                Apri
+              </Link>
+            </article>
+
+            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <CalendarDays
+                aria-hidden="true"
+                className="h-6 w-6 text-[#075EAE]"
+              />
+              <h2 className="mt-4 text-lg font-bold text-slate-900">
+                Calendario
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                {calendarCount === 0
+                  ? "Nessun evento in agenda."
+                  : `${calendarCount} in agenda`}
+              </p>
+              <Link
+                href="/dashboard/calendario"
+                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
+              >
+                Apri
+              </Link>
+            </article>
+
+            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2 xl:col-span-4">
+              <Users aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
+              <h2 className="mt-4 text-lg font-bold text-slate-900">
+                Organizzatori seguiti
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                {followingCount === 0
+                  ? "Non segui ancora nessun organizzatore. Trovi «Segui» nella pagina evento."
+                  : `Segui ${followingCount} organizzator${
+                      followingCount === 1 ? "e" : "i"
                     }.`}
               </p>
               <Link
                 href={
-                  favoriteCards.length > 0 ? "/dashboard/preferiti" : "/eventi"
+                  followingCount > 0 ? "/dashboard/organizzatori" : "/eventi"
                 }
-                className="mt-6 inline-flex font-bold text-[#075EAE] hover:underline"
+                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
               >
-                {favoriteCards.length > 0
-                  ? "Vedi tutti i preferiti"
-                  : "Esplora eventi"}
+                {followingCount > 0 ? "Vedi lista" : "Esplora eventi"}
               </Link>
             </article>
           </div>
@@ -382,15 +426,31 @@ async function OrganizerDashboard({
 
               <Link
                 href="/dashboard/preferiti"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
               >
                 <Heart aria-hidden="true" className="h-5 w-5" />
                 Preferiti
               </Link>
 
               <Link
+                href="/dashboard/calendario"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <CalendarDays aria-hidden="true" className="h-5 w-5" />
+                Calendario
+              </Link>
+
+              <Link
+                href="/dashboard/organizzatori"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <Users aria-hidden="true" className="h-5 w-5" />
+                Seguiti
+              </Link>
+
+              <Link
                 href="/pubblica"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-5 py-3.5 font-bold text-white transition hover:bg-[#C96A1A]"
               >
                 <CirclePlus aria-hidden="true" className="h-5 w-5" />
                 Pubblica un evento
@@ -590,11 +650,20 @@ export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
   const { supabase, user, profile } = await requireProfile("/dashboard");
-  const favoriteCards = toFavoriteCards(await getFavoriteEvents(user.id));
+  const [favoriteCards, calendarEvents, followedOrganizers] = await Promise.all([
+    getFavoriteEvents(user.id).then(toFavoriteCards),
+    getCalendarEvents(user.id),
+    getFollowedOrganizers(user.id),
+  ]);
 
   if (!isOrganizer(profile)) {
     return (
-      <UserDashboard profile={profile} favoriteCards={favoriteCards} />
+      <UserDashboard
+        profile={profile}
+        favoriteCards={favoriteCards}
+        calendarCount={calendarEvents.length}
+        followingCount={followedOrganizers.length}
+      />
     );
   }
 

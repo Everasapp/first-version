@@ -2,17 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  Building2,
   CalendarDays,
   ExternalLink,
   MapPin,
   Ticket,
 } from "lucide-react";
 
+import CalendarButton from "@/src/components/events/CalendarButton";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
+import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import { getCurrentUserCalendarEventIds } from "@/src/lib/calendar";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import {
+  getCurrentUserFollowedOrganizerIds,
+  getOrganizerDisplayName,
+} from "@/src/lib/follows";
+import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventDetailPageProps = {
@@ -38,6 +47,7 @@ type EventRow = {
   price_from: number | string | null;
   ticket_url: string | null;
   is_featured: boolean;
+  organizer_id: string;
 };
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -172,7 +182,7 @@ export default async function EventDetailPage({
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured",
+      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -190,26 +200,44 @@ export default async function EventDetailPage({
 
   await supabase.rpc("increment_event_views", { event_id: event.id });
 
-  const [{ data: similarData, error: similarError }, favoriteIds] =
-    await Promise.all([
-      supabase
-        .from("events")
-        .select(
-          "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured",
-        )
-        .eq("status", "published")
-        .eq("category", event.category)
-        .neq("id", event.id)
-        .order("start_at", { ascending: true })
-        .limit(3),
-      getCurrentUserFavoriteIds(),
-    ]);
+  const [
+    { data: similarData, error: similarError },
+    favoriteIds,
+    calendarIds,
+    followedIds,
+    { data: organizerData },
+  ] = await Promise.all([
+    supabase
+      .from("events")
+      .select(
+        "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
+      )
+      .eq("status", "published")
+      .eq("category", event.category)
+      .neq("id", event.id)
+      .order("start_at", { ascending: true })
+      .limit(3),
+    getCurrentUserFavoriteIds(),
+    getCurrentUserCalendarEventIds(),
+    getCurrentUserFollowedOrganizerIds(),
+    supabase
+      .from("profiles")
+      .select(PROFILE_SELECT)
+      .eq("id", event.organizer_id)
+      .maybeSingle(),
+  ]);
 
   if (similarError) {
     console.error("Impossibile caricare gli eventi simili:", similarError);
   }
 
+  const organizer = (organizerData as Profile | null) ?? null;
+  const organizerName = organizer
+    ? getOrganizerDisplayName(organizer)
+    : "Organizzatore";
   const isFavorite = favoriteIds.has(event.id);
+  const inCalendar = calendarIds.has(event.id);
+  const isFollowing = followedIds.has(event.organizer_id);
 
   const similarEvents = ((similarData ?? []) as EventRow[]).map((item) =>
     mapEventForCard(item, favoriteIds.has(item.id)),
@@ -275,11 +303,18 @@ export default async function EventDetailPage({
                 </h1>
               </div>
 
-              <div className="flex shrink-0 gap-3">
+              <div className="flex shrink-0 flex-wrap justify-end gap-3">
                 <FavoriteButton
                   eventId={event.id}
                   eventTitle={event.title}
                   initialIsFavorite={isFavorite}
+                  size="md"
+                  className="shadow-lg"
+                />
+                <CalendarButton
+                  eventId={event.id}
+                  eventTitle={event.title}
+                  initialInCalendar={inCalendar}
                   size="md"
                   className="shadow-lg"
                 />
@@ -323,6 +358,40 @@ export default async function EventDetailPage({
                 </div>
               </div>
             </div>
+
+            {organizer ? (
+              <div className="flex flex-col gap-4 border-b border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-50 text-[#075EAE]">
+                    <Building2 aria-hidden="true" className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
+                      Organizzatore
+                    </p>
+                    <Link
+                      href={`/organizzatori/${organizer.id}`}
+                      className="mt-1 text-xl font-bold text-slate-900 hover:text-[#075EAE]"
+                    >
+                      {organizerName}
+                    </Link>
+                    {(organizer.municipality || organizer.province) && (
+                      <p className="mt-1 text-sm text-slate-600">
+                        {[organizer.municipality, organizer.province]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <FollowOrganizerButton
+                  organizerId={organizer.id}
+                  organizerName={organizerName}
+                  initialIsFollowing={isFollowing}
+                />
+              </div>
+            ) : null}
 
             <div className="py-10">
               <h2 className="text-3xl font-bold text-slate-900">
@@ -411,6 +480,13 @@ export default async function EventDetailPage({
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   </a>
                 )}
+
+                <CalendarButton
+                  eventId={event.id}
+                  eventTitle={event.title}
+                  initialInCalendar={inCalendar}
+                  variant="button"
+                />
 
                 <Link
                   href="/eventi"
