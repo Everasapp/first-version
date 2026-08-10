@@ -24,17 +24,18 @@ type PianoPageProps = {
 const planBenefits: Record<PlanSlug, string[]> = {
   free: [
     "1 evento al mese",
+    "Nessun evento in evidenza",
     "Statistiche essenziali",
     "Profilo attività",
   ],
   regular: [
     "Fino a 12 eventi al mese",
-    "1 evento in evidenza",
+    "1 evento in evidenza (homepage)",
     "Analytics avanzate",
   ],
   full: [
     "Eventi illimitati",
-    "Fino a 5 eventi in evidenza",
+    "Fino a 5 eventi in evidenza (homepage)",
     "Priorità in homepage",
     "Supporto dedicato",
   ],

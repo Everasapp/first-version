@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -24,6 +24,12 @@ import {
   normalizeTicketUrl,
   parsePrice,
 } from "@/src/lib/eventForm";
+import {
+  PLAN_SELECT,
+  canAssignOrganizers,
+  type Plan,
+} from "@/src/lib/plans";
+import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createSlug } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -62,10 +68,71 @@ export default function PublishEventPage() {
 
   const [description, setDescription] = useState("");
   const [organizer, setOrganizer] = useState("");
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [plan, setPlan] = useState<Plan | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [publishMessage, setPublishMessage] = useState("");
   const [publishError, setPublishError] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+
+  const canSetOrganizer = canAssignOrganizers(plan);
+  const defaultOrganizerName =
+    profile?.business_name?.trim() ||
+    profile?.full_name?.trim() ||
+    "Organizzatore";
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProfilePlan() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user || cancelled) {
+        return;
+      }
+
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select(PROFILE_SELECT)
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (cancelled || !profileData) {
+        return;
+      }
+
+      const nextProfile = profileData as Profile;
+      setProfile(nextProfile);
+
+      if (nextProfile.plan_id) {
+        const { data: planData } = await supabase
+          .from("plans")
+          .select(PLAN_SELECT)
+          .eq("id", nextProfile.plan_id)
+          .maybeSingle();
+
+        if (!cancelled) {
+          setPlan((planData as Plan | null) ?? null);
+        }
+      }
+
+      if (!cancelled) {
+        const fallback =
+          nextProfile.business_name?.trim() ||
+          nextProfile.full_name?.trim() ||
+          "";
+        setOrganizer((current) => current || fallback);
+      }
+    }
+
+    void loadProfilePlan();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
 
   const availableCities = useMemo(() => {
     const filteredCities = area
@@ -177,8 +244,9 @@ export default function PublishEventPage() {
           "Inserisci una descrizione di almeno 30 caratteri.";
       }
 
-      if (!organizer.trim()) {
-        nextErrors.organizer = "Inserisci il nome dell'organizzatore.";
+      if (canSetOrganizer && !organizer.trim()) {
+        nextErrors.organizer =
+          "Inserisci almeno un organizzatore associato all’evento.";
       }
     }
 
@@ -284,6 +352,9 @@ export default function PublishEventPage() {
           price_from: numericPrice,
           price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
+          organizer_display_name: canSetOrganizer
+            ? organizer.trim()
+            : defaultOrganizerName,
           status: "published",
           is_featured: false,
         })
@@ -977,20 +1048,33 @@ export default function PublishEventPage() {
 
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">
-                        Nome dell&apos;organizzatore
+                        Organizzatore associato
                       </span>
+                      <p className="mt-1 text-sm text-slate-500">
+                        {canSetOrganizer
+                          ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
+                          : "Con Free e Plus l’organizzatore è il tuo account. Passa a Pro per associarne altri."}
+                      </p>
 
                       <input
                         type="text"
                         name="organizer"
-                        value={organizer}
+                        value={canSetOrganizer ? organizer : defaultOrganizerName}
                         onChange={(event) => {
+                          if (!canSetOrganizer) {
+                            return;
+                          }
                           setOrganizer(event.target.value);
                           clearError("organizer");
                         }}
-                        placeholder="Nome, associazione o azienda"
+                        readOnly={!canSetOrganizer}
+                        placeholder="Es. Associazione Zoe, Comune di Alghero"
                         aria-invalid={Boolean(errors.organizer)}
                         className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
+                          !canSetOrganizer
+                            ? "cursor-not-allowed bg-slate-50 text-slate-600"
+                            : ""
+                        } ${
                           errors.organizer
                             ? "border-red-400 focus:border-red-500"
                             : "border-slate-300 focus:border-[#075EAE]"
@@ -1002,6 +1086,15 @@ export default function PublishEventPage() {
                           {errors.organizer}
                         </p>
                       )}
+
+                      {!canSetOrganizer ? (
+                        <Link
+                          href="/dashboard/piano"
+                          className="mt-2 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
+                        >
+                          Scopri il piano Pro →
+                        </Link>
+                      ) : null}
                     </label>
                   </div>
                 </div>
@@ -1047,14 +1140,16 @@ export default function PublishEventPage() {
                       </p>
                     </div>
 
-                    {organizer && (
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                          Organizzatore
-                        </p>
-                        <p className="mt-1 text-slate-700">{organizer}</p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Organizzatore
+                      </p>
+                      <p className="mt-1 text-slate-700">
+                        {canSetOrganizer
+                          ? organizer.trim() || "—"
+                          : defaultOrganizerName}
+                      </p>
+                    </div>
 
                     {description && (
                       <div>

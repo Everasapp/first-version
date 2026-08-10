@@ -29,6 +29,11 @@ export function canPromoteEvents(plan: Pick<Plan, "featured_events_limit"> | nul
   return (plan?.featured_events_limit ?? 0) > 0;
 }
 
+/** Pro (full) can set custom associated organizer name(s) per event. */
+export function canAssignOrganizers(plan: Pick<Plan, "slug"> | null | undefined) {
+  return plan?.slug === "full";
+}
+
 export function formatPlanPrice(price: number | string | null | undefined) {
   const value = price === null || price === undefined ? 0 : Number(price);
   if (!Number.isFinite(value) || value <= 0) {

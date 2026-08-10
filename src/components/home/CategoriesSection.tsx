@@ -31,25 +31,25 @@ export default function CategoriesSection() {
               >
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 transition duration-500 group-hover:scale-125" />
 
-                <div className="relative flex min-h-[170px] flex-col justify-between">
-                  <div className="grid h-14 w-14 place-items-center rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm">
+                <div className="relative flex min-h-[132px] flex-col justify-between sm:min-h-[170px]">
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm sm:h-14 sm:w-14">
                     <Icon
                       aria-hidden="true"
-                      className="h-8 w-8 text-white"
+                      className="h-7 w-7 text-white sm:h-8 sm:w-8"
                       strokeWidth={1.8}
                     />
                   </div>
 
-                  <div className="mt-8">
-                    <h3 className="text-lg font-bold leading-snug">
+                  <div className="mt-5 sm:mt-8">
+                    <h3 className="text-base font-bold leading-snug sm:text-lg">
                       {category.name}
                     </h3>
 
-                    <p className="mt-2 text-sm text-white/80">
+                    <p className="mt-2 hidden text-sm text-white/80 sm:block">
                       Scopri gli eventi
                     </p>
 
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1">
+                    <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1 sm:mt-4">
                       Esplora →
                     </span>
                   </div>

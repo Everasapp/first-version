@@ -1,27 +1,28 @@
 import {
-    Baby,
-    BriefcaseBusiness,
-    Drama,
-    Dumbbell,
-    GraduationCap,
-    Music,
-    Palette,
-    ShoppingBag,
-    Sparkles,
-    Trees,
-    Utensils,
-    Wine,
-  } from "lucide-react";
-  
-  export type Category = {
-    id: number;
-    slug: string;
-    name: string;
-    icon: any;
-    gradient: string;
-  };
-  
-  export const categories: Category[] = [
+  Baby,
+  BriefcaseBusiness,
+  Drama,
+  Dumbbell,
+  GraduationCap,
+  Music,
+  Palette,
+  ShoppingBag,
+  Sparkles,
+  Utensils,
+  Wine,
+} from "lucide-react";
+
+import CelebrazioniIcon from "@/src/components/icons/CelebrazioniIcon";
+
+export type Category = {
+  id: number;
+  slug: string;
+  name: string;
+  icon: any;
+  gradient: string;
+};
+
+export const categories: Category[] = [
     {
       id: 1,
       slug: "musica-concerti",
@@ -75,7 +76,7 @@ import {
       id: 8,
       slug: "celebrazioni",
       name: "Celebrazioni",
-      icon: Trees,
+      icon: CelebrazioniIcon,
       gradient: "from-green-600 to-lime-600",
     },
     {

@@ -462,7 +462,13 @@ async function OrganizerDashboard({
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <LogoutButton />
+              <Link
+                href="/pubblica"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-5 py-3.5 font-bold text-white transition hover:bg-[#C96A1A]"
+              >
+                <CirclePlus aria-hidden="true" className="h-5 w-5" />
+                Pubblica un evento
+              </Link>
 
               <Link
                 href="/dashboard/profilo"
@@ -512,13 +518,7 @@ async function OrganizerDashboard({
                 Seguiti
               </Link>
 
-              <Link
-                href="/pubblica"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-5 py-3.5 font-bold text-white transition hover:bg-[#C96A1A]"
-              >
-                <CirclePlus aria-hidden="true" className="h-5 w-5" />
-                Pubblica un evento
-              </Link>
+              <LogoutButton />
             </div>
           </div>
         </section>

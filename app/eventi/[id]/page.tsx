@@ -50,6 +50,7 @@ type EventRow = {
   ticket_url: string | null;
   is_featured: boolean;
   organizer_id: string;
+  organizer_display_name: string | null;
 };
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -180,7 +181,7 @@ export default async function EventDetailPage({
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
+      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, organizer_display_name",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -230,9 +231,11 @@ export default async function EventDetailPage({
   }
 
   const organizer = (organizerData as Profile | null) ?? null;
-  const organizerName = organizer
+  const profileOrganizerName = organizer
     ? getOrganizerDisplayName(organizer)
     : "Organizzatore";
+  const organizerName =
+    event.organizer_display_name?.trim() || profileOrganizerName;
   const isFavorite = favoriteIds.has(event.id);
   const inCalendar = calendarIds.has(event.id);
   const isFollowing = followedIds.has(event.organizer_id);

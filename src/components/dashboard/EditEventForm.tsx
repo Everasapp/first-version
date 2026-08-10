@@ -46,10 +46,13 @@ export type EditableEvent = {
   is_free: boolean;
   price_from: number | string | null;
   ticket_url: string | null;
+  organizer_display_name: string | null;
 };
 
 type EditEventFormProps = {
   event: EditableEvent;
+  canAssignOrganizer: boolean;
+  accountOrganizerName: string;
 };
 
 function getStoragePath(imageUrl: string | null) {
@@ -88,7 +91,11 @@ function toTimeInputValue(iso: string) {
   return `${hours}:${minutes}`;
 }
 
-export default function EditEventForm({ event }: EditEventFormProps) {
+export default function EditEventForm({
+  event,
+  canAssignOrganizer,
+  accountOrganizerName,
+}: EditEventFormProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
@@ -118,6 +125,9 @@ export default function EditEventForm({ event }: EditEventFormProps) {
   );
   const [ticketUrl, setTicketUrl] = useState(event.ticket_url ?? "");
   const [description, setDescription] = useState(event.description ?? "");
+  const [organizer, setOrganizer] = useState(
+    event.organizer_display_name?.trim() || accountOrganizerName,
+  );
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState("");
@@ -197,6 +207,11 @@ export default function EditEventForm({ event }: EditEventFormProps) {
     if (description.trim().length < 30) {
       nextErrors.description =
         "Inserisci una descrizione di almeno 30 caratteri.";
+    }
+
+    if (canAssignOrganizer && !organizer.trim()) {
+      nextErrors.organizer =
+        "Indica almeno un organizzatore associato all'evento.";
     }
 
     setErrors(nextErrors);
@@ -307,6 +322,9 @@ export default function EditEventForm({ event }: EditEventFormProps) {
           price_from: numericPrice,
           price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
+          organizer_display_name: canAssignOrganizer
+            ? organizer.trim()
+            : accountOrganizerName,
         })
         .eq("id", event.id)
         .eq("organizer_id", user.id);
@@ -724,6 +742,46 @@ export default function EditEventForm({ event }: EditEventFormProps) {
             {errors.description && (
               <p className="mt-2 text-sm text-red-600">{errors.description}</p>
             )}
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-bold text-slate-900">
+              Organizzatore associato
+            </span>
+            <p className="mt-1 text-sm text-slate-500">
+              {canAssignOrganizer
+                ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
+                : "Con Free e Plus l’organizzatore è il tuo account. Passa a Pro per associarne altri."}
+            </p>
+            <input
+              type="text"
+              value={canAssignOrganizer ? organizer : accountOrganizerName}
+              onChange={(changeEvent) => {
+                if (!canAssignOrganizer) {
+                  return;
+                }
+                setOrganizer(changeEvent.target.value);
+                clearError("organizer");
+              }}
+              readOnly={!canAssignOrganizer}
+              placeholder="Es. Associazione Zoe, Comune di Alghero"
+              className={`${fieldClassName} ${
+                !canAssignOrganizer
+                  ? "cursor-not-allowed bg-slate-50 text-slate-600"
+                  : ""
+              } ${errors.organizer ? "border-red-400" : "border-slate-300"}`}
+            />
+            {errors.organizer && (
+              <p className="mt-2 text-sm text-red-600">{errors.organizer}</p>
+            )}
+            {!canAssignOrganizer ? (
+              <Link
+                href="/dashboard/piano"
+                className="mt-2 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
+              >
+                Scopri il piano Pro →
+              </Link>
+            ) : null}
           </label>
         </div>
 
