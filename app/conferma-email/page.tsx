@@ -86,7 +86,7 @@ function ConfermaEmailContent() {
       setErrorMessage(
         lastError.toLowerCase().includes("expired") ||
           lastError.toLowerCase().includes("invalid")
-          ? "Questo link è già stato usato o è scaduto. Registrati di nuovo con la stessa email oppure contattaci se il problema continua."
+          ? "Questo link non è più valido (già usato o scaduto). Se la registrazione risulta completata, non serve riprovare: vai su Accedi con email e password."
           : lastError,
       );
     });
@@ -160,9 +160,9 @@ function ConfermaEmailContent() {
       <div className="mt-8 border-t border-slate-200 pt-6">
         <Link
           href="/accedi"
-          className="text-sm font-semibold text-slate-600 hover:text-[#075EAE]"
+          className="inline-flex h-12 w-full items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-5 text-sm font-bold text-[#075EAE] transition hover:bg-[#075EAE] hover:text-white"
         >
-          Hai già confermato? Accedi
+          Vai ad Accedi
         </Link>
       </div>
     </div>
