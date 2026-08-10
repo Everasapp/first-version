@@ -39,7 +39,7 @@ export default function CategoriesPage() {
                 return (
                   <Link
                     key={category.id}
-                    href={`/categorie/${category.slug}`}
+                    href={`/eventi?category=${encodeURIComponent(category.slug)}`}
                     className={`group rounded-3xl bg-gradient-to-br ${category.gradient} p-7 text-white transition duration-300 hover:-translate-y-2 hover:shadow-2xl`}
                   >
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
