@@ -15,6 +15,7 @@ import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import BackButton from "@/src/components/ui/BackButton";
 import { getCurrentUserCalendarEventIds } from "@/src/lib/calendar";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import {
@@ -282,7 +283,9 @@ export default async function EventDetailPage({
       <Header />
 
       <main className="min-h-screen bg-white">
-        <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
+        <section className="mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-10">
+          <BackButton fallbackHref="/eventi" label="Indietro" className="mb-5" />
+
           <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
             <img
               src={event.image_url ?? "/images/event-placeholder.jpg"}

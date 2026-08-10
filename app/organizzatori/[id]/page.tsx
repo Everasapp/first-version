@@ -7,6 +7,7 @@ import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import BackButton from "@/src/components/ui/BackButton";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import {
   getCurrentUserFollowedOrganizerIds,
@@ -129,7 +130,10 @@ export default async function OrganizerPublicPage({
 
       <main className="min-h-screen bg-white">
         <section className="border-b border-slate-200 bg-slate-50">
-          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
+          <div className="mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-8">
+            <BackButton fallbackHref="/eventi" label="Indietro" />
+          </div>
+          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-8 sm:px-8 lg:flex-row lg:items-end lg:pb-12">
             <div className="flex items-start gap-4">
               <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white text-[#075EAE] shadow-sm">
                 <Building2 aria-hidden="true" className="h-6 w-6" />
