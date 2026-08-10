@@ -101,27 +101,6 @@ export function RegisterForm() {
         />
       </div>
 
-      <fieldset className="flex flex-col gap-2">
-        <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Tipo di account
-        </legend>
-        <label className="flex cursor-pointer items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-          <input
-            type="radio"
-            name="role"
-            value="utente"
-            required
-            defaultChecked
-            className="mt-0.5"
-          />
-          <span>Voglio scoprire eventi</span>
-        </label>
-        <label className="flex cursor-pointer items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-          <input type="radio" name="role" value="organizzatore" required className="mt-0.5" />
-          <span>Voglio pubblicare eventi</span>
-        </label>
-      </fieldset>
-
       <label className="flex cursor-pointer items-start gap-2 text-sm text-zinc-600 dark:text-zinc-400">
         <input type="checkbox" name="privacy" required className="mt-0.5" />
         <span>Accetto l&apos;informativa sulla privacy</span>

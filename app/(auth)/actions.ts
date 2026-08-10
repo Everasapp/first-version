@@ -4,8 +4,6 @@ import { createClient } from "@/src/lib/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-type PublicRole = "utente" | "organizzatore";
-
 export type AuthFormState = {
   error?: string;
   success?: string;
@@ -13,13 +11,6 @@ export type AuthFormState = {
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function parsePublicRole(value: string): PublicRole | null {
-  if (value === "utente" || value === "organizzatore") {
-    return value;
-  }
-  return null;
 }
 
 function mapAuthError(message: string): string {
@@ -89,7 +80,6 @@ export async function registerAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const passwordConfirm = String(formData.get("password_confirm") ?? "");
-  const role = parsePublicRole(String(formData.get("role") ?? ""));
   const privacyAccepted = formData.get("privacy") === "on";
 
   if (!fullName || !email || !password || !passwordConfirm) {
@@ -108,10 +98,6 @@ export async function registerAction(
     return { error: "Le password non coincidono." };
   }
 
-  if (!role) {
-    return { error: "Seleziona un tipo di account valido." };
-  }
-
   if (!privacyAccepted) {
     return {
       error: "Devi accettare l'informativa sulla privacy per registrarti.",
@@ -127,7 +113,6 @@ export async function registerAction(
     options: {
       data: {
         full_name: fullName,
-        role,
       },
       emailRedirectTo: `${origin}/auth/callback?next=/accedi`,
     },
