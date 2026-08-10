@@ -9,6 +9,7 @@ import {
   LocateFixed,
   MapPin,
   Search,
+  Sun,
 } from "lucide-react";
 
 import { categories } from "@/src/data/categories";
@@ -160,15 +161,18 @@ export default function EventSearchForm({
     : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3";
 
   const firstFieldClass = isHero
-    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2 sm:col-span-2 xl:col-span-2"
+    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2"
     : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3 lg:col-span-full";
 
   const inputClass =
     "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
 
   const formClass = isHero
-    ? "mt-10 grid max-w-6xl gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-2 xl:grid-cols-[1.2fr_1.2fr_1fr_1fr_1fr_auto] xl:items-end"
+    ? "mt-10 grid max-w-6xl gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-end"
     : "mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
+
+  const chipClass =
+    "flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 disabled:opacity-60";
 
   return (
     <>
@@ -197,7 +201,7 @@ export default function EventSearchForm({
           />
         </label>
 
-        <label className={isHero ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2" : fieldClass}>
+        <label className={fieldClass}>
           <span className={labelClass}>
             <MapPin
               aria-hidden="true"
@@ -300,16 +304,40 @@ export default function EventSearchForm({
       </form>
 
       {isHero ? (
-        <div className="mt-5 max-w-5xl">
-          <div className="flex flex-wrap gap-2">
+        <div className="mt-5 max-w-6xl">
+          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
             <button
               type="button"
               onClick={handleNearMe}
               disabled={isLocating}
-              className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 disabled:opacity-60"
+              className={chipClass}
             >
               <LocateFixed aria-hidden="true" className="h-4 w-4" />
               {isLocating ? "Rilevo posizione…" : "Vicino a me"}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/eventi?area=nord-sardegna")}
+              className={chipClass}
+            >
+              <Compass aria-hidden="true" className="h-4 w-4" />
+              Nord Sardegna
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/eventi?area=centro-sardegna")}
+              className={chipClass}
+            >
+              <MapPin aria-hidden="true" className="h-4 w-4" />
+              Centro Sardegna
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/eventi?area=sud-sardegna")}
+              className={chipClass}
+            >
+              <Sun aria-hidden="true" className="h-4 w-4" />
+              Sud Sardegna
             </button>
           </div>
 
