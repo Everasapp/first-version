@@ -1,28 +1,34 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import {
   Archive,
   BarChart3,
+  Building2,
   CalendarDays,
   CirclePlus,
   ExternalLink,
   FileText,
+  Heart,
   MapPin,
   Pencil,
   TicketCheck,
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
+import EventCard, {
+  type EventCardData,
+} from "@/src/components/home/EventCard";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
+import { requireProfile } from "@/src/lib/auth";
 import {
   getEventBucket,
   parseDashboardFilter,
   type DashboardEventStatus,
   type DashboardFilter,
 } from "@/src/lib/dashboardEvents";
-import { createClient } from "@/src/lib/supabase/server";
+import { getFavoriteEvents } from "@/src/lib/favorites";
+import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
   id: string;
@@ -138,27 +144,190 @@ function formatPrice(event: DashboardEvent) {
   }).format(price)}`;
 }
 
-export default async function DashboardPage({
+function formatFavoriteDate(startAt: string) {
+  return new Intl.DateTimeFormat("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Rome",
+  }).format(new Date(startAt));
+}
+
+function toFavoriteCards(
+  favorites: Awaited<ReturnType<typeof getFavoriteEvents>>,
+): EventCardData[] {
+  return favorites.map((event) => {
+    const numericPrice =
+      event.price_from === null ? undefined : Number(event.price_from);
+
+    return {
+      id: event.slug,
+      eventId: event.id,
+      title: event.title,
+      category: event.category,
+      date: formatFavoriteDate(event.start_at),
+      startDate: event.start_at,
+      endDate: event.end_at ?? undefined,
+      location: event.location_name || event.municipality,
+      imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
+      isFree: event.is_free,
+      priceFrom:
+        numericPrice !== undefined && Number.isFinite(numericPrice)
+          ? numericPrice
+          : undefined,
+      isFavorite: true,
+    };
+  });
+}
+
+function UserDashboard({
+  profile,
+  favoriteCards,
+}: {
+  profile: Profile;
+  favoriteCards: EventCardData[];
+}) {
+  const firstName =
+    profile.full_name?.trim().split(/\s+/)[0] || "benvenuto/a";
+
+  return (
+    <>
+      <Header />
+
+      <main className="min-h-screen bg-slate-50">
+        <section className="border-b border-slate-200 bg-white">
+          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
+                Area personale
+              </p>
+              <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+                Ciao, {firstName}
+              </h1>
+              <p className="mt-3 max-w-2xl text-lg text-slate-600">
+                Da qui gestisci i preferiti e il tuo account Everas. Se vuoi
+                pubblicare eventi, attiva il profilo organizzatore: resta lo
+                stesso account.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <LogoutButton />
+              <Link
+                href="/dashboard/preferiti"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <Heart aria-hidden="true" className="h-5 w-5" />
+                Preferiti
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+            <article className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-50 text-[#E67E22]">
+                  <Building2 aria-hidden="true" className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Vuoi pubblicare un evento?
+                  </h2>
+                  <p className="mt-2 text-slate-600">
+                    Diventa organizzatore in un minuto: inserisci il nome
+                    dell’attività e, se ce l’hai, la partita IVA. Poi puoi
+                    creare, modificare e monitorare i tuoi eventi.
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/diventa-organizzatore?next=/pubblica"
+                className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
+              >
+                <Building2 aria-hidden="true" className="h-5 w-5" />
+                Diventa organizzatore
+              </Link>
+            </article>
+
+            <article className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <Heart
+                aria-hidden="true"
+                className="h-6 w-6 text-[#E67E22]"
+              />
+              <h2 className="mt-4 text-xl font-bold text-slate-900">
+                Preferiti
+              </h2>
+              <p className="mt-2 text-slate-600">
+                {favoriteCards.length === 0
+                  ? "Non hai ancora salvato eventi. Tocca il cuore sulle card per iniziare."
+                  : `Hai salvato ${favoriteCards.length} event${
+                      favoriteCards.length === 1 ? "o" : "i"
+                    }.`}
+              </p>
+              <Link
+                href={
+                  favoriteCards.length > 0 ? "/dashboard/preferiti" : "/eventi"
+                }
+                className="mt-6 inline-flex font-bold text-[#075EAE] hover:underline"
+              >
+                {favoriteCards.length > 0
+                  ? "Vedi tutti i preferiti"
+                  : "Esplora eventi"}
+              </Link>
+            </article>
+          </div>
+
+          {favoriteCards.length > 0 ? (
+            <div className="mt-10">
+              <div className="flex items-end justify-between gap-4">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Salvati di recente
+                </h2>
+                <Link
+                  href="/dashboard/preferiti"
+                  className="text-sm font-bold text-[#075EAE] hover:underline"
+                >
+                  Vedi tutti
+                </Link>
+              </div>
+              <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {favoriteCards.slice(0, 3).map((event) => (
+                  <EventCard key={event.eventId} event={event} />
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      </main>
+    </>
+  );
+}
+
+async function OrganizerDashboard({
+  profile,
   searchParams,
-}: DashboardPageProps) {
-  const supabase = await createClient();
+  supabase,
+  userId,
+}: {
+  profile: Profile;
+  searchParams: DashboardPageProps["searchParams"];
+  supabase: Awaited<ReturnType<typeof requireProfile>>["supabase"];
+  userId: string;
+}) {
   const params = await searchParams;
   const activeFilter = parseDashboardFilter(params.filtro);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/accedi?redirect=/dashboard");
-  }
 
   const { data, error } = await supabase
     .from("events")
     .select(
       "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count",
     )
-    .eq("organizer_id", user.id)
+    .eq("organizer_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -183,6 +352,8 @@ export default async function DashboardPage({
   );
 
   const empty = emptyCopy[activeFilter];
+  const organizerLabel =
+    profile.business_name?.trim() || profile.full_name?.trim() || "Organizzatore";
 
   return (
     <>
@@ -201,13 +372,21 @@ export default async function DashboardPage({
               </h1>
 
               <p className="mt-3 max-w-2xl text-lg text-slate-600">
-                Controlla pubblicati, bozze e scaduti, poi modifica, elimina,
-                duplica o consulta le statistiche.
+                {organizerLabel}: controlla pubblicati, bozze e scaduti, poi
+                modifica, elimina, duplica o consulta le statistiche.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <LogoutButton />
+
+              <Link
+                href="/dashboard/preferiti"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <Heart aria-hidden="true" className="h-5 w-5" />
+                Preferiti
+              </Link>
 
               <Link
                 href="/pubblica"
@@ -404,5 +583,27 @@ export default async function DashboardPage({
         </section>
       </main>
     </>
+  );
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: DashboardPageProps) {
+  const { supabase, user, profile } = await requireProfile("/dashboard");
+  const favoriteCards = toFavoriteCards(await getFavoriteEvents(user.id));
+
+  if (!isOrganizer(profile)) {
+    return (
+      <UserDashboard profile={profile} favoriteCards={favoriteCards} />
+    );
+  }
+
+  return (
+    <OrganizerDashboard
+      profile={profile}
+      searchParams={searchParams}
+      supabase={supabase}
+      userId={user.id}
+    />
   );
 }

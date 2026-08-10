@@ -92,7 +92,8 @@ export default function RegistratiPage() {
             </Link>
             <h1 className="mt-7 text-3xl font-bold text-slate-900">Crea il tuo account</h1>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Registrati per pubblicare e gestire i tuoi eventi in Sardegna.
+              Registrati come utente. Se un giorno vorrai pubblicare eventi,
+              potrai diventare organizzatore con lo stesso account.
             </p>
           </div>
 

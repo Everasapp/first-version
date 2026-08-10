@@ -3,9 +3,10 @@ import EventSearchForm from "@/src/components/home/EventSearchForm";
 import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
-import { createClient } from "@/src/lib/supabase/server";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { createClient } from "@/src/lib/supabase/server";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 
 type EventsPageProps = {
@@ -117,6 +118,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
 
   return {
     id: event.slug || event.id,
+    eventId: event.id,
     title: event.title,
     category: event.category || "Evento",
     date: formatEventDate(event.start_at),
@@ -164,10 +166,11 @@ export default async function EventsPage({
 
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("events")
-    .select(
-      `
+  const [{ data, error }, favoriteIds] = await Promise.all([
+    supabase
+      .from("events")
+      .select(
+        `
         id,
         title,
         description,
@@ -186,9 +189,11 @@ export default async function EventsPage({
         status,
         is_featured
       `,
-    )
-    .eq("status", "published")
-    .order("start_at", { ascending: true });
+      )
+      .eq("status", "published")
+      .order("start_at", { ascending: true }),
+    getCurrentUserFavoriteIds(),
+  ]);
 
   const databaseEvents = (data ?? []) as DatabaseEvent[];
 
@@ -234,7 +239,10 @@ export default async function EventsPage({
         matchesText
       );
     })
-    .map(mapDatabaseEvent);
+    .map((event) => ({
+      ...mapDatabaseEvent(event),
+      isFavorite: favoriteIds.has(event.id),
+    }));
 
   return (
     <>

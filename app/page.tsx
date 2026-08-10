@@ -6,6 +6,7 @@ import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventRow = {
@@ -70,6 +71,7 @@ function mapEvent(event: EventRow): EventCardData {
 
   return {
     id: event.slug,
+    eventId: event.id,
     title: event.title,
     category: categoryName,
     date: formatEventDate(event.start_at),
@@ -90,13 +92,16 @@ function mapEvent(event: EventRow): EventCardData {
 export default async function Home() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("events")
-    .select(
-      "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
-    )
-    .eq("status", "published")
-    .order("start_at", { ascending: true });
+  const [{ data, error }, favoriteIds] = await Promise.all([
+    supabase
+      .from("events")
+      .select(
+        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+      )
+      .eq("status", "published")
+      .order("start_at", { ascending: true }),
+    getCurrentUserFavoriteIds(),
+  ]);
 
   if (error) {
     console.error("Errore nel caricamento della homepage:", error);
@@ -111,7 +116,10 @@ export default async function Home() {
 
       return eventEnd >= now;
     })
-    .map(mapEvent);
+    .map((event) => ({
+      ...mapEvent(event),
+      isFavorite: favoriteIds.has(event.id),
+    }));
 
   return (
     <>

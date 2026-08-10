@@ -4,14 +4,15 @@ import { notFound } from "next/navigation";
 import {
   CalendarDays,
   ExternalLink,
-  Heart,
   MapPin,
-  Share2,
   Ticket,
 } from "lucide-react";
 
+import FavoriteButton from "@/src/components/events/FavoriteButton";
+import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventDetailPageProps = {
@@ -84,12 +85,13 @@ function formatEventDate(startAt: string, endAt: string | null) {
   return `${date} · ${startTime} – ${formattedEnd}`;
 }
 
-function mapEventForCard(event: EventRow) {
+function mapEventForCard(event: EventRow, isFavorite = false) {
   const numericPrice =
     event.price_from === null ? undefined : Number(event.price_from);
 
   return {
     id: event.slug,
+    eventId: event.id,
     title: event.title,
     category: event.category,
     area: event.province ?? "Sardegna",
@@ -102,8 +104,9 @@ function mapEventForCard(event: EventRow) {
     priceFrom:
       numericPrice !== undefined && Number.isFinite(numericPrice)
         ? numericPrice
-      : undefined,
+        : undefined,
     isFeatured: event.is_featured,
+    isFavorite,
   };
 }
 
@@ -187,23 +190,29 @@ export default async function EventDetailPage({
 
   await supabase.rpc("increment_event_views", { event_id: event.id });
 
-  const { data: similarData, error: similarError } = await supabase
-    .from("events")
-    .select(
-      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured",
-    )
-    .eq("status", "published")
-    .eq("category", event.category)
-    .neq("id", event.id)
-    .order("start_at", { ascending: true })
-    .limit(3);
+  const [{ data: similarData, error: similarError }, favoriteIds] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select(
+          "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured",
+        )
+        .eq("status", "published")
+        .eq("category", event.category)
+        .neq("id", event.id)
+        .order("start_at", { ascending: true })
+        .limit(3),
+      getCurrentUserFavoriteIds(),
+    ]);
 
   if (similarError) {
     console.error("Impossibile caricare gli eventi simili:", similarError);
   }
 
-  const similarEvents = ((similarData ?? []) as EventRow[]).map(
-    mapEventForCard,
+  const isFavorite = favoriteIds.has(event.id);
+
+  const similarEvents = ((similarData ?? []) as EventRow[]).map((item) =>
+    mapEventForCard(item, favoriteIds.has(item.id)),
   );
 
   const numericPrice =
@@ -266,22 +275,20 @@ export default async function EventDetailPage({
                 </h1>
               </div>
 
-              <div className="hidden gap-3 sm:flex">
-                <button
-                  type="button"
-                  aria-label="Salva evento"
-                  className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-800 shadow-lg transition hover:text-[#E67E22]"
-                >
-                  <Heart aria-hidden="true" className="h-5 w-5" />
-                </button>
-
-                <button
-                  type="button"
-                  aria-label="Condividi evento"
-                  className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-800 shadow-lg transition hover:text-[#075EAE]"
-                >
-                  <Share2 aria-hidden="true" className="h-5 w-5" />
-                </button>
+              <div className="flex shrink-0 gap-3">
+                <FavoriteButton
+                  eventId={event.id}
+                  eventTitle={event.title}
+                  initialIsFavorite={isFavorite}
+                  size="md"
+                  className="shadow-lg"
+                />
+                <ShareEventButton
+                  title={event.title}
+                  slug={event.slug}
+                  size="md"
+                  className="shadow-lg"
+                />
               </div>
             </div>
           </div>

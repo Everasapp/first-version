@@ -3,6 +3,7 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 export const mockEvents: EventCardData[] = [
   {
     id: "jazz-alghero",
+    eventId: "mock-jazz-alghero",
     title: "Jazz al Tramonto",
     category: "Musica e concerti",
     date: "6 agosto 2026 · 20:30",
@@ -20,6 +21,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "stintino-party",
+    eventId: "mock-stintino-party",
     title: "Beach Party La Pelosa",
     category: "Musica e concerti",
     date: "7 agosto 2026 · 18:00",
@@ -37,6 +39,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "castelsardo",
+    eventId: "mock-castelsardo",
     title: "Mercatino Medievale",
     category: "Fiere e mercatini",
     date: "8 agosto 2026 · 17:00",
@@ -51,6 +54,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "dorgali",
+    eventId: "mock-dorgali",
     title: "Trekking nel Supramonte",
     category: "Esperienze",
     date: "9 agosto 2026 · 09:00",
@@ -66,6 +70,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "orgosolo",
+    eventId: "mock-orgosolo",
     title: "Murales e Tradizioni",
     category: "Arte e cultura",
     date: "10 agosto 2026 · 10:00",
@@ -80,6 +85,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "poetto",
+    eventId: "mock-poetto",
     title: "Cinema sulla Spiaggia",
     category: "Spettacoli",
     date: "6 agosto 2026 · 21:00",
@@ -96,6 +102,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "chia",
+    eventId: "mock-chia",
     title: "Festival del Mare",
     category: "Sagre e tradizioni",
     date: "8 agosto 2026 · 19:00",
@@ -111,6 +118,7 @@ export const mockEvents: EventCardData[] = [
   },
   {
     id: "villasimius",
+    eventId: "mock-villasimius",
     title: "Yoga all'Alba",
     category: "Benessere",
     date: "9 agosto 2026 · 06:30",

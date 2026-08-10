@@ -1,15 +1,19 @@
 import Link from "next/link";
 import {
   CalendarDays,
-  Heart,
   MapPin,
   Radio,
-  Share2,
   Star,
 } from "lucide-react";
 
+import FavoriteButton from "@/src/components/events/FavoriteButton";
+import ShareEventButton from "@/src/components/events/ShareEventButton";
+
 export type EventCardData = {
+  /** Slug used in `/eventi/[slug]` links */
   id: string;
+  /** Database UUID used for favorites */
+  eventId: string;
   title: string;
   category: string;
 
@@ -28,6 +32,7 @@ export type EventCardData = {
   isFeatured?: boolean;
   happeningNow?: boolean;
   statusLabel?: string;
+  isFavorite?: boolean;
 };
 
 type EventCardProps = {
@@ -54,7 +59,7 @@ export default function EventCard({ event }: EventCardProps) {
             <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-70" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                <span className="relative flex h-2 w-2 rounded-full bg-white" />
               </span>
 
               <Radio aria-hidden="true" className="h-3.5 w-3.5" />
@@ -81,21 +86,12 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         <div className="absolute right-4 top-4 flex gap-2">
-          <button
-            type="button"
-            aria-label={`Salva ${event.title} nei preferiti`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#E67E22]"
-          >
-            <Heart aria-hidden="true" className="h-5 w-5" />
-          </button>
-
-          <button
-            type="button"
-            aria-label={`Condividi ${event.title}`}
-            className="grid h-10 w-10 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-[#075EAE]"
-          >
-            <Share2 aria-hidden="true" className="h-5 w-5" />
-          </button>
+          <FavoriteButton
+            eventId={event.eventId}
+            eventTitle={event.title}
+            initialIsFavorite={Boolean(event.isFavorite)}
+          />
+          <ShareEventButton title={event.title} slug={event.id} />
         </div>
       </div>
 
