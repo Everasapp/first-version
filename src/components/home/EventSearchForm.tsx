@@ -153,22 +153,24 @@ export default function EventSearchForm({
     );
   }
 
-  const labelClass =
-    "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900";
+  const labelClass = isHero
+    ? "flex items-center gap-2 whitespace-nowrap text-sm font-bold text-slate-900"
+    : "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900";
 
   const fieldClass = isHero
-    ? "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-2 md:border-l md:border-t-0"
+    ? "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-3.5 md:border-l md:border-t-0 md:px-5"
     : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3";
 
   const firstFieldClass = isHero
-    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-2"
+    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-3.5 md:px-5"
     : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3 lg:col-span-full";
 
-  const inputClass =
-    "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
+  const inputClass = isHero
+    ? "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400"
+    : "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
 
   const formClass = isHero
-    ? "mt-10 grid max-w-6xl gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-end"
+    ? "mt-10 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
     : "mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
 
   const chipClass =
@@ -186,7 +188,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Search
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
             />
             {isHero ? "Cerca per testo" : "Testo"}
           </span>
@@ -205,7 +207,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <MapPin
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
             />
             Area
           </span>
@@ -226,7 +228,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Building2
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
             />
             Città
           </span>
@@ -249,7 +251,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Compass
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
             />
             Categoria
           </span>
@@ -271,7 +273,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <CalendarDays
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
             />
             Quando?
           </span>
@@ -294,17 +296,17 @@ export default function EventSearchForm({
           type="submit"
           className={
             isHero
-              ? "flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-7 py-4 font-bold text-white transition hover:bg-[#C96A1A]"
+              ? "flex min-h-[4.5rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-8 py-5 text-lg font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
               : "flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-7 py-4 font-bold text-white transition hover:bg-[#C96A1A] sm:col-span-2 lg:col-span-1 xl:min-h-0"
           }
         >
-          <Search aria-hidden="true" className="h-5 w-5" />
+          <Search aria-hidden="true" className={isHero ? "h-6 w-6" : "h-5 w-5"} />
           Cerca
         </button>
       </form>
 
       {isHero ? (
-        <div className="mt-5 max-w-6xl">
+        <div className="mt-5 max-w-7xl">
           <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
             <button
               type="button"

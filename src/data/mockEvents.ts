@@ -56,7 +56,7 @@ export const mockEvents: EventCardData[] = [
     id: "dorgali",
     eventId: "mock-dorgali",
     title: "Trekking nel Supramonte",
-    category: "Esperienze",
+    category: "Celebrazioni",
     date: "9 agosto 2026 · 09:00",
     startDate: "2026-08-09T09:00:00",
     endDate: "2026-08-09T15:00:00",

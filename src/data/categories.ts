@@ -73,8 +73,8 @@ import {
     },
     {
       id: 8,
-      slug: "esperienze",
-      name: "Esperienze",
+      slug: "celebrazioni",
+      name: "Celebrazioni",
       icon: Trees,
       gradient: "from-green-600 to-lime-600",
     },
