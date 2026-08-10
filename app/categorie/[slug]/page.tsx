@@ -18,5 +18,5 @@ export default async function CategorySlugPage({
     notFound();
   }
 
-  redirect(`/eventi?category=${encodeURIComponent(category.slug)}`);
+  redirect(`/categorie?category=${encodeURIComponent(category.slug)}`);
 }
