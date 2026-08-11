@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import ExportEmailsPanel from "@/src/components/admin/ExportEmailsPanel";
 import { requireAdmin } from "@/src/lib/auth";
+import { collectOrganizerEmails } from "@/src/lib/admin/export-emails";
 import type { OrganizerDirectoryRow } from "@/src/lib/admin/organizer-directory";
 
 export const dynamic = "force-dynamic";
@@ -35,6 +37,10 @@ export default async function AdminOrganizzatoriPage() {
   }
 
   const organizers = (data || []) as OrganizerDirectoryRow[];
+  const emailsWithoutPec = collectOrganizerEmails(organizers, {
+    includePec: false,
+  });
+  const emailsWithPec = collectOrganizerEmails(organizers, { includePec: true });
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
@@ -54,6 +60,13 @@ export default async function AdminOrganizzatoriPage() {
         >
           Nuova ricerca
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <ExportEmailsPanel
+          emailsWithoutPec={emailsWithoutPec}
+          emailsWithPec={emailsWithPec}
+        />
       </div>
 
       {organizers.length === 0 ? (
