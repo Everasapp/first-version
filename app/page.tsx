@@ -181,9 +181,9 @@ export default async function Home() {
       <Header />
 
       <main>
-        <Hero />
-
         <HappeningToday events={todayEvents} />
+
+        <Hero />
 
         <FeaturedEvents events={events} />
 
