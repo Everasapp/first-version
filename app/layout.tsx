@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og.jpg?v=20260811b",
+        url: "/og.jpg?v=20260811c",
         width: 1200,
         height: 630,
         alt: "EVERAS — Eventi in Sardegna",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title: "Eventi in Sardegna | EVERAS",
     description:
       "Scopri concerti, sagre, festival e appuntamenti in tutta la Sardegna.",
-    images: ["/og.jpg?v=20260811b"],
+    images: ["/og.jpg?v=20260811c"],
   },
 };
 
