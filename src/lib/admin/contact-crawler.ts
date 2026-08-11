@@ -12,9 +12,9 @@ const MAX_PAGES = 20;
 const GLOBAL_TIMEOUT_MS = 45_000;
 const PAGE_TIMEOUT_MS = 15_000;
 
-/** Browser-like UA: many municipal sites block custom crawler names. */
+/** Plain browser UA: some municipal hosts (e.g. Stintino) return 403 on *Bot* UAs. */
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; EverasContactBot/1.1; +https://everas.it) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 
 const LINK_KEYWORDS = [
   "contatti",
@@ -165,10 +165,15 @@ function isLikelyPhone(phone: string) {
 }
 
 function cleanEmail(raw: string) {
-  return raw.toLowerCase().replace(/[),.;:]+$/, "");
+  return raw.toLowerCase().replace(/[),.;:>\]]+$/g, "");
+}
+
+function isValidEmail(email: string) {
+  return /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$/i.test(email);
 }
 
 function isLikelyJunkEmail(email: string) {
+  if (!isValidEmail(email)) return true;
   return (
     email.endsWith(".png") ||
     email.endsWith(".jpg") ||
