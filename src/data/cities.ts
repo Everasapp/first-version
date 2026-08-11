@@ -16,6 +16,7 @@ export type City = {
     { id: 4, city: "Castelsardo", province: "SS", area: "Nord Sardegna" },
     { id: 5, city: "La Maddalena", province: "SS", area: "Nord Sardegna" },
     { id: 6, city: "Olbia", province: "SS", area: "Nord Sardegna" },
+    { id: 32, city: "Osilo", province: "SS", area: "Nord Sardegna" },
     { id: 7, city: "Palau", province: "SS", area: "Nord Sardegna" },
     { id: 8, city: "Porto Torres", province: "SS", area: "Nord Sardegna" },
     { id: 9, city: "San Teodoro", province: "SS", area: "Nord Sardegna" },
