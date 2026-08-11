@@ -7,8 +7,9 @@ const legalLinks = [
   { href: "/termini", label: "Termini di utilizzo" },
 ] as const;
 
-/** Update when the official Facebook page URL is ready. */
-const FACEBOOK_URL = "https://www.facebook.com/";
+/** Official Facebook page: Everas - Eventi Sardegna */
+const FACEBOOK_URL =
+  "https://www.facebook.com/profile.php?id=61575344263784";
 
 const socialLinkClassName =
   "inline-flex text-[#E67E22] transition hover:text-[#C96A1A]";
