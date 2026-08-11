@@ -111,7 +111,7 @@ export default function RegistratiPage() {
                 src="/images/everas-logo-v2.png"
                 alt="EVERAS"
                 width={144}
-                height={45}
+                height={53}
                 priority
                 className="h-auto w-[144px]"
               />

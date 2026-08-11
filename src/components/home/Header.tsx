@@ -34,10 +34,11 @@ export default function Header() {
           <Image
             src="/images/everas-logo-v2.png"
             alt="EVERAS"
-            width={144}
-            height={28}
+            width={180}
+            height={66}
             priority
-            className="h-7 w-auto"
+            unoptimized
+            className="h-12 w-auto sm:h-14"
           />
         </Link>
 
@@ -70,7 +71,7 @@ export default function Header() {
 
           <Link
             href={isAuthenticated ? "/dashboard" : "/accedi"}
-            className="inline-flex h-11 min-w-[5.75rem] touch-manipulation items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-3 text-sm font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white [@media(hover:hover)]:hover:shadow-md active:bg-[#075EAE] active:text-white sm:min-w-0 sm:px-5"
+            className="inline-flex h-11 touch-manipulation items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-3 text-sm font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white [@media(hover:hover)]:hover:shadow-md active:bg-[#075EAE] active:text-white sm:px-5"
           >
             {isAuthenticated ? "Dashboard" : "Accedi"}
           </Link>

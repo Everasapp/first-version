@@ -60,9 +60,9 @@ export default function Footer() {
           <Image
             src="/images/everas-logo-v2.png"
             alt="EVERAS"
-            width={96}
-            height={19}
-            className="h-auto w-24"
+            width={120}
+            height={44}
+            className="h-auto w-28"
           />
         </Link>
 
