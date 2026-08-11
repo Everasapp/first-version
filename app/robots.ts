@@ -17,6 +17,5 @@ export default function robots(): MetadataRoute.Robots {
       ],
     },
     sitemap: "https://www.everas.it/sitemap.xml",
-    host: "https://www.everas.it",
   };
 }
