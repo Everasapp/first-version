@@ -7,6 +7,12 @@ const legalLinks = [
   { href: "/termini", label: "Termini di utilizzo" },
 ] as const;
 
+/** Update when the official Facebook page URL is ready. */
+const FACEBOOK_URL = "https://www.facebook.com/";
+
+const socialLinkClassName =
+  "inline-flex text-[#E67E22] transition hover:text-[#C96A1A]";
+
 function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -26,11 +32,28 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-white">
+    <footer className="mt-auto border-t border-[#c5d8ec] bg-[#e8f1fa]">
       <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
         <Link href="/" className="inline-flex items-center">
           <Image
@@ -43,32 +66,42 @@ export default function Footer() {
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-          <p className="max-w-md text-base text-slate-600">
+          <p className="max-w-md text-base text-slate-700">
             Scopri gli eventi più belli della Sardegna.
           </p>
 
-          <div className="flex shrink-0 items-center gap-5 self-start sm:self-auto">
-            <Link
-              href="/contatti"
-              className="text-sm font-semibold text-slate-800 transition hover:text-[#075EAE]"
-            >
-              Contattaci
-            </Link>
-
+          <div className="flex shrink-0 items-center gap-4 self-start sm:self-auto">
             <a
               href="https://www.instagram.com/everas.app/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="EVERAS su Instagram"
-              className="inline-flex text-slate-800 transition hover:text-[#075EAE]"
+              className={socialLinkClassName}
             >
               <InstagramIcon className="h-5 w-5" />
             </a>
+
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="EVERAS su Facebook"
+              className={socialLinkClassName}
+            >
+              <FacebookIcon className="h-5 w-5" />
+            </a>
+
+            <Link
+              href="/contatti"
+              className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
+            >
+              Contattaci
+            </Link>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <p className="text-sm text-slate-500">
+        <div className="mt-10 flex flex-col gap-4 border-t border-[#c5d8ec] pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <p className="text-sm text-slate-600">
             © {year} EVERAS. Tutti i diritti riservati.
           </p>
 
@@ -80,7 +113,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-slate-700 transition hover:text-[#075EAE]"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
               >
                 {link.label}
               </Link>
