@@ -6,18 +6,11 @@ import { Check, Copy, Download } from "lucide-react";
 import { chunkEmails } from "@/src/lib/admin/export-emails";
 
 type Props = {
-  emailsWithoutPec: string[];
-  emailsWithPec: string[];
+  emails: string[];
 };
 
-export default function ExportEmailsPanel({
-  emailsWithoutPec,
-  emailsWithPec,
-}: Props) {
-  const [includePec, setIncludePec] = useState(false);
+export default function ExportEmailsPanel({ emails }: Props) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  const emails = includePec ? emailsWithPec : emailsWithoutPec;
   const batches = useMemo(() => chunkEmails(emails, 30), [emails]);
 
   async function copyText(key: string, text: string) {
@@ -43,10 +36,11 @@ export default function ExportEmailsPanel({
     URL.revokeObjectURL(url);
   }
 
-  if (emailsWithoutPec.length === 0 && emailsWithPec.length === 0) {
+  if (emails.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm text-slate-600">
-        Nessuna email da esportare. Salva prima degli organizzatori con contatti.
+        Nessuna email da esportare (PEC e protocollo sono escluse). Salva prima
+        degli organizzatori con contatti.
       </div>
     );
   }
@@ -59,8 +53,8 @@ export default function ExportEmailsPanel({
             Esporta email (blocchi da 30)
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            Email uniche dai profili salvati. Copia un blocco alla volta per
-            BCC/invii massivi.
+            Solo email ordinarie: escluse PEC e indirizzi protocollo. Copia un
+            blocco alla volta per BCC/invii massivi.
           </p>
           <p className="mt-2 text-sm font-semibold text-slate-800">
             Totale: {emails.length} email · {batches.length} blocchi
@@ -68,14 +62,6 @@ export default function ExportEmailsPanel({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <label className="inline-flex items-center gap-2 text-sm text-slate-700">
-            <input
-              type="checkbox"
-              checked={includePec}
-              onChange={(e) => setIncludePec(e.target.checked)}
-            />
-            Includi PEC
-          </label>
           <button
             type="button"
             onClick={downloadTxt}
@@ -119,7 +105,10 @@ export default function ExportEmailsPanel({
                 >
                   {copiedKey === key ? (
                     <>
-                      <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                      <Check
+                        className="h-4 w-4 text-emerald-600"
+                        aria-hidden="true"
+                      />
                       Copiato
                     </>
                   ) : (

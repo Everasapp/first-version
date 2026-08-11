@@ -6,6 +6,15 @@ export function splitEmailField(value: string | null | undefined): string[] {
     .filter((part) => part.includes("@") && !part.includes(" "));
 }
 
+/** Email utili per outreach: no PEC, no protocollo. */
+export function isOutreachEmail(email: string) {
+  const value = email.trim().toLowerCase();
+  if (!value.includes("@")) return false;
+  if (value.includes("pec")) return false;
+  if (value.includes("protocollo")) return false;
+  return true;
+}
+
 export function collectOrganizerEmails(
   rows: Array<{
     email?: string | null;
@@ -14,18 +23,22 @@ export function collectOrganizerEmails(
     email_turismo?: string | null;
     email_eventi?: string | null;
   }>,
-  options?: { includePec?: boolean },
 ): string[] {
-  const includePec = options?.includePec ?? false;
   const set = new Set<string>();
 
   for (const row of rows) {
-    for (const email of splitEmailField(row.email)) set.add(email);
-    for (const email of splitEmailField(row.email_cultura)) set.add(email);
-    for (const email of splitEmailField(row.email_turismo)) set.add(email);
-    for (const email of splitEmailField(row.email_eventi)) set.add(email);
-    if (includePec) {
-      for (const email of splitEmailField(row.pec)) set.add(email);
+    // Never include the dedicated PEC column.
+    for (const email of splitEmailField(row.email)) {
+      if (isOutreachEmail(email)) set.add(email);
+    }
+    for (const email of splitEmailField(row.email_cultura)) {
+      if (isOutreachEmail(email)) set.add(email);
+    }
+    for (const email of splitEmailField(row.email_turismo)) {
+      if (isOutreachEmail(email)) set.add(email);
+    }
+    for (const email of splitEmailField(row.email_eventi)) {
+      if (isOutreachEmail(email)) set.add(email);
     }
   }
 

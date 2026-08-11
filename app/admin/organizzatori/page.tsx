@@ -37,10 +37,7 @@ export default async function AdminOrganizzatoriPage() {
   }
 
   const organizers = (data || []) as OrganizerDirectoryRow[];
-  const emailsWithoutPec = collectOrganizerEmails(organizers, {
-    includePec: false,
-  });
-  const emailsWithPec = collectOrganizerEmails(organizers, { includePec: true });
+  const exportEmails = collectOrganizerEmails(organizers);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
@@ -63,10 +60,7 @@ export default async function AdminOrganizzatoriPage() {
       </div>
 
       <div className="mt-8">
-        <ExportEmailsPanel
-          emailsWithoutPec={emailsWithoutPec}
-          emailsWithPec={emailsWithPec}
-        />
+        <ExportEmailsPanel emails={exportEmails} />
       </div>
 
       {organizers.length === 0 ? (
