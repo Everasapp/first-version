@@ -35,12 +35,22 @@ export const metadata: Metadata = {
     siteName: "EVERAS",
     locale: "it_IT",
     type: "website",
+    images: [
+      {
+        url: "/og.jpg?v=20260811",
+        width: 1200,
+        height: 630,
+        alt: "EVERAS — Eventi in Sardegna",
+        type: "image/jpeg",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Eventi in Sardegna | EVERAS",
     description:
       "Scopri concerti, sagre, festival e appuntamenti in tutta la Sardegna.",
+    images: ["/og.jpg?v=20260811"],
   },
 };
 
