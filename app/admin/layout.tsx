@@ -29,6 +29,12 @@ export default async function AdminLayout({
               Ricerca contatti
             </Link>
             <Link
+              href="/admin/organizzatori"
+              className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
+            >
+              Organizzatori salvati
+            </Link>
+            <Link
               href="/dashboard"
               className="rounded-xl px-3 py-2 text-slate-600 transition hover:bg-slate-100"
             >

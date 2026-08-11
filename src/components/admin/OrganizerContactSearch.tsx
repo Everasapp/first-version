@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Loader2, Trash2 } from "lucide-react";
 
@@ -30,6 +31,7 @@ export default function OrganizerContactSearch() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const [meta, setMeta] = useState<{
     pagesVisited: number;
     pagesAnalyzed: string[];
@@ -42,6 +44,7 @@ export default function OrganizerContactSearch() {
     setLoading(true);
     setError(null);
     setSuccess(null);
+    setSavedId(null);
     setItems(null);
     setMeta(null);
 
@@ -82,6 +85,7 @@ export default function OrganizerContactSearch() {
     setSaving(true);
     setError(null);
     setSuccess(null);
+    setSavedId(null);
 
     try {
       const response = await fetch("/api/admin/organizer-contacts/save", {
@@ -100,6 +104,9 @@ export default function OrganizerContactSearch() {
         data.message ||
           `Salvato: ${data.organizer?.name} (${data.organizer?.claim_status})`,
       );
+      if (data.organizer?.id) {
+        setSavedId(data.organizer.id);
+      }
     } catch {
       setError("Errore di rete durante il salvataggio");
     } finally {
@@ -109,7 +116,9 @@ export default function OrganizerContactSearch() {
 
   function updateItem(id: string, patch: Partial<FoundContactItem>) {
     setItems((prev) =>
-      prev ? prev.map((item) => (item.id === id ? { ...item, ...patch } : item)) : prev,
+      prev
+        ? prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+        : prev,
     );
   }
 
@@ -176,9 +185,25 @@ export default function OrganizerContactSearch() {
       ) : null}
 
       {success ? (
-        <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </p>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <p>{success}</p>
+          <div className="mt-2 flex flex-wrap gap-3 font-semibold">
+            {savedId ? (
+              <Link
+                href={`/admin/organizzatori/${savedId}`}
+                className="underline underline-offset-2"
+              >
+                Apri dettaglio
+              </Link>
+            ) : null}
+            <Link
+              href="/admin/organizzatori"
+              className="underline underline-offset-2"
+            >
+              Vedi tutti gli organizzatori salvati
+            </Link>
+          </div>
+        </div>
       ) : null}
 
       {meta ? (
@@ -208,7 +233,10 @@ export default function OrganizerContactSearch() {
               {items.map((item) => {
                 const notFound = item.value === "Non trovato";
                 return (
-                  <tr key={item.id} className="border-b border-slate-100 align-top">
+                  <tr
+                    key={item.id}
+                    className="border-b border-slate-100 align-top"
+                  >
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"

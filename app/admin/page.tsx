@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Building2, Search } from "lucide-react";
 
 export default function AdminHomePage() {
   return (
@@ -11,10 +11,10 @@ export default function AdminHomePage() {
         Strumenti riservati agli amministratori Everas.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <Link
           href="/admin/ricerca-contatti"
-          className="flex max-w-md items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
+          className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
         >
           <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#075EAE]/10 text-[#075EAE]">
             <Search className="h-5 w-5" aria-hidden="true" />
@@ -26,6 +26,24 @@ export default function AdminHomePage() {
             <span className="mt-1 block text-sm text-slate-600">
               Analizza un sito pubblico e salva un profilo non rivendicato dopo
               revisione umana.
+            </span>
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/organizzatori"
+          className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
+        >
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#E67E22]/10 text-[#E67E22]">
+            <Building2 className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="block text-lg font-bold text-slate-900">
+              Organizzatori salvati
+            </span>
+            <span className="mt-1 block text-sm text-slate-600">
+              Elenco di tutti i profili già salvati (non rivendicati o
+              rivendicati).
             </span>
           </span>
         </Link>
