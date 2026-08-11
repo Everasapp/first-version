@@ -191,14 +191,43 @@ function looksLikeHtml(text: string) {
 }
 
 function looksLikeChallengePage(text: string) {
-  const sample = text.slice(0, 4000).toLowerCase();
+  // Important: do NOT match the bare word "cloudflare" — many public municipal
+  // sites load CF CDN/scripts and would be false-positives.
+  const sample = text.slice(0, 8000).toLowerCase();
+  const titleMatch = sample.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const title = (titleMatch?.[1] || "").replace(/\s+/g, " ").trim();
+
+  if (
+    title.includes("just a moment") ||
+    title.includes("attention required") ||
+    title.includes("access denied") ||
+    title.includes("cf-error") ||
+    title.includes("403 forbidden") ||
+    title.includes("security check")
+  ) {
+    return true;
+  }
+
   return (
     sample.includes("cf-browser-verification") ||
-    sample.includes("attention required") ||
-    sample.includes("just a moment") ||
-    sample.includes("captcha") ||
-    sample.includes("access denied") ||
-    sample.includes("cloudflare")
+    sample.includes("cf-challenge") ||
+    sample.includes("cdn-cgi/challenge-platform") ||
+    sample.includes('id="challenge-form"') ||
+    sample.includes("managed_challenge") ||
+    (sample.includes("checking your browser before accessing") &&
+      sample.includes("cloudflare"))
+  );
+}
+
+function hasUsablePageContent(text: string) {
+  const lower = text.toLowerCase();
+  return (
+    lower.includes("mailto:") ||
+    lower.includes("@") ||
+    lower.includes("contatt") ||
+    lower.includes("<nav") ||
+    lower.includes("comune") ||
+    (lower.match(/<a\s/g) || []).length >= 5
   );
 }
 
@@ -222,6 +251,11 @@ async function fetchRaw(
         Accept: accept,
         "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
         "Cache-Control": "no-cache",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
       },
     });
     const text = await response.text();
@@ -274,19 +308,26 @@ async function fetchHtml(
     };
   }
 
-  if (!result.ok) {
-    return {
-      ...result,
-      ok: false,
-      reason: `http_${result.status}`,
-    };
-  }
-
-  if (looksLikeChallengePage(result.text)) {
+  if (looksLikeChallengePage(result.text) && !hasUsablePageContent(result.text)) {
     return {
       ...result,
       ok: false,
       reason: "protected",
+    };
+  }
+
+  if (!result.ok) {
+    // Some WAFs return 403 with a usable public page; only hard-fail empty walls.
+    if (hasUsablePageContent(result.text) && result.status < 500) {
+      return { ...result, ok: true };
+    }
+    return {
+      ...result,
+      ok: false,
+      reason:
+        result.status === 403 || result.status === 401
+          ? "protected"
+          : `http_${result.status}`,
     };
   }
 
