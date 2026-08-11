@@ -53,6 +53,8 @@ type EventRow = {
   organizer_display_name: string | null;
 };
 
+const ROME_TZ = "Europe/Rome";
+
 function formatEventDate(startAt: string, endAt: string | null) {
   const start = new Date(startAt);
 
@@ -61,11 +63,13 @@ function formatEventDate(startAt: string, endAt: string | null) {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: ROME_TZ,
   }).format(start);
 
   const startTime = new Intl.DateTimeFormat("it-IT", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: ROME_TZ,
   }).format(start);
 
   if (!endAt) {
@@ -73,15 +77,19 @@ function formatEventDate(startAt: string, endAt: string | null) {
   }
 
   const end = new Date(endAt);
-  const isSameDay =
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate();
+  const dayKey = new Intl.DateTimeFormat("en-CA", {
+    timeZone: ROME_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const isSameDay = dayKey.format(start) === dayKey.format(end);
 
   if (isSameDay) {
     const endTime = new Intl.DateTimeFormat("it-IT", {
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: ROME_TZ,
     }).format(end);
 
     return `${date} · ${startTime}–${endTime}`;
@@ -93,6 +101,7 @@ function formatEventDate(startAt: string, endAt: string | null) {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: ROME_TZ,
   }).format(end);
 
   return `${date} · ${startTime} – ${formattedEnd}`;
