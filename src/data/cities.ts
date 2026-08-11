@@ -12,6 +12,7 @@ export type City = {
   
     { id: 1, city: "Alghero", province: "SS", area: "Nord Sardegna" },
     { id: 2, city: "Arzachena", province: "SS", area: "Nord Sardegna" },
+    { id: 33, city: "Berchidda", province: "SS", area: "Nord Sardegna" },
     { id: 3, city: "Budoni", province: "SS", area: "Nord Sardegna" },
     { id: 4, city: "Castelsardo", province: "SS", area: "Nord Sardegna" },
     { id: 5, city: "La Maddalena", province: "SS", area: "Nord Sardegna" },
