@@ -24,7 +24,7 @@ export default function Hero() {
         </p>
 
         <h1 className="mt-4 max-w-4xl text-5xl font-black leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-          Scopri cosa fare oggi in Sardegna
+          Scopri cosa fare in Sardegna
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50 sm:text-xl">
