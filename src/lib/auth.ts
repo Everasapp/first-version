@@ -62,3 +62,13 @@ export async function requireProfile(redirectTo: string) {
 
   return { supabase, user, profile };
 }
+
+export async function requireAdmin(redirectTo = "/admin") {
+  const result = await requireProfile(redirectTo);
+
+  if (result.profile.role !== "admin") {
+    redirect("/dashboard");
+  }
+
+  return result;
+}

@@ -214,6 +214,14 @@ function UserDashboard({
             </div>
 
             <div className="flex flex-wrap gap-3">
+              {profile.role === "admin" ? (
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#075EAE] bg-[#075EAE] px-5 py-3.5 font-bold text-white transition hover:bg-[#064a8a]"
+                >
+                  Admin
+                </Link>
+              ) : null}
               <LogoutButton />
               <Link
                 href="/dashboard/newsletter"
@@ -517,6 +525,15 @@ async function OrganizerDashboard({
                 <Users aria-hidden="true" className="h-5 w-5" />
                 Seguiti
               </Link>
+
+              {profile.role === "admin" ? (
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#075EAE] bg-[#075EAE] px-5 py-3.5 font-bold text-white transition hover:bg-[#064a8a]"
+                >
+                  Admin
+                </Link>
+              ) : null}
 
               <LogoutButton />
             </div>

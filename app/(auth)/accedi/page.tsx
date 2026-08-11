@@ -47,7 +47,16 @@ export default function AccediPage() {
       return;
     }
 
-    router.push("/dashboard");
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get("redirect");
+    const next =
+      redirectParam &&
+      redirectParam.startsWith("/") &&
+      !redirectParam.startsWith("//")
+        ? redirectParam
+        : "/dashboard";
+
+    router.push(next);
     router.refresh();
   }
 
