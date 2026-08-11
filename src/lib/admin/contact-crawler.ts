@@ -10,9 +10,11 @@ import {
 
 const MAX_PAGES = 20;
 const GLOBAL_TIMEOUT_MS = 45_000;
-const PAGE_TIMEOUT_MS = 12_000;
+const PAGE_TIMEOUT_MS = 15_000;
+
+/** Browser-like UA: many municipal sites block custom crawler names. */
 const USER_AGENT =
-  "EverasContactBot/1.0 (+https://everas.it; admin contact discovery; respectful crawler)";
+  "Mozilla/5.0 (compatible; EverasContactBot/1.1; +https://everas.it) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 
 const LINK_KEYWORDS = [
   "contatti",
@@ -52,12 +54,33 @@ type PageKind =
   | null;
 
 type Accumulator = {
-  emails: Map<string, { category: ReturnType<typeof classifyEmail>; sourceUrl: string }>;
+  emails: Map<
+    string,
+    { category: ReturnType<typeof classifyEmail>; sourceUrl: string }
+  >;
   phones: Map<string, string>;
   addresses: Map<string, string>;
   facebook: Map<string, string>;
   instagram: Map<string, string>;
   pages: Map<ContactFieldKey, string>;
+};
+
+type FetchOutcome = {
+  ok: boolean;
+  status: number;
+  text: string;
+  finalUrl: string;
+  reason?: string;
+};
+
+type FailureStats = {
+  httpStatuses: number[];
+  robotsBlocked: number;
+  networkErrors: number;
+  nonHtml: number;
+  offDomain: number;
+  emptyBody: number;
+  lastReason?: string;
 };
 
 export type CrawlResult = {
@@ -82,6 +105,16 @@ function normalizeUrl(input: string): URL {
 
 function sameRegistrableHost(a: URL, b: URL) {
   return a.hostname.replace(/^www\./, "") === b.hostname.replace(/^www\./, "");
+}
+
+function withWwwFlip(url: URL): URL {
+  const flipped = new URL(url.toString());
+  if (flipped.hostname.startsWith("www.")) {
+    flipped.hostname = flipped.hostname.slice(4);
+  } else {
+    flipped.hostname = `www.${flipped.hostname}`;
+  }
+  return flipped;
 }
 
 function absolutize(base: URL, href: string): URL | null {
@@ -112,7 +145,9 @@ function detectPageKind(url: URL, title: string): PageKind {
   if (/cultura|culturale|bibliotec/.test(hay)) return "page_cultura";
   if (/turismo|tourist/.test(hay)) return "page_turismo";
   if (/eventi|spettacolo|manifestazion/.test(hay)) return "page_eventi";
-  if (/amministrazion|uffici|organigramma/.test(hay)) return "page_amministrazione";
+  if (/amministrazion|uffici|organigramma/.test(hay)) {
+    return "page_amministrazione";
+  }
   return null;
 }
 
@@ -123,7 +158,6 @@ function cleanPhone(raw: string) {
 function isLikelyPhone(phone: string) {
   const digits = phone.replace(/\D/g, "");
   if (digits.length < 9 || digits.length > 13) return false;
-  // Reject values that look like dates / codes (e.g. 00239740905)
   if (/^00\d{8,}$/.test(digits) && !digits.startsWith("0039")) return false;
   return /^(?:\+?39)?0\d{5,10}$|^(?:\+?39)?3\d{8,9}$/.test(
     digits.replace(/^0039/, "39"),
@@ -146,10 +180,33 @@ function isLikelyJunkEmail(email: string) {
   );
 }
 
-async function fetchText(
+function looksLikeHtml(text: string) {
+  const sample = text.slice(0, 2000).toLowerCase();
+  return (
+    sample.includes("<html") ||
+    sample.includes("<!doctype html") ||
+    sample.includes("<body") ||
+    sample.includes("<head")
+  );
+}
+
+function looksLikeChallengePage(text: string) {
+  const sample = text.slice(0, 4000).toLowerCase();
+  return (
+    sample.includes("cf-browser-verification") ||
+    sample.includes("attention required") ||
+    sample.includes("just a moment") ||
+    sample.includes("captcha") ||
+    sample.includes("access denied") ||
+    sample.includes("cloudflare")
+  );
+}
+
+async function fetchRaw(
   url: string,
   signal: AbortSignal,
-): Promise<{ ok: boolean; status: number; text: string; finalUrl: string }> {
+  accept: string,
+): Promise<FetchOutcome> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PAGE_TIMEOUT_MS);
 
@@ -162,14 +219,11 @@ async function fetchText(
       redirect: "follow",
       headers: {
         "User-Agent": USER_AGENT,
-        Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+        Accept: accept,
         "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
+        "Cache-Control": "no-cache",
       },
     });
-    const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("text/html") && !contentType.includes("application/xhtml")) {
-      return { ok: false, status: response.status, text: "", finalUrl: response.url };
-    }
     const text = await response.text();
     return {
       ok: response.ok,
@@ -177,22 +231,82 @@ async function fetchText(
       text,
       finalUrl: response.url,
     };
+  } catch (error) {
+    const aborted =
+      (error instanceof Error && error.name === "AbortError") || signal.aborted;
+    return {
+      ok: false,
+      status: 0,
+      text: "",
+      finalUrl: url,
+      reason: aborted ? "timeout" : "network",
+    };
   } finally {
     clearTimeout(timer);
     signal.removeEventListener("abort", onAbort);
   }
 }
 
+async function fetchHtml(
+  url: string,
+  signal: AbortSignal,
+): Promise<FetchOutcome> {
+  const result = await fetchRaw(
+    url,
+    signal,
+    "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+  );
+
+  if (!result.text) {
+    return {
+      ...result,
+      ok: false,
+      reason: result.reason || (result.status ? `http_${result.status}` : "empty"),
+    };
+  }
+
+  const contentLooksHtml = looksLikeHtml(result.text);
+  if (!contentLooksHtml) {
+    return {
+      ...result,
+      ok: false,
+      reason: result.status >= 400 ? `http_${result.status}` : "non_html",
+    };
+  }
+
+  if (!result.ok) {
+    return {
+      ...result,
+      ok: false,
+      reason: `http_${result.status}`,
+    };
+  }
+
+  if (looksLikeChallengePage(result.text)) {
+    return {
+      ...result,
+      ok: false,
+      reason: "protected",
+    };
+  }
+
+  return { ...result, ok: true };
+}
+
 async function loadRobots(origin: string, signal: AbortSignal) {
+  const robotsUrl = new URL("/robots.txt", origin).toString();
   try {
-    const robotsUrl = new URL("/robots.txt", origin).toString();
-    const res = await fetchText(robotsUrl, signal);
+    const res = await fetchRaw(robotsUrl, signal, "text/plain,*/*;q=0.8");
     if (!res.ok || !res.text) {
+      return robotsParser(robotsUrl, "");
+    }
+    // Only treat as robots if it looks like one
+    if (!/user-agent:/i.test(res.text) && looksLikeHtml(res.text)) {
       return robotsParser(robotsUrl, "");
     }
     return robotsParser(robotsUrl, res.text);
   } catch {
-    return robotsParser(new URL("/robots.txt", origin).toString(), "");
+    return robotsParser(robotsUrl, "");
   }
 }
 
@@ -266,7 +380,6 @@ function extractFromHtml(
     ) {
       continue;
     }
-    // Prefer civic addresses (number and/or CAP)
     if (!/\d/.test(address)) continue;
     acc.addresses.set(address, pageUrl.toString());
   }
@@ -279,14 +392,20 @@ function extractFromHtml(
     if (!absolute) return;
 
     const host = absolute.hostname.replace(/^www\./, "");
-    if (host === "facebook.com" || host === "fb.com" || host === "m.facebook.com") {
+    if (
+      host === "facebook.com" ||
+      host === "fb.com" ||
+      host === "m.facebook.com"
+    ) {
       const value = absolute.toString();
       if (!acc.facebook.has(value)) acc.facebook.set(value, pageUrl.toString());
       return;
     }
     if (host === "instagram.com" || host === "www.instagram.com") {
       const value = absolute.toString();
-      if (!acc.instagram.has(value)) acc.instagram.set(value, pageUrl.toString());
+      if (!acc.instagram.has(value)) {
+        acc.instagram.set(value, pageUrl.toString());
+      }
       return;
     }
 
@@ -401,7 +520,9 @@ function toItems(acc: Accumulator): FoundContactItem[] {
   return items;
 }
 
-function ensureNotFoundPlaceholders(items: FoundContactItem[]): FoundContactItem[] {
+function ensureNotFoundPlaceholders(
+  items: FoundContactItem[],
+): FoundContactItem[] {
   const required: Array<{ field: FoundContactItem["field"]; label: string }> = [
     { field: "email_generale", label: "Email generale" },
     { field: "pec", label: "PEC" },
@@ -433,6 +554,38 @@ function ensureNotFoundPlaceholders(items: FoundContactItem[]): FoundContactItem
   }
 
   return [...items, ...extras];
+}
+
+function buildFailureMessage(stats: FailureStats): string {
+  if (stats.robotsBlocked > 0 && stats.httpStatuses.length === 0) {
+    return "Il sito blocca la scansione tramite robots.txt. Puoi inserire i contatti a mano e salvarli comunque.";
+  }
+
+  const has403 = stats.httpStatuses.some((s) => s === 403);
+  const has401 = stats.httpStatuses.some((s) => s === 401);
+  const has404 = stats.httpStatuses.some((s) => s === 404);
+  const has5xx = stats.httpStatuses.some((s) => s >= 500);
+
+  if (stats.lastReason === "protected" || has403 || has401) {
+    return "Il sito è protetto (anti-bot / accesso negato) e non espone HTML pubblico al crawler. Inserisci i contatti a mano.";
+  }
+  if (stats.lastReason === "timeout" || stats.networkErrors > 0) {
+    return "Il sito non risponde in tempo o non è raggiungibile dal server. Verifica l’URL e riprova.";
+  }
+  if (has404) {
+    return "Pagina non trovata (404). Controlla che l’URL del Comune sia corretto.";
+  }
+  if (has5xx) {
+    return "Il sito del Comune ha restituito un errore server. Riprova più tardi.";
+  }
+  if (stats.offDomain > 0 && stats.nonHtml === 0) {
+    return "Il sito reindirizza su un altro dominio: per sicurezza analizziamo solo pagine dello stesso dominio.";
+  }
+  if (stats.nonHtml > 0) {
+    return "Il sito non ha restituito pagine HTML analizzabili (forse solo JavaScript o un formato non supportato).";
+  }
+
+  return "Sito non raggiungibile, protetto, o senza pagine HTML pubbliche analizzabili.";
 }
 
 export async function crawlOrganizerContacts(
@@ -471,12 +624,86 @@ export async function crawlOrganizerContacts(
   const visited = new Set<string>();
   const pagesAnalyzed: string[] = [];
   let skippedRobots = 0;
+  const stats: FailureStats = {
+    httpStatuses: [],
+    robotsBlocked: 0,
+    networkErrors: 0,
+    nonHtml: 0,
+    offDomain: 0,
+    emptyBody: 0,
+  };
 
   try {
-    const robots = await loadRobots(start.origin, globalController.signal);
+    // Probe homepage (+ www flip) before crawling so we can give a clear error.
+    let workingStart = start;
+    let homepage = await fetchHtml(start.toString(), globalController.signal);
+
+    if (!homepage.ok) {
+      const flipped = withWwwFlip(start);
+      const alt = await fetchHtml(flipped.toString(), globalController.signal);
+      if (alt.ok) {
+        workingStart = flipped;
+        homepage = alt;
+      }
+    }
+
+    if (!homepage.ok) {
+      if (homepage.status) stats.httpStatuses.push(homepage.status);
+      if (homepage.reason === "timeout" || homepage.reason === "network") {
+        stats.networkErrors += 1;
+      }
+      if (homepage.reason === "non_html") stats.nonHtml += 1;
+      if (homepage.reason === "empty") stats.emptyBody += 1;
+      if (homepage.reason === "protected") stats.lastReason = "protected";
+      else stats.lastReason = homepage.reason;
+
+      return {
+        ok: false,
+        error: buildFailureMessage(stats),
+        startUrl: start.toString(),
+        pagesVisited: 1,
+        pagesAnalyzed: [],
+        items: ensureNotFoundPlaceholders([]),
+        skippedRobots: 0,
+      };
+    }
+
+    try {
+      const finalHome = new URL(homepage.finalUrl);
+      if (sameRegistrableHost(finalHome, workingStart)) {
+        workingStart = finalHome;
+      } else {
+        stats.offDomain += 1;
+      }
+    } catch {
+      // keep workingStart
+    }
+
+    const robots = await loadRobots(
+      workingStart.origin,
+      globalController.signal,
+    );
+
     const queue: { url: string; score: number }[] = [
-      { url: start.toString(), score: 100 },
+      { url: workingStart.toString(), score: 100 },
     ];
+
+    // Seed with already-fetched homepage to avoid double download
+    visited.add(workingStart.toString());
+    if (!robots.isAllowed(workingStart.toString(), USER_AGENT)) {
+      skippedRobots += 1;
+      stats.robotsBlocked += 1;
+    } else {
+      pagesAnalyzed.push(workingStart.toString());
+      extractFromHtml(
+        homepage.text,
+        workingStart,
+        acc,
+        queue,
+        visited,
+        workingStart,
+      );
+    }
 
     while (queue.length > 0 && visited.size < MAX_PAGES) {
       if (globalController.signal.aborted) break;
@@ -489,17 +716,22 @@ export async function crawlOrganizerContacts(
 
       if (!robots.isAllowed(next.url, USER_AGENT)) {
         skippedRobots += 1;
+        stats.robotsBlocked += 1;
         continue;
       }
 
-      let page;
-      try {
-        page = await fetchText(next.url, globalController.signal);
-      } catch {
+      const page = await fetchHtml(next.url, globalController.signal);
+
+      if (!page.ok || !page.text) {
+        if (page.status) stats.httpStatuses.push(page.status);
+        if (page.reason === "timeout" || page.reason === "network") {
+          stats.networkErrors += 1;
+        }
+        if (page.reason === "non_html") stats.nonHtml += 1;
+        if (page.reason === "empty") stats.emptyBody += 1;
+        if (page.reason === "protected") stats.lastReason = "protected";
         continue;
       }
-
-      if (!page.ok || !page.text) continue;
 
       let pageUrl: URL;
       try {
@@ -508,17 +740,19 @@ export async function crawlOrganizerContacts(
         continue;
       }
 
-      if (!sameRegistrableHost(pageUrl, start)) continue;
+      if (!sameRegistrableHost(pageUrl, workingStart)) {
+        stats.offDomain += 1;
+        continue;
+      }
 
       pagesAnalyzed.push(pageUrl.toString());
-      extractFromHtml(page.text, pageUrl, acc, queue, visited, start);
+      extractFromHtml(page.text, pageUrl, acc, queue, visited, workingStart);
     }
 
     if (pagesAnalyzed.length === 0) {
       return {
         ok: false,
-        error:
-          "Sito non raggiungibile, protetto, o senza pagine HTML pubbliche analizzabili",
+        error: buildFailureMessage(stats),
         startUrl: start.toString(),
         pagesVisited: visited.size,
         pagesAnalyzed,
@@ -529,7 +763,7 @@ export async function crawlOrganizerContacts(
 
     return {
       ok: true,
-      startUrl: start.toString(),
+      startUrl: workingStart.toString(),
       pagesVisited: visited.size,
       pagesAnalyzed,
       items: ensureNotFoundPlaceholders(toItems(acc)),
