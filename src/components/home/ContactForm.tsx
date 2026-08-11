@@ -3,8 +3,6 @@
 import { FormEvent, useState } from "react";
 import { LoaderCircle, Send } from "lucide-react";
 
-import { createClient } from "@/src/lib/supabase/client";
-
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,24 +38,42 @@ export default function ContactForm() {
 
     setIsSubmitting(true);
 
-    const supabase = createClient();
-    const { error } = await supabase.from("contact_messages").insert({
-      name: trimmedName,
-      email: trimmedEmail,
-      message: trimmedMessage,
-    });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          message: trimmedMessage,
+        }),
+      });
 
-    if (error) {
-      setErrorMessage(`Invio non riuscito: ${error.message}`);
+      const payload = (await response.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+
+      if (!response.ok) {
+        throw new Error(
+          payload?.error || "Invio non riuscito. Riprova tra poco.",
+        );
+      }
+
+      setName("");
+      setEmail("");
+      setMessage("");
+      setSuccessMessage("Messaggio inviato. Ti risponderemo al più presto.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Invio non riuscito. Riprova tra poco.",
+      );
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    setName("");
-    setEmail("");
-    setMessage("");
-    setSuccessMessage("Messaggio inviato. Ti risponderemo al più presto.");
-    setIsSubmitting(false);
   }
 
   return (
