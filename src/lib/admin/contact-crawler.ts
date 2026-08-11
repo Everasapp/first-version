@@ -34,7 +34,7 @@ const LINK_KEYWORDS = [
 ];
 
 const EMAIL_REGEX =
-  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}(?![a-zA-Z0-9])/g;
 
 const PHONE_REGEX =
   /(?:\+39[\s.]*)?(?:0\d{1,3}|\(0\d{1,3}\))[\s./-]*\d{5,10}|\+39[\s./-]*3\d{2}[\s./-]*\d{6,7}/g;
@@ -169,7 +169,7 @@ function cleanEmail(raw: string) {
 }
 
 function isValidEmail(email: string) {
-  return /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}$/i.test(email);
+  return /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,10}$/i.test(email);
 }
 
 function isLikelyJunkEmail(email: string) {
@@ -337,6 +337,72 @@ async function fetchHtml(
   }
 
   return { ...result, ok: true };
+}
+
+function markdownToHtml(markdown: string) {
+  const withLinks = markdown.replace(
+    /\[([^\]]*)\]\((https?:[^)\s]+)\)/g,
+    (_full, label: string, href: string) => {
+      const safeHref = String(href).replace(/"/g, "");
+      const safeLabel = String(label).replace(/</g, "");
+      return `<a href="${safeHref}">${safeLabel}</a>`;
+    },
+  );
+  return `<!DOCTYPE html><html><body>${withLinks}</body></html>`;
+}
+
+async function fetchViaTextProxy(
+  url: string,
+  signal: AbortSignal,
+): Promise<FetchOutcome> {
+  // Public reader used only as fallback when the origin blocks datacenter IPs.
+  const proxyUrl = `https://r.jina.ai/${url}`;
+  const result = await fetchRaw(proxyUrl, signal, "text/plain,*/*;q=0.8");
+
+  if (!result.ok || !result.text || result.text.trim().length < 80) {
+    return {
+      ...result,
+      ok: false,
+      reason: result.reason || "proxy_failed",
+    };
+  }
+
+  const lower = result.text.toLowerCase();
+  if (
+    (lower.includes("403 forbidden") || lower.includes("access denied")) &&
+    result.text.length < 2500
+  ) {
+    return { ...result, ok: false, reason: "protected" };
+  }
+
+  return {
+    ok: true,
+    status: 200,
+    text: markdownToHtml(result.text),
+    finalUrl: url,
+  };
+}
+
+async function fetchPage(
+  url: string,
+  signal: AbortSignal,
+): Promise<FetchOutcome> {
+  const direct = await fetchHtml(url, signal);
+  if (direct.ok) return direct;
+
+  const shouldProxy =
+    direct.reason === "protected" ||
+    direct.reason === "network" ||
+    direct.reason === "timeout" ||
+    direct.status === 403 ||
+    direct.status === 401 ||
+    direct.status === 503;
+
+  if (!shouldProxy) return direct;
+
+  const proxied = await fetchViaTextProxy(url, signal);
+  if (proxied.ok) return proxied;
+  return direct;
 }
 
 async function loadRobots(origin: string, signal: AbortSignal) {
@@ -682,11 +748,11 @@ export async function crawlOrganizerContacts(
   try {
     // Probe homepage (+ www flip) before crawling so we can give a clear error.
     let workingStart = start;
-    let homepage = await fetchHtml(start.toString(), globalController.signal);
+    let homepage = await fetchPage(start.toString(), globalController.signal);
 
     if (!homepage.ok) {
       const flipped = withWwwFlip(start);
-      const alt = await fetchHtml(flipped.toString(), globalController.signal);
+      const alt = await fetchPage(flipped.toString(), globalController.signal);
       if (alt.ok) {
         workingStart = flipped;
         homepage = alt;
@@ -766,7 +832,7 @@ export async function crawlOrganizerContacts(
         continue;
       }
 
-      const page = await fetchHtml(next.url, globalController.signal);
+      const page = await fetchPage(next.url, globalController.signal);
 
       if (!page.ok || !page.text) {
         if (page.status) stats.httpStatuses.push(page.status);
