@@ -50,12 +50,13 @@ export default function Header() {
           </Link>
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 md:ml-8">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3 md:ml-8">
           <Link
             href="/pubblica"
-            className="hidden h-11 items-center justify-center rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] sm:inline-flex"
+            className="inline-flex h-11 items-center justify-center rounded-xl bg-[#E67E22] px-3 text-sm font-bold text-white transition hover:bg-[#C96A1A] sm:px-5"
           >
-            Pubblica un evento
+            <span className="sm:hidden">Pubblica</span>
+            <span className="hidden sm:inline">Pubblica un evento</span>
           </Link>
 
           {isAuthenticated === null ? (
@@ -63,7 +64,7 @@ export default function Header() {
           ) : (
             <Link
               href={isAuthenticated ? "/dashboard" : "/accedi"}
-              className="inline-flex h-11 items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-5 text-sm font-bold text-[#075EAE] shadow-sm transition hover:bg-[#075EAE] hover:text-white hover:shadow-md"
+              className="inline-flex h-11 items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-3 text-sm font-bold text-[#075EAE] shadow-sm transition hover:bg-[#075EAE] hover:text-white hover:shadow-md sm:px-5"
             >
               {isAuthenticated ? "Dashboard" : "Accedi"}
             </Link>

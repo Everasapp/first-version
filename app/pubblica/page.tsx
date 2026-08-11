@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -74,6 +74,8 @@ export default function PublishEventPage() {
   const [publishMessage, setPublishMessage] = useState("");
   const [publishError, setPublishError] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [hasPublished, setHasPublished] = useState(false);
+  const publishingLockRef = useRef(false);
 
   const canSetOrganizer = canAssignOrganizers(plan);
   const defaultOrganizerName =
@@ -265,6 +267,10 @@ export default function PublishEventPage() {
   }
 
   async function handlePublish() {
+    if (publishingLockRef.current || hasPublished) {
+      return;
+    }
+
     const stepsToValidate = [0, 1, 2, 3];
 
     for (const step of stepsToValidate) {
@@ -286,6 +292,7 @@ export default function PublishEventPage() {
       return;
     }
 
+    publishingLockRef.current = true;
     setIsPublishing(true);
     setPublishError("");
     setPublishMessage("");
@@ -299,6 +306,8 @@ export default function PublishEventPage() {
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
+        publishingLockRef.current = false;
+        setIsPublishing(false);
         router.push("/accedi?redirect=/pubblica");
         return;
       }
@@ -367,23 +376,29 @@ export default function PublishEventPage() {
       }
 
       setErrors({});
+      setHasPublished(true);
       setPublishMessage(
         createdEvent?.slug
           ? `Evento pubblicato correttamente. Slug: ${createdEvent.slug}`
           : "Evento pubblicato correttamente su EVERAS.",
       );
+
+      if (createdEvent?.slug) {
+        router.push(`/eventi/${createdEvent.slug}`);
+        router.refresh();
+      }
     } catch (error) {
       if (uploadedPath) {
         await supabase.storage.from("event-images").remove([uploadedPath]);
       }
 
+      publishingLockRef.current = false;
+      setIsPublishing(false);
       setPublishError(
         error instanceof Error
           ? error.message
           : "Si è verificato un errore durante la pubblicazione.",
       );
-    } finally {
-      setIsPublishing(false);
     }
   }
 
@@ -1166,11 +1181,15 @@ export default function PublishEventPage() {
                   <button
                     type="button"
                     onClick={handlePublish}
-                    disabled={isPublishing}
+                    disabled={isPublishing || hasPublished}
                     className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <Ticket className="h-5 w-5" />
-                    {isPublishing ? "Pubblicazione in corso..." : "Pubblica evento"}
+                    {hasPublished
+                      ? "Evento pubblicato"
+                      : isPublishing
+                        ? "Pubblicazione in corso..."
+                        : "Pubblica evento"}
                   </button>
 
                   {publishMessage && (
