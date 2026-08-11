@@ -1255,7 +1255,7 @@ export default function PublishEventPage() {
               </p>
 
               <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                <div className="relative aspect-square overflow-hidden bg-slate-100">
                   {imagePreview ? (
                     <img
                       src={imagePreview}

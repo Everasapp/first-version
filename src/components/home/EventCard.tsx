@@ -45,7 +45,7 @@ export default function EventCard({ event }: EventCardProps) {
 
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+      <div className="relative aspect-square overflow-hidden bg-slate-100">
         <img
           src={event.imageUrl}
           alt={event.title}
