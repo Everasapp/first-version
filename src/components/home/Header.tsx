@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/src/lib/supabase/client";
 
 export default function Header() {
-  // Default false so Accedi is stable on first paint (avoids mobile layout-shift
+  // Default false so Registrati is stable on first paint (avoids mobile layout-shift
   // that can steal the first tap on Pubblica).
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -70,10 +70,10 @@ export default function Header() {
           </Link>
 
           <Link
-            href={isAuthenticated ? "/dashboard" : "/accedi"}
+            href={isAuthenticated ? "/dashboard" : "/registrati"}
             className="inline-flex h-11 touch-manipulation items-center justify-center rounded-xl border-2 border-[#075EAE] bg-white px-3 text-sm font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white [@media(hover:hover)]:hover:shadow-md active:bg-[#075EAE] active:text-white sm:px-5"
           >
-            {isAuthenticated ? "Dashboard" : "Accedi"}
+            {isAuthenticated ? "Dashboard" : "Registrati"}
           </Link>
         </div>
       </div>
