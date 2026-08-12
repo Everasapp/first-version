@@ -28,6 +28,7 @@ export type City = {
     { id: 13, city: "Stintino", province: "SS", area: "Nord Sardegna" },
     { id: 14, city: "Tempio Pausania", province: "SS", area: "Nord Sardegna" },
     { id: 34, city: "Tergu", province: "SS", area: "Nord Sardegna" },
+    { id: 37, city: "Torralba", province: "SS", area: "Nord Sardegna" },
 
     // =========================
     // CENTRO SARDEGNA

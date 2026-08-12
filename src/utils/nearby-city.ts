@@ -18,6 +18,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Sorso: { lat: 40.7994, lng: 8.5757 },
   Stintino: { lat: 40.9389, lng: 8.2289 },
   "Tempio Pausania": { lat: 40.9006, lng: 9.1047 },
+  Torralba: { lat: 40.514, lng: 8.7663 },
   Bosa: { lat: 40.2992, lng: 8.4983 },
   Dorgali: { lat: 40.2925, lng: 9.5911 },
   Fonni: { lat: 40.1192, lng: 9.2522 },
