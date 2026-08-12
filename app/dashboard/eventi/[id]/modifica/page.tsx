@@ -34,7 +34,7 @@ export default async function ModificaEventoPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, organizer_display_name",
+        "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, organizer_display_name, status",
       )
       .eq("id", id)
       .eq("organizer_id", user.id)
@@ -81,7 +81,7 @@ export default async function ModificaEventoPage({
             Area organizzatore
           </p>
           <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-            Modifica evento
+            {event.status === "published" ? "Modifica evento" : "Modifica bozza"}
           </h1>
 
           <div className="mt-8">

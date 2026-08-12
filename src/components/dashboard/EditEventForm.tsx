@@ -17,6 +17,7 @@ import {
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import {
   isValidTicketUrl,
   normalizeTicketUrl,
@@ -48,6 +49,7 @@ export type EditableEvent = {
   price_from: number | string | null;
   ticket_url: string | null;
   organizer_display_name: string | null;
+  status: string;
 };
 
 type EditEventFormProps = {
@@ -163,6 +165,7 @@ export default function EditEventForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const isDraft = event.status !== "published";
 
   const availableCities = useMemo(() => {
     const filteredCities = area
@@ -895,6 +898,23 @@ export default function EditEventForm({
           {isSaving ? "Salvataggio in corso..." : "Salva modifiche"}
         </button>
       </form>
+
+      {isDraft ? (
+        <div className="mt-6 rounded-2xl border border-red-100 bg-red-50/60 p-5">
+          <p className="text-sm font-semibold text-red-800">Zona pericolosa</p>
+          <p className="mt-1 text-sm text-red-700">
+            Puoi eliminare definitivamente questa bozza. L’azione non si può
+            annullare.
+          </p>
+          <div className="mt-4">
+            <DeleteEventButton
+              eventId={event.id}
+              imageUrl={existingImageUrl}
+              isDraft
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -9,6 +9,8 @@ import { createClient } from "@/src/lib/supabase/client";
 type DeleteEventButtonProps = {
   eventId: string;
   imageUrl: string | null;
+  /** Se true, etichetta e messaggio parlano di bozza */
+  isDraft?: boolean;
 };
 
 function getStoragePath(imageUrl: string | null) {
@@ -35,6 +37,7 @@ function getStoragePath(imageUrl: string | null) {
 export default function DeleteEventButton({
   eventId,
   imageUrl,
+  isDraft = false,
 }: DeleteEventButtonProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -42,7 +45,9 @@ export default function DeleteEventButton({
 
   async function deleteEvent() {
     const confirmed = window.confirm(
-      "Vuoi eliminare definitivamente questo evento? L'operazione non può essere annullata.",
+      isDraft
+        ? "Vuoi eliminare definitivamente questa bozza? L’operazione non può essere annullata."
+        : "Vuoi eliminare definitivamente questo evento? L'operazione non può essere annullata.",
     );
 
     if (!confirmed) {
@@ -87,6 +92,12 @@ export default function DeleteEventButton({
       }
     }
 
+    if (isDraft) {
+      router.push("/dashboard?filtro=bozze");
+      router.refresh();
+      return;
+    }
+
     router.refresh();
   }
 
@@ -103,7 +114,11 @@ export default function DeleteEventButton({
         ) : (
           <Trash2 aria-hidden="true" className="h-4 w-4" />
         )}
-        {isDeleting ? "Eliminazione..." : "Elimina"}
+        {isDeleting
+          ? "Eliminazione..."
+          : isDraft
+            ? "Elimina bozza"
+            : "Elimina"}
       </button>
 
       {errorMessage && (

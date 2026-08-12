@@ -41,6 +41,7 @@ import {
   type Plan,
 } from "@/src/lib/plans";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
@@ -130,15 +131,8 @@ const emptyCopy: Record<
   },
 };
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Rome",
-  }).format(new Date(value));
+function formatDate(startAt: string, endAt?: string | null) {
+  return formatEventDateRange(startAt, endAt);
 }
 
 function formatPrice(event: DashboardEvent) {
@@ -676,7 +670,7 @@ async function OrganizerDashboard({
                             aria-hidden="true"
                             className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
                           />
-                          {formatDate(event.start_at)}
+                          {formatDate(event.start_at, event.end_at)}
                         </p>
                         <p className="flex items-start gap-2">
                           <MapPin
@@ -693,7 +687,7 @@ async function OrganizerDashboard({
                           className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
                         >
                           <Pencil aria-hidden="true" className="h-4 w-4" />
-                          Modifica
+                          {event.status === "published" ? "Modifica" : "Modifica bozza"}
                         </Link>
 
                         <DuplicateEventButton eventId={event.id} />
@@ -730,6 +724,7 @@ async function OrganizerDashboard({
                         <DeleteEventButton
                           eventId={event.id}
                           imageUrl={event.image_url}
+                          isDraft={event.status !== "published"}
                         />
                       </div>
                     </div>
