@@ -164,7 +164,6 @@ export default async function Home() {
         new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
       );
     })
-    .slice(0, 4)
     .map((event) => ({
       ...mapEvent(event, { happeningNow: isHappeningNow(event, now) }),
       isFavorite: favoriteIds.has(event.id),

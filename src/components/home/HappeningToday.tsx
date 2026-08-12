@@ -10,8 +10,17 @@ type HappeningTodayProps = {
   events: EventCardData[];
 };
 
+function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
+  return (
+    card.getBoundingClientRect().left -
+    scroller.getBoundingClientRect().left +
+    scroller.scrollLeft
+  );
+}
+
 export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const snapRestoreTimerRef = useRef<number | null>(null);
 
   if (events.length === 0) {
     return null;
@@ -21,12 +30,37 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    const card = scroller.querySelector<HTMLElement>("[data-today-card]");
-    const amount = card?.offsetWidth ?? 320;
-    scroller.scrollBy({
-      left: direction * (amount + 24),
-      behavior: "smooth",
-    });
+    const cards = Array.from(
+      scroller.querySelectorAll<HTMLElement>("[data-today-card]"),
+    );
+    if (cards.length === 0) return;
+
+    const current = scroller.scrollLeft;
+    let activeIndex = 0;
+
+    for (let i = 0; i < cards.length; i += 1) {
+      if (cardOffsetLeft(cards[i], scroller) <= current + 12) {
+        activeIndex = i;
+      }
+    }
+
+    const nextIndex = Math.max(
+      0,
+      Math.min(cards.length - 1, activeIndex + direction),
+    );
+    const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
+
+    // Evita il conflitto noto tra scroll smooth e snap-mandatory.
+    if (snapRestoreTimerRef.current !== null) {
+      window.clearTimeout(snapRestoreTimerRef.current);
+    }
+    scroller.style.scrollSnapType = "none";
+    scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
+
+    snapRestoreTimerRef.current = window.setTimeout(() => {
+      scroller.style.scrollSnapType = "";
+      snapRestoreTimerRef.current = null;
+    }, 450);
   }
 
   return (
@@ -67,7 +101,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
 
         <div
           ref={scrollerRef}
-          className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mt-8 flex snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {events.map((event) => (
             <div
