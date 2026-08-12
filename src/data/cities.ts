@@ -40,6 +40,7 @@ export type City = {
     { id: 20, city: "Orgosolo", province: "NU", area: "Centro Sardegna" },
     { id: 21, city: "Oristano", province: "OR", area: "Centro Sardegna" },
     { id: 22, city: "Orosei", province: "NU", area: "Centro Sardegna" },
+    { id: 35, city: "Siniscola", province: "NU", area: "Centro Sardegna" },
     { id: 23, city: "Tortolì", province: "NU", area: "Centro Sardegna" },
   
     // =========================

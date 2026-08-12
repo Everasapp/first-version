@@ -25,6 +25,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Orgosolo: { lat: 40.1925, lng: 9.3514 },
   Oristano: { lat: 39.9036, lng: 8.5919 },
   Orosei: { lat: 40.3786, lng: 9.6925 },
+  Siniscola: { lat: 40.5734, lng: 9.697 },
   Tortolì: { lat: 39.9264, lng: 9.6556 },
   Cagliari: { lat: 39.2238, lng: 9.1217 },
   Carbonia: { lat: 39.1672, lng: 8.5222 },
