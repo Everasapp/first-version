@@ -29,7 +29,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 isolate border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-center gap-3 px-5 sm:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-end gap-3 px-5 pb-3.5 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
             src="/images/everas-logo-v2.png"
@@ -42,7 +42,7 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-7 text-sm font-semibold md:flex">
+        <nav className="mb-1.5 ml-auto hidden items-center gap-7 text-sm font-semibold md:flex">
           <Link href="/" className="touch-manipulation text-blue-700">
             Home
           </Link>
@@ -60,7 +60,7 @@ export default function Header() {
           </Link>
         </nav>
 
-        <div className="relative z-10 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:ml-8">
+        <div className="relative z-10 ml-auto flex shrink-0 items-end gap-1.5 sm:gap-2 md:ml-8">
           <Link
             href="/pubblica"
             className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5"
@@ -80,7 +80,7 @@ export default function Header() {
             <>
               <Link
                 href="/accedi"
-                className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg px-2 text-xs font-bold text-[#075EAE] transition [@media(hover:hover)]:hover:bg-blue-50 active:bg-blue-50 sm:px-3"
+                className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5"
               >
                 Accedi
               </Link>
