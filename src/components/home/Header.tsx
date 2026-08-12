@@ -4,24 +4,43 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import {
+  markEverasAccountKnown,
+  readHasEverasAccount,
+} from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
 
+const authButtonClassName =
+  "inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5";
+
 export default function Header() {
-  // Default false so Registrati is stable on first paint (avoids mobile layout-shift
-  // that can steal the first tap on Pubblica).
+  // Default: nuovo visitatore → Registrati (evita layout shift su mobile).
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
 
   useEffect(() => {
+    setHasAccount(readHasEverasAccount());
+
     const supabase = createClient();
 
     supabase.auth.getUser().then(({ data }) => {
-      setIsAuthenticated(Boolean(data.user));
+      const loggedIn = Boolean(data.user);
+      setIsAuthenticated(loggedIn);
+      if (loggedIn) {
+        markEverasAccountKnown();
+        setHasAccount(true);
+      }
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(Boolean(session?.user));
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const loggedIn = Boolean(session?.user);
+      setIsAuthenticated(loggedIn);
+      if (loggedIn || event === "SIGNED_IN") {
+        markEverasAccountKnown();
+        setHasAccount(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -70,27 +89,17 @@ export default function Header() {
           </Link>
 
           {isAuthenticated ? (
-            <Link
-              href="/dashboard"
-              className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5"
-            >
+            <Link href="/dashboard" className={authButtonClassName}>
               Dashboard
             </Link>
+          ) : hasAccount ? (
+            <Link href="/accedi" className={authButtonClassName}>
+              Accedi
+            </Link>
           ) : (
-            <>
-              <Link
-                href="/accedi"
-                className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5"
-              >
-                Accedi
-              </Link>
-              <Link
-                href="/registrati"
-                className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5"
-              >
-                Registrati
-              </Link>
-            </>
+            <Link href="/registrati" className={authButtonClassName}>
+              Registrati
+            </Link>
           )}
         </div>
       </div>

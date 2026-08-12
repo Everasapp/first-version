@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
+import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
 
 export default function RegistratiPage() {
@@ -81,6 +82,7 @@ export default function RegistratiPage() {
         type: "user_registered",
         userId: data.user.id,
       });
+      markEverasAccountKnown();
     }
 
     if (data.session) {

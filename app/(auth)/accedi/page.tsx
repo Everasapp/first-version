@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
 
 export default function AccediPage() {
@@ -46,6 +47,8 @@ export default function AccediPage() {
       setIsLoading(false);
       return;
     }
+
+    markEverasAccountKnown();
 
     const params = new URLSearchParams(window.location.search);
     const redirectParam = params.get("redirect");
