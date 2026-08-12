@@ -24,6 +24,7 @@ import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
+import PublishEventButton from "@/src/components/dashboard/PublishEventButton";
 import { requireProfile } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
 import {
@@ -689,6 +690,13 @@ async function OrganizerDashboard({
                           <Pencil aria-hidden="true" className="h-4 w-4" />
                           {event.status === "published" ? "Modifica" : "Modifica bozza"}
                         </Link>
+
+                        {event.status !== "published" ? (
+                          <PublishEventButton
+                            eventId={event.id}
+                            eventSlug={event.slug}
+                          />
+                        ) : null}
 
                         <DuplicateEventButton eventId={event.id} />
 

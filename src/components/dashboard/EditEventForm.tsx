@@ -13,6 +13,7 @@ import {
   LoaderCircle,
   MapPin,
   Save,
+  Send,
 } from "lucide-react";
 
 import { categories } from "@/src/data/categories";
@@ -297,11 +298,13 @@ export default function EditEventForm({
     clearError("image");
   }
 
-  async function handleSave() {
+  async function handleSave(options?: { publish?: boolean }) {
     if (!validateForm()) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
+
+    const shouldPublish = Boolean(options?.publish);
 
     setIsSaving(true);
     setSaveError("");
@@ -380,6 +383,7 @@ export default function EditEventForm({
           organizer_display_name: canAssignOrganizer
             ? organizer.trim()
             : accountOrganizerName,
+          ...(shouldPublish ? { status: "published" as const } : {}),
         })
         .eq("id", event.id)
         .eq("organizer_id", user.id);
@@ -416,7 +420,12 @@ export default function EditEventForm({
 
       setExistingImageUrl(nextImageUrl);
       setImageFile(null);
-      router.push("/dashboard");
+
+      if (shouldPublish) {
+        router.push(`/eventi/${event.slug}`);
+      } else {
+        router.push(isDraft ? "/dashboard?filtro=bozze" : "/dashboard");
+      }
       router.refresh();
     } catch (error) {
       setSaveError(
@@ -885,18 +894,39 @@ export default function EditEventForm({
           </label>
         </div>
 
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSaving ? (
-            <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
-          ) : (
-            <Save className="h-5 w-5" aria-hidden="true" />
-          )}
-          {isSaving ? "Salvataggio in corso..." : "Salva modifiche"}
-        </button>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-6 py-4 font-bold text-slate-800 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSaving ? (
+              <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
+            ) : (
+              <Save className="h-5 w-5" aria-hidden="true" />
+            )}
+            {isDraft ? "Salva bozza" : "Salva modifiche"}
+          </button>
+
+          {isDraft ? (
+            <button
+              type="button"
+              disabled={isSaving}
+              onClick={() => void handleSave({ publish: true })}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#075EAE] px-6 py-4 font-bold text-white transition hover:bg-[#064a8a] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSaving ? (
+                <LoaderCircle
+                  className="h-5 w-5 animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Send className="h-5 w-5" aria-hidden="true" />
+              )}
+              Pubblica evento
+            </button>
+          ) : null}
+        </div>
       </form>
 
       {isDraft ? (
