@@ -5,6 +5,7 @@ import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import type { EditableEventImport } from "@/src/lib/admin/event-import";
 import { cities } from "@/src/data/cities";
 import { createSlug } from "@/src/lib/slug";
+import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -223,7 +224,7 @@ export async function POST(request: Request) {
     created_by: auth.user.id,
     title,
     slug: uniqueSlug,
-    description: event.description.trim() || null,
+    description: normalizeEventDescription(event.description) || null,
     category: event.category.trim() || "celebrazioni",
     subcategory: event.subcategory.trim() || null,
     province,

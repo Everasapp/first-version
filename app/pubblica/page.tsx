@@ -30,6 +30,7 @@ import {
   type Plan,
 } from "@/src/lib/plans";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
+import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -248,7 +249,7 @@ export default function PublishEventPage() {
     }
 
     if (step === 3) {
-      if (description.trim().length < 30) {
+      if (stripHtml(description).length < 30) {
         nextErrors.description =
           "Inserisci una descrizione di almeno 30 caratteri.";
       }
@@ -355,7 +356,7 @@ export default function PublishEventPage() {
           organizer_id: user.id,
           title: title.trim(),
           slug: uniqueSlug,
-          description: description.trim(),
+          description: normalizeEventDescription(description),
           category: categorySlug,
           subcategory: null,
           province: cityRecord?.province ?? null,
@@ -1069,7 +1070,7 @@ export default function PublishEventPage() {
                         )}
 
                         <span className="text-xs text-slate-500">
-                          {description.trim().length}/30 caratteri minimi
+                          {stripHtml(description).length}/30 caratteri minimi
                         </span>
                       </div>
                     </label>

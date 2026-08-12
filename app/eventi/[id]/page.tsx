@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import CalendarButton from "@/src/components/events/CalendarButton";
+import EventDescription from "@/src/components/events/EventDescription";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
@@ -25,6 +26,7 @@ import {
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { stripHtml } from "@/src/lib/sanitizeHtml";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventDetailPageProps = {
@@ -103,7 +105,7 @@ export async function generateMetadata({
   }
 
   const description =
-    data.description?.replace(/\\s+/g, " ").trim().slice(0, 155) ||
+    stripHtml(data.description || "").slice(0, 155) ||
     `Scopri ${data.title} a ${data.municipality} su EVERAS.`;
 
   return {
@@ -354,9 +356,8 @@ export default async function EventDetailPage({
                 Informazioni sull&apos;evento
               </h2>
 
-              <div className="mt-5 whitespace-pre-line text-lg leading-8 text-slate-600">
-                {event.description ||
-                  "L'organizzatore non ha ancora aggiunto una descrizione per questo evento."}
+              <div className="mt-5">
+                <EventDescription description={event.description} />
               </div>
             </div>
 

@@ -24,6 +24,7 @@ import {
   normalizeTicketUrl,
   parsePrice,
 } from "@/src/lib/eventForm";
+import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { createClient } from "@/src/lib/supabase/client";
 
 type PricingType = "free" | "paid";
@@ -254,7 +255,7 @@ export default function EditEventForm({
       }
     }
 
-    if (description.trim().length < 30) {
+    if (stripHtml(description).length < 30) {
       nextErrors.description =
         "Inserisci una descrizione di almeno 30 caratteri.";
     }
@@ -367,7 +368,7 @@ export default function EditEventForm({
         .from("events")
         .update({
           title: title.trim(),
-          description: description.trim(),
+          description: normalizeEventDescription(description),
           category: categorySlug,
           province: selectedCity?.province ?? null,
           municipality: city,
