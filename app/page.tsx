@@ -10,6 +10,7 @@ import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventRow = {
@@ -43,13 +44,6 @@ function isHappeningOnRomeDay(event: EventRow, dayKey: string) {
   return startKey <= dayKey && endKey >= dayKey;
 }
 
-function isHappeningNow(event: EventRow, now: Date) {
-  const start = new Date(event.start_at).getTime();
-  const end = new Date(event.end_at || event.start_at).getTime();
-  const current = now.getTime();
-  return current >= start && current <= end;
-}
-
 function formatEventDate(startAt: string, endAt?: string | null) {
   return formatEventDateRange(startAt, endAt);
 }
@@ -79,11 +73,9 @@ function getArea(event: EventRow) {
   return "Sud Sardegna";
 }
 
-function mapEvent(
-  event: EventRow,
-  options?: { happeningNow?: boolean },
-): EventCardData {
+function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
+  const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
 
   const categoryName =
     categories.find((category) => category.slug === event.category)?.name ??
@@ -103,8 +95,9 @@ function mapEvent(
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
-    happeningNow: options?.happeningNow,
-    statusLabel: options?.happeningNow ? "In corso" : undefined,
+    happeningNow: status.happeningNow,
+    isActiveEvent: status.isActiveEvent,
+    statusLabel: status.statusLabel,
   };
 }
 
@@ -139,7 +132,7 @@ export default async function Home() {
       return eventEnd >= now;
     })
     .map((event) => ({
-      ...mapEvent(event),
+      ...mapEvent(event, now),
       isFavorite: favoriteIds.has(event.id),
     }));
 
@@ -156,16 +149,18 @@ export default async function Home() {
       return eventEnd >= now;
     })
     .sort((a, b) => {
-      const aNow = isHappeningNow(a, now) ? 0 : 1;
-      const bNow = isHappeningNow(b, now) ? 0 : 1;
-      if (aNow !== bNow) return aNow - bNow;
+      const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
+      const bStatus = resolveEventStatusBadge(b.start_at, b.end_at, now);
+      const aRank = aStatus.happeningNow ? 0 : aStatus.isActiveEvent ? 1 : 2;
+      const bRank = bStatus.happeningNow ? 0 : bStatus.isActiveEvent ? 1 : 2;
+      if (aRank !== bRank) return aRank - bRank;
       if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
       return (
         new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
       );
     })
     .map((event) => ({
-      ...mapEvent(event, { happeningNow: isHappeningNow(event, now) }),
+      ...mapEvent(event, now),
       isFavorite: favoriteIds.has(event.id),
     }));
 

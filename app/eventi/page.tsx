@@ -8,6 +8,7 @@ import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 
@@ -100,13 +101,7 @@ function formatEventDate(startAt: string, endAt?: string | null) {
 }
 
 function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
-  const startDate = new Date(event.start_at);
-  const endDate = event.end_at ? new Date(event.end_at) : null;
-  const now = new Date();
-
-  const happeningNow =
-    startDate <= now && endDate !== null && endDate >= now;
-
+  const status = resolveEventStatusBadge(event.start_at, event.end_at);
   const pricing = resolveEventPricing(event.is_free, event.price_from);
 
   return {
@@ -123,8 +118,9 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
-    happeningNow,
-    statusLabel: happeningNow ? "In corso adesso" : undefined,
+    happeningNow: status.happeningNow,
+    isActiveEvent: status.isActiveEvent,
+    statusLabel: status.statusLabel,
   };
 }
 

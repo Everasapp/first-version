@@ -32,6 +32,8 @@ export type EventCardData = {
 
   isFeatured?: boolean;
   happeningNow?: boolean;
+  /** Mostre / periodi lunghi attualmente aperti (tag blu). */
+  isActiveEvent?: boolean;
   statusLabel?: string;
   isFavorite?: boolean;
 };
@@ -63,6 +65,12 @@ export default function EventCard({ event }: EventCardProps) {
               <Radio aria-hidden="true" className="h-3.5 w-3.5" />
 
               {event.statusLabel ?? "In corso"}
+            </span>
+          )}
+
+          {!event.happeningNow && event.isActiveEvent && (
+            <span className="flex items-center gap-1.5 rounded-full bg-[#075EAE] px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+              {event.statusLabel ?? "Evento attivo"}
             </span>
           )}
 
