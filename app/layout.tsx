@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import Footer from "@/src/components/home/Footer";
+import PWAInstallBanner from "@/src/components/PWAInstallBanner";
+import PWARegister from "@/src/components/PWARegister";
 
 import "./globals.css";
 
@@ -15,6 +17,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#E67E22",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://everas.it"),
   title: {
@@ -26,6 +34,14 @@ export const metadata: Metadata = {
   applicationName: "EVERAS",
   alternates: {
     canonical: "/",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "EVERAS",
+    statusBarStyle: "default",
+  },
+  formatDetection: {
+    telephone: false,
   },
   openGraph: {
     title: "Eventi in Sardegna: concerti, sagre e festival | EVERAS",
@@ -67,6 +83,8 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
+        <PWARegister />
+        <PWAInstallBanner />
       </body>
     </html>
   );
