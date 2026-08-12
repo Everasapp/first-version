@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, Search } from "lucide-react";
+import { Building2, Download, Search } from "lucide-react";
 
 export default function AdminHomePage() {
   return (
@@ -12,6 +12,24 @@ export default function AdminHomePage() {
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/admin/importa-eventi"
+          className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
+        >
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#E67E22]/10 text-[#E67E22]">
+            <Download className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="block text-lg font-bold text-slate-900">
+              Importa eventi
+            </span>
+            <span className="mt-1 block text-sm text-slate-600">
+              Analizza un URL pubblico, verifica i campi e pubblica con
+              organizzatore reale.
+            </span>
+          </span>
+        </Link>
+
         <Link
           href="/admin/ricerca-contatti"
           className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
@@ -34,7 +52,7 @@ export default function AdminHomePage() {
           href="/admin/organizzatori"
           className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-[#075EAE]"
         >
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#E67E22]/10 text-[#E67E22]">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#075EAE]/10 text-[#075EAE]">
             <Building2 className="h-5 w-5" aria-hidden="true" />
           </span>
           <span>
