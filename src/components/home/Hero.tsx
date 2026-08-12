@@ -31,7 +31,7 @@ export default function Hero() {
           Sagre, concerti, spettacoli, celebrazioni e attività vicino a te.
         </p>
 
-        <EventSearchForm variant="hero" />
+        <EventSearchForm />
       </div>
     </section>
   );

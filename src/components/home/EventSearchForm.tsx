@@ -22,35 +22,12 @@ const areaLabels: Record<string, string> = {
   "sud-sardegna": "Sud Sardegna",
 };
 
-type EventSearchFormProps = {
-  variant?: "hero" | "page";
-  initialQuery?: string;
-  initialArea?: string;
-  initialCity?: string;
-  initialCategory?: string;
-  initialDate?: string;
-};
-
-export default function EventSearchForm({
-  variant = "hero",
-  initialQuery = "",
-  initialArea = "",
-  initialCity = "",
-  initialCategory = "",
-  initialDate = "",
-}: EventSearchFormProps) {
+export default function EventSearchForm() {
   const router = useRouter();
-  const isHero = variant === "hero";
 
-  const [query, setQuery] = useState(initialQuery);
-  const [selectedArea, setSelectedArea] = useState(() => {
-    if (!initialArea || initialArea === "tutta-sardegna") {
-      return "";
-    }
-
-    return initialArea;
-  });
-  const [selectedCity, setSelectedCity] = useState(initialCity);
+  const [query, setQuery] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const [geoMessage, setGeoMessage] = useState("");
   const [isLocating, setIsLocating] = useState(false);
 
@@ -93,7 +70,7 @@ export default function EventSearchForm({
     }
 
     const form = document.getElementById(
-      isHero ? "hero-search-form" : "events-search-form",
+      "hero-search-form",
     ) as HTMLFormElement | null;
 
     const category =
@@ -153,75 +130,46 @@ export default function EventSearchForm({
     );
   }
 
-  const labelClass = isHero
-    ? "flex items-center gap-2 whitespace-nowrap text-sm font-bold text-slate-900"
-    : "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900";
+  const labelClass =
+    "flex items-center gap-2 whitespace-nowrap text-sm font-bold text-slate-900";
 
-  const fieldClass = isHero
-    ? "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-3.5 md:border-l md:border-t-0 md:px-5"
-    : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3";
+  const fieldClass =
+    "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-3.5 md:border-l md:border-t-0 md:px-5";
 
-  const firstFieldClass = isHero
-    ? "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-3.5 md:px-5"
-    : "flex min-w-0 flex-col justify-end rounded-2xl border border-slate-200 px-4 py-3 lg:col-span-full";
+  const firstFieldClass =
+    "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-3.5 md:px-5";
 
-  const inputClass = isHero
-    ? "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400"
-    : "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
-
-  const formClass = isHero
-    ? "mt-4 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
-    : "mt-4 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
-
-  const chipClass =
-    "flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20";
-
-  const nearMeClass = isHero
-    ? "inline-flex items-center gap-2.5 rounded-full bg-[#E67E22] px-5 py-3 text-base font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
-    : "inline-flex items-center gap-2.5 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-900/15 transition hover:bg-[#064a8a] active:scale-[0.98] disabled:opacity-60";
+  const inputClass =
+    "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400";
 
   return (
     <>
-      <div className={isHero ? "mt-8 max-w-7xl" : "mt-6"}>
+      <div className="mt-8 max-w-7xl">
         <button
           type="button"
           onClick={handleNearMe}
           disabled={isLocating}
-          className={nearMeClass}
+          className="inline-flex items-center gap-2.5 rounded-full bg-[#E67E22] px-5 py-3 text-base font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
         >
-          <LocateFixed
-            aria-hidden="true"
-            className={isHero ? "h-5 w-5" : "h-4 w-4"}
-          />
+          <LocateFixed aria-hidden="true" className="h-5 w-5" />
           {isLocating ? "Rilevo posizione…" : "Vicino a me"}
         </button>
 
         {geoMessage ? (
-          <p
-            className={
-              isHero
-                ? "mt-3 text-sm font-medium text-orange-100"
-                : "mt-2 text-sm text-red-600"
-            }
-          >
-            {geoMessage}
-          </p>
+          <p className="mt-3 text-sm font-medium text-orange-100">{geoMessage}</p>
         ) : null}
       </div>
 
       <form
-        id={isHero ? "hero-search-form" : "events-search-form"}
+        id="hero-search-form"
         action="/eventi"
         method="GET"
-        className={formClass}
+        className="mt-4 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
       >
         <label className={firstFieldClass}>
           <span className={labelClass}>
-            <Search
-              aria-hidden="true"
-              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
-            />
-            {isHero ? "Cerca per testo" : "Testo"}
+            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-[#075EAE]" />
+            Cerca per testo
           </span>
           <input
             type="search"
@@ -236,10 +184,7 @@ export default function EventSearchForm({
 
         <label className={fieldClass}>
           <span className={labelClass}>
-            <MapPin
-              aria-hidden="true"
-              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
-            />
+            <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-[#075EAE]" />
             Area
           </span>
           <select
@@ -259,7 +204,7 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Building2
               aria-hidden="true"
-              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
+              className="h-5 w-5 shrink-0 text-[#075EAE]"
             />
             Città
           </span>
@@ -282,15 +227,11 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <Compass
               aria-hidden="true"
-              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
+              className="h-5 w-5 shrink-0 text-[#075EAE]"
             />
             Categoria
           </span>
-          <select
-            name="category"
-            defaultValue={initialCategory}
-            className={inputClass}
-          >
+          <select name="category" className={inputClass}>
             <option value="">Tutte le categorie</option>
             {categories.map((category) => (
               <option key={category.id} value={category.slug}>
@@ -304,18 +245,12 @@ export default function EventSearchForm({
           <span className={labelClass}>
             <CalendarDays
               aria-hidden="true"
-              className={`shrink-0 text-[#075EAE] ${isHero ? "h-5 w-5" : "h-4 w-4"}`}
+              className="h-5 w-5 shrink-0 text-[#075EAE]"
             />
             Quando?
           </span>
-          <select
-            name="date"
-            defaultValue={initialDate}
-            className={inputClass}
-          >
-            <option value="">
-              {isHero ? "Tutte le date" : "Qualsiasi data"}
-            </option>
+          <select name="date" className={inputClass}>
+            <option value="">Tutte le date</option>
             <option value="oggi">Oggi</option>
             <option value="domani">Domani</option>
             <option value="weekend">Questo weekend</option>
@@ -325,47 +260,41 @@ export default function EventSearchForm({
 
         <button
           type="submit"
-          className={
-            isHero
-              ? "flex min-h-[4.5rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-8 py-5 text-lg font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
-              : "flex min-h-[4.75rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-7 py-4 font-bold text-white transition hover:bg-[#C96A1A] sm:col-span-2 lg:col-span-1 xl:min-h-0"
-          }
+          className="flex min-h-[4.5rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-8 py-5 text-lg font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
         >
-          <Search aria-hidden="true" className={isHero ? "h-6 w-6" : "h-5 w-5"} />
+          <Search aria-hidden="true" className="h-6 w-6" />
           Cerca
         </button>
       </form>
 
-      {isHero ? (
-        <div className="mt-5 max-w-7xl">
-          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
-            <button
-              type="button"
-              onClick={() => router.push("/eventi?area=nord-sardegna")}
-              className={chipClass}
-            >
-              <Compass aria-hidden="true" className="h-4 w-4" />
-              Nord Sardegna
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push("/eventi?area=centro-sardegna")}
-              className={chipClass}
-            >
-              <MapPin aria-hidden="true" className="h-4 w-4" />
-              Centro Sardegna
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push("/eventi?area=sud-sardegna")}
-              className={chipClass}
-            >
-              <Sun aria-hidden="true" className="h-4 w-4" />
-              Sud Sardegna
-            </button>
-          </div>
+      <div className="mt-5 max-w-7xl">
+        <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=nord-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <Compass aria-hidden="true" className="h-4 w-4" />
+            Nord Sardegna
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=centro-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <MapPin aria-hidden="true" className="h-4 w-4" />
+            Centro Sardegna
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=sud-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <Sun aria-hidden="true" className="h-4 w-4" />
+            Sud Sardegna
+          </button>
         </div>
-      ) : null}
+      </div>
     </>
   );
 }

@@ -1,5 +1,7 @@
+import Link from "next/link";
+import { Search } from "lucide-react";
+
 import Header from "@/src/components/home/Header";
-import EventSearchForm from "@/src/components/home/EventSearchForm";
 import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
@@ -46,6 +48,13 @@ const areaLabels: Record<string, string> = {
   "nord-sardegna": "Nord Sardegna",
   "centro-sardegna": "Centro Sardegna",
   "sud-sardegna": "Sud Sardegna",
+};
+
+const dateLabels: Record<string, string> = {
+  oggi: "Oggi",
+  domani: "Domani",
+  weekend: "Questo weekend",
+  settimana: "Questa settimana",
 };
 
 function startOfDay(date: Date) {
@@ -148,6 +157,28 @@ export default async function EventsPage({
     (category) => category.slug === selectedCategory,
   )?.name;
 
+  const selectedDateLabel = selectedDate ? dateLabels[selectedDate] : undefined;
+
+  const filterChips = [
+    searchQuery ? `“${searchQuery}”` : null,
+    selectedCity || null,
+    selectedAreaLabel && !selectedCity ? selectedAreaLabel : null,
+    selectedCategoryName || null,
+    selectedDateLabel || null,
+  ].filter(Boolean) as string[];
+
+  const pageTitle = selectedCity
+    ? `Eventi a ${selectedCity}`
+    : selectedAreaLabel
+      ? `Eventi in ${selectedAreaLabel}`
+      : searchQuery
+        ? `Risultati per “${searchQuery}”`
+        : selectedCategoryName
+          ? selectedCategoryName
+          : selectedDateLabel
+            ? `Eventi · ${selectedDateLabel}`
+            : "Eventi in Sardegna";
+
   const dateRange = getDateRange(selectedDate);
 
   const supabase = await createClient();
@@ -236,32 +267,50 @@ export default async function EventsPage({
 
       <main className="min-h-screen bg-white">
         <section className="border-b border-slate-200 bg-slate-50">
-          <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-              Esplora
-            </p>
+          <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
+                  Risultati
+                </p>
 
-            <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-              Eventi in Sardegna
-            </h1>
+                <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
+                  {pageTitle}
+                </h1>
 
-            <p className="mt-4 max-w-2xl text-lg text-slate-600">
-              Cerca per parola chiave, zona, categoria e periodo. Usa «Vicino a
-              me» per trovare eventi nella città più vicina.
-            </p>
+                <p className="mt-2 text-sm font-semibold text-slate-500">
+                  {filteredEvents.length}{" "}
+                  {filteredEvents.length === 1
+                    ? "evento trovato"
+                    : "eventi trovati"}
+                </p>
 
-            <EventSearchForm
-              variant="page"
-              initialQuery={searchQuery}
-              initialArea={selectedArea}
-              initialCity={selectedCity}
-              initialCategory={selectedCategory}
-              initialDate={selectedDate}
-            />
+                {filterChips.length > 0 ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {filterChips.map((chip) => (
+                      <span
+                        key={chip}
+                        className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700"
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+
+              <Link
+                href="/"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-900/15 transition hover:bg-[#064a8a]"
+              >
+                <Search aria-hidden="true" className="h-4 w-4" />
+                Nuova ricerca
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className="py-16">
+        <section className="py-10 sm:py-14">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             {error && (
               <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-800">
@@ -269,33 +318,29 @@ export default async function EventsPage({
               </div>
             )}
 
-            <p className="text-sm font-semibold text-slate-500">
-              {filteredEvents.length}{" "}
-              {filteredEvents.length === 1
-                ? "evento trovato"
-                : "eventi trovati"}
-            </p>
-
-            <h2 className="mt-2 text-3xl font-bold text-slate-900">
-              Risultati
-            </h2>
-
             {filteredEvents.length > 0 ? (
-              <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {filteredEvents.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
               </div>
             ) : (
-              <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
                 <h3 className="text-xl font-bold text-slate-900">
                   Nessun evento trovato
                 </h3>
 
                 <p className="mt-3 text-slate-600">
-                  Prova un&apos;altra parola chiave o modifica zona, categoria o
-                  data.
+                  Prova una nuova ricerca dalla home, oppure cambia zona o data.
                 </p>
+
+                <Link
+                  href="/"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#064a8a]"
+                >
+                  <Search aria-hidden="true" className="h-4 w-4" />
+                  Nuova ricerca
+                </Link>
               </div>
             )}
           </div>

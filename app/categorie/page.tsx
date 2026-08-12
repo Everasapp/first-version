@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 
 import EventCard, {
   type EventCardData,
@@ -137,6 +138,16 @@ export default async function CategoriesPage({
                 ? `Risultati per ${selectedCategoryMeta.name} in Sardegna.`
                 : "Scegli una categoria oppure sfoglia subito tutti gli eventi."}
             </p>
+
+            <div className="mt-6">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-900/15 transition hover:bg-[#064a8a]"
+              >
+                <Search aria-hidden="true" className="h-4 w-4" />
+                Nuova ricerca
+              </Link>
+            </div>
 
             <div className="mt-8 flex flex-wrap gap-2 sm:gap-2.5">
               <Link
