@@ -40,6 +40,8 @@ const GENERIC_LISTING_TITLES = new Set([
   "news",
   "home",
   "iniziative",
+  "cosa fare in citta",
+  "cosa fare in città",
 ]);
 
 function field<T = string>(
@@ -338,6 +340,112 @@ function parseDesignItaliaPlace($: cheerio.CheerioAPI) {
   };
 }
 
+/** "13 agosto 2026" / "dal 10 luglio al 20 settembre 2026" → ISO date (inizio). */
+function guessDateFromItalianText(text: string, fallbackYear?: string | null) {
+  const full = text.match(
+    /\b(\d{1,2})\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+(\d{4})\b/i,
+  );
+  if (full) {
+    const mm = ITALIAN_MONTHS[full[2].toLowerCase()];
+    if (mm) return `${full[3]}-${mm}-${full[1].padStart(2, "0")}`;
+  }
+
+  const partial = text.match(
+    /\b(\d{1,2})\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\b/i,
+  );
+  const year =
+    fallbackYear ||
+    text.match(/\b(20\d{2})\b/)?.[1] ||
+    null;
+  if (partial && year) {
+    const mm = ITALIAN_MONTHS[partial[2].toLowerCase()];
+    if (mm) return `${year}-${mm}-${partial[1].padStart(2, "0")}`;
+  }
+  return null;
+}
+
+/**
+ * Elenco HTML stile CityNews (SassariToday, *Today.it): card con link /eventi/*.html
+ */
+function extractHtmlEventListing(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): EventListingResult | null {
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+  const pageYear =
+    cleanText($("title").first().text()).match(/\b(20\d{2})\b/)?.[1] ||
+    $('a[href*="/eventi/dal/20"]').first().attr("href")?.match(/20\d{2}/)?.[0] ||
+    String(new Date().getFullYear());
+
+  const pushCandidate = (titleRaw: string, href: string, description?: string) => {
+    if (!href || href.includes("/location/")) return;
+    if (!/\.html(?:[?#]|$)/i.test(href)) return;
+    const abs = absolutize(pageUrl, href);
+    if (!abs || seen.has(abs)) return;
+    try {
+      const path = new URL(abs).pathname;
+      if (/\/eventi\/?$/i.test(path) || /\/eventi\/tipo\//i.test(path)) return;
+      if (/\/eventi\/dal\//i.test(path) || /\/eventi\/tema\//i.test(path)) return;
+      if (/\/eventi\/data\//i.test(path) || /\/eventi\/cinema\/?$/i.test(path)) return;
+    } catch {
+      return;
+    }
+    const title = cleanText(titleRaw);
+    if (!title || title.length < 8) return;
+    seen.add(abs);
+    const yearFromUrl = abs.match(/(20\d{2})/)?.[1] || pageYear;
+    const startDate = guessDateFromItalianText(title, yearFromUrl);
+    candidates.push({
+      title,
+      url: abs,
+      startAt: startDate ? `${startDate}T12:00:00+02:00` : null,
+      endAt: null,
+      description: description ? cleanText(description).slice(0, 280) : null,
+    });
+  };
+
+  // CityNews cards
+  $("article.c-card").each((_, article) => {
+    const card = $(article);
+    const link =
+      card.find('a[href*="/eventi/"][href$=".html"]').first().attr("href") ||
+      card.find('a[href*="/eventi/"][href*=".html"]').first().attr("href");
+    if (!link) return;
+    const title =
+      card.find("a[aria-label]").first().attr("aria-label") ||
+      card.find("h2.c-card__heading, h2, h3").first().text() ||
+      "";
+    pushCandidate(title, link);
+  });
+
+  // Fallback: any event detail anchors with aria-label
+  if (candidates.length < 2) {
+    $('a[href*="/eventi/"][href*=".html"]').each((_, el) => {
+      const href = $(el).attr("href") || "";
+      const title =
+        $(el).attr("aria-label") ||
+        $(el).find("h2, h3").text() ||
+        $(el).text();
+      pushCandidate(title, href);
+    });
+  }
+
+  if (candidates.length < 2) return null;
+
+  let sourceName =
+    cleanText($('meta[property="og:site_name"]').attr("content") || "") ||
+    cleanText($("title").first().text()).split(/[|\-–]/)[0]?.trim() ||
+    "elenco web";
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName,
+    total: candidates.length,
+    candidates: candidates.slice(0, 30),
+  };
+}
+
 function detectListaContenuti($: cheerio.CheerioAPI) {
   const el = $("app-lista-contenuti").first();
   if (!el.length) return null;
@@ -493,6 +601,25 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     };
   }
 
+  // Listing page HTML (CityNews / SassariToday e simili) — non sulle schede .html
+  const pathname = new URL(finalUrl).pathname;
+  const isLikelyDetailPage = /\.html(?:[?#]|$)/i.test(pathname);
+  const isLikelyListingPath =
+    /\/eventi\/?$/i.test(pathname) ||
+    /\/eventi\/(tipo|tema|dal|data)\b/i.test(pathname) ||
+    (/\/eventi\/[^/]+\/?$/i.test(pathname) && !isLikelyDetailPage);
+
+  if (!isLikelyDetailPage) {
+    const htmlListing = extractHtmlEventListing($, finalUrl);
+    if (
+      htmlListing &&
+      (htmlListing.candidates.length >= 5 ||
+        (isLikelyListingPath && htmlListing.candidates.length >= 2))
+    ) {
+      return { ok: true, listing: htmlListing };
+    }
+  }
+
   $("script:not([type='application/ld+json']), style, noscript").remove();
 
   const jsonLd = parseJsonLdBlocks(html);
@@ -506,11 +633,16 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     "";
   const ogImage = $('meta[property="og:image"]').attr("content") || "";
   const ogSiteName = $('meta[property="og:site_name"]').attr("content") || "";
+  const docTitle = cleanText($("title").first().text()).replace(
+    /\s*[|\-–].*$/,
+    "",
+  );
   const h1 =
     $("h1[data-element='news-title']").first().text() ||
+    $("h1.l-entry__title").first().text() ||
     $("h1").first().text();
 
-  let title = cleanText(ogTitle || h1);
+  let title = cleanText(ogTitle || h1 || docTitle);
   let description = cleanText(ogDescription);
   let startDate: string | null = null;
   let startTime: string | null = null;
@@ -540,7 +672,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     category: "low" as Confidence,
   };
   const sources = {
-    title: ogTitle ? "Open Graph" : h1 ? "H1" : "",
+    title: ogTitle ? "Open Graph" : h1 ? "H1" : docTitle ? "Title" : "",
     description: ogDescription ? "meta/OG" : "",
     dates: "",
     place: "",
@@ -740,9 +872,12 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
+  const looksLikeListingTitle =
+    GENERIC_LISTING_TITLES.has(normalizedTitle) ||
+    normalizedTitle.startsWith("tutti gli eventi");
   if (
     !startDate &&
-    (GENERIC_LISTING_TITLES.has(normalizedTitle) ||
+    (looksLikeListingTitle ||
       /\/eventi\/?$/i.test(new URL(finalUrl).pathname))
   ) {
     return {
