@@ -5,14 +5,42 @@ import { cities } from "@/src/data/cities";
 import {
   emptyField,
   type Confidence,
+  type EventListingResult,
   type ExtractedEventDraft,
   type ExtractedField,
+  type ListingEventCandidate,
 } from "@/src/lib/admin/event-import";
 
 const FETCH_TIMEOUT_MS = 20_000;
 const MAX_HTML_BYTES = 2_500_000;
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+
+const ITALIAN_MONTHS: Record<string, string> = {
+  gennaio: "01",
+  febbraio: "02",
+  marzo: "03",
+  aprile: "04",
+  maggio: "05",
+  giugno: "06",
+  luglio: "07",
+  agosto: "08",
+  settembre: "09",
+  ottobre: "10",
+  novembre: "11",
+  dicembre: "12",
+};
+
+const GENERIC_LISTING_TITLES = new Set([
+  "eventi",
+  "tutti gli eventi",
+  "calendario eventi",
+  "novita",
+  "novità",
+  "news",
+  "home",
+  "iniziative",
+]);
 
 function field<T = string>(
   value: T | null | undefined,
@@ -125,12 +153,12 @@ function extractDateParts(isoLike: string | null | undefined): {
 }
 
 function guessCategory(text: string): string | null {
-  const hay = text.toLowerCase();
+  const hay = ` ${text.toLowerCase()} `;
   const rules: Array<{ slug: string; words: string[] }> = [
-    { slug: "musica-concerti", words: ["concerto", "musica", "live", "band", "dj"] },
+    { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo", "triathlon", "ironman", "ciclismo", "nuoto"] },
+    { slug: "musica-concerti", words: ["concerto", "musica", " live ", " band ", " dj "] },
     { slug: "sagre-tradizioni", words: ["sagra", "tradizion", "festa patronale"] },
     { slug: "spettacoli", words: ["spettacolo", "teatro", "cabaret", "show"] },
-    { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo"] },
     { slug: "fiere-mercatini", words: ["fiera", "mercatino", "mercato"] },
     { slug: "arte-cultura", words: ["mostra", "arte", "galleria", "esposizion", "cultura"] },
     { slug: "food-drink", words: ["food", "degustazione", "enogastronom", "wine"] },
@@ -286,10 +314,128 @@ async function fetchHtml(url: string) {
   }
 }
 
+function parseItalianCalendarDate($: cheerio.CheerioAPI) {
+  const dayEl = $(".calendar-date-day .title-xxlarge-regular").first();
+  const monthEl = $(".calendar-date-day__month").first();
+  const yearEl = $(".calendar-date-day__year").first();
+  const day = cleanText(dayEl.text());
+  const monthName = cleanText(monthEl.text()).toLowerCase();
+  const year = cleanText(yearEl.text());
+  const month = ITALIAN_MONTHS[monthName];
+  if (!day || !month || !/^\d{4}$/.test(year)) return null;
+  const dd = day.padStart(2, "0");
+  return `${year}-${month}-${dd}`;
+}
+
+function parseDesignItaliaPlace($: cheerio.CheerioAPI) {
+  const place = $("#luogo");
+  if (!place.length) return { name: null as string | null, address: null as string | null };
+  const name = cleanText(place.find(".card-title").first().text());
+  const address = cleanText(place.find(".card-text").first().text());
+  return {
+    name: name || null,
+    address: address || null,
+  };
+}
+
+function detectListaContenuti($: cheerio.CheerioAPI) {
+  const el = $("app-lista-contenuti").first();
+  if (!el.length) return null;
+  const tipocontenuti = (el.attr("tipocontenuti") || "").toLowerCase();
+  if (!tipocontenuti.includes("ccm-evento") && !tipocontenuti.includes("evento")) {
+    return null;
+  }
+  const baseUrl = (el.attr("url") || "").replace(/\/$/, "");
+  const filtri = el.attr("filtri") || "";
+  const sizepagina = Number.parseInt(el.attr("sizepagina") || "12", 10) || 12;
+  if (!baseUrl) return null;
+  return { baseUrl, tipocontenuti, filtri, sizepagina };
+}
+
+async function fetchSolrEventListing(opts: {
+  baseUrl: string;
+  tipocontenuti: string;
+  filtri: string;
+  sizepagina: number;
+  pageOrigin: string;
+}): Promise<{ total: number; candidates: ListingEventCandidate[] } | null> {
+  const types = opts.tipocontenuti
+    .split("|")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .join(" OR ");
+  const rows = Math.min(Math.max(opts.sizepagina, 9), 24);
+  let query = `fq=type:(${types})&rows=${rows}&start=0`;
+  if (opts.filtri) {
+    query += opts.filtri.startsWith("&") ? opts.filtri : `&${opts.filtri}`;
+  } else {
+    query += "&sort=instancedate_dt desc";
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(
+      `${opts.baseUrl}/handleSolrSelect?${encodeURI(query).replace(/\+/g, "%2B")}`,
+      {
+        signal: controller.signal,
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept: "application/json,*/*;q=0.8",
+        },
+      },
+    );
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      response?: {
+        numFound?: number;
+        docs?: Array<Record<string, unknown>>;
+      };
+    };
+    const docs = data.response?.docs || [];
+    const candidates: ListingEventCandidate[] = [];
+    for (const doc of docs) {
+      const title = cleanText(
+        String(doc.titolo_it_t || doc.title_it_s || doc.disptitle_sort || ""),
+      );
+      const link = String(doc.link || "");
+      if (!title || !link) continue;
+      const abs = absolutize(opts.pageOrigin, link);
+      if (!abs) continue;
+      candidates.push({
+        title,
+        url: abs,
+        startAt: doc.instancedate_it_dt
+          ? String(doc.instancedate_it_dt)
+          : doc.instancedate_dt
+            ? String(doc.instancedate_dt)
+            : null,
+        endAt: doc.instancedateend_it_dt
+          ? String(doc.instancedateend_it_dt)
+          : doc.instancedateend_dt
+            ? String(doc.instancedateend_dt)
+            : null,
+        description: doc.description_it_s
+          ? cleanText(String(doc.description_it_s)).slice(0, 280)
+          : null,
+      });
+    }
+    return {
+      total: data.response?.numFound ?? candidates.length,
+      candidates,
+    };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function extractEventFromUrl(inputUrl: string): Promise<{
   ok: boolean;
   error?: string;
   draft?: ExtractedEventDraft;
+  listing?: EventListingResult;
 }> {
   let pageUrl: string;
   try {
@@ -318,6 +464,35 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   const $ = cheerio.load(html);
+
+  // Listing page (Design Italia / OpenCms): pick a single event first
+  const lista = detectListaContenuti($);
+  if (lista) {
+    const listing = await fetchSolrEventListing({
+      ...lista,
+      pageOrigin: finalUrl,
+    });
+    let sourceName =
+      cleanText($('meta[property="og:site_name"]').attr("content") || "") ||
+      "sito comunale";
+    if (listing && listing.candidates.length > 0) {
+      return {
+        ok: true,
+        listing: {
+          sourceUrl: finalUrl,
+          sourceName,
+          total: listing.total,
+          candidates: listing.candidates,
+        },
+      };
+    }
+    return {
+      ok: false,
+      error:
+        "Questa sembra una pagina elenco eventi, non un singolo evento. Apri la scheda di un evento e usa quella URL, oppure riprova più tardi.",
+    };
+  }
+
   $("script:not([type='application/ld+json']), style, noscript").remove();
 
   const jsonLd = parseJsonLdBlocks(html);
@@ -331,7 +506,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     "";
   const ogImage = $('meta[property="og:image"]').attr("content") || "";
   const ogSiteName = $('meta[property="og:site_name"]').attr("content") || "";
-  const h1 = $("h1").first().text();
+  const h1 =
+    $("h1[data-element='news-title']").first().text() ||
+    $("h1").first().text();
 
   let title = cleanText(ogTitle || h1);
   let description = cleanText(ogDescription);
@@ -424,6 +601,31 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     ticketUrl = ticketFromOffers(eventNode);
   }
 
+  // Design Italia municipal detail page: calendar + luogo
+  if (!startDate) {
+    const calDate = parseItalianCalendarDate($);
+    if (calDate) {
+      startDate = calDate;
+      conf.dates = "high";
+      sources.dates = "Calendario pagina";
+    }
+  }
+  const designPlace = parseDesignItaliaPlace($);
+  if (designPlace.name || designPlace.address) {
+    locationName = locationName || designPlace.name;
+    address = address || designPlace.address;
+    if (!sources.place) {
+      conf.place = "high";
+      sources.place = "Sezione Luogo";
+    }
+  }
+  if (isFree === null) {
+    const costi = cleanText($("#prezzi").text()).toLowerCase();
+    if (costi.includes("gratuito")) {
+      isFree = true;
+    }
+  }
+
   // Prefer city from title/location over dubious JSON-LD locality
   // (some CMS pages put a wrong addressLocality).
   const titleCity = matchCity([title, locationName || ""].join(" "));
@@ -467,6 +669,21 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   // Italian date heuristic if still missing
+  if (!startDate) {
+    const bodyText = $("body").text().replace(/\s+/g, " ");
+    const itNamed = bodyText.match(
+      /\b(\d{1,2})\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+(\d{4})\b/i,
+    );
+    if (itNamed) {
+      const dd = itNamed[1].padStart(2, "0");
+      const mm = ITALIAN_MONTHS[itNamed[2].toLowerCase()];
+      if (mm) {
+        startDate = `${itNamed[3]}-${mm}-${dd}`;
+        conf.dates = "medium";
+        sources.dates = "Testo pagina";
+      }
+    }
+  }
   if (!startDate) {
     const bodyText = $("body").text().replace(/\s+/g, " ");
     const itDate = bodyText.match(
@@ -515,6 +732,23 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
       ok: false,
       error:
         "Nessun titolo evento trovato. Controlla che la pagina contenga un evento pubblico.",
+    };
+  }
+
+  const normalizedTitle = title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+  if (
+    !startDate &&
+    (GENERIC_LISTING_TITLES.has(normalizedTitle) ||
+      /\/eventi\/?$/i.test(new URL(finalUrl).pathname))
+  ) {
+    return {
+      ok: false,
+      error:
+        "Questa sembra una pagina elenco, non un singolo evento. Apri la scheda di un evento specifico e usa quella URL.",
     };
   }
 

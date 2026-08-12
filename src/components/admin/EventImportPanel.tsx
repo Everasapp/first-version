@@ -11,6 +11,7 @@ import {
   type Confidence,
   type DuplicateCandidate,
   type EditableEventImport,
+  type EventListingResult,
   type ExtractedEventDraft,
   type OrganizerMatch,
 } from "@/src/lib/admin/event-import";
@@ -18,8 +19,10 @@ import {
 type AnalyzeResponse = {
   ok?: boolean;
   error?: string;
+  message?: string;
   draft?: ExtractedEventDraft;
   editable?: EditableEventImport;
+  listing?: EventListingResult;
   organizerMatches?: OrganizerMatch[];
   duplicates?: DuplicateCandidate[];
   imageRightsNote?: string;
@@ -49,6 +52,17 @@ function ConfidenceBadge({ level }: { level: Confidence }) {
   );
 }
 
+function formatListingDate(value: string | null) {
+  if (!value) return "Data non indicata";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export default function EventImportPanel() {
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
@@ -57,6 +71,7 @@ export default function EventImportPanel() {
   const [success, setSuccess] = useState<string | null>(null);
   const [draft, setDraft] = useState<ExtractedEventDraft | null>(null);
   const [form, setForm] = useState<EditableEventImport | null>(null);
+  const [listing, setListing] = useState<EventListingResult | null>(null);
   const [matches, setMatches] = useState<OrganizerMatch[]>([]);
   const [duplicates, setDuplicates] = useState<DuplicateCandidate[]>([]);
   const [imageNote, setImageNote] = useState<string | null>(null);
@@ -71,8 +86,7 @@ export default function EventImportPanel() {
     setForm((prev) => (prev ? { ...prev, ...patch } : prev));
   }
 
-  async function handleAnalyze(event: React.FormEvent) {
-    event.preventDefault();
+  async function analyzeUrl(targetUrl: string, clearListing = true) {
     setAnalyzing(true);
     setError(null);
     setSuccess(null);
@@ -81,28 +95,50 @@ export default function EventImportPanel() {
     setForm(null);
     setMatches([]);
     setDuplicates([]);
+    setImageNote(null);
+    if (clearListing) setListing(null);
 
     try {
       const response = await fetch("/api/admin/events/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: targetUrl }),
       });
       const data = (await response.json()) as AnalyzeResponse;
-      if (!response.ok || !data.editable || !data.draft) {
+
+      if (!response.ok) {
         setError(data.error || "Analisi non riuscita");
         return;
       }
+
+      if (data.listing) {
+        setListing(data.listing);
+        setSuccess(data.message || null);
+        return;
+      }
+
+      if (!data.editable || !data.draft) {
+        setError(data.error || "Analisi non riuscita");
+        return;
+      }
+
+      setListing(null);
       setDraft(data.draft);
       setForm(data.editable);
       setMatches(data.organizerMatches || []);
       setDuplicates(data.duplicates || []);
       setImageNote(data.imageRightsNote || null);
+      setUrl(targetUrl);
     } catch {
       setError("Errore di rete durante l'analisi");
     } finally {
       setAnalyzing(false);
     }
+  }
+
+  async function handleAnalyze(event: React.FormEvent) {
+    event.preventDefault();
+    await analyzeUrl(url, true);
   }
 
   async function handleImport(publish: boolean) {
@@ -149,8 +185,8 @@ export default function EventImportPanel() {
       >
         <h2 className="text-lg font-bold text-slate-900">Importa da URL</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Analizza una pagina evento pubblica (JSON-LD / Open Graph / HTML).
-          Nessuna pubblicazione automatica.
+          Incolla l’URL di un singolo evento, oppure di un elenco comunale: ti
+          mostriamo i risultati e scegli quale analizzare.
         </p>
         <label className="mt-4 block">
           <span className="mb-1.5 block text-sm font-semibold text-slate-700">
@@ -187,7 +223,7 @@ export default function EventImportPanel() {
         </p>
       ) : null}
 
-      {success ? (
+      {success && !listing ? (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
           <p>{success}</p>
           {savedSlug ? (
@@ -199,6 +235,46 @@ export default function EventImportPanel() {
             </Link>
           ) : null}
         </div>
+      ) : null}
+
+      {listing ? (
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-bold text-slate-900">
+            Elenco eventi trovato
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            {listing.sourceName}: {listing.total} eventi totali. Seleziona un
+            evento per caricarlo in verifica.
+          </p>
+          <ul className="mt-4 divide-y divide-slate-100">
+            {listing.candidates.map((item) => (
+              <li
+                key={item.url}
+                className="flex flex-col gap-3 py-4 sm:flex-row sm:items-start sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="font-semibold text-slate-900">{item.title}</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {formatListingDate(item.startAt)}
+                  </p>
+                  {item.description ? (
+                    <p className="mt-1 line-clamp-2 text-sm text-slate-600">
+                      {item.description}
+                    </p>
+                  ) : null}
+                </div>
+                <button
+                  type="button"
+                  disabled={analyzing}
+                  onClick={() => analyzeUrl(item.url, false)}
+                  className="shrink-0 rounded-xl bg-[#075EAE] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#064a8a] disabled:opacity-60"
+                >
+                  Analizza questo
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : null}
 
       {duplicates.length > 0 && form ? (

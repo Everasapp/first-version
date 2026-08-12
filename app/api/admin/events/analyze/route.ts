@@ -5,6 +5,7 @@ import {
   draftToEditable,
   normalizeTitleKey,
   type DuplicateCandidate,
+  type EventListingResult,
   type OrganizerMatch,
 } from "@/src/lib/admin/event-import";
 import { extractEventFromUrl } from "@/src/lib/admin/event-page-extractor";
@@ -29,6 +30,15 @@ export async function POST(request: Request) {
   }
 
   const extracted = await extractEventFromUrl(url);
+  if (extracted.listing) {
+    const listing: EventListingResult = extracted.listing;
+    return NextResponse.json({
+      ok: true,
+      listing,
+      message: `Trovati ${listing.total} eventi nell’elenco. Seleziona un evento da analizzare.`,
+    });
+  }
+
   if (!extracted.ok || !extracted.draft) {
     return NextResponse.json(
       { error: extracted.error || "Analisi non riuscita" },

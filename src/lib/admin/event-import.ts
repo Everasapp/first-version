@@ -78,6 +78,22 @@ export type DuplicateCandidate = {
   organizer_display_name: string | null;
 };
 
+/** Evento trovato in una pagina elenco (es. sito comunale Design Italia). */
+export type ListingEventCandidate = {
+  title: string;
+  url: string;
+  startAt: string | null;
+  endAt: string | null;
+  description: string | null;
+};
+
+export type EventListingResult = {
+  sourceUrl: string;
+  sourceName: string;
+  total: number;
+  candidates: ListingEventCandidate[];
+};
+
 export function confidenceLabel(level: Confidence) {
   switch (level) {
     case "high":
