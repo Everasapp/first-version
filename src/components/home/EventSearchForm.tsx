@@ -170,14 +170,45 @@ export default function EventSearchForm({
     : "mt-1.5 w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400";
 
   const formClass = isHero
-    ? "mt-10 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
-    : "mt-8 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
+    ? "mt-4 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
+    : "mt-4 grid gap-3 rounded-3xl bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1fr_1fr_1fr_1fr_auto] xl:items-end";
 
   const chipClass =
-    "flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 disabled:opacity-60";
+    "flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20";
+
+  const nearMeClass = isHero
+    ? "inline-flex items-center gap-2.5 rounded-full bg-[#E67E22] px-5 py-3 text-base font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
+    : "inline-flex items-center gap-2.5 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-900/15 transition hover:bg-[#064a8a] active:scale-[0.98] disabled:opacity-60";
 
   return (
     <>
+      <div className={isHero ? "mt-8 max-w-7xl" : "mt-6"}>
+        <button
+          type="button"
+          onClick={handleNearMe}
+          disabled={isLocating}
+          className={nearMeClass}
+        >
+          <LocateFixed
+            aria-hidden="true"
+            className={isHero ? "h-5 w-5" : "h-4 w-4"}
+          />
+          {isLocating ? "Rilevo posizione…" : "Vicino a me"}
+        </button>
+
+        {geoMessage ? (
+          <p
+            className={
+              isHero
+                ? "mt-3 text-sm font-medium text-orange-100"
+                : "mt-2 text-sm text-red-600"
+            }
+          >
+            {geoMessage}
+          </p>
+        ) : null}
+      </div>
+
       <form
         id={isHero ? "hero-search-form" : "events-search-form"}
         action="/eventi"
@@ -310,15 +341,6 @@ export default function EventSearchForm({
           <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
             <button
               type="button"
-              onClick={handleNearMe}
-              disabled={isLocating}
-              className={chipClass}
-            >
-              <LocateFixed aria-hidden="true" className="h-4 w-4" />
-              {isLocating ? "Rilevo posizione…" : "Vicino a me"}
-            </button>
-            <button
-              type="button"
               onClick={() => router.push("/eventi?area=nord-sardegna")}
               className={chipClass}
             >
@@ -342,28 +364,8 @@ export default function EventSearchForm({
               Sud Sardegna
             </button>
           </div>
-
-          {geoMessage ? (
-            <p className="mt-3 text-sm font-medium text-orange-100">{geoMessage}</p>
-          ) : null}
         </div>
-      ) : (
-        <div className="mt-4">
-          <button
-            type="button"
-            onClick={handleNearMe}
-            disabled={isLocating}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
-          >
-            <LocateFixed aria-hidden="true" className="h-4 w-4" />
-            {isLocating ? "Rilevo posizione…" : "Vicino a me"}
-          </button>
-
-          {geoMessage ? (
-            <p className="mt-2 text-sm text-red-600">{geoMessage}</p>
-          ) : null}
-        </div>
-      )}
+      ) : null}
     </>
   );
 }
