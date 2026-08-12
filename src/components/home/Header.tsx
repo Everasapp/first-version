@@ -84,8 +84,7 @@ export default function Header() {
             href="/pubblica"
             className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5"
           >
-            <span className="sm:hidden">Pubblica</span>
-            <span className="hidden sm:inline">Pubblica un evento</span>
+            Pubblica evento
           </Link>
 
           {isAuthenticated ? (
