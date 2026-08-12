@@ -7,6 +7,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Arzachena: { lat: 41.0806, lng: 9.3873 },
   Budoni: { lat: 40.7078, lng: 9.7031 },
   Castelsardo: { lat: 40.9144, lng: 8.7136 },
+  "Golfo Aranci": { lat: 41.0075, lng: 9.6155 },
   "La Maddalena": { lat: 41.2133, lng: 9.405 },
   Olbia: { lat: 40.9234, lng: 9.498 },
   Palau: { lat: 41.1803, lng: 9.3814 },

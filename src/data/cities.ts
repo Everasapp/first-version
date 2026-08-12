@@ -15,6 +15,7 @@ export type City = {
     { id: 33, city: "Berchidda", province: "SS", area: "Nord Sardegna" },
     { id: 3, city: "Budoni", province: "SS", area: "Nord Sardegna" },
     { id: 4, city: "Castelsardo", province: "SS", area: "Nord Sardegna" },
+    { id: 36, city: "Golfo Aranci", province: "SS", area: "Nord Sardegna" },
     { id: 5, city: "La Maddalena", province: "SS", area: "Nord Sardegna" },
     { id: 6, city: "Olbia", province: "SS", area: "Nord Sardegna" },
     { id: 32, city: "Osilo", province: "SS", area: "Nord Sardegna" },
