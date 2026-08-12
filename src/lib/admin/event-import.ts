@@ -153,3 +153,41 @@ export function normalizeTitleKey(title: string) {
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 }
+
+/** Converte un ISO (es. da Solr) in data/ora wall-clock Europe/Rome. */
+export function isoToRomeDateTime(iso: string | null | undefined): {
+  date: string;
+  time: string;
+} | null {
+  if (!iso) return null;
+  const parsed = new Date(iso);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(parsed);
+
+  const get = (type: string) =>
+    parts.find((part) => part.type === type)?.value || "";
+
+  const date = `${get("year")}-${get("month")}-${get("day")}`;
+  const time = `${get("hour")}:${get("minute")}`;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  return { date, time };
+}
+
+export function daysBetween(startDate: string, endDate: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate)) {
+    return null;
+  }
+  const start = Date.parse(`${startDate}T00:00:00Z`);
+  const end = Date.parse(`${endDate}T00:00:00Z`);
+  if (Number.isNaN(start) || Number.isNaN(end)) return null;
+  return Math.round((end - start) / 86_400_000);
+}

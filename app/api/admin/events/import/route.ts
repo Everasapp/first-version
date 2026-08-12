@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import sharp from "sharp";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
-import type { EditableEventImport } from "@/src/lib/admin/event-import";
+import {
+  daysBetween,
+  type EditableEventImport,
+} from "@/src/lib/admin/event-import";
 import { cities } from "@/src/data/cities";
 import { createSlug } from "@/src/lib/slug";
 
@@ -11,9 +14,7 @@ export const maxDuration = 60;
 
 function buildStartAt(date: string, time: string) {
   const t = time && /^\d{2}:\d{2}$/.test(time) ? time : "00:00";
-  // Store as Europe/Rome wall time via explicit offset approximation:
-  // use local ISO without Z and let Postgres timestamptz parse; safer: append +02:00 in summer.
-  // Prefer UTC instant from date+time treated as Rome by appending offset based on month.
+  // Approximate Europe/Rome offset (DST roughly Apr–Oct).
   const month = Number(date.slice(5, 7));
   const offset = month >= 4 && month <= 10 ? "+02:00" : "+01:00";
   return `${date}T${t}:00${offset}`;
@@ -97,6 +98,24 @@ export async function POST(request: Request) {
       { error: "Titolo, comune e data sono obbligatori" },
       { status: 400 },
     );
+  }
+
+  if (event.endDate.trim()) {
+    const span = daysBetween(startDate, event.endDate.trim());
+    if (span !== null && span < 0) {
+      return NextResponse.json(
+        { error: "La data di fine è precedente all’inizio" },
+        { status: 400 },
+      );
+    }
+    if (span !== null && span > 45) {
+      return NextResponse.json(
+        {
+          error: `La data di fine è a ${span} giorni dall’inizio. Controlla le date: un intervallo così lungo fa risultare l’evento “In corso” per settimane.`,
+        },
+        { status: 400 },
+      );
+    }
   }
 
   const cityRecord =
@@ -200,6 +219,20 @@ export async function POST(request: Request) {
   let endAt: string | null = null;
   if (event.endDate.trim()) {
     endAt = buildStartAt(event.endDate.trim(), event.endTime.trim() || "23:59");
+  } else if (event.startTime.trim()) {
+    // Timed event without end: soft +2h window (capped at 23:59)
+    const [hh, mm] = event.startTime.trim().split(":").map(Number);
+    const endMinutes = hh * 60 + mm + 120;
+    if (endMinutes >= 24 * 60) {
+      endAt = buildStartAt(startDate, "23:59");
+    } else {
+      const endH = String(Math.floor(endMinutes / 60)).padStart(2, "0");
+      const endM = String(endMinutes % 60).padStart(2, "0");
+      endAt = buildStartAt(startDate, `${endH}:${endM}`);
+    }
+  } else {
+    // All-day: end of the same Rome day
+    endAt = buildStartAt(startDate, "23:59");
   }
 
   const numericPrice = event.isFree

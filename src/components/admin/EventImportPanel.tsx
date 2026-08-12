@@ -8,11 +8,13 @@ import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import {
   confidenceLabel,
+  isoToRomeDateTime,
   type Confidence,
   type DuplicateCandidate,
   type EditableEventImport,
   type EventListingResult,
   type ExtractedEventDraft,
+  type ListingEventCandidate,
   type OrganizerMatch,
 } from "@/src/lib/admin/event-import";
 
@@ -82,11 +84,23 @@ export default function EventImportPanel() {
     [],
   );
 
+  const dateSpanDays = useMemo(() => {
+    if (!form?.startDate || !form?.endDate) return null;
+    const start = Date.parse(`${form.startDate}T00:00:00Z`);
+    const end = Date.parse(`${form.endDate}T00:00:00Z`);
+    if (Number.isNaN(start) || Number.isNaN(end)) return null;
+    return Math.round((end - start) / 86_400_000);
+  }, [form?.startDate, form?.endDate]);
+
   function patchForm(patch: Partial<EditableEventImport>) {
     setForm((prev) => (prev ? { ...prev, ...patch } : prev));
   }
 
-  async function analyzeUrl(targetUrl: string, clearListing = true) {
+  async function analyzeUrl(
+    targetUrl: string,
+    clearListing = true,
+    listingHint?: ListingEventCandidate | null,
+  ) {
     setAnalyzing(true);
     setError(null);
     setSuccess(null);
@@ -122,9 +136,33 @@ export default function EventImportPanel() {
         return;
       }
 
+      let editable = data.editable;
+      // Prefer precise times/dates from the municipal listing (Solr) when page HTML is thinner
+      if (listingHint) {
+        const start = isoToRomeDateTime(listingHint.startAt);
+        const end = isoToRomeDateTime(listingHint.endAt);
+        if (start && (!editable.startDate || !editable.startTime)) {
+          editable = {
+            ...editable,
+            startDate: editable.startDate || start.date,
+            startTime: editable.startTime || start.time,
+          };
+        }
+        if (end) {
+          editable = {
+            ...editable,
+            endDate: editable.endDate || end.date,
+            endTime: editable.endTime || end.time,
+          };
+        }
+        if (!editable.description && listingHint.description) {
+          editable = { ...editable, description: listingHint.description };
+        }
+      }
+
       setListing(null);
       setDraft(data.draft);
-      setForm(data.editable);
+      setForm(editable);
       setMatches(data.organizerMatches || []);
       setDuplicates(data.duplicates || []);
       setImageNote(data.imageRightsNote || null);
@@ -266,7 +304,7 @@ export default function EventImportPanel() {
                 <button
                   type="button"
                   disabled={analyzing}
-                  onClick={() => analyzeUrl(item.url, false)}
+                  onClick={() => analyzeUrl(item.url, false, item)}
                   className="shrink-0 rounded-xl bg-[#075EAE] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#064a8a] disabled:opacity-60"
                 >
                   Analizza questo
@@ -552,11 +590,21 @@ export default function EventImportPanel() {
               </p>
               <p className="mt-1">
                 <strong>Data:</strong> {form.startDate || "—"} {form.startTime}
+                {form.endDate
+                  ? ` → ${form.endDate} ${form.endTime}`.trimEnd()
+                  : ""}
               </p>
               <p className="mt-1">
                 <strong>Luogo:</strong> {form.municipality || "—"} (
                 {form.province || "—"})
               </p>
+              {dateSpanDays !== null && dateSpanDays > 14 ? (
+                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-900">
+                  Intervallo di {dateSpanDays} giorni: finché la data di fine non
+                  è passata, l’evento comparirà come “In corso”. Lascia vuota la
+                  data fine se è un evento di un solo giorno.
+                </p>
+              ) : null}
             </div>
 
             <div className="flex flex-wrap gap-3">
