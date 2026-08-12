@@ -8,6 +8,7 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -49,15 +50,8 @@ function isHappeningNow(event: EventRow, now: Date) {
   return current >= start && current <= end;
 }
 
-function formatEventDate(startAt: string) {
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Rome",
-  }).format(new Date(startAt));
+function formatEventDate(startAt: string, endAt?: string | null) {
+  return formatEventDateRange(startAt, endAt);
 }
 
 function getArea(event: EventRow) {
@@ -100,7 +94,7 @@ function mapEvent(
     eventId: event.id,
     title: event.title,
     category: categoryName,
-    date: formatEventDate(event.start_at),
+    date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
     location: event.location_name || event.municipality,

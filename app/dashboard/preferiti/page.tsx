@@ -5,44 +5,14 @@ import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
-import { getFavoriteEvents } from "@/src/lib/favorites";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { formatEventDateRange } from "@/src/lib/formatEventDate";
+import { getFavoriteEvents } from "@/src/lib/favorites";
 import { isOrganizer } from "@/src/lib/profile";
+import { requireProfile } from "@/src/lib/auth";
 
 function formatEventDate(startAt: string, endAt: string | null) {
-  const start = new Date(startAt);
-
-  const date = new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Rome",
-  }).format(start);
-
-  if (!endAt) {
-    return date;
-  }
-
-  const end = new Date(endAt);
-  const sameDay =
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate();
-
-  if (!sameDay) {
-    return `${date} – ${new Intl.DateTimeFormat("it-IT", {
-      day: "numeric",
-      month: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "Europe/Rome",
-    }).format(end)}`;
-  }
-
-  return date;
+  return formatEventDateRange(startAt, endAt);
 }
 
 export default async function PreferitiPage() {

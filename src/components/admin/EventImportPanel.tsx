@@ -84,14 +84,6 @@ export default function EventImportPanel() {
     [],
   );
 
-  const dateSpanDays = useMemo(() => {
-    if (!form?.startDate || !form?.endDate) return null;
-    const start = Date.parse(`${form.startDate}T00:00:00Z`);
-    const end = Date.parse(`${form.endDate}T00:00:00Z`);
-    if (Number.isNaN(start) || Number.isNaN(end)) return null;
-    return Math.round((end - start) / 86_400_000);
-  }, [form?.startDate, form?.endDate]);
-
   function patchForm(patch: Partial<EditableEventImport>) {
     setForm((prev) => (prev ? { ...prev, ...patch } : prev));
   }
@@ -591,20 +583,13 @@ export default function EventImportPanel() {
               <p className="mt-1">
                 <strong>Data:</strong> {form.startDate || "—"} {form.startTime}
                 {form.endDate
-                  ? ` → ${form.endDate} ${form.endTime}`.trimEnd()
+                  ? ` → ${form.endDate}${form.endTime ? ` ${form.endTime}` : ""}`
                   : ""}
               </p>
               <p className="mt-1">
                 <strong>Luogo:</strong> {form.municipality || "—"} (
                 {form.province || "—"})
               </p>
-              {dateSpanDays !== null && dateSpanDays > 14 ? (
-                <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-900">
-                  Intervallo di {dateSpanDays} giorni: finché la data di fine non
-                  è passata, l’evento comparirà come “In corso”. Lascia vuota la
-                  data fine se è un evento di un solo giorno.
-                </p>
-              ) : null}
             </div>
 
             <div className="flex flex-wrap gap-3">

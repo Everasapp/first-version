@@ -23,6 +23,7 @@ import {
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
+import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -53,58 +54,8 @@ type EventRow = {
   organizer_display_name: string | null;
 };
 
-const ROME_TZ = "Europe/Rome";
-
 function formatEventDate(startAt: string, endAt: string | null) {
-  const start = new Date(startAt);
-
-  const date = new Intl.DateTimeFormat("it-IT", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: ROME_TZ,
-  }).format(start);
-
-  const startTime = new Intl.DateTimeFormat("it-IT", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: ROME_TZ,
-  }).format(start);
-
-  if (!endAt) {
-    return `${date} · ${startTime}`;
-  }
-
-  const end = new Date(endAt);
-  const dayKey = new Intl.DateTimeFormat("en-CA", {
-    timeZone: ROME_TZ,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const isSameDay = dayKey.format(start) === dayKey.format(end);
-
-  if (isSameDay) {
-    const endTime = new Intl.DateTimeFormat("it-IT", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: ROME_TZ,
-    }).format(end);
-
-    return `${date} · ${startTime}–${endTime}`;
-  }
-
-  const formattedEnd = new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: ROME_TZ,
-  }).format(end);
-
-  return `${date} · ${startTime} – ${formattedEnd}`;
+  return formatEventDateRange(startAt, endAt, { includeWeekday: true });
 }
 
 function mapEventForCard(event: EventRow, isFavorite = false) {
