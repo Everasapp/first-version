@@ -38,10 +38,9 @@ function formatRomeDayKey(value: Date) {
   }).format(value);
 }
 
-function isHappeningOnRomeDay(event: EventRow, dayKey: string) {
-  const startKey = formatRomeDayKey(new Date(event.start_at));
-  const endKey = formatRomeDayKey(new Date(event.end_at || event.start_at));
-  return startKey <= dayKey && endKey >= dayKey;
+/** Solo eventi con inizio oggi (esclude mostre/periodi multi-giorno già aperti). */
+function startsOnRomeDay(event: EventRow, dayKey: string) {
+  return formatRomeDayKey(new Date(event.start_at)) === dayKey;
 }
 
 function formatEventDate(startAt: string, endAt?: string | null) {
@@ -138,7 +137,13 @@ export default async function Home() {
 
   const todayEvents = rows
     .filter((event) => {
-      if (!isHappeningOnRomeDay(event, todayKey)) {
+      // Solo data di inizio oggi: niente mostre «Evento attivo» che includono oggi.
+      if (!startsOnRomeDay(event, todayKey)) {
+        return false;
+      }
+
+      const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
+      if (status.isActiveEvent) {
         return false;
       }
 
@@ -151,8 +156,8 @@ export default async function Home() {
     .sort((a, b) => {
       const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
       const bStatus = resolveEventStatusBadge(b.start_at, b.end_at, now);
-      const aRank = aStatus.happeningNow ? 0 : aStatus.isActiveEvent ? 1 : 2;
-      const bRank = bStatus.happeningNow ? 0 : bStatus.isActiveEvent ? 1 : 2;
+      const aRank = aStatus.happeningNow ? 0 : 1;
+      const bRank = bStatus.happeningNow ? 0 : 1;
       if (aRank !== bRank) return aRank - bRank;
       if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
       return (
