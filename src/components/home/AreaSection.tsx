@@ -24,6 +24,14 @@ export default function AreaSection({
 }: AreaSectionProps) {
   const areaEvents = events
     .filter((event) => event.area === area)
+    .sort((a, b) => {
+      if (Boolean(a.isFeatured) !== Boolean(b.isFeatured)) {
+        return a.isFeatured ? -1 : 1;
+      }
+      return (
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      );
+    })
     .slice(0, 3);
 
   if (areaEvents.length === 0) {
