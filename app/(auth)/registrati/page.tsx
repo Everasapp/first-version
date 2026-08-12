@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
 export default function RegistratiPage() {
@@ -73,6 +74,13 @@ export default function RegistratiPage() {
       );
       setIsLoading(false);
       return;
+    }
+
+    if (data.user?.id) {
+      requestAdminNotification({
+        type: "user_registered",
+        userId: data.user.id,
+      });
     }
 
     if (data.session) {

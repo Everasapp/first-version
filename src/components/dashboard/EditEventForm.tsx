@@ -25,6 +25,7 @@ import {
   parsePrice,
 } from "@/src/lib/eventForm";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
+import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
 type PricingType = "free" | "paid";
@@ -423,6 +424,10 @@ export default function EditEventForm({
       setImageFile(null);
 
       if (shouldPublish) {
+        requestAdminNotification({
+          type: "event_published",
+          eventId: event.id,
+        });
         router.push(`/eventi/${event.slug}`);
       } else {
         router.push(isDraft ? "/dashboard?filtro=bozze" : "/dashboard");

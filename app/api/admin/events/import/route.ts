@@ -6,6 +6,7 @@ import type { EditableEventImport } from "@/src/lib/admin/event-import";
 import { cities } from "@/src/data/cities";
 import { createSlug } from "@/src/lib/slug";
 import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
+import { notifyEventPublished } from "@/src/lib/notifications/notify";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -323,6 +324,17 @@ export async function POST(request: Request) {
       publish,
     },
   });
+
+  if (publish && eventSlug) {
+    await notifyEventPublished({
+      title,
+      organizer: event.organizerName.trim() || "Organizzatore",
+      municipality,
+      startAt,
+      category: event.category.trim() || "celebrazioni",
+      slug: eventSlug,
+    });
+  }
 
   return NextResponse.json({
     ok: true,

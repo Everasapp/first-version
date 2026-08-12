@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/src/lib/supabase/server";
+import { notifyNewUser } from "@/src/lib/notifications/notify";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -118,7 +119,7 @@ export async function registerAction(
   const origin = await getOrigin();
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -135,6 +136,12 @@ export async function registerAction(
   if (error) {
     return { error: mapAuthError(error.message) };
   }
+
+  await notifyNewUser({
+    name: fullName,
+    email,
+    registeredAt: data.user?.created_at ?? new Date().toISOString(),
+  });
 
   return {
     success:

@@ -32,6 +32,7 @@ import {
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
+import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
 const steps = [
@@ -391,6 +392,13 @@ export default function PublishEventPage() {
           ? `Evento pubblicato correttamente. Slug: ${createdEvent.slug}`
           : "Evento pubblicato correttamente su EVERAS.",
       );
+
+      if (createdEvent?.id) {
+        requestAdminNotification({
+          type: "event_published",
+          eventId: createdEvent.id,
+        });
+      }
 
       if (createdEvent?.slug) {
         router.push(`/eventi/${createdEvent.slug}`);

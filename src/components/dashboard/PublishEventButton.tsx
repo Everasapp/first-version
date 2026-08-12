@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle, Send } from "lucide-react";
 
 import { createClient } from "@/src/lib/supabase/client";
+import { requestAdminNotification } from "@/src/lib/notifications/client";
 
 type PublishEventButtonProps = {
   eventId: string;
@@ -39,6 +40,11 @@ export default function PublishEventButton({
       setIsPublishing(false);
       return;
     }
+
+    requestAdminNotification({
+      type: "event_published",
+      eventId,
+    });
 
     router.push(`/eventi/${eventSlug}`);
     router.refresh();

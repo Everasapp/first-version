@@ -9,6 +9,7 @@ import {
   isValidVatNumber,
   normalizeVatNumber,
 } from "@/src/lib/profile";
+import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
 type BecomeOrganizerFormProps = {
@@ -59,6 +60,8 @@ export default function BecomeOrganizerForm({
       setIsLoading(false);
       return;
     }
+
+    requestAdminNotification({ type: "organizer_registered" });
 
     router.push(nextPath);
     router.refresh();
