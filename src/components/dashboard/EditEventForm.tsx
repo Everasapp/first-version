@@ -204,6 +204,13 @@ export default function EditEventForm({
       }
     }
 
+    if (pricing === "free" && ticketUrl.trim()) {
+      if (!isValidTicketUrl(ticketUrl)) {
+        nextErrors.ticketUrl =
+          "Inserisci un link valido (es. www.esempio.it/prenota).";
+      }
+    }
+
     if (description.trim().length < 30) {
       nextErrors.description =
         "Inserisci una descrizione di almeno 30 caratteri.";
@@ -303,8 +310,9 @@ export default function EditEventForm({
       const selectedCity = cities.find((item) => item.city === city);
       const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
-      const normalizedTicketUrl =
-        pricing === "paid" ? normalizeTicketUrl(ticketUrl) : null;
+      const normalizedTicketUrl = ticketUrl.trim()
+        ? normalizeTicketUrl(ticketUrl)
+        : null;
 
       const { error: updateError } = await supabase
         .from("events")
@@ -663,68 +671,73 @@ export default function EditEventForm({
           </div>
 
           {pricing === "paid" && (
-            <>
-              <label className="block">
-                <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                  <Euro className="h-4 w-4 text-[#075EAE]" />
-                  Prezzo a partire da
-                </span>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  autoComplete="off"
-                  value={price}
-                  onChange={(changeEvent) => {
-                    setPrice(changeEvent.target.value);
-                    clearError("price");
-                  }}
-                  placeholder="15,00"
-                  className={`${fieldClassName} ${
-                    errors.price ? "border-red-400" : "border-slate-300"
-                  }`}
-                />
-                {errors.price && (
-                  <p className="mt-2 text-sm text-red-600">{errors.price}</p>
-                )}
-              </label>
-
-              <label className="block">
-                <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                  <Link2 className="h-4 w-4 text-[#075EAE]" />
-                  Link biglietti
-                </span>
-                <input
-                  type="url"
-                  inputMode="url"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  value={ticketUrl}
-                  onChange={(changeEvent) => {
-                    setTicketUrl(changeEvent.target.value);
-                    clearError("ticketUrl");
-                  }}
-                  onBlur={() => {
-                    if (!ticketUrl.trim()) {
-                      return;
-                    }
-
-                    setTicketUrl(normalizeTicketUrl(ticketUrl));
-                  }}
-                  placeholder="www.ticketone.it"
-                  className={`${fieldClassName} ${
-                    errors.ticketUrl ? "border-red-400" : "border-slate-300"
-                  }`}
-                />
-                {errors.ticketUrl && (
-                  <p className="mt-2 text-sm text-red-600">{errors.ticketUrl}</p>
-                )}
-                <p className="mt-2 text-sm text-slate-500">
-                  Basta un indirizzo come www.ticketone.it — se manca https:// lo
-                  aggiungiamo noi.
-                </p>
-              </label>
-            </>
+            <label className="block">
+              <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <Euro className="h-4 w-4 text-[#075EAE]" />
+                Prezzo a partire da
+              </span>
+              <input
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                value={price}
+                onChange={(changeEvent) => {
+                  setPrice(changeEvent.target.value);
+                  clearError("price");
+                }}
+                placeholder="15,00"
+                className={`${fieldClassName} ${
+                  errors.price ? "border-red-400" : "border-slate-300"
+                }`}
+              />
+              {errors.price && (
+                <p className="mt-2 text-sm text-red-600">{errors.price}</p>
+              )}
+            </label>
           )}
+
+          <label className="block">
+            <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+              <Link2 className="h-4 w-4 text-[#075EAE]" />
+              {pricing === "free"
+                ? "Link per prenotare (opzionale)"
+                : "Link biglietti"}
+            </span>
+            <input
+              type="url"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              value={ticketUrl}
+              onChange={(changeEvent) => {
+                setTicketUrl(changeEvent.target.value);
+                clearError("ticketUrl");
+              }}
+              onBlur={() => {
+                if (!ticketUrl.trim()) {
+                  return;
+                }
+
+                setTicketUrl(normalizeTicketUrl(ticketUrl));
+              }}
+              placeholder={
+                pricing === "free"
+                  ? "www.esempio.it/prenota"
+                  : "www.ticketone.it"
+              }
+              className={`${fieldClassName} ${
+                errors.ticketUrl ? "border-red-400" : "border-slate-300"
+              }`}
+            />
+            {errors.ticketUrl && (
+              <p className="mt-2 text-sm text-red-600">{errors.ticketUrl}</p>
+            )}
+            <p className="mt-2 text-sm text-slate-500">
+              {pricing === "free"
+                ? "Se c’è un form o una pagina di prenotazione, inseriscila qui: il pulsante comparirà solo se compilato."
+                : "Basta un indirizzo come www.ticketone.it — se manca https:// lo aggiungiamo noi."}
+            </p>
+          </label>
 
           <label className="block">
             <span className="text-sm font-bold text-slate-900">Descrizione</span>

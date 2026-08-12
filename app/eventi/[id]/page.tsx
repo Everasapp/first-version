@@ -481,7 +481,7 @@ export default async function EventDetailPage({
                     className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 text-center font-bold text-white transition hover:bg-[#C96A1A]"
                   >
                     <Ticket aria-hidden="true" className="h-5 w-5" />
-                    {pricing.isFree ? "Partecipa" : "Acquista il biglietto"}
+                    {pricing.isFree ? "Prenota" : "Acquista il biglietto"}
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   </a>
                 )}
@@ -503,8 +503,9 @@ export default async function EventDetailPage({
 
               {event.ticket_url && (
                 <p className="mt-5 text-center text-xs leading-5 text-slate-500">
-                  La biglietteria è gestita sul sito esterno indicato
-                  dall&apos;organizzatore.
+                  {pricing.isFree
+                    ? "La prenotazione è gestita sul sito esterno indicato dall’organizzatore."
+                    : "La biglietteria è gestita sul sito esterno indicato dall'organizzatore."}
                 </p>
               )}
             </div>

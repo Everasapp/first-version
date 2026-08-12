@@ -413,7 +413,7 @@ export default function EventImportPanel() {
                   ["organizerName", "Organizzatore", draft.organizerName],
                   ["category", "Categoria", draft.category],
                   ["imageUrl", "Immagine URL", draft.imageUrl],
-                  ["ticketUrl", "Ticket URL", draft.ticketUrl],
+                  ["ticketUrl", "Link prenotazione / biglietti", draft.ticketUrl],
                 ] as const
               ).map(([key, label, extracted]) => (
                 <tr key={key} className="border-t border-slate-100 align-top">

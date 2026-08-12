@@ -240,6 +240,13 @@ export default function PublishEventPage() {
       }
     }
 
+    if (step === 2 && pricing === "free" && ticketUrl.trim()) {
+      if (!isValidTicketUrl(ticketUrl)) {
+        nextErrors.ticketUrl =
+          "Inserisci un link valido (es. www.esempio.it/prenota).";
+      }
+    }
+
     if (step === 3) {
       if (description.trim().length < 30) {
         nextErrors.description =
@@ -338,8 +345,9 @@ export default function PublishEventPage() {
 
       const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
-      const normalizedTicketUrl =
-        pricing === "paid" ? normalizeTicketUrl(ticketUrl) : null;
+      const normalizedTicketUrl = ticketUrl.trim()
+        ? normalizeTicketUrl(ticketUrl)
+        : null;
 
       const { data: createdEvent, error: insertError } = await supabase
         .from("events")
@@ -897,7 +905,7 @@ export default function PublishEventPage() {
                             Evento gratuito
                           </p>
                           <p className="mt-1 text-sm text-slate-500">
-                            Non è richiesto alcun pagamento.
+                            Puoi aggiungere un link di prenotazione se serve.
                           </p>
                         </div>
                       </label>
@@ -930,85 +938,90 @@ export default function PublishEventPage() {
                     </div>
 
                     {pricing === "paid" && (
-                      <>
-                        <label className="block">
-                          <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                            <Euro className="h-4 w-4 text-[#075EAE]" />
-                            Prezzo a partire da
-                          </span>
+                      <label className="block">
+                        <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                          <Euro className="h-4 w-4 text-[#075EAE]" />
+                          Prezzo a partire da
+                        </span>
 
-                          <input
-                            type="text"
-                            name="price"
-                            inputMode="decimal"
-                            autoComplete="off"
-                            value={price}
-                            onChange={(event) => {
-                              setPrice(event.target.value);
-                              clearError("price");
-                            }}
-                            placeholder="15,00"
-                            aria-invalid={Boolean(errors.price)}
-                            className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
-                              errors.price
-                                ? "border-red-400 focus:border-red-500"
-                                : "border-slate-300 focus:border-[#075EAE]"
-                            }`}
-                          />
+                        <input
+                          type="text"
+                          name="price"
+                          inputMode="decimal"
+                          autoComplete="off"
+                          value={price}
+                          onChange={(event) => {
+                            setPrice(event.target.value);
+                            clearError("price");
+                          }}
+                          placeholder="15,00"
+                          aria-invalid={Boolean(errors.price)}
+                          className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
+                            errors.price
+                              ? "border-red-400 focus:border-red-500"
+                              : "border-slate-300 focus:border-[#075EAE]"
+                          }`}
+                        />
 
-                          {errors.price && (
-                            <p className="mt-2 text-sm text-red-600">
-                              {errors.price}
-                            </p>
-                          )}
-                        </label>
-
-                        <label className="block">
-                          <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                            <Link2 className="h-4 w-4 text-[#075EAE]" />
-                            Link per acquistare il biglietto
-                          </span>
-
-                          <input
-                            type="url"
-                            name="ticketUrl"
-                            inputMode="url"
-                            autoCapitalize="none"
-                            autoCorrect="off"
-                            value={ticketUrl}
-                            onChange={(event) => {
-                              setTicketUrl(event.target.value);
-                              clearError("ticketUrl");
-                            }}
-                            onBlur={() => {
-                              if (!ticketUrl.trim()) {
-                                return;
-                              }
-
-                              setTicketUrl(normalizeTicketUrl(ticketUrl));
-                            }}
-                            placeholder="www.ticketone.it"
-                            aria-invalid={Boolean(errors.ticketUrl)}
-                            className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
-                              errors.ticketUrl
-                                ? "border-red-400 focus:border-red-500"
-                                : "border-slate-300 focus:border-[#075EAE]"
-                            }`}
-                          />
-
-                          {errors.ticketUrl && (
-                            <p className="mt-2 text-sm text-red-600">
-                              {errors.ticketUrl}
-                            </p>
-                          )}
-
-                          <p className="mt-2 text-sm text-slate-500">
-                            Basta un indirizzo come www.ticketone.it — se manca
-                            https:// lo aggiungiamo noi.
+                        {errors.price && (
+                          <p className="mt-2 text-sm text-red-600">
+                            {errors.price}
                           </p>
-                        </label>
-                      </>
+                        )}
+                      </label>
                     )}
+
+                    <label className="block">
+                      <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                        <Link2 className="h-4 w-4 text-[#075EAE]" />
+                        {pricing === "free"
+                          ? "Link per prenotare (opzionale)"
+                          : "Link per acquistare il biglietto"}
+                      </span>
+
+                      <input
+                        type="url"
+                        name="ticketUrl"
+                        inputMode="url"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        value={ticketUrl}
+                        onChange={(event) => {
+                          setTicketUrl(event.target.value);
+                          clearError("ticketUrl");
+                        }}
+                        onBlur={() => {
+                          if (!ticketUrl.trim()) {
+                            return;
+                          }
+
+                          setTicketUrl(normalizeTicketUrl(ticketUrl));
+                        }}
+                        placeholder={
+                          pricing === "free"
+                            ? "www.esempio.it/prenota"
+                            : "www.ticketone.it"
+                        }
+                        aria-invalid={Boolean(errors.ticketUrl)}
+                        className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
+                          errors.ticketUrl
+                            ? "border-red-400 focus:border-red-500"
+                            : "border-slate-300 focus:border-[#075EAE]"
+                        }`}
+                      />
+
+                      {errors.ticketUrl && (
+                        <p className="mt-2 text-sm text-red-600">
+                          {errors.ticketUrl}
+                        </p>
+                      )}
+
+                      <p className="mt-2 text-sm text-slate-500">
+                        {pricing === "free"
+                          ? "Se c’è un form o una pagina di prenotazione, inseriscila qui: il pulsante comparirà solo se compilato."
+                          : "Basta un indirizzo come www.ticketone.it — se manca https:// lo aggiungiamo noi."}
+                      </p>
+                    </label>
                   </div>
                 </div>
               )}
