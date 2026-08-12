@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Building2,
@@ -30,6 +30,19 @@ export default function EventSearchForm() {
   const [selectedCity, setSelectedCity] = useState("");
   const [geoMessage, setGeoMessage] = useState("");
   const [isLocating, setIsLocating] = useState(false);
+
+  useEffect(() => {
+    if (window.location.hash !== "#ricerca") return;
+
+    const el = document.getElementById("ricerca");
+    if (!el) return;
+
+    const timer = window.setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const availableCities = useMemo(() => {
     const areaLabel =
@@ -143,7 +156,7 @@ export default function EventSearchForm() {
     "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400";
 
   return (
-    <>
+    <div id="ricerca" className="scroll-mt-28">
       <div className="mt-8 max-w-7xl">
         <button
           type="button"
@@ -295,6 +308,6 @@ export default function EventSearchForm() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

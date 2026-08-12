@@ -141,7 +141,7 @@ export default async function CategoriesPage({
 
             <div className="mt-6">
               <Link
-                href="/"
+                href="/#ricerca"
                 className="inline-flex items-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-900/15 transition hover:bg-[#064a8a]"
               >
                 <Search aria-hidden="true" className="h-4 w-4" />
