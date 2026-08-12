@@ -34,7 +34,7 @@ export default async function ModificaEventoPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, province, municipality, location_name, address, start_at, image_url, is_free, price_from, ticket_url, organizer_display_name",
+        "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, organizer_display_name",
       )
       .eq("id", id)
       .eq("organizer_id", user.id)

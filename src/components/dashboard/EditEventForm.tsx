@@ -42,6 +42,7 @@ export type EditableEvent = {
   location_name: string | null;
   address: string | null;
   start_at: string;
+  end_at: string | null;
   image_url: string | null;
   is_free: boolean;
   price_from: number | string | null;
@@ -76,19 +77,47 @@ function getStoragePath(imageUrl: string | null) {
   }
 }
 
-function toDateInputValue(iso: string) {
+function toDateInputValue(iso: string | null | undefined) {
+  if (!iso) return "";
   const date = new Date(iso);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  if (Number.isNaN(date.getTime())) return "";
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const get = (type: string) =>
+    parts.find((part) => part.type === type)?.value || "";
+
+  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-function toTimeInputValue(iso: string) {
+function toTimeInputValue(iso: string | null | undefined) {
+  if (!iso) return "";
   const date = new Date(iso);
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
+  if (Number.isNaN(date.getTime())) return "";
+
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  const get = (type: string) =>
+    parts.find((part) => part.type === type)?.value || "";
+
+  return `${get("hour")}:${get("minute")}`;
+}
+
+function buildRomeIso(date: string, time: string) {
+  const t = time && /^\d{2}:\d{2}$/.test(time) ? time : "00:00";
+  const month = Number(date.slice(5, 7));
+  const offset = month >= 4 && month <= 10 ? "+02:00" : "+01:00";
+  return `${date}T${t}:00${offset}`;
 }
 
 export default function EditEventForm({
@@ -109,6 +138,8 @@ export default function EditEventForm({
 
   const [startDate, setStartDate] = useState(toDateInputValue(event.start_at));
   const [startTime, setStartTime] = useState(toTimeInputValue(event.start_at));
+  const [endDate, setEndDate] = useState(toDateInputValue(event.end_at));
+  const [endTime, setEndTime] = useState(toTimeInputValue(event.end_at));
   const [area, setArea] = useState(cityRecord?.area ?? "");
   const [city, setCity] = useState(event.municipality);
   const [venue, setVenue] = useState(
@@ -176,6 +207,14 @@ export default function EditEventForm({
 
     if (!startTime) {
       nextErrors.startTime = "Seleziona l'ora di inizio.";
+    }
+
+    if (endDate && startDate && endDate < startDate) {
+      nextErrors.endDate = "La data di fine è precedente all’inizio.";
+    }
+
+    if (endTime && !endDate) {
+      nextErrors.endDate = "Inserisci anche la data di fine.";
     }
 
     if (!area) {
@@ -308,7 +347,11 @@ export default function EditEventForm({
       }
 
       const selectedCity = cities.find((item) => item.city === city);
-      const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
+      const startAt = buildRomeIso(startDate, startTime);
+      let endAt: string | null = null;
+      if (endDate.trim()) {
+        endAt = buildRomeIso(endDate.trim(), endTime.trim() || "23:59");
+      }
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
       const normalizedTicketUrl = ticketUrl.trim()
         ? normalizeTicketUrl(ticketUrl)
@@ -325,6 +368,7 @@ export default function EditEventForm({
           location_name: venue.trim(),
           address: venue.trim(),
           start_at: startAt,
+          end_at: endAt,
           image_url: nextImageUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
@@ -554,6 +598,46 @@ export default function EditEventForm({
               {errors.startTime && (
                 <p className="mt-2 text-sm text-red-600">{errors.startTime}</p>
               )}
+            </label>
+
+            <label className="block">
+              <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <CalendarDays className="h-4 w-4 text-[#075EAE]" />
+                Data di fine (opzionale)
+              </span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(changeEvent) => {
+                  setEndDate(changeEvent.target.value);
+                  clearError("endDate");
+                }}
+                className={`${fieldClassName} ${
+                  errors.endDate ? "border-red-400" : "border-slate-300"
+                }`}
+              />
+              {errors.endDate && (
+                <p className="mt-2 text-sm text-red-600">{errors.endDate}</p>
+              )}
+            </label>
+
+            <label className="block">
+              <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <Clock3 className="h-4 w-4 text-[#075EAE]" />
+                Ora di fine (opzionale)
+              </span>
+              <input
+                type="time"
+                value={endTime}
+                onChange={(changeEvent) => {
+                  setEndTime(changeEvent.target.value);
+                  clearError("endTime");
+                }}
+                className={`${fieldClassName} border-slate-300`}
+              />
+              <p className="mt-2 text-sm text-slate-500">
+                Se imposti solo la data di fine, useremo le 23:59.
+              </p>
             </label>
 
             <label className="block">
