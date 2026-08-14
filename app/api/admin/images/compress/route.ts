@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
@@ -6,6 +7,7 @@ import {
   getEventImageStoragePath,
   isAlreadyWebpUrl,
 } from "@/src/lib/images/storagePath";
+import { createAdminClient } from "@/src/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -22,6 +24,14 @@ type EventImageRow = {
   organizer_id: string;
   image_url: string;
 };
+
+function tryCreateAdminClient(): SupabaseClient | null {
+  try {
+    return createAdminClient();
+  } catch {
+    return null;
+  }
+}
 
 async function downloadImageBuffer(imageUrl: string) {
   const controller = new AbortController();
@@ -71,23 +81,32 @@ export async function GET() {
 
     const { data, error } = await auth.supabase
       .from("events")
-      .select("id, image_url")
+      .select("id, image_url, organizer_id")
       .not("image_url", "is", null);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const rows = (data ?? []) as { id: string; image_url: string | null }[];
+    const rows = (data ?? []) as {
+      id: string;
+      image_url: string | null;
+      organizer_id: string;
+    }[];
     const withImage = rows.filter((row) => row.image_url?.trim());
     const pending = withImage.filter(
       (row) => row.image_url && !isAlreadyWebpUrl(row.image_url),
+    );
+    const pendingOwn = pending.filter(
+      (row) => row.organizer_id === auth.user.id,
     );
 
     return NextResponse.json({
       totalWithImage: withImage.length,
       alreadyWebp: withImage.length - pending.length,
       pending: pending.length,
+      pendingOwn: pendingOwn.length,
+      hasServiceRole: Boolean(tryCreateAdminClient()),
     });
   } catch (err) {
     return NextResponse.json(
@@ -128,12 +147,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const candidates = ((data ?? []) as EventImageRow[]).filter(
-      (row) => row.image_url?.trim() && !isAlreadyWebpUrl(row.image_url),
-    );
+    const adminClient = tryCreateAdminClient();
+
+    const candidates = ((data ?? []) as EventImageRow[])
+      .filter((row) => row.image_url?.trim() && !isAlreadyWebpUrl(row.image_url))
+      .sort((a, b) => {
+        // Prima gli eventi dell’admin loggato (sempre aggiornabili via RLS)
+        const aOwn = a.organizer_id === auth.user.id ? 0 : 1;
+        const bOwn = b.organizer_id === auth.user.id ? 0 : 1;
+        return aOwn - bOwn;
+      });
 
     const batch = candidates.slice(0, limit);
-    const supabase = auth.supabase;
 
     const results: Array<{
       id: string;
@@ -146,15 +171,17 @@ export async function POST(request: Request) {
     for (const event of batch) {
       const previousUrl = event.image_url;
       const previousPath = getEventImageStoragePath(previousUrl);
+      // Con policy admin: sessione sufficiente per UPDATE; storage in cartella admin
+      const db = auth.supabase;
+      const storage = adminClient ?? auth.supabase;
 
       try {
-        // Storage RLS: upload solo nella cartella dell’utente autenticato
         const path = `${auth.user.id}/optimized-${event.id}.webp`;
 
         const input = await downloadImageBuffer(previousUrl);
         const webp = await optimizeImageToWebp(input);
 
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError } = await storage.storage
           .from("event-images")
           .upload(path, webp, {
             cacheControl: "31536000",
@@ -166,13 +193,13 @@ export async function POST(request: Request) {
           throw new Error(uploadError.message);
         }
 
-        const { data: publicUrlData } = supabase.storage
+        const { data: publicUrlData } = storage.storage
           .from("event-images")
           .getPublicUrl(path);
 
         const publicUrl = publicUrlData.publicUrl;
 
-        const { data: updated, error: updateError } = await supabase
+        const { data: updated, error: updateError } = await db
           .from("events")
           .update({ image_url: publicUrl })
           .eq("id", event.id)
@@ -180,31 +207,30 @@ export async function POST(request: Request) {
           .maybeSingle();
 
         if (updateError) {
-          await supabase.storage.from("event-images").remove([path]);
+          await storage.storage.from("event-images").remove([path]);
           throw new Error(updateError.message);
         }
 
         if (!updated) {
-          await supabase.storage.from("event-images").remove([path]);
+          await storage.storage.from("event-images").remove([path]);
           throw new Error(
             "Aggiornamento non consentito (evento di un altro organizzatore).",
           );
         }
 
-        // Elimina il file precedente solo se è nella cartella dell’admin
         if (
           previousPath &&
           previousPath !== path &&
           previousPath.startsWith(`${auth.user.id}/`)
         ) {
-          const { count } = await supabase
+          const { count } = await db
             .from("events")
             .select("id", { count: "exact", head: true })
             .eq("image_url", previousUrl)
             .neq("id", event.id);
 
           if ((count ?? 0) === 0) {
-            await supabase.storage.from("event-images").remove([previousPath]);
+            await storage.storage.from("event-images").remove([previousPath]);
           }
         }
 
@@ -233,6 +259,7 @@ export async function POST(request: Request) {
       failed,
       remaining: Math.max(0, candidates.length - converted),
       results,
+      hasServiceRole: Boolean(adminClient),
     });
   } catch (err) {
     return NextResponse.json(

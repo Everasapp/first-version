@@ -7,6 +7,8 @@ type Stats = {
   totalWithImage: number;
   alreadyWebp: number;
   pending: number;
+  pendingOwn?: number;
+  hasServiceRole?: boolean;
 };
 
 type CompressResult = {
@@ -138,6 +140,12 @@ export default function CompressImagesPanel() {
               </>
             ) : null}
           </div>
+
+          <p className="mt-3 text-xs text-slate-500">
+            I lotti partono dagli eventi del tuo account admin; gli altri
+            organizzatori richiedono permessi admin sul database (già
+            configurati) o la service role su Vercel.
+          </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <button
