@@ -40,6 +40,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Giave: { lat: 40.4519, lng: 8.7511 },
   "Golfo Aranci": { lat: 41.0075, lng: 9.6155 },
   Illorai: { lat: 40.3569, lng: 9.0025 },
+  "Isola dell'Asinara": { lat: 41.0611, lng: 8.2656 },
   Ittireddu: { lat: 40.5436, lng: 8.9011 },
   Ittiri: { lat: 40.5919, lng: 8.5681 },
   "La Maddalena": { lat: 41.2133, lng: 9.405 },
