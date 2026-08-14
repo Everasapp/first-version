@@ -34,44 +34,86 @@ function tryCreateAdminClient(): SupabaseClient | null {
 }
 
 async function downloadImageBuffer(imageUrl: string) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS);
-  try {
-    const response = await fetch(imageUrl, {
-      signal: controller.signal,
-      redirect: "follow",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (compatible; EverasImageOptimize/1.0; +https://everas.it)",
-        Accept: "image/*,*/*;q=0.8",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Download fallito (${response.status})`);
+  let lastError: Error | null = null;
+  const origin = (() => {
+    try {
+      return new URL(imageUrl).origin + "/";
+    } catch {
+      return undefined;
     }
+  })();
 
-    const contentLength = Number(response.headers.get("content-length") || 0);
-    if (contentLength > MAX_DOWNLOAD_BYTES) {
-      throw new Error(
-        `Immagine troppo grande (${Math.round(contentLength / 1024)} KB)`,
-      );
-    }
+  // Alcuni CDN (es. WordPress/WAF) rispondono 403 a UA “browser-like”
+  // ma accettano richieste semplici — proviamo più strategie.
+  const attempts: Array<HeadersInit> = [
+    {
+      Accept: "image/*,*/*;q=0.8",
+      "User-Agent": "EverasBot/1.0 (+https://www.everas.it)",
+    },
+    {
+      Accept: "image/*,*/*;q=0.8",
+      "User-Agent": "curl/8.4.0",
+      ...(origin ? { Referer: origin } : {}),
+    },
+    {
+      Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+      "User-Agent":
+        "Mozilla/5.0 (compatible; EverasImageOptimize/1.0; +https://www.everas.it)",
+      ...(origin ? { Referer: origin } : {}),
+    },
+  ];
 
-    const buffer = Buffer.from(await response.arrayBuffer());
-    if (buffer.byteLength > MAX_DOWNLOAD_BYTES) {
-      throw new Error(
-        `Immagine troppo grande (${Math.round(buffer.byteLength / 1024)} KB)`,
-      );
+  for (const headers of attempts) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS);
+    try {
+      const response = await fetch(imageUrl, {
+        signal: controller.signal,
+        redirect: "follow",
+        headers,
+      });
+      if (!response.ok) {
+        lastError = new Error(`Download fallito (${response.status})`);
+        continue;
+      }
+
+      const contentLength = Number(response.headers.get("content-length") || 0);
+      if (contentLength > MAX_DOWNLOAD_BYTES) {
+        throw new Error(
+          `Immagine troppo grande (${Math.round(contentLength / 1024)} KB)`,
+        );
+      }
+
+      const buffer = Buffer.from(await response.arrayBuffer());
+      if (buffer.byteLength > MAX_DOWNLOAD_BYTES) {
+        throw new Error(
+          `Immagine troppo grande (${Math.round(buffer.byteLength / 1024)} KB)`,
+        );
+      }
+      if (buffer.byteLength < 64) {
+        lastError = new Error("Download vuoto o non valido");
+        continue;
+      }
+      return buffer;
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        lastError = new Error("Download scaduto (timeout)");
+        continue;
+      }
+      if (
+        err instanceof Error &&
+        err.message.startsWith("Immagine troppo grande")
+      ) {
+        throw err;
+      }
+      lastError =
+        err instanceof Error ? err : new Error("Download non riuscito");
+    } finally {
+      clearTimeout(timer);
     }
-    return buffer;
-  } catch (err) {
-    if (err instanceof Error && err.name === "AbortError") {
-      throw new Error("Download scaduto (timeout)");
-    }
-    throw err;
-  } finally {
-    clearTimeout(timer);
   }
+
+  throw lastError ?? new Error("Download non riuscito");
 }
 
 export async function GET() {
@@ -158,8 +200,7 @@ export async function POST(request: Request) {
         return aOwn - bOwn;
       });
 
-    const batch = candidates.slice(0, limit);
-
+    const batch: EventImageRow[] = [];
     const results: Array<{
       id: string;
       slug: string;
@@ -167,11 +208,23 @@ export async function POST(request: Request) {
       error?: string;
       publicUrl?: string;
     }> = [];
+    const skippedFailures: Array<{
+      id: string;
+      slug: string;
+      ok: false;
+      error: string;
+    }> = [];
 
-    for (const event of batch) {
+    // Continua a scorrere i candidati finché non hai `limit` successi
+    // (o finiscono), così un 403 non blocca per sempre lo stesso lotto.
+    const maxAttempts = Math.min(candidates.length, Math.max(limit * 4, 8));
+
+    for (let i = 0; i < maxAttempts && batch.length < limit; i += 1) {
+      const event = candidates[i];
+      if (!event) break;
+
       const previousUrl = event.image_url;
       const previousPath = getEventImageStoragePath(previousUrl);
-      // Con policy admin: sessione sufficiente per UPDATE; storage in cartella admin
       const db = auth.supabase;
       const storage = adminClient ?? auth.supabase;
 
@@ -234,6 +287,7 @@ export async function POST(request: Request) {
           }
         }
 
+        batch.push(event);
         results.push({
           id: event.id,
           slug: event.slug,
@@ -241,14 +295,19 @@ export async function POST(request: Request) {
           publicUrl,
         });
       } catch (err) {
-        results.push({
+        const message =
+          err instanceof Error ? err.message : "Errore sconosciuto";
+        skippedFailures.push({
           id: event.id,
           slug: event.slug,
           ok: false,
-          error: err instanceof Error ? err.message : "Errore sconosciuto",
+          error: message,
         });
       }
     }
+
+    // Mostra fino a 6 fallimenti del passaggio (es. 403 esterni)
+    results.push(...skippedFailures.slice(0, 6));
 
     const converted = results.filter((item) => item.ok).length;
     const failed = results.filter((item) => !item.ok).length;
