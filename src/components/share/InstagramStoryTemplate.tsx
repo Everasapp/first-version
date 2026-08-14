@@ -145,54 +145,80 @@ const InstagramStoryTemplate = forwardRef<
         <div
           style={{
             marginTop: 28,
+            borderTop: "2px solid rgba(255,255,255,0.2)",
+            paddingTop: 28,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-between",
-            gap: 20,
-            borderTop: "1px solid rgba(255,255,255,0.18)",
-            paddingTop: 24,
+            textAlign: "center",
+            gap: 14,
           }}
         >
+          {event.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.logoUrl}
+              alt="EVERAS"
+              decoding="sync"
+              style={{
+                height: 88,
+                width: "auto",
+                maxWidth: "70%",
+                display: "block",
+                objectFit: "contain",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                fontSize: 56,
+                fontWeight: 900,
+                letterSpacing: "0.08em",
+                color: "#ffffff",
+                lineHeight: 1,
+              }}
+            >
+              EVERAS
+            </div>
+          )}
+
           <div
             style={{
-              fontSize: 36,
-              fontWeight: 900,
-              letterSpacing: "0.06em",
-              color: "#ffffff",
-              flex: "0 0 auto",
-            }}
-          >
-            EVERAS
-          </div>
-          <div
-            style={{
-              textAlign: "right",
-              fontSize: 24,
+              fontSize: 30,
               fontWeight: 600,
-              color: "rgba(255,255,255,0.85)",
-              lineHeight: 1.35,
-              flex: "1 1 auto",
-              minWidth: 0,
+              color: "rgba(255,255,255,0.9)",
+              lineHeight: 1.3,
             }}
           >
             Scopri altri eventi su
-            <br />
-            <span style={{ color: "#E67E22", fontWeight: 800 }}>everas.it</span>
           </div>
-        </div>
 
-        <div
-          style={{
-            marginTop: 14,
-            fontSize: 20,
-            fontWeight: 500,
-            color: "rgba(255,255,255,0.55)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {event.eventUrl.replace(/^https?:\/\//, "")}
+          <div
+            style={{
+              fontSize: 48,
+              fontWeight: 900,
+              letterSpacing: "-0.01em",
+              color: "#E67E22",
+              lineHeight: 1.1,
+            }}
+          >
+            {event.siteLabel || "everas.it"}
+          </div>
+
+          <div
+            style={{
+              marginTop: 4,
+              fontSize: 22,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.7)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              maxWidth: "100%",
+            }}
+          >
+            {event.eventUrl.replace(/^https?:\/\//, "")}
+          </div>
         </div>
       </div>
     </div>

@@ -136,3 +136,42 @@ export async function waitForElementImages(node: HTMLElement, timeoutMs = 10000)
     requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
   );
 }
+
+const STORY_LOGO_PATH = "/images/everas-logo-v2.png";
+
+/**
+ * Logo bianco su trasparente (PNG), pronto per sfondo scuro della Story.
+ * Evita CSS filter che html-to-image gestisce male.
+ */
+export async function loadStoryLogoDataUrl(): Promise<string | undefined> {
+  try {
+    const origin = window.location.origin;
+    const response = await fetch(`${origin}${STORY_LOGO_PATH}`, {
+      credentials: "same-origin",
+    });
+    if (!response.ok) return undefined;
+    const blob = await response.blob();
+    const bitmap = await createImageBitmap(blob);
+    try {
+      const targetH = 160;
+      const scale = targetH / bitmap.height;
+      const w = Math.max(1, Math.round(bitmap.width * scale));
+      const h = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return undefined;
+      ctx.drawImage(bitmap, 0, 0, w, h);
+      ctx.globalCompositeOperation = "source-in";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, h);
+      return canvas.toDataURL("image/png");
+    } finally {
+      bitmap.close();
+    }
+  } catch (error) {
+    console.warn("[share] logo prepare failed:", error);
+    return undefined;
+  }
+}

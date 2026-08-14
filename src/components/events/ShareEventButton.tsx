@@ -12,7 +12,10 @@ import {
 } from "lucide-react";
 
 import InstagramStoryTemplate from "@/src/components/share/InstagramStoryTemplate";
-import { loadCanvasSafeImageUrl } from "@/src/lib/share/canvasSafeImage";
+import {
+  loadCanvasSafeImageUrl,
+  loadStoryLogoDataUrl,
+} from "@/src/lib/share/canvasSafeImage";
 import {
   buildEventShareUrl,
   formatStoryDate,
@@ -24,6 +27,7 @@ import {
   shareStoryFile,
 } from "@/src/lib/share/generateStoryImage";
 import type { InstagramStoryEventData } from "@/src/lib/share/types";
+import { STORY_SITE_LABEL } from "@/src/lib/share/types";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -111,17 +115,22 @@ export default function ShareEventButton({
     };
   }, [downloadUrl]);
 
-  function buildStoryPayload(safeImageUrl: string): InstagramStoryEventData {
+  function buildStoryPayload(
+    safeImageUrl: string,
+    logoUrl?: string,
+  ): InstagramStoryEventData {
     const url = buildEventShareUrl(slug);
     return {
       title,
       slug,
       imageUrl: safeImageUrl,
+      logoUrl,
       category,
       city,
       dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
       timeLabel: startAt ? formatStoryTime(startAt) : "",
       eventUrl: url,
+      siteLabel: STORY_SITE_LABEL,
     };
   }
 
@@ -165,12 +174,13 @@ export default function ShareEventButton({
     let revokeSafeImage: (() => void) | undefined;
 
     try {
-      const safe = await loadCanvasSafeImageUrl(
-        imageUrl || "/images/concert.png",
-      );
+      const [safe, logoUrl] = await Promise.all([
+        loadCanvasSafeImageUrl(imageUrl || "/images/concert.png"),
+        loadStoryLogoDataUrl(),
+      ]);
       revokeSafeImage = safe.revoke;
 
-      const payload = buildStoryPayload(safe.url);
+      const payload = buildStoryPayload(safe.url, logoUrl);
       flushSync(() => {
         setStoryEvent(payload);
       });
