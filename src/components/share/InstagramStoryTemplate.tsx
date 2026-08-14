@@ -20,7 +20,8 @@ const InstagramStoryTemplate = forwardRef<
   void variant;
 
   const titleSize =
-    event.title.length > 80 ? 44 : event.title.length > 50 ? 52 : 60;
+    event.title.length > 80 ? 40 : event.title.length > 50 ? 48 : 56;
+  const linkLabel = event.eventUrl.replace(/^https?:\/\//, "");
 
   return (
     <div
@@ -38,16 +39,16 @@ const InstagramStoryTemplate = forwardRef<
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
-        padding: "48px 48px 56px",
+        padding: "44px 48px 48px",
       }}
     >
-      {/* Immagine: solo lo spazio rimasto dopo il testo (minHeight 0 evita overflow) */}
+      {/* Immagine: solo lo spazio rimasto dopo il testo */}
       <div
         style={{
           flex: "1 1 auto",
           minHeight: 0,
-          marginBottom: 36,
-          borderRadius: 36,
+          marginBottom: 28,
+          borderRadius: 32,
           overflow: "hidden",
           backgroundColor: "#111827",
           border: "2px solid rgba(255,255,255,0.12)",
@@ -71,13 +72,11 @@ const InstagramStoryTemplate = forwardRef<
         />
       </div>
 
-      {/* Contenuto: non si restringe, resta sempre interamente nella Story */}
       <div
         style={{
           flex: "0 0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: 0,
         }}
       >
         <div
@@ -86,13 +85,13 @@ const InstagramStoryTemplate = forwardRef<
             alignSelf: "flex-start",
             backgroundColor: "#E67E22",
             color: "#ffffff",
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: 800,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            padding: "12px 20px",
+            padding: "10px 18px",
             borderRadius: 999,
-            marginBottom: 20,
+            marginBottom: 16,
           }}
         >
           {event.category || "Evento"}
@@ -107,7 +106,7 @@ const InstagramStoryTemplate = forwardRef<
             letterSpacing: "-0.02em",
             maxWidth: "100%",
             display: "-webkit-box",
-            WebkitLineClamp: 4,
+            WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
@@ -117,11 +116,11 @@ const InstagramStoryTemplate = forwardRef<
 
         <div
           style={{
-            marginTop: 24,
+            marginTop: 18,
             display: "flex",
             flexDirection: "column",
-            gap: 12,
-            fontSize: 28,
+            gap: 10,
+            fontSize: 26,
             fontWeight: 600,
             color: "rgba(255,255,255,0.92)",
           }}
@@ -142,82 +141,115 @@ const InstagramStoryTemplate = forwardRef<
           </div>
         </div>
 
+        {/* Brand + QR + link evento (sempre visibile) */}
         <div
           style={{
-            marginTop: 28,
+            marginTop: 24,
             borderTop: "2px solid rgba(255,255,255,0.2)",
-            paddingTop: 28,
+            paddingTop: 24,
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            textAlign: "center",
-            gap: 14,
+            gap: 28,
           }}
         >
-          {event.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={event.logoUrl}
-              alt="EVERAS"
-              decoding="sync"
-              style={{
-                height: 88,
-                width: "auto",
-                maxWidth: "70%",
-                display: "block",
-                objectFit: "contain",
-              }}
-            />
-          ) : (
+          {event.qrUrl ? (
             <div
               style={{
-                fontSize: 56,
-                fontWeight: 900,
-                letterSpacing: "0.08em",
-                color: "#ffffff",
-                lineHeight: 1,
+                flex: "0 0 auto",
+                width: 220,
+                height: 220,
+                borderRadius: 24,
+                overflow: "hidden",
+                backgroundColor: "#ffffff",
+                padding: 12,
+                boxSizing: "border-box",
               }}
             >
-              EVERAS
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={event.qrUrl}
+                alt="QR evento"
+                decoding="sync"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "block",
+                  objectFit: "contain",
+                }}
+              />
             </div>
-          )}
+          ) : null}
 
           <div
             style={{
-              fontSize: 30,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.9)",
-              lineHeight: 1.3,
+              flex: "1 1 auto",
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
             }}
           >
-            Scopri altri eventi su
-          </div>
+            {event.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={event.logoUrl}
+                alt="EVERAS"
+                decoding="sync"
+                style={{
+                  height: 56,
+                  width: "auto",
+                  maxWidth: "100%",
+                  display: "block",
+                  objectFit: "contain",
+                  alignSelf: "flex-start",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  fontSize: 40,
+                  fontWeight: 900,
+                  letterSpacing: "0.06em",
+                  color: "#ffffff",
+                  lineHeight: 1,
+                }}
+              >
+                EVERAS
+              </div>
+            )}
 
-          <div
-            style={{
-              fontSize: 48,
-              fontWeight: 900,
-              letterSpacing: "-0.01em",
-              color: "#E67E22",
-              lineHeight: 1.1,
-            }}
-          >
-            {event.siteLabel || "everas.it"}
-          </div>
+            <div
+              style={{
+                fontSize: 26,
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.9)",
+                lineHeight: 1.25,
+              }}
+            >
+              Scopri l’evento su
+            </div>
 
-          <div
-            style={{
-              marginTop: 4,
-              fontSize: 22,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.7)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              maxWidth: "100%",
-            }}
-          >
-            {event.eventUrl.replace(/^https?:\/\//, "")}
+            <div
+              style={{
+                fontSize: 36,
+                fontWeight: 900,
+                color: "#E67E22",
+                lineHeight: 1.15,
+                wordBreak: "break-all",
+              }}
+            >
+              {linkLabel}
+            </div>
+
+            <div
+              style={{
+                fontSize: 22,
+                fontWeight: 600,
+                color: "rgba(255,255,255,0.65)",
+              }}
+            >
+              Scansiona il QR per aprire
+            </div>
           </div>
         </div>
       </div>

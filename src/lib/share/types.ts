@@ -4,6 +4,8 @@ export type InstagramStoryEventData = {
   imageUrl: string;
   /** Logo Everas come data URL (canvas-safe) */
   logoUrl?: string;
+  /** QR code data URL verso la pagina evento */
+  qrUrl?: string;
   category: string;
   city: string;
   /** Data formattata (es. 14 agosto 2026) */
