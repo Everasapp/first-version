@@ -82,6 +82,7 @@ export default function ShareEventButton({
   const [storyError, setStoryError] = useState("");
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [showDownloadPanel, setShowDownloadPanel] = useState(false);
+  const [linkCopiedForSticker, setLinkCopiedForSticker] = useState(false);
   const [storyEvent, setStoryEvent] = useState<InstagramStoryEventData | null>(
     null,
   );
@@ -166,10 +167,21 @@ export default function ShareEventButton({
     await copyLink();
   }
 
+  async function copyEventLinkQuiet(): Promise<boolean> {
+    const url = buildEventShareUrl(slug);
+    try {
+      await navigator.clipboard.writeText(url);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async function shareInstagramStory() {
     setStoryError("");
     setStoryBusy(true);
     setOpen(false);
+    setLinkCopiedForSticker(false);
 
     let revokeSafeImage: (() => void) | undefined;
 
@@ -197,10 +209,16 @@ export default function ShareEventButton({
         { type: "image/jpeg" },
       );
 
+      // Instagram non rende cliccabile l’immagine: serve lo sticker Link.
+      // Copiamo l’URL evento così si può incollare subito nello sticker.
+      const copied = await copyEventLinkQuiet();
+      setLinkCopiedForSticker(copied);
+
       const shareable = await canShareFiles(file);
       if (shareable) {
         try {
-          await shareStoryFile(file, title);
+          await shareStoryFile(file, title, payload.eventUrl);
+          setShowDownloadPanel(true);
           return;
         } catch (error) {
           if (error instanceof DOMException && error.name === "AbortError") {
@@ -305,6 +323,7 @@ export default function ShareEventButton({
           onClick={() => {
             setShowDownloadPanel(false);
             setStoryError("");
+            setLinkCopiedForSticker(false);
           }}
         >
           <div
@@ -317,7 +336,11 @@ export default function ShareEventButton({
                   Instagram Stories
                 </p>
                 <h3 className="mt-1 text-lg font-bold text-slate-900">
-                  {storyError ? "Condivisione non riuscita" : "Story pronta"}
+                  {storyError
+                    ? "Condivisione non riuscita"
+                    : downloadUrl
+                      ? "Story pronta"
+                      : "Aggiungi il link"}
                 </h3>
               </div>
               <button
@@ -326,6 +349,7 @@ export default function ShareEventButton({
                 onClick={() => {
                   setShowDownloadPanel(false);
                   setStoryError("");
+                  setLinkCopiedForSticker(false);
                 }}
                 className="grid h-9 w-9 place-items-center rounded-full text-slate-500 hover:bg-slate-100"
               >
@@ -335,18 +359,39 @@ export default function ShareEventButton({
 
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {storyError ||
-                "Sul desktop Instagram Stories non è disponibile direttamente. Scarica la grafica e caricala manualmente nelle Stories."}
+                (downloadUrl
+                  ? "Scarica la grafica, aprila in Instagram Stories e aggiungi lo sticker Link verso l’evento."
+                  : "Per rendere la Story cliccabile su Instagram, aggiungi lo sticker Link e incolla l’URL dell’evento.")}
             </p>
 
+            {!storyError ? (
+              <div className="mt-3 rounded-2xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3.5 py-3 text-sm leading-5 text-slate-800">
+                <p className="font-bold text-[#C96A1A]">Link all’evento</p>
+                <p className="mt-1 break-all font-medium text-slate-700">
+                  {buildEventShareUrl(slug).replace(/^https?:\/\//, "")}
+                </p>
+                <p className="mt-2 text-xs text-slate-600">
+                  {linkCopiedForSticker
+                    ? "Link già copiato: su Instagram → sticker Link → Incolla."
+                    : "Copia il link e su Instagram aggiungi lo sticker Link."}
+                </p>
+              </div>
+            ) : null}
+
             {downloadUrl ? (
-              <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+              <a
+                href={buildEventShareUrl(slug)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={downloadUrl}
-                  alt="Anteprima Story"
+                  alt="Anteprima Story — apri l’evento"
                   className="mx-auto max-h-72 w-auto"
                 />
-              </div>
+              </a>
             ) : null}
 
             <div className="mt-5 flex flex-col gap-2">
@@ -366,7 +411,7 @@ export default function ShareEventButton({
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
               >
                 <Link2 aria-hidden="true" className="h-4 w-4" />
-                Copia link evento
+                {linkCopiedForSticker ? "Link copiato ✓" : "Copia link evento"}
               </button>
             </div>
           </div>
