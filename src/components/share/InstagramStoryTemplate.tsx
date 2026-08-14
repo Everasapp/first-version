@@ -42,7 +42,6 @@ const InstagramStoryTemplate = forwardRef<
         padding: "44px 48px 48px",
       }}
     >
-      {/* Immagine: solo lo spazio rimasto dopo il testo */}
       <div
         style={{
           flex: "1 1 auto",
@@ -141,115 +140,68 @@ const InstagramStoryTemplate = forwardRef<
           </div>
         </div>
 
-        {/* Brand + QR + link evento (sempre visibile) */}
         <div
           style={{
             marginTop: 24,
             borderTop: "2px solid rgba(255,255,255,0.2)",
             paddingTop: 24,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: 28,
+            textAlign: "center",
+            gap: 12,
           }}
         >
-          {event.qrUrl ? (
+          {event.logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.logoUrl}
+              alt="EVERAS"
+              decoding="sync"
+              style={{
+                height: 72,
+                width: "auto",
+                maxWidth: "70%",
+                display: "block",
+                objectFit: "contain",
+              }}
+            />
+          ) : (
             <div
               style={{
-                flex: "0 0 auto",
-                width: 220,
-                height: 220,
-                borderRadius: 24,
-                overflow: "hidden",
-                backgroundColor: "#ffffff",
-                padding: 12,
-                boxSizing: "border-box",
+                fontSize: 48,
+                fontWeight: 900,
+                letterSpacing: "0.06em",
+                color: "#ffffff",
+                lineHeight: 1,
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={event.qrUrl}
-                alt="QR evento"
-                decoding="sync"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "block",
-                  objectFit: "contain",
-                }}
-              />
+              EVERAS
             </div>
-          ) : null}
+          )}
 
           <div
             style={{
-              flex: "1 1 auto",
-              minWidth: 0,
-              display: "flex",
-              flexDirection: "column",
-              gap: 10,
+              fontSize: 28,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.9)",
+              lineHeight: 1.3,
             }}
           >
-            {event.logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={event.logoUrl}
-                alt="EVERAS"
-                decoding="sync"
-                style={{
-                  height: 56,
-                  width: "auto",
-                  maxWidth: "100%",
-                  display: "block",
-                  objectFit: "contain",
-                  alignSelf: "flex-start",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  fontSize: 40,
-                  fontWeight: 900,
-                  letterSpacing: "0.06em",
-                  color: "#ffffff",
-                  lineHeight: 1,
-                }}
-              >
-                EVERAS
-              </div>
-            )}
+            Scopri l’evento su
+          </div>
 
-            <div
-              style={{
-                fontSize: 26,
-                fontWeight: 600,
-                color: "rgba(255,255,255,0.9)",
-                lineHeight: 1.25,
-              }}
-            >
-              Scopri l’evento su
-            </div>
-
-            <div
-              style={{
-                fontSize: 36,
-                fontWeight: 900,
-                color: "#E67E22",
-                lineHeight: 1.15,
-                wordBreak: "break-all",
-              }}
-            >
-              {linkLabel}
-            </div>
-
-            <div
-              style={{
-                fontSize: 22,
-                fontWeight: 600,
-                color: "rgba(255,255,255,0.65)",
-              }}
-            >
-              Scansiona il QR per aprire
-            </div>
+          <div
+            style={{
+              fontSize: 36,
+              fontWeight: 900,
+              color: "#E67E22",
+              lineHeight: 1.2,
+              wordBreak: "break-all",
+              maxWidth: "100%",
+            }}
+          >
+            {linkLabel}
           </div>
         </div>
       </div>

@@ -26,7 +26,6 @@ import {
   generateStoryJpeg,
   shareStoryFile,
 } from "@/src/lib/share/generateStoryImage";
-import { generateEventQrDataUrl } from "@/src/lib/share/generateStoryQr";
 import type { InstagramStoryEventData } from "@/src/lib/share/types";
 import { STORY_SITE_LABEL } from "@/src/lib/share/types";
 
@@ -120,7 +119,6 @@ export default function ShareEventButton({
   function buildStoryPayload(
     safeImageUrl: string,
     logoUrl?: string,
-    qrUrl?: string,
   ): InstagramStoryEventData {
     const url = buildEventShareUrl(slug);
     return {
@@ -128,7 +126,6 @@ export default function ShareEventButton({
       slug,
       imageUrl: safeImageUrl,
       logoUrl,
-      qrUrl,
       category,
       city,
       dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
@@ -189,15 +186,13 @@ export default function ShareEventButton({
     let revokeSafeImage: (() => void) | undefined;
 
     try {
-      const eventUrl = buildEventShareUrl(slug);
-      const [safe, logoUrl, qrUrl] = await Promise.all([
+      const [safe, logoUrl] = await Promise.all([
         loadCanvasSafeImageUrl(imageUrl || "/images/concert.png"),
         loadStoryLogoDataUrl(),
-        generateEventQrDataUrl(eventUrl),
       ]);
       revokeSafeImage = safe.revoke;
 
-      const payload = buildStoryPayload(safe.url, logoUrl, qrUrl);
+      const payload = buildStoryPayload(safe.url, logoUrl);
       flushSync(() => {
         setStoryEvent(payload);
       });
@@ -365,8 +360,8 @@ export default function ShareEventButton({
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {storyError ||
                 (downloadUrl
-                  ? "Nella Story trovi il link dell’evento e il QR da scansionare. Puoi anche aggiungere lo sticker Link su Instagram."
-                  : "Nella Story ci sono link e QR verso l’evento. Su Instagram puoi anche aggiungere lo sticker Link (link già copiato).")}
+                  ? "Nella Story trovi il link dell’evento. Su Instagram puoi aggiungere lo sticker Link."
+                  : "Nella Story c’è il link verso l’evento. Su Instagram puoi anche aggiungere lo sticker Link (link già copiato).")}
             </p>
 
             {!storyError ? (
