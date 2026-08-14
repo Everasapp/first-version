@@ -363,16 +363,16 @@ export default function ShareEventButton({
         </div>
       ) : null}
 
-      {/* Template off-screen per generazione (visibile al browser, non all’utente) */}
+      {/* Template fuori viewport ma con opacity 1 (opacity 0 = immagine vuota in html-to-image) */}
       {storyEvent ? (
         <div
           aria-hidden="true"
           style={{
             position: "fixed",
-            left: 0,
+            left: "-100vw",
             top: 0,
             zIndex: -1,
-            opacity: 0,
+            opacity: 1,
             pointerEvents: "none",
             overflow: "hidden",
           }}

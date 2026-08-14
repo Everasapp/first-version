@@ -47,6 +47,7 @@ const InstagramStoryTemplate = forwardRef<
         <img
           src={event.imageUrl}
           alt=""
+          decoding="sync"
           style={{
             width: "100%",
             height: "100%",
