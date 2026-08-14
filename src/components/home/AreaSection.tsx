@@ -6,11 +6,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "./EventCard";
 import { useUserLocation } from "@/src/hooks/useUserLocation";
-import { sortEventsForExplore } from "@/src/utils/nearby-city";
+import type { City } from "@/src/data/cities";
+import { sortEventsForAreaSection } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
   title: string;
-  area: string;
+  area: City["area"];
   description: string;
   image: string;
   events?: EventCardData[];
@@ -46,8 +47,9 @@ export default function AreaSection({
 
   const areaEvents = useMemo(() => {
     const filtered = events.filter((event) => event.area === area);
-    return sortEventsForExplore(
+    return sortEventsForAreaSection(
       filtered,
+      area,
       coords?.lat ?? null,
       coords?.lng ?? null,
     );
@@ -158,7 +160,7 @@ export default function AreaSection({
           <p className="text-sm font-semibold text-slate-500">
             {areaEvents.length}{" "}
             {areaEvents.length === 1 ? "evento" : "eventi"}
-            {hasLocation ? " · prima i più vicini" : ""}
+            {" · prima i più vicini"}
           </p>
 
           <div className="flex shrink-0 items-center gap-2">
