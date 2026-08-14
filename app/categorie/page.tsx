@@ -8,6 +8,7 @@ import Header from "@/src/components/home/Header";
 import { categories } from "@/src/data/categories";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { createClient } from "@/src/lib/supabase/server";
 
 type CategoriesPageProps = {
@@ -96,14 +97,11 @@ export default async function CategoriesPage({
     getCurrentUserFavoriteIds(),
   ]);
 
-  const now = Date.now();
+  const now = new Date();
   const events = ((data ?? []) as EventRow[])
-    .filter((event) => {
-      const eventEnd = event.end_at
-        ? new Date(event.end_at).getTime()
-        : new Date(event.start_at).getTime();
-      return eventEnd >= now;
-    })
+    .filter((event) =>
+      isPublicEventActive(event.start_at, event.end_at, now),
+    )
     .filter((event) => {
       if (!selectedCategory) {
         return true;

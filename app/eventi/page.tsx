@@ -11,6 +11,7 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 
 type EventsPageProps = {
@@ -218,13 +219,11 @@ export default async function EventsPage({
   const filteredEvents = databaseEvents
     .filter((event) => {
       const eventStartDate = new Date(event.start_at);
-      const eventEndDate = event.end_at
-        ? new Date(event.end_at)
-        : eventStartDate;
 
-      // Senza filtro data: solo eventi ancora validi (dal più vicino a oggi in poi)
-      const matchesUpcoming =
-        Boolean(dateRange) || eventEndDate >= now;
+      // Mai mostrare eventi scaduti (anche con filtro data)
+      if (!isPublicEventActive(event.start_at, event.end_at, now)) {
+        return false;
+      }
 
       const eventArea = getEventArea(event.municipality);
 
@@ -258,7 +257,6 @@ export default async function EventsPage({
       );
 
       return (
-        matchesUpcoming &&
         matchesArea &&
         matchesCity &&
         matchesCategory &&

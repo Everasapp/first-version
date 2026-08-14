@@ -15,6 +15,7 @@ import {
 } from "@/src/lib/follows";
 import { categories } from "@/src/data/categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { isOrganizerRole, PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -90,14 +91,11 @@ export default async function OrganizerPublicPage({
     getCurrentUserFollowedOrganizerIds(),
   ]);
 
-  const now = Date.now();
+  const now = new Date();
   const cards: EventCardData[] = ((eventsData ?? []) as EventRow[])
-    .filter((event) => {
-      const end = event.end_at
-        ? new Date(event.end_at).getTime()
-        : new Date(event.start_at).getTime();
-      return end >= now;
-    })
+    .filter((event) =>
+      isPublicEventActive(event.start_at, event.end_at, now),
+    )
     .map((event) => {
       const pricing = resolveEventPricing(event.is_free, event.price_from);
       const categoryName =

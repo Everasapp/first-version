@@ -11,6 +11,7 @@ import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { createClient } from "@/src/lib/supabase/server";
 
 type EventRow = {
@@ -142,13 +143,9 @@ export default async function Home() {
   const rows = (data ?? []) as EventRow[];
 
   const events = rows
-    .filter((event) => {
-      const eventEnd = event.end_at
-        ? new Date(event.end_at)
-        : new Date(event.start_at);
-
-      return eventEnd >= now;
-    })
+    .filter((event) =>
+      isPublicEventActive(event.start_at, event.end_at, now),
+    )
     .map((event) => ({
       ...mapEvent(event, now),
       isFavorite: favoriteIds.has(event.id),
@@ -165,11 +162,7 @@ export default async function Home() {
         return false;
       }
 
-      const eventEnd = event.end_at
-        ? new Date(event.end_at)
-        : new Date(event.start_at);
-
-      return eventEnd >= now;
+      return isPublicEventActive(event.start_at, event.end_at, now);
     })
     .sort((a, b) => {
       const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
