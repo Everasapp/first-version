@@ -102,9 +102,20 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-[#c5d8ec] pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <p className="text-sm text-slate-600">
-            © {year} EVERAS. Tutti i diritti riservati.
-          </p>
+          <div className="space-y-1 text-sm text-slate-600">
+            <p>© {year} EVERAS. Tutti i diritti riservati.</p>
+            <p>
+              Piattaforma ideata e sviluppata da:{" "}
+              <a
+                href="https://www.mc-design.site/home-it"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                MC Design
+              </a>
+            </p>
+          </div>
 
           <nav
             aria-label="Informazioni legali"
