@@ -1,6 +1,6 @@
 import sharp from "sharp";
 
-const MAX_INPUT_BYTES = 8 * 1024 * 1024;
+const MAX_INPUT_BYTES = 16 * 1024 * 1024;
 const TARGET_MAX_BYTES = 220_000;
 const INITIAL_QUALITY = 82;
 const MIN_QUALITY = 55;
@@ -20,7 +20,7 @@ export async function optimizeImageToWebp(
   options: OptimizeToWebpOptions = {},
 ): Promise<Buffer> {
   if (input.byteLength > MAX_INPUT_BYTES) {
-    throw new Error("Immagine troppo grande (max 8 MB).");
+    throw new Error("Immagine troppo grande (max 16 MB).");
   }
 
   const maxEdge = options.maxEdge ?? 1600;

@@ -23,6 +23,27 @@ type CompressResult = {
   }>;
 };
 
+async function readApiJson<T extends { error?: string }>(
+  response: Response,
+): Promise<T> {
+  const text = await response.text();
+  if (!text.trim()) {
+    throw new Error(
+      response.ok
+        ? "Risposta vuota dal server."
+        : `Errore server (${response.status}). Su Vercel verifica SUPABASE_SERVICE_ROLE_KEY e riprova con lotti piccoli.`,
+    );
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(
+      `Risposta non valida dal server (${response.status}). Riprova tra poco.`,
+    );
+  }
+}
+
 export default function CompressImagesPanel() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
@@ -35,7 +56,7 @@ export default function CompressImagesPanel() {
     setError("");
     try {
       const response = await fetch("/api/admin/images/compress");
-      const payload = (await response.json()) as Stats & { error?: string };
+      const payload = await readApiJson<Stats & { error?: string }>(response);
       if (!response.ok) {
         throw new Error(payload.error || "Impossibile caricare lo stato.");
       }
@@ -58,11 +79,11 @@ export default function CompressImagesPanel() {
       const response = await fetch("/api/admin/images/compress", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: 8 }),
+        body: JSON.stringify({ limit: 2 }),
       });
-      const payload = (await response.json()) as CompressResult & {
-        error?: string;
-      };
+      const payload = await readApiJson<CompressResult & { error?: string }>(
+        response,
+      );
       if (!response.ok) {
         throw new Error(payload.error || "Compressione non riuscita.");
       }
@@ -87,7 +108,8 @@ export default function CompressImagesPanel() {
           </h2>
           <p className="mt-1 text-sm text-slate-600">
             Scarica le foto già online (anche URL esterni), le converte in WebP
-            ottimizzato e le salva su Storage EVERAS.
+            ottimizzato e le salva su Storage EVERAS. Lotti da 2 per evitare
+            timeout su Vercel.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-4 text-sm">
@@ -130,7 +152,7 @@ export default function CompressImagesPanel() {
                   Compressione in corso…
                 </>
               ) : (
-                "Comprimi prossime 8"
+                "Comprimi prossime 2"
               )}
             </button>
             <button
