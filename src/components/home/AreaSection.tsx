@@ -1,5 +1,11 @@
+"use client";
+
+import { useMemo } from "react";
 import Link from "next/link";
+
 import EventCard, { type EventCardData } from "./EventCard";
+import { useUserLocation } from "@/src/hooks/useUserLocation";
+import { sortEventsByProximity } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
   title: string;
@@ -22,17 +28,29 @@ export default function AreaSection({
   image,
   events = [],
 }: AreaSectionProps) {
-  const areaEvents = events
-    .filter((event) => event.area === area)
-    .sort((a, b) => {
-      if (Boolean(a.isFeatured) !== Boolean(b.isFeatured)) {
-        return a.isFeatured ? -1 : 1;
-      }
-      return (
-        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+  const { coords } = useUserLocation();
+
+  const areaEvents = useMemo(() => {
+    const filtered = events.filter((event) => event.area === area);
+
+    if (coords) {
+      return sortEventsByProximity(filtered, coords.lat, coords.lng).slice(
+        0,
+        3,
       );
-    })
-    .slice(0, 3);
+    }
+
+    return [...filtered]
+      .sort((a, b) => {
+        if (Boolean(a.isFeatured) !== Boolean(b.isFeatured)) {
+          return a.isFeatured ? -1 : 1;
+        }
+        return (
+          new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+        );
+      })
+      .slice(0, 3);
+  }, [area, coords, events]);
 
   if (areaEvents.length === 0) {
     return null;

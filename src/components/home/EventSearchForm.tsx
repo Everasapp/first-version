@@ -14,6 +14,7 @@ import {
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import { saveGeoCoords, markGeoDenied } from "@/src/lib/geo-preference";
 import { areaToSlug, findNearestCity } from "@/src/utils/nearby-city";
 
 const areaLabels: Record<string, string> = {
@@ -116,6 +117,11 @@ export default function EventSearchForm() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        saveGeoCoords({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+
         const nearest = findNearestCity(
           position.coords.latitude,
           position.coords.longitude,
@@ -133,7 +139,10 @@ export default function EventSearchForm() {
         router.push(`/eventi?${params.toString()}`);
         setIsLocating(false);
       },
-      () => {
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          markGeoDenied();
+        }
         setIsLocating(false);
         setGeoMessage(
           "Non è stato possibile rilevare la posizione. Controlla i permessi del browser.",

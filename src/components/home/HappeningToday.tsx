@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
+import { useUserLocation } from "@/src/hooks/useUserLocation";
+import { sortEventsByProximity } from "@/src/utils/nearby-city";
 
 type HappeningTodayProps = {
   events: EventCardData[];
@@ -24,6 +26,12 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const { coords, hasLocation } = useUserLocation();
+
+  const orderedEvents = useMemo(() => {
+    if (!coords) return events;
+    return sortEventsByProximity(events, coords.lat, coords.lng);
+  }, [coords, events]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
@@ -53,7 +61,6 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
 
     const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
 
-    // Evita il conflitto noto tra scroll smooth e snap-mandatory.
     if (snapRestoreTimerRef.current !== null) {
       window.clearTimeout(snapRestoreTimerRef.current);
     }
@@ -67,7 +74,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   }
 
   useEffect(() => {
-    if (events.length < 2 || isPaused) return;
+    if (orderedEvents.length < 2 || isPaused) return;
 
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -79,9 +86,16 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     }, AUTOPLAY_MS);
 
     return () => window.clearInterval(timer);
-  }, [events.length, isPaused]);
+  }, [orderedEvents.length, isPaused]);
 
-  if (events.length === 0) {
+  // Torna all'inizio quando cambia l'ordine per distanza.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || !hasLocation) return;
+    scroller.scrollTo({ left: 0, behavior: "auto" });
+  }, [hasLocation, orderedEvents]);
+
+  if (orderedEvents.length === 0) {
     return null;
   }
 
@@ -97,7 +111,9 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
               Hot this week
             </h2>
             <p className="mt-2 max-w-xl text-slate-600">
-              Gli eventi più interessanti della settimana in Sardegna.
+              {hasLocation
+                ? "Prima gli eventi vicino a te, poi il resto della settimana in Sardegna."
+                : "Gli eventi più interessanti della settimana in Sardegna."}
             </p>
           </div>
 
@@ -131,7 +147,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
           onTouchEnd={() => setIsPaused(false)}
           className="mt-8 flex snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {events.map((event) => (
+          {orderedEvents.map((event) => (
             <div
               key={event.eventId}
               data-today-card

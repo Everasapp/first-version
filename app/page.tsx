@@ -108,6 +108,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
     location: event.location_name || event.municipality,
+    municipality: event.municipality,
     area: getArea(event),
     imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
     isFree: pricing.isFree,

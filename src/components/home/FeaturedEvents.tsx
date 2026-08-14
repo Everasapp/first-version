@@ -1,5 +1,11 @@
+"use client";
+
+import { useMemo } from "react";
 import Link from "next/link";
+
 import EventCard, { type EventCardData } from "./EventCard";
+import { useUserLocation } from "@/src/hooks/useUserLocation";
+import { sortEventsByProximity } from "@/src/utils/nearby-city";
 
 type FeaturedEventsProps = {
   events?: EventCardData[];
@@ -8,9 +14,15 @@ type FeaturedEventsProps = {
 export default function FeaturedEvents({
   events = [],
 }: FeaturedEventsProps) {
-  const featuredEvents = events
-    .filter((event) => event.isFeatured)
-    .slice(0, 3);
+  const { coords } = useUserLocation();
+
+  const featuredEvents = useMemo(() => {
+    const featured = events.filter((event) => event.isFeatured);
+    const ordered = coords
+      ? sortEventsByProximity(featured, coords.lat, coords.lng)
+      : featured;
+    return ordered.slice(0, 3);
+  }, [coords, events]);
 
   if (featuredEvents.length === 0) {
     return null;

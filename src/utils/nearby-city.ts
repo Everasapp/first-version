@@ -78,6 +78,55 @@ export function findNearestCity(lat: number, lng: number): City {
   return nearest;
 }
 
+function findCityByName(municipality: string | null | undefined) {
+  if (!municipality?.trim()) return null;
+
+  return (
+    cities.find(
+      (city) =>
+        city.city.localeCompare(municipality, "it", {
+          sensitivity: "base",
+        }) === 0,
+    ) ?? null
+  );
+}
+
+export function distanceToMunicipalityKm(
+  lat: number,
+  lng: number,
+  municipality: string | null | undefined,
+) {
+  const city = findCityByName(municipality);
+  if (!city) return null;
+
+  const coords = cityCoordinates[city.city];
+  if (!coords) return null;
+
+  return distanceKm(lat, lng, coords.lat, coords.lng);
+}
+
+/** Ordina gli eventi dal più vicino al più lontano (poi per data). */
+export function sortEventsByProximity<
+  T extends { municipality?: string; startDate?: string },
+>(events: T[], lat: number, lng: number): T[] {
+  return [...events].sort((a, b) => {
+    const distanceA =
+      distanceToMunicipalityKm(lat, lng, a.municipality) ??
+      Number.POSITIVE_INFINITY;
+    const distanceB =
+      distanceToMunicipalityKm(lat, lng, b.municipality) ??
+      Number.POSITIVE_INFINITY;
+
+    if (distanceA !== distanceB) {
+      return distanceA - distanceB;
+    }
+
+    const startA = a.startDate ? new Date(a.startDate).getTime() : 0;
+    const startB = b.startDate ? new Date(b.startDate).getTime() : 0;
+    return startA - startB;
+  });
+}
+
 export function areaToSlug(area: City["area"]) {
   switch (area) {
     case "Nord Sardegna":

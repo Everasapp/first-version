@@ -23,6 +23,8 @@ export type EventCardData = {
   endDate?: string;
 
   location: string;
+  /** Comune per ordinamento «vicino a me». */
+  municipality?: string;
   area?: string;
 
   imageUrl: string;
