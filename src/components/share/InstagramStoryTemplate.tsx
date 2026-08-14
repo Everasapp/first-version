@@ -11,13 +11,16 @@ type InstagramStoryTemplateProps = {
 
 /**
  * Template fisso 1080×1920 per Instagram Stories.
- * L’immagine sta in una “finestra” in alto con object-fit contain (niente crop).
+ * Il blocco testo ha altezza riservata; l’immagine usa solo lo spazio rimanente (contain).
  */
 const InstagramStoryTemplate = forwardRef<
   HTMLDivElement,
   InstagramStoryTemplateProps
 >(function InstagramStoryTemplate({ event, variant = "elegant" }, ref) {
   void variant;
+
+  const titleSize =
+    event.title.length > 80 ? 44 : event.title.length > 50 ? 52 : 60;
 
   return (
     <div
@@ -35,59 +38,46 @@ const InstagramStoryTemplate = forwardRef<
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
+        padding: "48px 48px 56px",
       }}
     >
-      {/* Finestra immagine: tutta la foto visibile, senza zoom/crop */}
+      {/* Immagine: solo lo spazio rimasto dopo il testo (minHeight 0 evita overflow) */}
       <div
         style={{
-          flex: "0 0 52%",
-          padding: "56px 48px 24px",
-          boxSizing: "border-box",
+          flex: "1 1 auto",
+          minHeight: 0,
+          marginBottom: 36,
+          borderRadius: 36,
+          overflow: "hidden",
+          backgroundColor: "#111827",
+          border: "2px solid rgba(255,255,255,0.12)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <div
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={event.imageUrl}
+          alt=""
+          decoding="sync"
           style={{
             width: "100%",
             height: "100%",
-            borderRadius: 36,
-            overflow: "hidden",
-            backgroundColor: "#111827",
-            border: "2px solid rgba(255,255,255,0.12)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            objectFit: "contain",
+            objectPosition: "center",
+            display: "block",
           }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={event.imageUrl}
-            alt=""
-            decoding="sync"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              objectPosition: "center",
-              display: "block",
-            }}
-          />
-        </div>
+        />
       </div>
 
-      {/* Info evento */}
+      {/* Contenuto: non si restringe, resta sempre interamente nella Story */}
       <div
         style={{
-          flex: "1 1 auto",
+          flex: "0 0 auto",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-end",
-          padding: "8px 64px 80px",
-          boxSizing: "border-box",
-          background:
-            "linear-gradient(180deg, rgba(11,18,32,0) 0%, rgba(11,18,32,1) 18%)",
+          gap: 0,
         }}
       >
         <div
@@ -96,13 +86,13 @@ const InstagramStoryTemplate = forwardRef<
             alignSelf: "flex-start",
             backgroundColor: "#E67E22",
             color: "#ffffff",
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: 800,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            padding: "14px 22px",
+            padding: "12px 20px",
             borderRadius: 999,
-            marginBottom: 28,
+            marginBottom: 20,
           }}
         >
           {event.category || "Evento"}
@@ -111,11 +101,15 @@ const InstagramStoryTemplate = forwardRef<
         <h1
           style={{
             margin: 0,
-            fontSize: event.title.length > 60 ? 52 : 64,
-            lineHeight: 1.08,
+            fontSize: titleSize,
+            lineHeight: 1.1,
             fontWeight: 900,
             letterSpacing: "-0.02em",
             maxWidth: "100%",
+            display: "-webkit-box",
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {event.title}
@@ -123,11 +117,11 @@ const InstagramStoryTemplate = forwardRef<
 
         <div
           style={{
-            marginTop: 32,
+            marginTop: 24,
             display: "flex",
             flexDirection: "column",
-            gap: 16,
-            fontSize: 32,
+            gap: 12,
+            fontSize: 28,
             fontWeight: 600,
             color: "rgba(255,255,255,0.92)",
           }}
@@ -150,21 +144,22 @@ const InstagramStoryTemplate = forwardRef<
 
         <div
           style={{
-            marginTop: 40,
+            marginTop: 28,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 24,
+            gap: 20,
             borderTop: "1px solid rgba(255,255,255,0.18)",
-            paddingTop: 32,
+            paddingTop: 24,
           }}
         >
           <div
             style={{
-              fontSize: 42,
+              fontSize: 36,
               fontWeight: 900,
               letterSpacing: "0.06em",
               color: "#ffffff",
+              flex: "0 0 auto",
             }}
           >
             EVERAS
@@ -172,10 +167,12 @@ const InstagramStoryTemplate = forwardRef<
           <div
             style={{
               textAlign: "right",
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: 600,
               color: "rgba(255,255,255,0.85)",
               lineHeight: 1.35,
+              flex: "1 1 auto",
+              minWidth: 0,
             }}
           >
             Scopri altri eventi su
@@ -186,11 +183,13 @@ const InstagramStoryTemplate = forwardRef<
 
         <div
           style={{
-            marginTop: 18,
-            fontSize: 22,
+            marginTop: 14,
+            fontSize: 20,
             fontWeight: 500,
             color: "rgba(255,255,255,0.55)",
-            wordBreak: "break-all",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {event.eventUrl.replace(/^https?:\/\//, "")}
