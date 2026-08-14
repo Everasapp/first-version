@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import type { RefObject } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { createPortal, flushSync } from "react-dom";
 import {
   Check,
@@ -49,32 +49,40 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-async function writeTextToClipboard(text: string) {
-  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-    try {
+/** Copia sincrona (affidabile su iOS/Safari nel gesto utente). */
+function copyTextSync(text: string) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "0";
+  textarea.style.left = "0";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, text.length);
+  let ok = false;
+  try {
+    ok = document.execCommand("copy");
+  } catch {
+    ok = false;
+  }
+  textarea.remove();
+  return ok;
+}
+
+async function copyTextAsync(text: string) {
+  if (copyTextSync(text)) return true;
+  try {
+    if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(text);
       return true;
-    } catch {
-      // fallback sotto
     }
-  }
-
-  try {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.left = "-9999px";
-    textarea.style.top = "0";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    const ok = document.execCommand("copy");
-    textarea.remove();
-    return ok;
   } catch {
-    return false;
+    // fallthrough
   }
+  return false;
 }
 
 type ShareEventButtonProps = {
@@ -103,27 +111,26 @@ export default function ShareEventButton({
   className = "",
 }: ShareEventButtonProps) {
   const menuId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
-  const linkInputRef = useRef<HTMLInputElement>(null);
 
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<MenuPosition | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copyError, setCopyError] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
   const [storyBusy, setStoryBusy] = useState(false);
   const [storyError, setStoryError] = useState("");
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [showDownloadPanel, setShowDownloadPanel] = useState(false);
-  const [linkCopiedForSticker, setLinkCopiedForSticker] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [storyEvent, setStoryEvent] = useState<InstagramStoryEventData | null>(
     null,
   );
 
   const dimension = size === "md" ? "h-12 w-12" : "h-10 w-10";
-  const eventShareUrl = buildEventShareUrl(slug);
+  // Sempre URL pubblico: localhost non serve per lo sticker Instagram
+  const eventShareUrl = buildEventShareUrl(slug, "https://www.everas.it");
 
   useEffect(() => {
     setMounted(true);
@@ -133,13 +140,18 @@ export default function ShareEventButton({
     const trigger = triggerRef.current;
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
-    const menuWidth = 288;
+    const menuWidth = 300;
+    const menuHeight = 280;
     const gap = 8;
     const left = Math.min(
       Math.max(8, rect.right - menuWidth),
       window.innerWidth - menuWidth - 8,
     );
-    const top = Math.min(rect.bottom + gap, window.innerHeight - 8);
+    const spaceBelow = window.innerHeight - rect.bottom - gap;
+    const top =
+      spaceBelow >= menuHeight
+        ? rect.bottom + gap
+        : Math.max(8, rect.top - menuHeight - gap);
     setMenuPos({ top, left });
   }
 
@@ -150,33 +162,19 @@ export default function ShareEventButton({
 
   useEffect(() => {
     if (!open) return;
-
-    function onPointerDown(event: MouseEvent | TouchEvent) {
-      const target = event.target as Node;
-      if (rootRef.current?.contains(target)) return;
-      if (menuRef.current?.contains(target)) return;
-      setOpen(false);
-    }
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
-    }
-
     function onReposition() {
       updateMenuPosition();
     }
-
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("touchstart", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
     window.addEventListener("resize", onReposition);
     window.addEventListener("scroll", onReposition, true);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("touchstart", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", onReposition);
       window.removeEventListener("scroll", onReposition, true);
+      document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
 
@@ -186,39 +184,39 @@ export default function ShareEventButton({
     };
   }, [downloadUrl]);
 
-  function buildStoryPayload(
-    safeImageUrl: string,
-    logoUrl?: string,
-  ): InstagramStoryEventData {
-    return {
-      title,
-      slug,
-      imageUrl: safeImageUrl,
-      logoUrl,
-      category,
-      city,
-      dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
-      timeLabel: startAt ? formatStoryTime(startAt) : "",
-      eventUrl: eventShareUrl,
-      siteLabel: STORY_SITE_LABEL,
-    };
+  function markCopied() {
+    setCopied(true);
+    setCopyError(false);
+    setStatusMessage("Link copiato. Su Instagram: sticker Link → Incolla.");
+    window.setTimeout(() => setCopied(false), 2500);
   }
 
-  async function copyEventLink() {
-    linkInputRef.current?.select();
-    const ok = await writeTextToClipboard(eventShareUrl);
+  function handleCopyClick(event: ReactMouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setCopyError(false);
+    const ok = copyTextSync(eventShareUrl);
     if (ok) {
-      setCopied(true);
-      setLinkCopiedForSticker(true);
-      window.setTimeout(() => setCopied(false), 2500);
-      return true;
+      markCopied();
+      return;
     }
-    window.prompt("Copia il link dell’evento:", eventShareUrl);
-    return false;
+    void (async () => {
+      const asyncOk = await copyTextAsync(eventShareUrl);
+      if (asyncOk) {
+        markCopied();
+        return;
+      }
+      setCopyError(true);
+      setStatusMessage("Seleziona e copia il link qui sotto.");
+      window.prompt("Copia il link dell’evento:", eventShareUrl);
+    })();
   }
 
-  async function shareNative() {
+  async function shareNative(event: ReactMouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
     setOpen(false);
+
     try {
       if (typeof navigator.share === "function") {
         await navigator.share({
@@ -233,14 +231,29 @@ export default function ShareEventButton({
         return;
       }
     }
-    await copyEventLink();
+
+    const ok = await copyTextAsync(eventShareUrl);
+    if (ok) {
+      markCopied();
+      setStatusMessage("Condivisione non disponibile: link copiato.");
+    } else {
+      window.prompt("Copia il link dell’evento:", eventShareUrl);
+    }
   }
 
-  async function shareInstagramStory() {
+  async function shareInstagramStory(
+    event: ReactMouseEvent<HTMLButtonElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
     setStoryError("");
     setStoryBusy(true);
     setOpen(false);
-    setLinkCopiedForSticker(false);
+    setStatusMessage("");
+
+    // Copia subito nel gesto utente (prima degli await lunghi)
+    const copiedNow = copyTextSync(eventShareUrl);
+    if (copiedNow) markCopied();
 
     let revokeSafeImage: (() => void) | undefined;
 
@@ -251,7 +264,19 @@ export default function ShareEventButton({
       ]);
       revokeSafeImage = safe.revoke;
 
-      const payload = buildStoryPayload(safe.url, logoUrl);
+      const payload: InstagramStoryEventData = {
+        title,
+        slug,
+        imageUrl: safe.url,
+        logoUrl,
+        category,
+        city,
+        dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
+        timeLabel: startAt ? formatStoryTime(startAt) : "",
+        eventUrl: eventShareUrl,
+        siteLabel: STORY_SITE_LABEL,
+      };
+
       flushSync(() => {
         setStoryEvent(payload);
       });
@@ -268,17 +293,17 @@ export default function ShareEventButton({
         { type: "image/jpeg" },
       );
 
-      const copiedOk = await copyEventLink();
-      setLinkCopiedForSticker(copiedOk);
-
       const shareable = await canShareFiles(file);
       if (shareable) {
         try {
           await shareStoryFile(file, title, payload.eventUrl);
           setShowDownloadPanel(true);
           return;
-        } catch (error) {
-          if (error instanceof DOMException && error.name === "AbortError") {
+        } catch (shareError) {
+          if (
+            shareError instanceof DOMException &&
+            shareError.name === "AbortError"
+          ) {
             setShowDownloadPanel(true);
             return;
           }
@@ -286,8 +311,7 @@ export default function ShareEventButton({
       }
 
       if (downloadUrl) URL.revokeObjectURL(downloadUrl);
-      const objectUrl = URL.createObjectURL(blob);
-      setDownloadUrl(objectUrl);
+      setDownloadUrl(URL.createObjectURL(blob));
       setShowDownloadPanel(true);
     } catch (error) {
       console.error("[share] Instagram Story generation failed:", error);
@@ -312,120 +336,87 @@ export default function ShareEventButton({
     anchor.remove();
   }
 
-  function LinkCopyBlock({
-    compact = false,
-    inputRef,
-  }: {
-    compact?: boolean;
-    inputRef?: RefObject<HTMLInputElement | null>;
-  }) {
-    return (
-      <div
-        className={
-          compact
-            ? "border-b border-slate-100 px-3 pb-3 pt-2"
-            : "mt-3 rounded-2xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3.5 py-3"
-        }
-      >
-        <p
-          className={`font-bold ${
-            compact
-              ? "text-[11px] uppercase tracking-[0.12em] text-slate-500"
-              : "text-sm text-[#C96A1A]"
-          }`}
-        >
-          Link per sticker Instagram
-        </p>
-        <div className={`flex gap-2 ${compact ? "mt-2" : "mt-2.5"}`}>
-          <input
-            ref={inputRef}
-            type="text"
-            readOnly
-            value={eventShareUrl}
-            onFocus={(event) => event.currentTarget.select()}
-            onClick={(event) => {
-              event.stopPropagation();
-              event.currentTarget.select();
-            }}
-            className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none focus:border-[#075EAE]"
-            aria-label="Link evento da copiare"
-          />
-          <button
-            type="button"
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              void copyEventLink();
-            }}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#E67E22] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#C96A1A]"
-          >
-            {copied ? (
-              <Check aria-hidden="true" className="h-3.5 w-3.5" />
-            ) : (
-              <Link2 aria-hidden="true" className="h-3.5 w-3.5" />
-            )}
-            {copied ? "Copiato" : "Copia"}
-          </button>
-        </div>
-        <p
-          className={
-            compact
-              ? "mt-1.5 text-[11px] leading-4 text-slate-500"
-              : "mt-2 text-xs leading-5 text-slate-600"
-          }
-        >
-          Copia → Instagram → sticker Link → Incolla
-        </p>
-      </div>
-    );
-  }
-
   const menu =
     mounted && open && menuPos
       ? createPortal(
-          <div
-            ref={menuRef}
-            id={menuId}
-            role="dialog"
-            aria-label="Condividi evento"
-            style={{
-              position: "fixed",
-              top: menuPos.top,
-              left: menuPos.left,
-              width: 288,
-              zIndex: 100,
-            }}
-            className="overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <LinkCopyBlock compact inputRef={linkInputRef} />
+          <>
+            <button
+              type="button"
+              aria-label="Chiudi menu condivisione"
+              className="fixed inset-0 z-[99] cursor-default bg-transparent"
+              onClick={() => setOpen(false)}
+            />
+            <div
+              id={menuId}
+              role="dialog"
+              aria-label="Condividi evento"
+              style={{
+                position: "fixed",
+                top: menuPos.top,
+                left: menuPos.left,
+                width: 300,
+                zIndex: 100,
+              }}
+              className="rounded-2xl border border-slate-200 bg-white p-3 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                Link per sticker Instagram
+              </p>
 
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                void shareInstagramStory();
-              }}
-              className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-            >
-              <InstagramIcon className="h-4 w-4 text-[#E67E22]" />
-              Instagram Stories
-            </button>
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                void shareNative();
-              }}
-              className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-            >
-              <Share2 aria-hidden="true" className="h-4 w-4 text-[#075EAE]" />
-              Altre app
-            </button>
-          </div>,
+              <p
+                className={`mt-2 break-all rounded-xl border px-3 py-2 text-xs font-medium ${
+                  copyError
+                    ? "border-red-300 bg-red-50 text-red-800"
+                    : "border-slate-200 bg-slate-50 text-slate-700"
+                }`}
+              >
+                {eventShareUrl}
+              </p>
+
+              <button
+                type="button"
+                onClick={handleCopyClick}
+                className="mt-2 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-3 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
+              >
+                {copied ? (
+                  <Check aria-hidden="true" className="h-4 w-4" />
+                ) : (
+                  <Link2 aria-hidden="true" className="h-4 w-4" />
+                )}
+                {copied ? "Link copiato ✓" : "Copia link"}
+              </button>
+
+              {(statusMessage || copyError) && (
+                <p className="mt-2 text-xs leading-5 text-slate-600">
+                  {statusMessage ||
+                    "Seleziona il testo del link e copialo manualmente."}
+                </p>
+              )}
+
+              <div className="mt-3 border-t border-slate-100 pt-2">
+                <button
+                  type="button"
+                  onClick={(e) => void shareInstagramStory(e)}
+                  className="flex w-full items-center gap-2.5 rounded-xl px-2 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+                >
+                  <InstagramIcon className="h-4 w-4 text-[#E67E22]" />
+                  Instagram Stories
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => void shareNative(e)}
+                  className="flex w-full items-center gap-2.5 rounded-xl px-2 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+                >
+                  <Share2
+                    aria-hidden="true"
+                    className="h-4 w-4 text-[#075EAE]"
+                  />
+                  Altre app
+                </button>
+              </div>
+            </div>
+          </>,
           document.body,
         )
       : null;
@@ -438,12 +429,11 @@ export default function ShareEventButton({
             onClick={() => {
               setShowDownloadPanel(false);
               setStoryError("");
-              setLinkCopiedForSticker(false);
             }}
           >
             <div
               className="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl"
-              onClick={(event) => event.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -464,7 +454,6 @@ export default function ShareEventButton({
                   onClick={() => {
                     setShowDownloadPanel(false);
                     setStoryError("");
-                    setLinkCopiedForSticker(false);
                   }}
                   className="grid h-9 w-9 place-items-center rounded-full text-slate-500 hover:bg-slate-100"
                 >
@@ -474,10 +463,25 @@ export default function ShareEventButton({
 
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 {storyError ||
-                  "Copia il link qui sotto, poi su Instagram aggiungi lo sticker Link e incollalo."}
+                  "Copia il link, poi su Instagram aggiungi lo sticker Link e incollalo."}
               </p>
 
-              {!storyError ? <LinkCopyBlock /> : null}
+              <p className="mt-3 break-all rounded-xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3 py-2 text-xs font-medium text-slate-800">
+                {eventShareUrl}
+              </p>
+
+              <button
+                type="button"
+                onClick={handleCopyClick}
+                className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-3 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
+              >
+                {copied ? (
+                  <Check aria-hidden="true" className="h-4 w-4" />
+                ) : (
+                  <Link2 aria-hidden="true" className="h-4 w-4" />
+                )}
+                {copied ? "Link copiato ✓" : "Copia link"}
+              </button>
 
               {downloadUrl ? (
                 <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
@@ -490,28 +494,16 @@ export default function ShareEventButton({
                 </div>
               ) : null}
 
-              <div className="mt-5 flex flex-col gap-2">
-                {downloadUrl ? (
-                  <button
-                    type="button"
-                    onClick={handleDownload}
-                    className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-4 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
-                  >
-                    <Download aria-hidden="true" className="h-4 w-4" />
-                    Scarica Story
-                  </button>
-                ) : null}
+              {downloadUrl ? (
                 <button
                   type="button"
-                  onClick={() => void copyEventLink()}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+                  onClick={handleDownload}
+                  className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
                 >
-                  <Link2 aria-hidden="true" className="h-4 w-4" />
-                  {linkCopiedForSticker
-                    ? "Link copiato ✓"
-                    : "Copia di nuovo il link"}
+                  <Download aria-hidden="true" className="h-4 w-4" />
+                  Scarica Story
                 </button>
-              </div>
+              ) : null}
             </div>
           </div>,
           document.body,
@@ -519,13 +511,15 @@ export default function ShareEventButton({
       : null;
 
   return (
-    <div ref={rootRef} className="relative">
+    <div className="relative">
       <button
         ref={triggerRef}
         type="button"
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
+          setStatusMessage("");
+          setCopyError(false);
           setOpen((value) => !value);
         }}
         aria-label={`Condividi ${title}`}
