@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   Check,
   Download,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 import InstagramStoryTemplate from "@/src/components/share/InstagramStoryTemplate";
+import { loadCanvasSafeImageUrl } from "@/src/lib/share/canvasSafeImage";
 import {
   buildEventShareUrl,
   formatStoryDate,
@@ -58,7 +60,7 @@ type ShareEventButtonProps = {
 export default function ShareEventButton({
   title,
   slug,
-  imageUrl = "/images/event-placeholder.jpg",
+  imageUrl = "/images/concert.png",
   category = "Evento",
   city = "Sardegna",
   startAt,
@@ -109,12 +111,12 @@ export default function ShareEventButton({
     };
   }, [downloadUrl]);
 
-  function buildStoryPayload(): InstagramStoryEventData {
+  function buildStoryPayload(safeImageUrl: string): InstagramStoryEventData {
     const url = buildEventShareUrl(slug);
     return {
       title,
       slug,
-      imageUrl: imageUrl || "/images/event-placeholder.jpg",
+      imageUrl: safeImageUrl,
       category,
       city,
       dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
@@ -160,13 +162,19 @@ export default function ShareEventButton({
     setStoryBusy(true);
     setOpen(false);
 
-    const payload = buildStoryPayload();
-    setStoryEvent(payload);
-
-    // Attendi mount del template off-screen
-    await new Promise((resolve) => window.setTimeout(resolve, 80));
+    let revokeSafeImage: (() => void) | undefined;
 
     try {
+      const safe = await loadCanvasSafeImageUrl(
+        imageUrl || "/images/concert.png",
+      );
+      revokeSafeImage = safe.revoke;
+
+      const payload = buildStoryPayload(safe.url);
+      flushSync(() => {
+        setStoryEvent(payload);
+      });
+
       const node = storyRef.current;
       if (!node) {
         throw new Error("Template Story non disponibile.");
@@ -183,13 +191,9 @@ export default function ShareEventButton({
       if (shareable) {
         try {
           await shareStoryFile(file, title);
-          setStoryBusy(false);
-          setStoryEvent(null);
           return;
         } catch (error) {
           if (error instanceof DOMException && error.name === "AbortError") {
-            setStoryBusy(false);
-            setStoryEvent(null);
             return;
           }
         }
@@ -208,6 +212,7 @@ export default function ShareEventButton({
     } finally {
       setStoryBusy(false);
       setStoryEvent(null);
+      revokeSafeImage?.();
     }
   }
 
@@ -358,16 +363,18 @@ export default function ShareEventButton({
         </div>
       ) : null}
 
-      {/* Template off-screen per generazione */}
+      {/* Template off-screen per generazione (visibile al browser, non all’utente) */}
       {storyEvent ? (
         <div
           aria-hidden="true"
           style={{
             position: "fixed",
-            left: -12000,
+            left: 0,
             top: 0,
+            zIndex: -1,
+            opacity: 0,
             pointerEvents: "none",
-            opacity: 1,
+            overflow: "hidden",
           }}
         >
           <InstagramStoryTemplate ref={storyRef} event={storyEvent} />

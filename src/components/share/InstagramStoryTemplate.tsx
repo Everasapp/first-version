@@ -12,6 +12,7 @@ type InstagramStoryTemplateProps = {
 /**
  * Template fisso 1080×1920 per Instagram Stories.
  * Rendering off-screen: non usare per layout responsive UI.
+ * Le immagini devono essere same-origin / blob URL (canvas-safe).
  */
 const InstagramStoryTemplate = forwardRef<
   HTMLDivElement,
@@ -46,7 +47,6 @@ const InstagramStoryTemplate = forwardRef<
         <img
           src={event.imageUrl}
           alt=""
-          crossOrigin="anonymous"
           style={{
             width: "100%",
             height: "100%",
@@ -119,9 +119,20 @@ const InstagramStoryTemplate = forwardRef<
             color: "rgba(255,255,255,0.92)",
           }}
         >
-          <div>📅  {event.dateLabel}</div>
-          {event.timeLabel ? <div>🕒  {event.timeLabel}</div> : null}
-          <div>📍  {event.city}</div>
+          <div>
+            <span style={{ color: "#E67E22", marginRight: 12 }}>DATA</span>
+            {event.dateLabel}
+          </div>
+          {event.timeLabel ? (
+            <div>
+              <span style={{ color: "#E67E22", marginRight: 12 }}>ORA</span>
+              {event.timeLabel}
+            </div>
+          ) : null}
+          <div>
+            <span style={{ color: "#E67E22", marginRight: 12 }}>DOVE</span>
+            {event.city}
+          </div>
         </div>
 
         <div
@@ -135,18 +146,16 @@ const InstagramStoryTemplate = forwardRef<
             paddingTop: 36,
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/everas-logo-v2.png"
-            alt="EVERAS"
-            crossOrigin="anonymous"
+          <div
             style={{
-              height: 56,
-              width: "auto",
-              display: "block",
-              filter: "brightness(0) invert(1)",
+              fontSize: 42,
+              fontWeight: 900,
+              letterSpacing: "0.06em",
+              color: "#ffffff",
             }}
-          />
+          >
+            EVERAS
+          </div>
           <div
             style={{
               textAlign: "right",

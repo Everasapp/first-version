@@ -1,36 +1,29 @@
 import { toJpeg } from "html-to-image";
 
+import { waitForElementImages } from "@/src/lib/share/canvasSafeImage";
 import { STORY_HEIGHT, STORY_WIDTH } from "@/src/lib/share/types";
 
 /** Genera JPEG della Story (mira a < ~500KB). */
 export async function generateStoryJpeg(node: HTMLElement): Promise<Blob> {
-  // Preload immagini per ridurre canvas vuoti
-  const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(
-    images.map(
-      (img) =>
-        new Promise<void>((resolve) => {
-          if (img.complete) {
-            resolve();
-            return;
-          }
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-        }),
-    ),
-  );
+  await waitForElementImages(node);
 
   const dataUrl = await toJpeg(node, {
     quality: 0.82,
     width: STORY_WIDTH,
     height: STORY_HEIGHT,
     pixelRatio: 1,
-    cacheBust: true,
+    cacheBust: false,
     backgroundColor: "#0f172a",
+    // Evita che risorse esterne residue blocchino l’export
+    skipFonts: true,
   });
 
   const response = await fetch(dataUrl);
-  return response.blob();
+  const blob = await response.blob();
+  if (!blob.size) {
+    throw new Error("JPEG Story vuoto.");
+  }
+  return blob;
 }
 
 export async function canShareFiles(file: File) {
