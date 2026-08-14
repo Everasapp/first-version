@@ -99,7 +99,15 @@ export default function EventCard({ event }: EventCardProps) {
             eventTitle={event.title}
             initialIsFavorite={Boolean(event.isFavorite)}
           />
-          <ShareEventButton title={event.title} slug={event.id} />
+          <ShareEventButton
+            title={event.title}
+            slug={event.id}
+            imageUrl={event.imageUrl}
+            category={event.category}
+            city={event.municipality || event.location}
+            startAt={event.startDate}
+            dateLabel={event.date}
+          />
         </div>
       </div>
 
