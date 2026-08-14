@@ -5,9 +5,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "./EventCard";
-import { useUserLocation } from "@/src/hooks/useUserLocation";
 import type { City } from "@/src/data/cities";
-import { sortEventsForAreaSection } from "@/src/utils/nearby-city";
+import { sortEventsByUpcomingDate } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
   title: string;
@@ -43,17 +42,11 @@ export default function AreaSection({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const { coords, hasLocation } = useUserLocation();
 
   const areaEvents = useMemo(() => {
     const filtered = events.filter((event) => event.area === area);
-    return sortEventsForAreaSection(
-      filtered,
-      area,
-      coords?.lat ?? null,
-      coords?.lng ?? null,
-    );
-  }, [area, coords?.lat, coords?.lng, events]);
+    return sortEventsByUpcomingDate(filtered);
+  }, [area, events]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
@@ -110,12 +103,6 @@ export default function AreaSection({
     return () => window.clearInterval(timer);
   }, [areaEvents.length, isPaused]);
 
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || !hasLocation) return;
-    scroller.scrollTo({ left: 0, behavior: "auto" });
-  }, [hasLocation, areaEvents]);
-
   if (areaEvents.length === 0) {
     return null;
   }
@@ -160,7 +147,6 @@ export default function AreaSection({
           <p className="text-sm font-semibold text-slate-500">
             {areaEvents.length}{" "}
             {areaEvents.length === 1 ? "evento" : "eventi"}
-            {" · prima i più vicini"}
           </p>
 
           <div className="flex shrink-0 items-center gap-2">

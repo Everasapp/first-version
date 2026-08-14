@@ -272,40 +272,6 @@ export function sortEventsForExplore<T extends PlaceEvent>(
   return sortEventsByUpcomingDate(events);
 }
 
-/** Capoluogo / hub geografico per ordinare gli eventi di ciascuna area. */
-export const AREA_REFERENCE_COORDS: Record<
-  City["area"],
-  { lat: number; lng: number }
-> = {
-  "Nord Sardegna": cityCoordinates.Sassari,
-  "Centro Sardegna": cityCoordinates.Nuoro,
-  "Sud Sardegna": cityCoordinates.Cagliari,
-};
-
-/**
- * Sezioni territorio home: sempre per distanza.
- * Con GPS → dal più vicino all’utente; senza → dal hub dell’area.
- */
-export function sortEventsForAreaSection<T extends PlaceEvent>(
-  events: T[],
-  area: City["area"],
-  lat?: number | null,
-  lng?: number | null,
-): T[] {
-  const hasLocation =
-    typeof lat === "number" &&
-    typeof lng === "number" &&
-    Number.isFinite(lat) &&
-    Number.isFinite(lng);
-
-  if (hasLocation) {
-    return sortEventsByProximity(events, lat, lng);
-  }
-
-  const hub = AREA_REFERENCE_COORDS[area];
-  return sortEventsByProximity(events, hub.lat, hub.lng);
-}
-
 /**
  * @deprecated Preferire sortEventsForExplore
  */
