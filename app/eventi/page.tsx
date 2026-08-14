@@ -2,9 +2,8 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
-import EventCard, {
-  type EventCardData,
-} from "@/src/components/home/EventCard";
+import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
+import type { EventCardData } from "@/src/components/home/EventCard";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
@@ -122,6 +121,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     startDate: event.start_at,
     endDate: event.end_at || undefined,
     location: event.municipality || event.location_name || "Sardegna",
+    municipality: event.municipality || undefined,
     area: getEventArea(event.municipality),
     imageUrl: event.image_url || "/images/concert.png",
     isFree: pricing.isFree,
@@ -213,10 +213,19 @@ export default async function EventsPage({
   ]);
 
   const databaseEvents = (data ?? []) as DatabaseEvent[];
+  const now = new Date();
 
   const filteredEvents = databaseEvents
     .filter((event) => {
       const eventStartDate = new Date(event.start_at);
+      const eventEndDate = event.end_at
+        ? new Date(event.end_at)
+        : eventStartDate;
+
+      // Senza filtro data: solo eventi ancora validi (dal più vicino a oggi in poi)
+      const matchesUpcoming =
+        Boolean(dateRange) || eventEndDate >= now;
+
       const eventArea = getEventArea(event.municipality);
 
       const matchesArea =
@@ -249,6 +258,7 @@ export default async function EventsPage({
       );
 
       return (
+        matchesUpcoming &&
         matchesArea &&
         matchesCity &&
         matchesCategory &&
@@ -259,7 +269,12 @@ export default async function EventsPage({
     .map((event) => ({
       ...mapDatabaseEvent(event),
       isFavorite: favoriteIds.has(event.id),
-    }));
+    }))
+    .sort((a, b) => {
+      const startA = new Date(a.startDate).getTime();
+      const startB = new Date(b.startDate).getTime();
+      return startA - startB;
+    });
 
   return (
     <>
@@ -319,11 +334,7 @@ export default async function EventsPage({
             )}
 
             {filteredEvents.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {filteredEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
+              <EventsExploreGrid events={filteredEvents} />
             ) : (
               <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
                 <h3 className="text-xl font-bold text-slate-900">

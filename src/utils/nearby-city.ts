@@ -127,6 +127,46 @@ export function sortEventsByProximity<
   });
 }
 
+/**
+ * Ordina per data (dal più vicino a oggi in avanti),
+ * poi per vicinanza se sono disponibili le coordinate.
+ */
+export function sortEventsByDateThenProximity<
+  T extends { municipality?: string; startDate?: string },
+>(events: T[], lat?: number | null, lng?: number | null): T[] {
+  const hasLocation =
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng);
+
+  return [...events].sort((a, b) => {
+    const startA = a.startDate
+      ? new Date(a.startDate).getTime()
+      : Number.POSITIVE_INFINITY;
+    const startB = b.startDate
+      ? new Date(b.startDate).getTime()
+      : Number.POSITIVE_INFINITY;
+
+    if (startA !== startB) {
+      return startA - startB;
+    }
+
+    if (!hasLocation) {
+      return 0;
+    }
+
+    const distanceA =
+      distanceToMunicipalityKm(lat, lng, a.municipality) ??
+      Number.POSITIVE_INFINITY;
+    const distanceB =
+      distanceToMunicipalityKm(lat, lng, b.municipality) ??
+      Number.POSITIVE_INFINITY;
+
+    return distanceA - distanceB;
+  });
+}
+
 export function areaToSlug(area: City["area"]) {
   switch (area) {
     case "Nord Sardegna":
