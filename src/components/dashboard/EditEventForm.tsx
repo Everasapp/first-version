@@ -25,6 +25,7 @@ import {
   parsePrice,
 } from "@/src/lib/eventForm";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
+import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -328,30 +329,12 @@ export default function EditEventForm({
       let nextImageUrl = existingImageUrl;
 
       if (imageFile) {
-        const fileExtension =
-          imageFile.name.split(".").pop()?.toLowerCase() || "jpg";
-
-        uploadedPath = `${user.id}/${event.slug}.${fileExtension}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("event-images")
-          .upload(uploadedPath, imageFile, {
-            cacheControl: "3600",
-            contentType: imageFile.type,
-            upsert: true,
-          });
-
-        if (uploadError) {
-          throw new Error(
-            `Caricamento immagine non riuscito: ${uploadError.message}`,
-          );
-        }
-
-        const { data: publicUrlData } = supabase.storage
-          .from("event-images")
-          .getPublicUrl(uploadedPath);
-
-        nextImageUrl = publicUrlData.publicUrl;
+        const uploaded = await uploadEventImage(imageFile, {
+          slug: event.slug,
+          upsert: true,
+        });
+        uploadedPath = uploaded.path;
+        nextImageUrl = uploaded.publicUrl;
       }
 
       const selectedCity = cities.find((item) => item.city === city);
@@ -568,7 +551,8 @@ export default function EditEventForm({
               )}
             </label>
             <p className="mt-2 text-sm text-slate-500">
-              Lascia l&apos;immagine attuale o sostituiscila con un nuovo file.
+              Lascia l&apos;immagine attuale o sostituiscila (JPG, PNG o WebP,
+              max 5 MB). Il nuovo file viene compresso e salvato in WebP.
             </p>
             {errors.image && (
               <p className="mt-2 text-sm text-red-600">{errors.image}</p>

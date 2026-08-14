@@ -32,6 +32,7 @@ import {
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
+import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -324,26 +325,10 @@ export default function PublishEventPage() {
       const cityRecord = cities.find((item) => item.city === city);
       const baseSlug = createSlug(title) || "evento";
       const uniqueSlug = `${baseSlug}-${Date.now().toString(36)}`;
-      const fileExtension =
-        imageFile.name.split(".").pop()?.toLowerCase() || "jpg";
 
-      uploadedPath = `${user.id}/${uniqueSlug}.${fileExtension}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("event-images")
-        .upload(uploadedPath, imageFile, {
-          cacheControl: "3600",
-          contentType: imageFile.type,
-          upsert: false,
-        });
-
-      if (uploadError) {
-        throw new Error(`Caricamento immagine non riuscito: ${uploadError.message}`);
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("event-images")
-        .getPublicUrl(uploadedPath);
+      const uploaded = await uploadEventImage(imageFile, { slug: uniqueSlug });
+      uploadedPath = uploaded.path;
+      const publicUrl = uploaded.publicUrl;
 
       const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
@@ -366,7 +351,7 @@ export default function PublishEventPage() {
           address: venue.trim(),
           start_at: startAt,
           end_at: null,
-          image_url: publicUrlData.publicUrl,
+          image_url: publicUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
           price: numericPrice ?? 0,
@@ -690,7 +675,8 @@ export default function PublishEventPage() {
                             </p>
 
                             <p className="mt-1 text-sm text-slate-500">
-                              JPG, PNG o WebP. Consigliato formato orizzontale.
+                              JPG, PNG o WebP (max 5 MB). Verrà compressa e
+                              salvata in WebP.
                             </p>
                           </>
                         )}
@@ -1231,8 +1217,8 @@ export default function PublishEventPage() {
 
                   {!publishMessage && !publishError && (
                     <p className="mt-3 text-center text-sm text-slate-500">
-                      La fotografia verrà caricata su Supabase Storage e
-                      l&apos;evento sarà salvato nel database.
+                      La fotografia verrà compressa in WebP e l&apos;evento
+                      sarà salvato su EVERAS.
                     </p>
                   )}
                 </div>

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import sharp from "sharp";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import type { EditableEventImport } from "@/src/lib/admin/event-import";
 import { cities } from "@/src/data/cities";
+import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import { createSlug } from "@/src/lib/slug";
 import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
 import { notifyEventPublished } from "@/src/lib/notifications/notify";
@@ -36,32 +36,7 @@ async function downloadAndOptimizeImage(imageUrl: string) {
       throw new Error(`Download immagine fallito (${response.status})`);
     }
     const buffer = Buffer.from(await response.arrayBuffer());
-    if (buffer.byteLength > 8 * 1024 * 1024) {
-      throw new Error("Immagine remota troppo grande");
-    }
-
-    let quality = 82;
-    let out = await sharp(buffer)
-      .rotate()
-      .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
-      .webp({ quality })
-      .toBuffer();
-
-    while (out.byteLength > 220_000 && quality > 55) {
-      quality -= 8;
-      out = await sharp(buffer)
-        .rotate()
-        .resize({
-          width: 1400,
-          height: 1400,
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .webp({ quality })
-        .toBuffer();
-    }
-
-    return out;
+    return optimizeImageToWebp(buffer);
   } finally {
     clearTimeout(timer);
   }

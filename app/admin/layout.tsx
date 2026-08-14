@@ -29,6 +29,12 @@ export default async function AdminLayout({
               Importa eventi
             </Link>
             <Link
+              href="/admin/comprimi-immagini"
+              className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
+            >
+              Comprimi immagini
+            </Link>
+            <Link
               href="/admin/ricerca-contatti"
               className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
             >
