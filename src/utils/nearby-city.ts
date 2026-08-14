@@ -78,16 +78,30 @@ export function findNearestCity(lat: number, lng: number): City {
   return nearest;
 }
 
+function normalizePlaceName(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase("it")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "");
+}
+
 function findCityByName(municipality: string | null | undefined) {
   if (!municipality?.trim()) return null;
 
+  const needle = normalizePlaceName(municipality);
+
+  const exact = cities.find(
+    (city) => normalizePlaceName(city.city) === needle,
+  );
+  if (exact) return exact;
+
+  // Match parziale (es. "Quartu Sant'Elena (CA)" / sottostringhe)
   return (
-    cities.find(
-      (city) =>
-        city.city.localeCompare(municipality, "it", {
-          sensitivity: "base",
-        }) === 0,
-    ) ?? null
+    cities.find((city) => {
+      const name = normalizePlaceName(city.city);
+      return needle.includes(name) || name.includes(needle);
+    }) ?? null
   );
 }
 
@@ -105,16 +119,28 @@ export function distanceToMunicipalityKm(
   return distanceKm(lat, lng, coords.lat, coords.lng);
 }
 
+type PlaceEvent = {
+  municipality?: string;
+  location?: string;
+  startDate?: string;
+};
+
+function eventPlaceName(event: PlaceEvent) {
+  return event.municipality || event.location || null;
+}
+
 /** Ordina gli eventi dal più vicino al più lontano (poi per data). */
-export function sortEventsByProximity<
-  T extends { municipality?: string; startDate?: string },
->(events: T[], lat: number, lng: number): T[] {
+export function sortEventsByProximity<T extends PlaceEvent>(
+  events: T[],
+  lat: number,
+  lng: number,
+): T[] {
   return [...events].sort((a, b) => {
     const distanceA =
-      distanceToMunicipalityKm(lat, lng, a.municipality) ??
+      distanceToMunicipalityKm(lat, lng, eventPlaceName(a)) ??
       Number.POSITIVE_INFINITY;
     const distanceB =
-      distanceToMunicipalityKm(lat, lng, b.municipality) ??
+      distanceToMunicipalityKm(lat, lng, eventPlaceName(b)) ??
       Number.POSITIVE_INFINITY;
 
     if (distanceA !== distanceB) {
@@ -127,19 +153,10 @@ export function sortEventsByProximity<
   });
 }
 
-/**
- * Ordina per data (dal più vicino a oggi in avanti),
- * poi per vicinanza se sono disponibili le coordinate.
- */
-export function sortEventsByDateThenProximity<
-  T extends { municipality?: string; startDate?: string },
->(events: T[], lat?: number | null, lng?: number | null): T[] {
-  const hasLocation =
-    typeof lat === "number" &&
-    typeof lng === "number" &&
-    Number.isFinite(lat) &&
-    Number.isFinite(lng);
-
+/** Solo data: dal più vicino a oggi in avanti. */
+export function sortEventsByUpcomingDate<T extends { startDate?: string }>(
+  events: T[],
+): T[] {
   return [...events].sort((a, b) => {
     const startA = a.startDate
       ? new Date(a.startDate).getTime()
@@ -147,24 +164,41 @@ export function sortEventsByDateThenProximity<
     const startB = b.startDate
       ? new Date(b.startDate).getTime()
       : Number.POSITIVE_INFINITY;
-
-    if (startA !== startB) {
-      return startA - startB;
-    }
-
-    if (!hasLocation) {
-      return 0;
-    }
-
-    const distanceA =
-      distanceToMunicipalityKm(lat, lng, a.municipality) ??
-      Number.POSITIVE_INFINITY;
-    const distanceB =
-      distanceToMunicipalityKm(lat, lng, b.municipality) ??
-      Number.POSITIVE_INFINITY;
-
-    return distanceA - distanceB;
+    return startA - startB;
   });
+}
+
+/**
+ * Esplora / ricerca: con posizione → prima i più vicini, poi data;
+ * senza posizione → solo data (dal più vicino a oggi).
+ */
+export function sortEventsForExplore<T extends PlaceEvent>(
+  events: T[],
+  lat?: number | null,
+  lng?: number | null,
+): T[] {
+  const hasLocation =
+    typeof lat === "number" &&
+    typeof lng === "number" &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng);
+
+  if (hasLocation) {
+    return sortEventsByProximity(events, lat, lng);
+  }
+
+  return sortEventsByUpcomingDate(events);
+}
+
+/**
+ * @deprecated Preferire sortEventsForExplore
+ */
+export function sortEventsByDateThenProximity<T extends PlaceEvent>(
+  events: T[],
+  lat?: number | null,
+  lng?: number | null,
+): T[] {
+  return sortEventsForExplore(events, lat, lng);
 }
 
 export function areaToSlug(area: City["area"]) {
