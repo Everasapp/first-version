@@ -21,7 +21,6 @@ const InstagramStoryTemplate = forwardRef<
 
   const titleSize =
     event.title.length > 80 ? 40 : event.title.length > 50 ? 48 : 56;
-  const linkLabel = event.eventUrl.replace(/^https?:\/\//, "");
 
   return (
     <div
@@ -193,15 +192,13 @@ const InstagramStoryTemplate = forwardRef<
 
           <div
             style={{
-              fontSize: 36,
+              fontSize: 44,
               fontWeight: 900,
               color: "#E67E22",
-              lineHeight: 1.2,
-              wordBreak: "break-all",
-              maxWidth: "100%",
+              lineHeight: 1.1,
             }}
           >
-            {linkLabel}
+            {event.siteLabel || "everas.it"}
           </div>
         </div>
       </div>
