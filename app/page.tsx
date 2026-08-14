@@ -1,7 +1,6 @@
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
-import FeaturedEvents from "@/src/components/home/FeaturedEvents";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -189,10 +188,6 @@ export default async function Home() {
 
         <Hero />
 
-        <FeaturedEvents events={events} />
-
-        <CategoriesSection />
-
         <AreaSection
           title="Nord Sardegna"
           area="Nord Sardegna"
@@ -216,6 +211,8 @@ export default async function Home() {
           image="/images/sud-sardegna.png"
           events={events}
         />
+
+        <CategoriesSection />
       </main>
     </>
   );

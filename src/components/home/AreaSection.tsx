@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "./EventCard";
 import { useUserLocation } from "@/src/hooks/useUserLocation";
-import { sortEventsByProximity } from "@/src/utils/nearby-city";
+import { sortEventsForExplore } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
   title: string;
@@ -21,6 +22,16 @@ const areaSlugs: Record<string, string> = {
   "Sud Sardegna": "sud-sardegna",
 };
 
+const AUTOPLAY_MS = 4500;
+
+function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
+  return (
+    card.getBoundingClientRect().left -
+    scroller.getBoundingClientRect().left +
+    scroller.scrollLeft
+  );
+}
+
 export default function AreaSection({
   title,
   area,
@@ -28,29 +39,80 @@ export default function AreaSection({
   image,
   events = [],
 }: AreaSectionProps) {
-  const { coords } = useUserLocation();
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const snapRestoreTimerRef = useRef<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const { coords, hasLocation } = useUserLocation();
 
   const areaEvents = useMemo(() => {
     const filtered = events.filter((event) => event.area === area);
+    return sortEventsForExplore(
+      filtered,
+      coords?.lat ?? null,
+      coords?.lng ?? null,
+    );
+  }, [area, coords?.lat, coords?.lng, events]);
 
-    if (coords) {
-      return sortEventsByProximity(filtered, coords.lat, coords.lng).slice(
-        0,
-        3,
-      );
+  function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const cards = Array.from(
+      scroller.querySelectorAll<HTMLElement>("[data-area-card]"),
+    );
+    if (cards.length === 0) return;
+
+    const current = scroller.scrollLeft;
+    let activeIndex = 0;
+
+    for (let i = 0; i < cards.length; i += 1) {
+      if (cardOffsetLeft(cards[i], scroller) <= current + 12) {
+        activeIndex = i;
+      }
     }
 
-    return [...filtered]
-      .sort((a, b) => {
-        if (Boolean(a.isFeatured) !== Boolean(b.isFeatured)) {
-          return a.isFeatured ? -1 : 1;
-        }
-        return (
-          new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-        );
-      })
-      .slice(0, 3);
-  }, [area, coords, events]);
+    let nextIndex = activeIndex + direction;
+    if (loop) {
+      if (nextIndex >= cards.length) nextIndex = 0;
+      if (nextIndex < 0) nextIndex = cards.length - 1;
+    } else {
+      nextIndex = Math.max(0, Math.min(cards.length - 1, nextIndex));
+    }
+
+    const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
+
+    if (snapRestoreTimerRef.current !== null) {
+      window.clearTimeout(snapRestoreTimerRef.current);
+    }
+    scroller.style.scrollSnapType = "none";
+    scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
+
+    snapRestoreTimerRef.current = window.setTimeout(() => {
+      scroller.style.scrollSnapType = "";
+      snapRestoreTimerRef.current = null;
+    }, 450);
+  }
+
+  useEffect(() => {
+    if (areaEvents.length < 2 || isPaused) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return;
+
+    const timer = window.setInterval(() => {
+      scrollByCard(1, { loop: true });
+    }, AUTOPLAY_MS);
+
+    return () => window.clearInterval(timer);
+  }, [areaEvents.length, isPaused]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || !hasLocation) return;
+    scroller.scrollTo({ left: 0, behavior: "auto" });
+  }, [hasLocation, areaEvents]);
 
   if (areaEvents.length === 0) {
     return null;
@@ -59,18 +121,18 @@ export default function AreaSection({
   const areaHref = `/eventi?area=${areaSlugs[area] ?? ""}`;
 
   return (
-    <section className="bg-white py-16 sm:py-20">
+    <section className="bg-white py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="relative overflow-hidden rounded-[32px]">
           <img
             src={image}
             alt={title}
-            className="h-72 w-full object-cover sm:h-80"
+            className="h-56 w-full object-cover sm:h-72"
           />
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />
 
-          <div className="absolute inset-0 flex max-w-2xl flex-col justify-end p-7 sm:p-10">
+          <div className="absolute inset-0 flex max-w-2xl flex-col justify-end p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/80">
               Esplora il territorio
             </p>
@@ -79,22 +141,64 @@ export default function AreaSection({
               {title}
             </h2>
 
-            <p className="mt-3 text-base text-white/85 sm:text-lg">
+            <p className="mt-3 text-sm text-white/85 sm:text-lg">
               {description}
             </p>
 
             <Link
               href={areaHref}
-              className="mt-6 inline-flex w-fit rounded-2xl bg-white px-5 py-3 font-bold text-[#075EAE] transition hover:bg-slate-100"
+              className="mt-5 inline-flex w-fit rounded-2xl bg-white px-5 py-3 font-bold text-[#075EAE] transition hover:bg-slate-100"
             >
               Scopri tutti →
             </Link>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 flex items-center justify-between gap-4">
+          <p className="text-sm font-semibold text-slate-500">
+            {areaEvents.length}{" "}
+            {areaEvents.length === 1 ? "evento" : "eventi"}
+            {hasLocation ? " · prima i più vicini" : ""}
+          </p>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => scrollByCard(-1)}
+              aria-label={`Eventi precedenti ${title}`}
+              className="grid h-10 w-10 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] active:scale-95"
+            >
+              <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByCard(1)}
+              aria-label={`Eventi successivi ${title}`}
+              className="grid h-10 w-10 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] active:scale-95"
+            >
+              <ChevronRight aria-hidden="true" className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+
+        <div
+          ref={scrollerRef}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocusCapture={() => setIsPaused(true)}
+          onBlurCapture={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          className="mt-5 flex snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
           {areaEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <div
+              key={event.eventId || event.id}
+              data-area-card
+              className="w-[min(85vw,22rem)] shrink-0 snap-start sm:w-[20rem] lg:w-[22rem]"
+            >
+              <EventCard event={event} />
+            </div>
           ))}
         </div>
       </div>
