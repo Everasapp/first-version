@@ -67,9 +67,44 @@ export default function Footer() {
         </Link>
 
         <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-          <p className="max-w-md text-base text-slate-700">
-            Scopri gli eventi più belli della Sardegna.
-          </p>
+          <div className="max-w-md space-y-3 text-base text-slate-700">
+            <p>Scopri gli eventi più belli della Sardegna.</p>
+            <nav
+              aria-label="Pagine eventi"
+              className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold"
+            >
+              <Link
+                href="/eventi-oggi"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Eventi oggi
+              </Link>
+              <Link
+                href="/eventi-weekend"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Weekend
+              </Link>
+              <Link
+                href="/eventi/sassari"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Sassari
+              </Link>
+              <Link
+                href="/eventi/cagliari"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Cagliari
+              </Link>
+              <Link
+                href="/eventi/alghero"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Alghero
+              </Link>
+            </nav>
+          </div>
 
           <div className="flex shrink-0 items-center gap-4 self-start sm:self-auto">
             <a

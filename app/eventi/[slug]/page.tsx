@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -16,7 +17,14 @@ import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
-import BackButton from "@/src/components/ui/BackButton";
+import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
+import JsonLd from "@/src/components/seo/JsonLd";
+import {
+  CategoryLandingPage,
+  CityLandingPage,
+  buildCategoryLandingMetadata,
+  buildCityLandingMetadata,
+} from "@/src/components/seo/GeoCategoryLandings";
 import { categories } from "@/src/data/categories";
 import { getCurrentUserCalendarEventIds } from "@/src/lib/calendar";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
@@ -29,10 +37,21 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
 import { createClient } from "@/src/lib/supabase/server";
+import {
+  findCategoryBySlug,
+  findCityBySlug,
+  categoryEventsPath,
+  cityEventsPath,
+} from "@/src/lib/seo/paths";
+import {
+  breadcrumbListSchema,
+  eventSchema,
+} from "@/src/lib/seo/schema";
+import { absoluteUrl } from "@/src/lib/seo/site";
 
 type EventDetailPageProps = {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 };
 
@@ -85,7 +104,14 @@ function mapEventForCard(event: EventRow, isFavorite = false) {
 export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
-  const { id: slug } = await params;
+  const { slug } = await params;
+
+  const city = findCityBySlug(slug);
+  if (city) return buildCityLandingMetadata(city);
+
+  const category = findCategoryBySlug(slug);
+  if (category) return buildCategoryLandingMetadata(category);
+
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -122,23 +148,32 @@ export async function generateMetadata({
       type: "article",
       images: data.image_url
         ? [{ url: data.image_url, alt: data.title }]
-        : ["/opengraph-image.png"],
+        : [{ url: "/og.jpg", width: 1200, height: 630, alt: "EVERAS" }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${data.title} | EVERAS`,
       description,
-      images: data.image_url
-        ? [data.image_url]
-        : ["/opengraph-image.png"],
+      images: data.image_url ? [data.image_url] : ["/og.jpg"],
     },
   };
 }
 
-export default async function EventDetailPage({
+export default async function EventSlugPage({
   params,
 }: EventDetailPageProps) {
-  const { id: slug } = await params;
+  const { slug } = await params;
+
+  const city = findCityBySlug(slug);
+  if (city) return <CityLandingPage city={city} />;
+
+  const category = findCategoryBySlug(slug);
+  if (category) return <CategoryLandingPage category={category} />;
+
+  return <EventDetailPage slug={slug} />;
+}
+
+async function EventDetailPage({ slug }: { slug: string }) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -243,19 +278,69 @@ export default async function EventDetailPage({
     categories.find((category) => category.slug === event.category)?.name ??
     event.category;
 
+  const cityPath = cityEventsPath(event.municipality);
+  const categoryPath = categoryEventsPath(event.category);
+  const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
+  const heroImage = event.image_url ?? "/images/concert.webp";
+  const optimizable =
+    heroImage.startsWith("/") || heroImage.includes("supabase.co");
+
   return (
     <>
+      <JsonLd
+        data={eventSchema({
+          name: event.title,
+          description:
+            stripHtml(event.description || "").slice(0, 300) ||
+            `${event.title} a ${event.municipality}`,
+          startAt: event.start_at,
+          endAt: event.end_at,
+          imageUrl: event.image_url,
+          url: eventUrl,
+          isFree: pricing.isFree,
+          priceFrom: pricing.priceFrom,
+          ticketUrl: event.ticket_url,
+          locationName: eventLocation,
+          address: event.address,
+          city: event.municipality,
+          province: event.province,
+          organizerName,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { name: "Home", path: "/" },
+          { name: "Eventi", path: "/eventi" },
+          { name: event.municipality, path: cityPath },
+          { name: categoryName, path: categoryPath },
+          { name: event.title, path: `/eventi/${event.slug}` },
+        ])}
+      />
+
       <Header />
 
       <main className="min-h-screen bg-white">
         <section className="mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-10">
-          <BackButton fallbackHref="/eventi" label="Indietro" className="mb-5" />
+          <Breadcrumbs
+            items={[
+              { name: "Home", href: "/" },
+              { name: "Eventi", href: "/eventi" },
+              { name: event.municipality, href: cityPath },
+              { name: categoryName, href: categoryPath },
+              { name: event.title },
+            ]}
+          />
 
-          <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
-            <img
-              src={event.image_url ?? "/images/concert.webp"}
+          <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] bg-slate-100 sm:aspect-[21/9]">
+            <Image
+              src={heroImage}
               alt={event.title}
-              className="h-[360px] w-full object-cover sm:h-[520px]"
+              title={event.title}
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-cover"
+              unoptimized={!optimizable}
             />
 
             <div className="absolute right-4 top-4 flex gap-2 sm:right-6 sm:top-6">
@@ -276,7 +361,7 @@ export default async function EventDetailPage({
               <ShareEventButton
                 title={event.title}
                 slug={event.slug}
-                imageUrl={event.image_url ?? "/images/concert.webp"}
+                imageUrl={heroImage}
                 category={categoryName}
                 city={event.municipality}
                 startAt={event.start_at}
@@ -288,7 +373,13 @@ export default async function EventDetailPage({
 
           <div className="mt-6 sm:mt-8">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-              {categoryName}
+              <Link href={categoryPath} className="hover:underline">
+                {categoryName}
+              </Link>
+              {" · "}
+              <Link href={cityPath} className="hover:underline">
+                {event.municipality}
+              </Link>
             </p>
             <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               {event.title}

@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "everas.it" }],
+        destination: "https://www.everas.it/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

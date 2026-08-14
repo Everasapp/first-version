@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
+import { cities } from "@/src/data/cities";
+import { cityToSlug } from "@/src/lib/seo/paths";
+
 const SITE_URL = "https://www.everas.it";
 
-/** Category slugs only — avoid importing React icon modules into the sitemap route. */
 const CATEGORY_SLUGS = [
   "musica-concerti",
   "sagre-tradizioni",
@@ -59,9 +61,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${SITE_URL}/eventi-oggi`,
+      changeFrequency: "hourly",
+      priority: 0.85,
+    },
+    {
+      url: `${SITE_URL}/eventi-domani`,
+      changeFrequency: "hourly",
+      priority: 0.85,
+    },
+    {
+      url: `${SITE_URL}/eventi-weekend`,
+      changeFrequency: "daily",
+      priority: 0.85,
+    },
+    {
       url: `${SITE_URL}/categorie`,
       changeFrequency: "weekly",
-      priority: 0.8,
+      priority: 0.7,
     },
     {
       url: `${SITE_URL}/contatti`,
@@ -91,12 +108,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const categoryRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.map((slug) => ({
-    url: `${SITE_URL}/categorie/${slug}`,
+    url: `${SITE_URL}/eventi/${slug}`,
     changeFrequency: "daily" as const,
-    priority: 0.7,
+    priority: 0.75,
   }));
 
-  const base = [...staticRoutes, ...categoryRoutes];
+  const cityRoutes: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${SITE_URL}/eventi/${cityToSlug(city.city)}`,
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  }));
+
+  const base = [...staticRoutes, ...categoryRoutes, ...cityRoutes];
 
   try {
     const supabase = getSupabase();
@@ -105,21 +128,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return base;
     }
 
-    const [{ data: events, error: eventsError }, { data: organizers, error: organizersError }] =
-      await Promise.all([
-        supabase
-          .from("events")
-          .select("slug, updated_at, start_at")
-          .eq("status", "published")
-          .not("slug", "is", null)
-          .order("start_at", { ascending: false })
-          .limit(5000),
-        supabase
-          .from("profiles")
-          .select("id, updated_at")
-          .in("role", ["organizzatore", "admin"])
-          .limit(2000),
-      ]);
+    const [
+      { data: events, error: eventsError },
+      { data: organizers, error: organizersError },
+    ] = await Promise.all([
+      supabase
+        .from("events")
+        .select("slug, updated_at, start_at")
+        .eq("status", "published")
+        .not("slug", "is", null)
+        .order("start_at", { ascending: false })
+        .limit(5000),
+      supabase
+        .from("profiles")
+        .select("id, updated_at")
+        .in("role", ["organizzatore", "admin"])
+        .limit(2000),
+    ]);
 
     if (eventsError) {
       console.error("Sitemap events query failed:", eventsError.message);
@@ -132,8 +157,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       );
     }
 
+    const reserved = new Set([
+      ...CATEGORY_SLUGS,
+      ...cities.map((city) => cityToSlug(city.city)),
+    ]);
+
     const eventRoutes: MetadataRoute.Sitemap = (events ?? [])
-      .filter((event) => typeof event.slug === "string" && event.slug.length > 0)
+      .filter(
+        (event) =>
+          typeof event.slug === "string" &&
+          event.slug.length > 0 &&
+          !reserved.has(event.slug),
+      )
       .map((event) => ({
         url: `${SITE_URL}/eventi/${event.slug}`,
         lastModified: toLastModified(event.updated_at || event.start_at),

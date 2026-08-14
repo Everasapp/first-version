@@ -4,6 +4,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/src/components/home/Footer";
 import PWAInstallBanner from "@/src/components/PWAInstallBanner";
 import PWARegister from "@/src/components/PWARegister";
+import JsonLd from "@/src/components/seo/JsonLd";
+import {
+  organizationSchema,
+  websiteSearchActionSchema,
+} from "@/src/lib/seo/schema";
 
 import "./globals.css";
 
@@ -24,7 +29,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://everas.it"),
+  metadataBase: new URL("https://www.everas.it"),
   title: {
     default: "Eventi in Sardegna: concerti, sagre e festival | EVERAS",
     template: "%s | EVERAS",
@@ -81,6 +86,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <JsonLd data={websiteSearchActionSchema()} />
+        <JsonLd data={organizationSchema()} />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
         <PWARegister />

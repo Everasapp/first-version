@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -112,11 +113,15 @@ export default function AreaSection({
   return (
     <section className="bg-white py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="relative overflow-hidden rounded-[32px]">
-          <img
+        <div className="relative h-56 overflow-hidden rounded-[32px] sm:h-72">
+          <Image
             src={image}
             alt={title}
-            className="h-56 w-full object-cover sm:h-72"
+            title={title}
+            fill
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            className="object-cover"
+            priority
           />
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />

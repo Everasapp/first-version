@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   CalendarDays,
   MapPin,
@@ -50,10 +51,20 @@ export default function EventCard({ event }: EventCardProps) {
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-square overflow-hidden bg-slate-100">
-        <img
+        <Image
           src={event.imageUrl}
           alt={event.title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          title={event.title}
+          fill
+          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 352px"
+          className="object-cover transition duration-500 group-hover:scale-105"
+          unoptimized={
+            !(
+              event.imageUrl.startsWith("/") ||
+              event.imageUrl.includes("supabase.co") ||
+              event.imageUrl.includes("unsplash.com")
+            )
+          }
         />
 
         <div className="absolute left-4 top-4 flex flex-wrap gap-2">

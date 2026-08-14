@@ -26,7 +26,7 @@ export default function CategoriesSection() {
             return (
               <Link
                 key={category.id}
-                href={`/categorie?category=${encodeURIComponent(category.slug)}`}
+                href={`/eventi/${category.slug}`}
                 className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${category.gradient} p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl`}
               >
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 transition duration-500 group-hover:scale-125" />

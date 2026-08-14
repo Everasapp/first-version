@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/dashboard/",
+        "/admin/",
         "/accedi",
         "/registrati",
         "/auth/",
@@ -14,8 +15,10 @@ export default function robots(): MetadataRoute.Robots {
         "/supabase-test",
         "/newsletter/",
         "/conferma-email",
+        "/pubblica",
       ],
     },
     sitemap: "https://www.everas.it/sitemap.xml",
+    host: "https://www.everas.it",
   };
 }

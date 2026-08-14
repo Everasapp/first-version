@@ -8,6 +8,7 @@ type CategorySlugPageProps = {
   }>;
 };
 
+/** Canonical category landings live at /eventi/[category-slug]. */
 export default async function CategorySlugPage({
   params,
 }: CategorySlugPageProps) {
@@ -18,5 +19,5 @@ export default async function CategorySlugPage({
     notFound();
   }
 
-  redirect(`/categorie?category=${encodeURIComponent(category.slug)}`);
+  redirect(`/eventi/${category.slug}`);
 }

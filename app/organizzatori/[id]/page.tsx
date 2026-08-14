@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Building2, MapPin } from "lucide-react";
@@ -7,7 +8,8 @@ import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
-import BackButton from "@/src/components/ui/BackButton";
+import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
+import JsonLd from "@/src/components/seo/JsonLd";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import {
   getCurrentUserFollowedOrganizerIds,
@@ -18,6 +20,8 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { isOrganizerRole, PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
+import { absoluteUrl } from "@/src/lib/seo/site";
+import { breadcrumbListSchema } from "@/src/lib/seo/schema";
 
 type OrganizerPageProps = {
   params: Promise<{
@@ -50,6 +54,41 @@ function formatEventDate(startAt: string) {
     minute: "2-digit",
     timeZone: "Europe/Rome",
   }).format(new Date(startAt));
+}
+
+export async function generateMetadata({
+  params,
+}: OrganizerPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select(PROFILE_SELECT)
+    .eq("id", id)
+    .maybeSingle();
+
+  const organizer = data as Profile | null;
+  if (!organizer || !isOrganizerRole(organizer.role)) {
+    return {
+      title: "Organizzatore non trovato",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const name = getOrganizerDisplayName(organizer);
+  const description = `Eventi organizzati da ${name} in Sardegna. Scopri il calendario aggiornato su EVERAS.`;
+
+  return {
+    title: name,
+    description,
+    alternates: { canonical: `/organizzatori/${id}` },
+    openGraph: {
+      title: `${name} | EVERAS`,
+      description,
+      url: `/organizzatori/${id}`,
+      type: "profile",
+    },
+  };
 }
 
 export default async function OrganizerPublicPage({
@@ -125,12 +164,42 @@ export default async function OrganizerPublicPage({
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name,
+          url: absoluteUrl(`/organizzatori/${organizer.id}`),
+          address: organizer.municipality
+            ? {
+                "@type": "PostalAddress",
+                addressLocality: organizer.municipality,
+                addressRegion: organizer.province || "Sardegna",
+                addressCountry: "IT",
+              }
+            : undefined,
+        }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { name: "Home", path: "/" },
+          { name: "Eventi", path: "/eventi" },
+          { name, path: `/organizzatori/${organizer.id}` },
+        ])}
+      />
+
       <Header />
 
       <main className="min-h-screen bg-white">
         <section className="border-b border-slate-200 bg-slate-50">
           <div className="mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-8">
-            <BackButton fallbackHref="/eventi" label="Indietro" />
+            <Breadcrumbs
+              items={[
+                { name: "Home", href: "/" },
+                { name: "Eventi", href: "/eventi" },
+                { name },
+              ]}
+            />
           </div>
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-8 sm:px-8 lg:flex-row lg:items-end lg:pb-12">
             <div className="flex items-start gap-4">

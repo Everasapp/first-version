@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Search } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
 import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
+import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
+import JsonLd from "@/src/components/seo/JsonLd";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
@@ -13,6 +16,23 @@ import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
+import { getDateRange } from "@/src/lib/seo/dateRange";
+import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
+import { absoluteUrl } from "@/src/lib/seo/site";
+
+export const metadata: Metadata = {
+  title: "Eventi in Sardegna",
+  description:
+    "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data. Concerti, sagre, mostre e appuntamenti su EVERAS.",
+  alternates: { canonical: "/eventi" },
+  openGraph: {
+    title: "Eventi in Sardegna | EVERAS",
+    description:
+      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
+    url: "/eventi",
+    type: "website",
+  },
+};
 
 type EventsPageProps = {
   searchParams: Promise<{
@@ -56,42 +76,6 @@ const dateLabels: Record<string, string> = {
   weekend: "Questo weekend",
   settimana: "Questa settimana",
 };
-
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date: Date, days: number) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-function getDateRange(filter: string) {
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
-  const dayAfterTomorrow = addDays(today, 2);
-
-  const dayOfWeek = today.getDay();
-  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7;
-  const weekendStart = addDays(today, daysUntilSaturday);
-  const weekendEnd = addDays(weekendStart, 2);
-
-  const weekEnd = addDays(today, 7);
-
-  switch (filter) {
-    case "oggi":
-      return { start: today, end: tomorrow };
-    case "domani":
-      return { start: tomorrow, end: dayAfterTomorrow };
-    case "weekend":
-      return { start: weekendStart, end: weekendEnd };
-    case "settimana":
-      return { start: today, end: weekEnd };
-    default:
-      return null;
-  }
-}
 
 function getEventArea(municipality: string | null) {
   if (!municipality) {
@@ -276,11 +260,33 @@ export default async function EventsPage({
 
   return (
     <>
+      <JsonLd
+        data={collectionPageSchema({
+          name: pageTitle,
+          description:
+            "Esplora tutti gli eventi in Sardegna su EVERAS.",
+          url: absoluteUrl("/eventi"),
+        })}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { name: "Home", path: "/" },
+          { name: "Eventi", path: "/eventi" },
+        ])}
+      />
+
       <Header />
 
       <main className="min-h-screen bg-white">
         <section className="border-b border-slate-200 bg-slate-50">
           <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+            <Breadcrumbs
+              items={[
+                { name: "Home", href: "/" },
+                { name: "Eventi" },
+              ]}
+            />
+
             <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
