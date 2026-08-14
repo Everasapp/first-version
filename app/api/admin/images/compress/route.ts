@@ -6,12 +6,11 @@ import {
   getEventImageStoragePath,
   isAlreadyWebpUrl,
 } from "@/src/lib/images/storagePath";
-import { createAdminClient } from "@/src/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-/** Lotti piccoli: su Vercel 8 immagini grandi facevano timeout (risposta vuota). */
+/** Lotti piccoli: evita timeout Vercel su immagini remote grandi. */
 const DEFAULT_BATCH = 2;
 const MAX_BATCH = 5;
 const DOWNLOAD_TIMEOUT_MS = 12_000;
@@ -134,21 +133,7 @@ export async function POST(request: Request) {
     );
 
     const batch = candidates.slice(0, limit);
-
-    let admin;
-    try {
-      admin = createAdminClient();
-    } catch (err) {
-      return NextResponse.json(
-        {
-          error:
-            err instanceof Error
-              ? err.message
-              : "Manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
-        },
-        { status: 500 },
-      );
-    }
+    const supabase = auth.supabase;
 
     const results: Array<{
       id: string;
@@ -163,12 +148,13 @@ export async function POST(request: Request) {
       const previousPath = getEventImageStoragePath(previousUrl);
 
       try {
+        // Storage RLS: upload solo nella cartella dell’utente autenticato
+        const path = `${auth.user.id}/optimized-${event.id}.webp`;
+
         const input = await downloadImageBuffer(previousUrl);
         const webp = await optimizeImageToWebp(input);
-        // Path stabile per evento: evita conflitti RLS tra cartelle organizzatore
-        const path = `optimized/${event.id}.webp`;
 
-        const { error: uploadError } = await admin.storage
+        const { error: uploadError } = await supabase.storage
           .from("event-images")
           .upload(path, webp, {
             cacheControl: "31536000",
@@ -180,31 +166,45 @@ export async function POST(request: Request) {
           throw new Error(uploadError.message);
         }
 
-        const { data: publicUrlData } = admin.storage
+        const { data: publicUrlData } = supabase.storage
           .from("event-images")
           .getPublicUrl(path);
 
         const publicUrl = publicUrlData.publicUrl;
 
-        const { error: updateError } = await admin
+        const { data: updated, error: updateError } = await supabase
           .from("events")
           .update({ image_url: publicUrl })
-          .eq("id", event.id);
+          .eq("id", event.id)
+          .select("id")
+          .maybeSingle();
 
         if (updateError) {
-          await admin.storage.from("event-images").remove([path]);
+          await supabase.storage.from("event-images").remove([path]);
           throw new Error(updateError.message);
         }
 
-        if (previousPath && previousPath !== path) {
-          const { count } = await admin
+        if (!updated) {
+          await supabase.storage.from("event-images").remove([path]);
+          throw new Error(
+            "Aggiornamento non consentito (evento di un altro organizzatore).",
+          );
+        }
+
+        // Elimina il file precedente solo se è nella cartella dell’admin
+        if (
+          previousPath &&
+          previousPath !== path &&
+          previousPath.startsWith(`${auth.user.id}/`)
+        ) {
+          const { count } = await supabase
             .from("events")
             .select("id", { count: "exact", head: true })
             .eq("image_url", previousUrl)
             .neq("id", event.id);
 
           if ((count ?? 0) === 0) {
-            await admin.storage.from("event-images").remove([previousPath]);
+            await supabase.storage.from("event-images").remove([previousPath]);
           }
         }
 
