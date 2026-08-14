@@ -5,7 +5,7 @@ export default function Hero() {
     <section
       className="relative isolate overflow-hidden bg-cover bg-no-repeat"
       style={{
-        backgroundImage: "url('/images/concert.png')",
+        backgroundImage: "url('/images/concert.webp')",
         backgroundPosition: "60% center",
         backgroundSize: "cover",
       }}

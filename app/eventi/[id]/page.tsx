@@ -74,7 +74,7 @@ function mapEventForCard(event: EventRow, isFavorite = false) {
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
-    imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
+    imageUrl: event.image_url ?? "/images/concert.webp",
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
@@ -253,7 +253,7 @@ export default async function EventDetailPage({
 
           <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
             <img
-              src={event.image_url ?? "/images/event-placeholder.jpg"}
+              src={event.image_url ?? "/images/concert.webp"}
               alt={event.title}
               className="h-[360px] w-full object-cover sm:h-[520px]"
             />
@@ -276,7 +276,7 @@ export default async function EventDetailPage({
               <ShareEventButton
                 title={event.title}
                 slug={event.slug}
-                imageUrl={event.image_url ?? "/images/event-placeholder.jpg"}
+                imageUrl={event.image_url ?? "/images/concert.webp"}
                 category={categoryName}
                 city={event.municipality}
                 startAt={event.start_at}

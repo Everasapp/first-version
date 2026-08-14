@@ -110,7 +110,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     location: event.location_name || event.municipality,
     municipality: event.municipality,
     area: getArea(event),
-    imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
+    imageUrl: event.image_url ?? "/images/concert.webp",
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
@@ -192,7 +192,7 @@ export default async function Home() {
           title="Nord Sardegna"
           area="Nord Sardegna"
           description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
-          image="/images/nord-sardegna.png"
+          image="/images/nord-sardegna.webp"
           events={events}
         />
 
@@ -200,7 +200,7 @@ export default async function Home() {
           title="Centro Sardegna"
           area="Centro Sardegna"
           description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
-          image="/images/centro-sardegna.png"
+          image="/images/centro-sardegna.webp"
           events={events}
         />
 
@@ -208,7 +208,7 @@ export default async function Home() {
           title="Sud Sardegna"
           area="Sud Sardegna"
           description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
-          image="/images/sud-sardegna.png"
+          image="/images/sud-sardegna.webp"
           events={events}
         />
 

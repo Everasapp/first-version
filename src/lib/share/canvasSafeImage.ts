@@ -1,4 +1,4 @@
-const FALLBACK_IMAGE = "/images/concert.png";
+const FALLBACK_IMAGE = "/images/concert.webp";
 
 function isAbsoluteHttpUrl(value: string) {
   try {
@@ -137,7 +137,7 @@ export async function waitForElementImages(node: HTMLElement, timeoutMs = 10000)
   );
 }
 
-const STORY_LOGO_PATH = "/images/everas-logo-v2.png";
+const STORY_LOGO_PATH = "/images/everas-logo-v2.webp";
 
 /**
  * Logo bianco su trasparente (PNG), pronto per sfondo scuro della Story.

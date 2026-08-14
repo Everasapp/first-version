@@ -100,7 +100,7 @@ function ConfermaEmailContent() {
         aria-label="Torna alla homepage di EVERAS"
       >
         <Image
-          src="/images/everas-logo-v2.png"
+          src="/images/everas-logo-v2.webp"
           alt="EVERAS"
           width={144}
           height={53}

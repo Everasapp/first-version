@@ -112,7 +112,7 @@ export default async function OrganizerPublicPage({
         endDate: event.end_at ?? undefined,
         location: event.location_name || event.municipality,
         area: event.province ?? undefined,
-        imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
+        imageUrl: event.image_url ?? "/images/concert.webp",
         isFree: pricing.isFree,
         priceFrom: pricing.priceFrom,
         isFeatured: event.is_featured,

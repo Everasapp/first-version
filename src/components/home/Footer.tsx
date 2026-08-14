@@ -58,7 +58,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
         <Link href="/" className="inline-flex items-center">
           <Image
-            src="/images/everas-logo-v2.png"
+            src="/images/everas-logo-v2.webp"
             alt="EVERAS"
             width={120}
             height={44}

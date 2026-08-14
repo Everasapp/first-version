@@ -51,7 +51,7 @@ export default function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-end gap-3 px-5 pb-3.5 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
-            src="/images/everas-logo-v2.png"
+            src="/images/everas-logo-v2.webp"
             alt="EVERAS"
             width={180}
             height={66}

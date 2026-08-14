@@ -31,7 +31,7 @@ export default async function PreferitiPage() {
       startDate: event.start_at,
       endDate: event.end_at ?? undefined,
       location: event.location_name || event.municipality,
-      imageUrl: event.image_url ?? "/images/event-placeholder.jpg",
+      imageUrl: event.image_url ?? "/images/concert.webp",
       isFree: pricing.isFree,
       priceFrom: pricing.priceFrom,
       isFavorite: true,

@@ -124,7 +124,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     location: event.municipality || event.location_name || "Sardegna",
     municipality: event.municipality || undefined,
     area: getEventArea(event.municipality),
-    imageUrl: event.image_url || "/images/concert.png",
+    imageUrl: event.image_url || "/images/concert.webp",
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,

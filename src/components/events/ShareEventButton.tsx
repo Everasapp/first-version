@@ -102,7 +102,7 @@ type MenuPosition = { top: number; left: number };
 export default function ShareEventButton({
   title,
   slug,
-  imageUrl = "/images/concert.png",
+  imageUrl = "/images/concert.webp",
   category = "Evento",
   city = "Sardegna",
   startAt,
@@ -259,7 +259,7 @@ export default function ShareEventButton({
 
     try {
       const [safe, logoUrl] = await Promise.all([
-        loadCanvasSafeImageUrl(imageUrl || "/images/concert.png"),
+        loadCanvasSafeImageUrl(imageUrl || "/images/concert.webp"),
         loadStoryLogoDataUrl(),
       ]);
       revokeSafeImage = safe.revoke;
