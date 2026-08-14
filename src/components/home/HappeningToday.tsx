@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -9,6 +9,8 @@ import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
 type HappeningTodayProps = {
   events: EventCardData[];
 };
+
+const AUTOPLAY_MS = 4500;
 
 function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
   return (
@@ -21,12 +23,9 @@ function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
 export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
-  if (events.length === 0) {
-    return null;
-  }
-
-  function scrollByCard(direction: -1 | 1) {
+  function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
@@ -44,10 +43,14 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
       }
     }
 
-    const nextIndex = Math.max(
-      0,
-      Math.min(cards.length - 1, activeIndex + direction),
-    );
+    let nextIndex = activeIndex + direction;
+    if (loop) {
+      if (nextIndex >= cards.length) nextIndex = 0;
+      if (nextIndex < 0) nextIndex = cards.length - 1;
+    } else {
+      nextIndex = Math.max(0, Math.min(cards.length - 1, nextIndex));
+    }
+
     const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
 
     // Evita il conflitto noto tra scroll smooth e snap-mandatory.
@@ -63,19 +66,38 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     }, 450);
   }
 
+  useEffect(() => {
+    if (events.length < 2 || isPaused) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return;
+
+    const timer = window.setInterval(() => {
+      scrollByCard(1, { loop: true });
+    }, AUTOPLAY_MS);
+
+    return () => window.clearInterval(timer);
+  }, [events.length, isPaused]);
+
+  if (events.length === 0) {
+    return null;
+  }
+
   return (
     <section className="border-b border-slate-200 bg-slate-50 py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#E67E22]">
-              In tempo reale
+              Lunedì – domenica
             </p>
             <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
-              Accade oggi
+              Hot this week
             </h2>
             <p className="mt-2 max-w-xl text-slate-600">
-              Eventi in programma oggi in Sardegna, da vivere adesso.
+              Gli eventi più interessanti della settimana in Sardegna.
             </p>
           </div>
 
@@ -101,6 +123,12 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
 
         <div
           ref={scrollerRef}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocusCapture={() => setIsPaused(true)}
+          onBlurCapture={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
           className="mt-8 flex snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {events.map((event) => (
@@ -115,10 +143,10 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         </div>
 
         <Link
-          href="/eventi?date=oggi"
+          href="/eventi?date=settimana"
           className="mt-8 inline-flex font-bold text-[#075EAE] hover:underline"
         >
-          Tutti gli eventi di oggi →
+          Tutti gli eventi di questa settimana →
         </Link>
       </div>
     </section>

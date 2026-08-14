@@ -38,9 +38,28 @@ function formatRomeDayKey(value: Date) {
   }).format(value);
 }
 
-/** Solo eventi con inizio oggi (esclude mostre/periodi multi-giorno già aperti). */
-function startsOnRomeDay(event: EventRow, dayKey: string) {
-  return formatRomeDayKey(new Date(event.start_at)) === dayKey;
+function addDayKeys(dayKey: string, days: number) {
+  const [year, month, day] = dayKey.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + days));
+  return date.toISOString().slice(0, 10);
+}
+
+/** Lunedì–domenica della settimana corrente (Europe/Rome). */
+function getRomeMondaySundayKeys(now: Date) {
+  const todayKey = formatRomeDayKey(now);
+  const [year, month, day] = todayKey.split("-").map(Number);
+  const weekday = new Date(Date.UTC(year, month - 1, day, 12)).getUTCDay();
+  const offsetFromMonday = weekday === 0 ? 6 : weekday - 1;
+  const mondayKey = addDayKeys(todayKey, -offsetFromMonday);
+  const sundayKey = addDayKeys(mondayKey, 6);
+  return { mondayKey, sundayKey };
+}
+
+/** Eventi con inizio nella settimana corrente lun–dom. */
+function startsInRomeCalendarWeek(event: EventRow, now: Date) {
+  const startKey = formatRomeDayKey(new Date(event.start_at));
+  const { mondayKey, sundayKey } = getRomeMondaySundayKeys(now);
+  return startKey >= mondayKey && startKey <= sundayKey;
 }
 
 function formatEventDate(startAt: string, endAt?: string | null) {
@@ -119,7 +138,6 @@ export default async function Home() {
   }
 
   const now = new Date();
-  const todayKey = formatRomeDayKey(now);
   const rows = (data ?? []) as EventRow[];
 
   const events = rows
@@ -135,10 +153,9 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const todayEvents = rows
+  const weekEvents = rows
     .filter((event) => {
-      // Solo data di inizio oggi: niente mostre «Evento attivo» che includono oggi.
-      if (!startsOnRomeDay(event, todayKey)) {
+      if (!startsInRomeCalendarWeek(event, now)) {
         return false;
       }
 
@@ -174,7 +191,7 @@ export default async function Home() {
       <Header />
 
       <main>
-        <HappeningToday events={todayEvents} />
+        <HappeningToday events={weekEvents} />
 
         <Hero />
 
