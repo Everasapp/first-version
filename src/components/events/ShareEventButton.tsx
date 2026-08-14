@@ -88,6 +88,7 @@ export default function ShareEventButton({
   );
 
   const dimension = size === "md" ? "h-12 w-12" : "h-10 w-10";
+  const eventShareUrl = buildEventShareUrl(slug);
 
   useEffect(() => {
     if (!open) return;
@@ -120,7 +121,6 @@ export default function ShareEventButton({
     safeImageUrl: string,
     logoUrl?: string,
   ): InstagramStoryEventData {
-    const url = buildEventShareUrl(slug);
     return {
       title,
       slug,
@@ -130,31 +130,34 @@ export default function ShareEventButton({
       city,
       dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
       timeLabel: startAt ? formatStoryTime(startAt) : "",
-      eventUrl: url,
+      eventUrl: eventShareUrl,
       siteLabel: STORY_SITE_LABEL,
     };
   }
 
-  async function copyLink() {
-    const url = buildEventShareUrl(slug);
+  async function copyEventLink(options?: { keepMenuOpen?: boolean }) {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(eventShareUrl);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-      setOpen(false);
+      setLinkCopiedForSticker(true);
+      window.setTimeout(() => setCopied(false), 2500);
+      if (!options?.keepMenuOpen) {
+        setOpen(false);
+      }
+      return true;
     } catch {
-      window.prompt("Copia il link dell’evento:", url);
+      window.prompt("Copia il link dell’evento:", eventShareUrl);
+      return false;
     }
   }
 
   async function shareNative() {
-    const url = buildEventShareUrl(slug);
     try {
       if (typeof navigator.share === "function") {
         await navigator.share({
           title: `${title} · EVERAS`,
           text: `Scopri questo evento su Everas: ${title}`,
-          url,
+          url: eventShareUrl,
         });
         setOpen(false);
         return;
@@ -164,17 +167,7 @@ export default function ShareEventButton({
         return;
       }
     }
-    await copyLink();
-  }
-
-  async function copyEventLinkQuiet(): Promise<boolean> {
-    const url = buildEventShareUrl(slug);
-    try {
-      await navigator.clipboard.writeText(url);
-      return true;
-    } catch {
-      return false;
-    }
+    await copyEventLink();
   }
 
   async function shareInstagramStory() {
@@ -209,9 +202,7 @@ export default function ShareEventButton({
         { type: "image/jpeg" },
       );
 
-      // Instagram non rende cliccabile l’immagine: serve lo sticker Link.
-      // Copiamo l’URL evento così si può incollare subito nello sticker.
-      const copied = await copyEventLinkQuiet();
+      const copied = await copyEventLink({ keepMenuOpen: true });
       setLinkCopiedForSticker(copied);
 
       const shareable = await canShareFiles(file);
@@ -222,6 +213,7 @@ export default function ShareEventButton({
           return;
         } catch (error) {
           if (error instanceof DOMException && error.name === "AbortError") {
+            setShowDownloadPanel(true);
             return;
           }
         }
@@ -254,6 +246,67 @@ export default function ShareEventButton({
     anchor.remove();
   }
 
+  function LinkCopyBlock({ compact = false }: { compact?: boolean }) {
+    return (
+      <div
+        className={
+          compact
+            ? "border-b border-slate-100 px-3 pb-3 pt-2"
+            : "mt-3 rounded-2xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3.5 py-3"
+        }
+      >
+        <p
+          className={`font-bold ${
+            compact
+              ? "text-[11px] uppercase tracking-[0.12em] text-slate-500"
+              : "text-sm text-[#C96A1A]"
+          }`}
+        >
+          Link per sticker Instagram
+        </p>
+        <div className={`flex gap-2 ${compact ? "mt-2" : "mt-2.5"}`}>
+          <input
+            type="text"
+            readOnly
+            value={eventShareUrl}
+            onFocus={(event) => event.currentTarget.select()}
+            onClick={(event) => {
+              event.stopPropagation();
+              event.currentTarget.select();
+            }}
+            className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 outline-none focus:border-[#075EAE]"
+            aria-label="Link evento da copiare"
+          />
+          <button
+            type="button"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              void copyEventLink({ keepMenuOpen: true });
+            }}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#E67E22] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#C96A1A]"
+          >
+            {copied || linkCopiedForSticker ? (
+              <Check aria-hidden="true" className="h-3.5 w-3.5" />
+            ) : (
+              <Link2 aria-hidden="true" className="h-3.5 w-3.5" />
+            )}
+            {copied || linkCopiedForSticker ? "Copiato" : "Copia"}
+          </button>
+        </div>
+        <p
+          className={
+            compact
+              ? "mt-1.5 text-[11px] leading-4 text-slate-500"
+              : "mt-2 text-xs leading-5 text-slate-600"
+          }
+        >
+          Copia → Instagram → sticker Link → Incolla
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div ref={rootRef} className="relative">
       <button
@@ -281,12 +334,14 @@ export default function ShareEventButton({
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 top-full z-40 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl"
+          className="absolute right-0 top-full z-40 mt-2 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl"
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
           }}
         >
+          <LinkCopyBlock compact />
+
           <button
             type="button"
             role="menuitem"
@@ -304,15 +359,6 @@ export default function ShareEventButton({
           >
             <Share2 aria-hidden="true" className="h-4 w-4 text-[#075EAE]" />
             Altre app
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => void copyLink()}
-            className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-          >
-            <Link2 aria-hidden="true" className="h-4 w-4 text-slate-500" />
-            Copia link
           </button>
         </div>
       ) : null}
@@ -340,7 +386,7 @@ export default function ShareEventButton({
                     ? "Condivisione non riuscita"
                     : downloadUrl
                       ? "Story pronta"
-                      : "Aggiungi il link"}
+                      : "Aggiungi lo sticker Link"}
                 </h3>
               </div>
               <button
@@ -359,39 +405,20 @@ export default function ShareEventButton({
 
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {storyError ||
-                (downloadUrl
-                  ? "Nella Story trovi il link dell’evento. Su Instagram puoi aggiungere lo sticker Link."
-                  : "Nella Story c’è il link verso l’evento. Su Instagram puoi anche aggiungere lo sticker Link (link già copiato).")}
+                "Copia il link qui sotto, poi su Instagram aggiungi lo sticker Link e incollalo."}
             </p>
 
-            {!storyError ? (
-              <div className="mt-3 rounded-2xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3.5 py-3 text-sm leading-5 text-slate-800">
-                <p className="font-bold text-[#C96A1A]">Link all’evento</p>
-                <p className="mt-1 break-all font-medium text-slate-700">
-                  {buildEventShareUrl(slug).replace(/^https?:\/\//, "")}
-                </p>
-                <p className="mt-2 text-xs text-slate-600">
-                  {linkCopiedForSticker
-                    ? "Link già copiato: su Instagram → sticker Link → Incolla."
-                    : "Copia il link e su Instagram aggiungi lo sticker Link."}
-                </p>
-              </div>
-            ) : null}
+            {!storyError ? <LinkCopyBlock /> : null}
 
             {downloadUrl ? (
-              <a
-                href={buildEventShareUrl(slug)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
-              >
+              <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={downloadUrl}
-                  alt="Anteprima Story — apri l’evento"
+                  alt="Anteprima Story"
                   className="mx-auto max-h-72 w-auto"
                 />
-              </a>
+              </div>
             ) : null}
 
             <div className="mt-5 flex flex-col gap-2">
@@ -407,18 +434,19 @@ export default function ShareEventButton({
               ) : null}
               <button
                 type="button"
-                onClick={() => void copyLink()}
+                onClick={() => void copyEventLink({ keepMenuOpen: true })}
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
               >
                 <Link2 aria-hidden="true" className="h-4 w-4" />
-                {linkCopiedForSticker ? "Link copiato ✓" : "Copia link evento"}
+                {linkCopiedForSticker
+                  ? "Link copiato ✓"
+                  : "Copia di nuovo il link"}
               </button>
             </div>
           </div>
         </div>
       ) : null}
 
-      {/* Template fuori viewport ma con opacity 1 (opacity 0 = immagine vuota in html-to-image) */}
       {storyEvent ? (
         <div
           aria-hidden="true"
