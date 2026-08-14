@@ -153,32 +153,31 @@ export default function EventSearchForm() {
   }
 
   const labelClass =
-    "flex items-center gap-2 whitespace-nowrap text-sm font-bold text-slate-900";
+    "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900 sm:gap-2 sm:text-sm";
 
   const fieldClass =
-    "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-3.5 md:border-l md:border-t-0 md:px-5";
-
-  const firstFieldClass =
-    "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-3.5 md:px-5";
+    "flex min-w-0 flex-col justify-end rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5 sm:rounded-2xl md:border-0 md:border-l md:border-slate-100 md:bg-transparent md:px-5 md:py-3.5";
 
   const inputClass =
-    "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400";
+    "mt-1.5 w-full min-w-0 bg-transparent text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:mt-2 sm:text-base";
 
   return (
-    <div id="ricerca" className="scroll-mt-28">
-      <div className="mt-8 max-w-7xl">
+    <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
+      <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-8">
         <button
           type="button"
           onClick={handleNearMe}
           disabled={isLocating}
-          className="inline-flex items-center gap-2.5 rounded-full bg-[#E67E22] px-5 py-3 text-base font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-base"
         >
-          <LocateFixed aria-hidden="true" className="h-5 w-5" />
+          <LocateFixed aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
           {isLocating ? "Rilevo posizione…" : "Vicino a me"}
         </button>
 
         {geoMessage ? (
-          <p className="mt-3 text-sm font-medium text-orange-100">{geoMessage}</p>
+          <p className="w-full text-sm font-medium text-orange-100">
+            {geoMessage}
+          </p>
         ) : null}
       </div>
 
@@ -186,27 +185,15 @@ export default function EventSearchForm() {
         id="hero-search-form"
         action="/eventi"
         method="GET"
-        className="mt-4 grid w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
+        className="mt-3 grid w-full max-w-7xl grid-cols-2 gap-2 rounded-2xl border border-white/80 bg-white p-3 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 sm:mt-4 sm:gap-2 sm:rounded-[1.75rem] sm:p-4 md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
       >
-        <label className={firstFieldClass}>
-          <span className={labelClass}>
-            <Search aria-hidden="true" className="h-5 w-5 shrink-0 text-[#075EAE]" />
-            Cerca per testo
-          </span>
-          <input
-            type="search"
-            name="q"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Es. jazz, sagre, teatro…"
-            className={inputClass}
-            autoComplete="off"
-          />
-        </label>
-
+        {/* Mobile: area / città / categoria / data prima; testo dopo */}
         <label className={fieldClass}>
           <span className={labelClass}>
-            <MapPin aria-hidden="true" className="h-5 w-5 shrink-0 text-[#075EAE]" />
+            <MapPin
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-[#075EAE] sm:h-5 sm:w-5"
+            />
             Area
           </span>
           <select
@@ -226,7 +213,7 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <Building2
               aria-hidden="true"
-              className="h-5 w-5 shrink-0 text-[#075EAE]"
+              className="h-4 w-4 shrink-0 text-[#075EAE] sm:h-5 sm:w-5"
             />
             Città
           </span>
@@ -249,12 +236,12 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <Compass
               aria-hidden="true"
-              className="h-5 w-5 shrink-0 text-[#075EAE]"
+              className="h-4 w-4 shrink-0 text-[#075EAE] sm:h-5 sm:w-5"
             />
             Categoria
           </span>
           <select name="category" className={inputClass}>
-            <option value="">Tutte le categorie</option>
+            <option value="">Tutte</option>
             {categories.map((category) => (
               <option key={category.id} value={category.slug}>
                 {category.name}
@@ -267,12 +254,12 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <CalendarDays
               aria-hidden="true"
-              className="h-5 w-5 shrink-0 text-[#075EAE]"
+              className="h-4 w-4 shrink-0 text-[#075EAE] sm:h-5 sm:w-5"
             />
-            Quando?
+            Data
           </span>
           <select name="date" className={inputClass}>
-            <option value="">Tutte le date</option>
+            <option value="">Tutte</option>
             <option value="oggi">Oggi</option>
             <option value="domani">Domani</option>
             <option value="weekend">Questo weekend</option>
@@ -280,16 +267,35 @@ export default function EventSearchForm() {
           </select>
         </label>
 
+        <label className={`${fieldClass} col-span-2 xl:col-span-1`}>
+          <span className={labelClass}>
+            <Search
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-[#075EAE] sm:h-5 sm:w-5"
+            />
+            Testo
+          </span>
+          <input
+            type="search"
+            name="q"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Es. jazz, sagre, teatro…"
+            className={inputClass}
+            autoComplete="off"
+          />
+        </label>
+
         <button
           type="submit"
-          className="flex min-h-[4.5rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-8 py-5 text-lg font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
+          className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-6 py-3 text-base font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] sm:min-h-[3.5rem] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-lg xl:col-span-1 xl:min-h-full"
         >
-          <Search aria-hidden="true" className="h-6 w-6" />
+          <Search aria-hidden="true" className="h-5 w-5 sm:h-6 sm:w-6" />
           Cerca
         </button>
       </form>
 
-      <div className="mt-5 max-w-7xl">
+      <div className="mt-3 hidden max-w-7xl sm:mt-5 sm:block">
         <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
           <button
             type="button"
