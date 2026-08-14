@@ -1,60 +1,134 @@
 export type City = {
-    id: number;
-    city: string;
-    province: string;
-    area: "Nord Sardegna" | "Centro Sardegna" | "Sud Sardegna";
-  };
-  
-  export const cities: City[] = [
-    // =========================
-    // NORD SARDEGNA
-    // =========================
-  
-    { id: 1, city: "Alghero", province: "SS", area: "Nord Sardegna" },
-    { id: 2, city: "Arzachena", province: "SS", area: "Nord Sardegna" },
-    { id: 33, city: "Berchidda", province: "SS", area: "Nord Sardegna" },
-    { id: 3, city: "Budoni", province: "SS", area: "Nord Sardegna" },
-    { id: 4, city: "Castelsardo", province: "SS", area: "Nord Sardegna" },
-    { id: 36, city: "Golfo Aranci", province: "SS", area: "Nord Sardegna" },
-    { id: 5, city: "La Maddalena", province: "SS", area: "Nord Sardegna" },
-    { id: 6, city: "Olbia", province: "SS", area: "Nord Sardegna" },
-    { id: 32, city: "Osilo", province: "SS", area: "Nord Sardegna" },
-    { id: 7, city: "Palau", province: "SS", area: "Nord Sardegna" },
-    { id: 8, city: "Porto Torres", province: "SS", area: "Nord Sardegna" },
-    { id: 9, city: "San Teodoro", province: "SS", area: "Nord Sardegna" },
-    { id: 10, city: "Santa Teresa Gallura", province: "SS", area: "Nord Sardegna" },
-    { id: 11, city: "Sassari", province: "SS", area: "Nord Sardegna" },
-    { id: 12, city: "Sorso", province: "SS", area: "Nord Sardegna" },
-    { id: 13, city: "Stintino", province: "SS", area: "Nord Sardegna" },
-    { id: 14, city: "Tempio Pausania", province: "SS", area: "Nord Sardegna" },
-    { id: 34, city: "Tergu", province: "SS", area: "Nord Sardegna" },
-    { id: 37, city: "Torralba", province: "SS", area: "Nord Sardegna" },
+  id: number;
+  city: string;
+  province: string;
+  area: "Nord Sardegna" | "Centro Sardegna" | "Sud Sardegna";
+};
 
-    // =========================
-    // CENTRO SARDEGNA
-    // =========================
-  
-    { id: 15, city: "Bosa", province: "OR", area: "Centro Sardegna" },
-    { id: 16, city: "Dorgali", province: "NU", area: "Centro Sardegna" },
-    { id: 17, city: "Fonni", province: "NU", area: "Centro Sardegna" },
-    { id: 18, city: "Macomer", province: "NU", area: "Centro Sardegna" },
-    { id: 19, city: "Nuoro", province: "NU", area: "Centro Sardegna" },
-    { id: 20, city: "Orgosolo", province: "NU", area: "Centro Sardegna" },
-    { id: 21, city: "Oristano", province: "OR", area: "Centro Sardegna" },
-    { id: 22, city: "Orosei", province: "NU", area: "Centro Sardegna" },
-    { id: 35, city: "Siniscola", province: "NU", area: "Centro Sardegna" },
-    { id: 23, city: "Tortolì", province: "NU", area: "Centro Sardegna" },
-  
-    // =========================
-    // SUD SARDEGNA
-    // =========================
-  
-    { id: 24, city: "Cagliari", province: "CA", area: "Sud Sardegna" },
-    { id: 25, city: "Carbonia", province: "SU", area: "Sud Sardegna" },
-    { id: 26, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
-    { id: 27, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
-    { id: 28, city: "Pula", province: "CA", area: "Sud Sardegna" },
-    { id: 29, city: "Quartu Sant'Elena", province: "CA", area: "Sud Sardegna" },
-    { id: 30, city: "Sant'Antioco", province: "SU", area: "Sud Sardegna" },
-    { id: 31, city: "Villasimius", province: "CA", area: "Sud Sardegna" },
-  ];
+/**
+ * Comuni Nord = provincia di Sassari storica (92 comuni, inclusa Gallura).
+ * Centro / Sud restano una selezione operativa.
+ */
+export const cities: City[] = [
+  // =========================
+  // NORD SARDEGNA — Provincia di Sassari
+  // =========================
+  { id: 1, city: "Aggius", province: "SS", area: "Nord Sardegna" },
+  { id: 2, city: "Aglientu", province: "SS", area: "Nord Sardegna" },
+  { id: 3, city: "Alà dei Sardi", province: "SS", area: "Nord Sardegna" },
+  { id: 4, city: "Alghero", province: "SS", area: "Nord Sardegna" },
+  { id: 5, city: "Anela", province: "SS", area: "Nord Sardegna" },
+  { id: 6, city: "Ardara", province: "SS", area: "Nord Sardegna" },
+  { id: 7, city: "Arzachena", province: "SS", area: "Nord Sardegna" },
+  { id: 8, city: "Badesi", province: "SS", area: "Nord Sardegna" },
+  { id: 9, city: "Banari", province: "SS", area: "Nord Sardegna" },
+  { id: 10, city: "Benetutti", province: "SS", area: "Nord Sardegna" },
+  { id: 11, city: "Berchidda", province: "SS", area: "Nord Sardegna" },
+  { id: 12, city: "Bessude", province: "SS", area: "Nord Sardegna" },
+  { id: 13, city: "Bonnanaro", province: "SS", area: "Nord Sardegna" },
+  { id: 14, city: "Bono", province: "SS", area: "Nord Sardegna" },
+  { id: 15, city: "Bonorva", province: "SS", area: "Nord Sardegna" },
+  { id: 16, city: "Bortigiadas", province: "SS", area: "Nord Sardegna" },
+  { id: 17, city: "Borutta", province: "SS", area: "Nord Sardegna" },
+  { id: 18, city: "Bottidda", province: "SS", area: "Nord Sardegna" },
+  { id: 19, city: "Buddusò", province: "SS", area: "Nord Sardegna" },
+  { id: 20, city: "Budoni", province: "SS", area: "Nord Sardegna" },
+  { id: 21, city: "Bultei", province: "SS", area: "Nord Sardegna" },
+  { id: 22, city: "Bulzi", province: "SS", area: "Nord Sardegna" },
+  { id: 23, city: "Burgos", province: "SS", area: "Nord Sardegna" },
+  { id: 24, city: "Calangianus", province: "SS", area: "Nord Sardegna" },
+  { id: 25, city: "Cargeghe", province: "SS", area: "Nord Sardegna" },
+  { id: 26, city: "Castelsardo", province: "SS", area: "Nord Sardegna" },
+  { id: 27, city: "Cheremule", province: "SS", area: "Nord Sardegna" },
+  { id: 28, city: "Chiaramonti", province: "SS", area: "Nord Sardegna" },
+  { id: 29, city: "Codrongianos", province: "SS", area: "Nord Sardegna" },
+  { id: 30, city: "Cossoine", province: "SS", area: "Nord Sardegna" },
+  { id: 31, city: "Erula", province: "SS", area: "Nord Sardegna" },
+  { id: 32, city: "Esporlatu", province: "SS", area: "Nord Sardegna" },
+  { id: 33, city: "Florinas", province: "SS", area: "Nord Sardegna" },
+  { id: 34, city: "Giave", province: "SS", area: "Nord Sardegna" },
+  { id: 35, city: "Golfo Aranci", province: "SS", area: "Nord Sardegna" },
+  { id: 36, city: "Illorai", province: "SS", area: "Nord Sardegna" },
+  { id: 37, city: "Ittireddu", province: "SS", area: "Nord Sardegna" },
+  { id: 38, city: "Ittiri", province: "SS", area: "Nord Sardegna" },
+  { id: 39, city: "La Maddalena", province: "SS", area: "Nord Sardegna" },
+  { id: 40, city: "Laerru", province: "SS", area: "Nord Sardegna" },
+  { id: 41, city: "Loiri Porto San Paolo", province: "SS", area: "Nord Sardegna" },
+  { id: 42, city: "Luogosanto", province: "SS", area: "Nord Sardegna" },
+  { id: 43, city: "Luras", province: "SS", area: "Nord Sardegna" },
+  { id: 44, city: "Mara", province: "SS", area: "Nord Sardegna" },
+  { id: 45, city: "Martis", province: "SS", area: "Nord Sardegna" },
+  { id: 46, city: "Monteleone Rocca Doria", province: "SS", area: "Nord Sardegna" },
+  { id: 47, city: "Monti", province: "SS", area: "Nord Sardegna" },
+  { id: 48, city: "Mores", province: "SS", area: "Nord Sardegna" },
+  { id: 49, city: "Muros", province: "SS", area: "Nord Sardegna" },
+  { id: 50, city: "Nughedu San Nicolò", province: "SS", area: "Nord Sardegna" },
+  { id: 51, city: "Nule", province: "SS", area: "Nord Sardegna" },
+  { id: 52, city: "Nulvi", province: "SS", area: "Nord Sardegna" },
+  { id: 53, city: "Olbia", province: "SS", area: "Nord Sardegna" },
+  { id: 54, city: "Olmedo", province: "SS", area: "Nord Sardegna" },
+  { id: 55, city: "Oschiri", province: "SS", area: "Nord Sardegna" },
+  { id: 56, city: "Osilo", province: "SS", area: "Nord Sardegna" },
+  { id: 57, city: "Ossi", province: "SS", area: "Nord Sardegna" },
+  { id: 58, city: "Ozieri", province: "SS", area: "Nord Sardegna" },
+  { id: 59, city: "Padria", province: "SS", area: "Nord Sardegna" },
+  { id: 60, city: "Padru", province: "SS", area: "Nord Sardegna" },
+  { id: 61, city: "Palau", province: "SS", area: "Nord Sardegna" },
+  { id: 62, city: "Pattada", province: "SS", area: "Nord Sardegna" },
+  { id: 63, city: "Perfugas", province: "SS", area: "Nord Sardegna" },
+  { id: 64, city: "Ploaghe", province: "SS", area: "Nord Sardegna" },
+  { id: 65, city: "Porto Torres", province: "SS", area: "Nord Sardegna" },
+  { id: 66, city: "Pozzomaggiore", province: "SS", area: "Nord Sardegna" },
+  { id: 67, city: "Putifigari", province: "SS", area: "Nord Sardegna" },
+  { id: 68, city: "Romana", province: "SS", area: "Nord Sardegna" },
+  { id: 69, city: "San Teodoro", province: "SS", area: "Nord Sardegna" },
+  { id: 70, city: "Sant'Antonio di Gallura", province: "SS", area: "Nord Sardegna" },
+  { id: 71, city: "Santa Maria Coghinas", province: "SS", area: "Nord Sardegna" },
+  { id: 72, city: "Santa Teresa Gallura", province: "SS", area: "Nord Sardegna" },
+  { id: 73, city: "Sassari", province: "SS", area: "Nord Sardegna" },
+  { id: 74, city: "Sedini", province: "SS", area: "Nord Sardegna" },
+  { id: 75, city: "Semestene", province: "SS", area: "Nord Sardegna" },
+  { id: 76, city: "Sennori", province: "SS", area: "Nord Sardegna" },
+  { id: 77, city: "Siligo", province: "SS", area: "Nord Sardegna" },
+  { id: 78, city: "Sorso", province: "SS", area: "Nord Sardegna" },
+  { id: 79, city: "Stintino", province: "SS", area: "Nord Sardegna" },
+  { id: 80, city: "Telti", province: "SS", area: "Nord Sardegna" },
+  { id: 81, city: "Tempio Pausania", province: "SS", area: "Nord Sardegna" },
+  { id: 82, city: "Tergu", province: "SS", area: "Nord Sardegna" },
+  { id: 83, city: "Thiesi", province: "SS", area: "Nord Sardegna" },
+  { id: 84, city: "Tissi", province: "SS", area: "Nord Sardegna" },
+  { id: 85, city: "Torralba", province: "SS", area: "Nord Sardegna" },
+  { id: 86, city: "Trinità d'Agultu e Vignola", province: "SS", area: "Nord Sardegna" },
+  { id: 87, city: "Tula", province: "SS", area: "Nord Sardegna" },
+  { id: 88, city: "Uri", province: "SS", area: "Nord Sardegna" },
+  { id: 89, city: "Usini", province: "SS", area: "Nord Sardegna" },
+  { id: 90, city: "Valledoria", province: "SS", area: "Nord Sardegna" },
+  { id: 91, city: "Viddalba", province: "SS", area: "Nord Sardegna" },
+  { id: 92, city: "Villanova Monteleone", province: "SS", area: "Nord Sardegna" },
+
+  // =========================
+  // CENTRO SARDEGNA
+  // =========================
+  { id: 93, city: "Bosa", province: "OR", area: "Centro Sardegna" },
+  { id: 94, city: "Dorgali", province: "NU", area: "Centro Sardegna" },
+  { id: 95, city: "Fonni", province: "NU", area: "Centro Sardegna" },
+  { id: 96, city: "Macomer", province: "NU", area: "Centro Sardegna" },
+  { id: 97, city: "Nuoro", province: "NU", area: "Centro Sardegna" },
+  { id: 98, city: "Orgosolo", province: "NU", area: "Centro Sardegna" },
+  { id: 99, city: "Oristano", province: "OR", area: "Centro Sardegna" },
+  { id: 100, city: "Orosei", province: "NU", area: "Centro Sardegna" },
+  { id: 101, city: "Siniscola", province: "NU", area: "Centro Sardegna" },
+  { id: 102, city: "Tortolì", province: "NU", area: "Centro Sardegna" },
+
+  // =========================
+  // SUD SARDEGNA
+  // =========================
+  { id: 103, city: "Cagliari", province: "CA", area: "Sud Sardegna" },
+  { id: 104, city: "Carbonia", province: "SU", area: "Sud Sardegna" },
+  { id: 105, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
+  { id: 106, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
+  { id: 107, city: "Pula", province: "CA", area: "Sud Sardegna" },
+  { id: 108, city: "Quartu Sant'Elena", province: "CA", area: "Sud Sardegna" },
+  { id: 109, city: "Sant'Antioco", province: "SU", area: "Sud Sardegna" },
+  { id: 110, city: "Villasimius", province: "CA", area: "Sud Sardegna" },
+];
