@@ -1,6 +1,4 @@
 const FALLBACK_IMAGE = "/images/concert.png";
-const STORY_IMAGE_WIDTH = 1080;
-const STORY_IMAGE_HEIGHT = 1920;
 
 function isAbsoluteHttpUrl(value: string) {
   try {
@@ -33,33 +31,22 @@ export function toSameOriginImageUrl(src: string, origin = window.location.origi
   return `${origin}${FALLBACK_IMAGE}`;
 }
 
-async function blobToCoverJpegDataUrl(
-  blob: Blob,
-  width = STORY_IMAGE_WIDTH,
-  height = STORY_IMAGE_HEIGHT,
-) {
+/** Ridimensiona l’immagine mantenendo le proporzioni (niente crop/letterbox). */
+async function blobToJpegDataUrl(blob: Blob, maxEdge = 1600) {
   const bitmap = await createImageBitmap(blob);
   try {
-    const scale = Math.max(width / bitmap.width, height / bitmap.height);
-    const drawW = Math.round(bitmap.width * scale);
-    const drawH = Math.round(bitmap.height * scale);
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const drawW = Math.max(1, Math.round(bitmap.width * scale));
+    const drawH = Math.max(1, Math.round(bitmap.height * scale));
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = drawW;
+    canvas.height = drawH;
     const ctx = canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Canvas 2D non disponibile.");
     }
-    ctx.fillStyle = "#1e293b";
-    ctx.fillRect(0, 0, width, height);
-    ctx.drawImage(
-      bitmap,
-      Math.round((width - drawW) / 2),
-      Math.round((height - drawH) / 2),
-      drawW,
-      drawH,
-    );
-    return canvas.toDataURL("image/jpeg", 0.88);
+    ctx.drawImage(bitmap, 0, 0, drawW, drawH);
+    return canvas.toDataURL("image/jpeg", 0.9);
   } finally {
     bitmap.close();
   }
@@ -87,7 +74,7 @@ export async function loadCanvasSafeImageUrl(src: string): Promise<{
       if (!blob.type.startsWith("image/") && blob.type !== "application/octet-stream") {
         continue;
       }
-      const dataUrl = await blobToCoverJpegDataUrl(blob);
+      const dataUrl = await blobToJpegDataUrl(blob);
       return {
         url: dataUrl,
         revoke: () => undefined,
