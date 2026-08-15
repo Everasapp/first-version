@@ -7,7 +7,6 @@ import { normalizeEventCategories } from "@/src/lib/event-categories";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import { createSlug } from "@/src/lib/slug";
 import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
-import { notifyEventPublished } from "@/src/lib/notifications/notify";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -311,16 +310,7 @@ export async function POST(request: Request) {
     },
   });
 
-  if (publish && eventSlug) {
-    await notifyEventPublished({
-      title,
-      organizer: event.organizerName.trim() || "Organizzatore",
-      municipality,
-      startAt,
-      category: primaryCategory,
-      slug: eventSlug,
-    });
-  }
+  // Import admin: nessuna email (l’admin non deve notificarsi da solo).
 
   return NextResponse.json({
     ok: true,

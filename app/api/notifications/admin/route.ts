@@ -134,8 +134,8 @@ export async function POST(request: Request) {
         .eq("id", user.id)
         .maybeSingle();
 
-      // Nessuna email se pubblica l'admin (solo organizzatori esterni).
-      if (publisherProfile?.role === "admin") {
+      // Solo organizzatori esterni: niente email se pubblica l'admin.
+      if (publisherProfile?.role !== "organizzatore") {
         return NextResponse.json({ ok: true });
       }
 
