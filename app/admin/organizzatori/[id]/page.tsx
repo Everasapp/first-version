@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import DeleteOrganizerButton from "@/src/components/admin/DeleteOrganizerButton";
+import EditOrganizerForm from "@/src/components/admin/EditOrganizerForm";
 import { requireAdmin } from "@/src/lib/auth";
 import type { OrganizerDirectoryRow } from "@/src/lib/admin/organizer-directory";
 
@@ -12,32 +14,6 @@ type PageProps = {
 
 function claimLabel(status: string) {
   return status === "claimed" ? "Rivendicato" : "Non rivendicato";
-}
-
-function Row({ label, value }: { label: string; value: string | null }) {
-  return (
-    <div className="grid gap-1 border-b border-slate-100 py-3 sm:grid-cols-[12rem_1fr] sm:gap-4">
-      <dt className="text-sm font-semibold text-slate-500">{label}</dt>
-      <dd className="text-sm text-slate-900">
-        {value ? (
-          value.startsWith("http") ? (
-            <a
-              href={value}
-              target="_blank"
-              rel="noreferrer"
-              className="break-all text-[#075EAE] hover:underline"
-            >
-              {value}
-            </a>
-          ) : (
-            <span className="break-words">{value}</span>
-          )
-        ) : (
-          <span className="text-slate-400">Non presente</span>
-        )}
-      </dd>
-    </div>
-  );
 }
 
 export default async function AdminOrganizzatoreDetailPage({
@@ -88,26 +64,21 @@ export default async function AdminOrganizzatoreDetailPage({
             </span>
           </p>
         </div>
-        <Link
-          href="/admin/ricerca-contatti"
-          className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
-        >
-          Nuova ricerca
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/ricerca-contatti"
+            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
+          >
+            Nuova ricerca
+          </Link>
+          <DeleteOrganizerButton
+            organizerId={org.id}
+            organizerName={org.name}
+          />
+        </div>
       </div>
 
-      <dl className="mt-8 rounded-2xl border border-slate-200 bg-white px-5 py-2 shadow-sm">
-        <Row label="Sito web" value={org.website} />
-        <Row label="Email" value={org.email} />
-        <Row label="PEC" value={org.pec} />
-        <Row label="Telefono" value={org.phone} />
-        <Row label="Indirizzo" value={org.address} />
-        <Row label="Email Cultura" value={org.email_cultura} />
-        <Row label="Email Turismo" value={org.email_turismo} />
-        <Row label="Email Eventi" value={org.email_eventi} />
-        <Row label="Facebook" value={org.facebook} />
-        <Row label="Instagram" value={org.instagram} />
-      </dl>
+      <EditOrganizerForm organizer={org} />
     </div>
   );
 }

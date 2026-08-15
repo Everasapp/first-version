@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import DeleteOrganizerButton from "@/src/components/admin/DeleteOrganizerButton";
 import ExportEmailsPanel from "@/src/components/admin/ExportEmailsPanel";
 import { requireAdmin } from "@/src/lib/auth";
 import { collectOrganizerEmails } from "@/src/lib/admin/export-emails";
@@ -89,6 +90,7 @@ export default async function AdminOrganizzatoriPage() {
                 <th className="px-4 py-3 font-semibold">Stato</th>
                 <th className="px-4 py-3 font-semibold">Salvato</th>
                 <th className="px-4 py-3 font-semibold">Dettaglio</th>
+                <th className="px-4 py-3 font-semibold">Azioni</th>
               </tr>
             </thead>
             <tbody>
@@ -142,6 +144,14 @@ export default async function AdminOrganizzatoriPage() {
                     >
                       Apri
                     </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <DeleteOrganizerButton
+                      organizerId={org.id}
+                      organizerName={org.name}
+                      redirectToList={false}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 transition hover:bg-red-100 disabled:opacity-60"
+                    />
                   </td>
                 </tr>
               ))}
