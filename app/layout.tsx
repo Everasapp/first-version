@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import Footer from "@/src/components/home/Footer";
 import PWAInstallBanner from "@/src/components/PWAInstallBanner";
@@ -21,6 +22,9 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const gaMeasurementId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "G-NBHEHZ5FLD";
 
 export const viewport: Viewport = {
   themeColor: "#E67E22",
@@ -92,6 +96,9 @@ export default function RootLayout({
         <Footer />
         <PWARegister />
         <PWAInstallBanner />
+        {process.env.NODE_ENV === "production" ? (
+          <GoogleAnalytics gaId={gaMeasurementId} />
+        ) : null}
       </body>
     </html>
   );
