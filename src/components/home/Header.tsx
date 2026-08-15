@@ -48,7 +48,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 isolate border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-end gap-3 px-5 pb-3.5 sm:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-end gap-2 px-4 pb-3.5 sm:gap-3 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
             src="/images/everas-logo-v2.webp"
@@ -57,7 +57,7 @@ export default function Header() {
             height={66}
             priority
             unoptimized
-            className="h-12 w-auto sm:h-14"
+            className="h-9 w-auto sm:h-12 md:h-14"
           />
         </Link>
 

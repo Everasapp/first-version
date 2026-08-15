@@ -22,14 +22,19 @@ import EventCard, {
 } from "@/src/components/home/EventCard";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
+import DashboardEventSearch from "@/src/components/dashboard/DashboardEventSearch";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
 import PublishEventButton from "@/src/components/dashboard/PublishEventButton";
 import { requireProfile } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
 import {
+  buildDashboardHref,
+  eventMatchesDashboardSearch,
   getEventBucket,
   parseDashboardFilter,
+  parseDashboardSearchDate,
+  parseDashboardSearchQuery,
   type DashboardEventStatus,
   type DashboardFilter,
 } from "@/src/lib/dashboardEvents";
@@ -64,6 +69,8 @@ type DashboardEvent = {
 type DashboardPageProps = {
   searchParams: Promise<{
     filtro?: string | string[];
+    cerca?: string | string[];
+    data?: string | string[];
   }>;
 };
 
@@ -387,6 +394,9 @@ async function OrganizerDashboard({
 }) {
   const params = await searchParams;
   const activeFilter = parseDashboardFilter(params.filtro);
+  const searchQuery = parseDashboardSearchQuery(params.cerca);
+  const searchDate = parseDashboardSearchDate(params.data);
+  const hasSearch = Boolean(searchQuery || searchDate);
 
   const [{ data, error }, planResult] = await Promise.all([
     supabase
@@ -425,9 +435,13 @@ async function OrganizerDashboard({
     counts[getEventBucket(event, now)] += 1;
   }
 
-  const filteredEvents = events.filter(
-    (event) => getEventBucket(event, now) === activeFilter,
-  );
+  const filteredEvents = events.filter((event) => {
+    if (getEventBucket(event, now) !== activeFilter) {
+      return false;
+    }
+
+    return eventMatchesDashboardSearch(event, searchQuery, searchDate);
+  });
 
   const empty = emptyCopy[activeFilter];
   const organizerLabel =
@@ -544,7 +558,11 @@ async function OrganizerDashboard({
               return (
                 <Link
                   key={filter.id}
-                  href={`/dashboard?filtro=${filter.id}`}
+                  href={buildDashboardHref({
+                    filtro: filter.id,
+                    cerca: searchQuery,
+                    data: searchDate,
+                  })}
                   aria-current={isActive ? "page" : undefined}
                   className={`rounded-3xl border bg-white p-6 shadow-sm transition ${
                     isActive
@@ -570,6 +588,14 @@ async function OrganizerDashboard({
             })}
           </div>
 
+          {events.length > 0 ? (
+            <DashboardEventSearch
+              activeFilter={activeFilter}
+              query={searchQuery}
+              date={searchDate}
+            />
+          ) : null}
+
           {events.length === 0 ? (
             <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
               <CirclePlus
@@ -593,17 +619,28 @@ async function OrganizerDashboard({
           ) : filteredEvents.length === 0 ? (
             <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
               <h2 className="text-2xl font-bold text-slate-900">
-                {empty.title}
+                {hasSearch ? "Nessun risultato" : empty.title}
               </h2>
               <p className="mx-auto mt-2 max-w-xl text-slate-600">
-                {empty.body}
+                {hasSearch
+                  ? "Prova a cambiare testo o data, oppure azzera i filtri di ricerca."
+                  : empty.body}
               </p>
-              <Link
-                href="/pubblica"
-                className="mt-6 inline-flex rounded-2xl bg-[#E67E22] px-6 py-3 font-bold text-white"
-              >
-                {empty.cta}
-              </Link>
+              {hasSearch ? (
+                <Link
+                  href={buildDashboardHref({ filtro: activeFilter })}
+                  className="mt-6 inline-flex rounded-2xl border border-slate-300 bg-white px-6 py-3 font-bold text-slate-700"
+                >
+                  Azzera ricerca
+                </Link>
+              ) : (
+                <Link
+                  href="/pubblica"
+                  className="mt-6 inline-flex rounded-2xl bg-[#E67E22] px-6 py-3 font-bold text-white"
+                >
+                  {empty.cta}
+                </Link>
+              )}
             </div>
           ) : (
             <div className="mt-8 space-y-4">
