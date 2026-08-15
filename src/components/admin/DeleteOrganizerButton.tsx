@@ -11,6 +11,9 @@ type DeleteOrganizerButtonProps = {
   organizerName: string;
   /** Se true, dopo il delete torna all'elenco */
   redirectToList?: boolean;
+  /** Collegato ad almeno un evento: non eliminabile */
+  inUse?: boolean;
+  eventCount?: number;
   className?: string;
 };
 
@@ -18,6 +21,8 @@ export default function DeleteOrganizerButton({
   organizerId,
   organizerName,
   redirectToList = true,
+  inUse = false,
+  eventCount = 0,
   className = "",
 }: DeleteOrganizerButtonProps) {
   const router = useRouter();
@@ -25,8 +30,12 @@ export default function DeleteOrganizerButton({
   const [errorMessage, setErrorMessage] = useState("");
 
   async function deleteOrganizer() {
+    if (inUse) {
+      return;
+    }
+
     const confirmed = window.confirm(
-      `Vuoi eliminare definitivamente «${organizerName}» dalla rubrica?\n\nGli eventuali eventi collegati restano online (il collegamento viene rimosso). L’operazione non può essere annullata.`,
+      `Vuoi eliminare definitivamente «${organizerName}» dalla rubrica?\n\nL’operazione non può essere annullata.`,
     );
 
     if (!confirmed) {
@@ -37,6 +46,27 @@ export default function DeleteOrganizerButton({
     setErrorMessage("");
 
     const supabase = createClient();
+
+    const { count, error: countError } = await supabase
+      .from("events")
+      .select("id", { count: "exact", head: true })
+      .eq("organizer_directory_id", organizerId);
+
+    if (countError) {
+      setErrorMessage(`Verifica utilizzo non riuscita: ${countError.message}`);
+      setIsDeleting(false);
+      return;
+    }
+
+    if ((count ?? 0) > 0) {
+      setErrorMessage(
+        `Non eliminabile: collegato a ${count} event${count === 1 ? "o" : "i"}.`,
+      );
+      setIsDeleting(false);
+      router.refresh();
+      return;
+    }
+
     const { error } = await supabase
       .from("organizer_directory")
       .delete()
@@ -56,6 +86,17 @@ export default function DeleteOrganizerButton({
 
     router.refresh();
     setIsDeleting(false);
+  }
+
+  if (inUse) {
+    return (
+      <p
+        className="text-xs font-semibold text-slate-500"
+        title={`Collegato a ${eventCount} event${eventCount === 1 ? "o" : "i"}`}
+      >
+        In uso
+      </p>
+    );
   }
 
   return (

@@ -38,6 +38,18 @@ export default async function AdminOrganizzatoreDetailPage({
 
   const org = data as OrganizerDirectoryRow;
 
+  const { count: eventCount, error: countError } = await supabase
+    .from("events")
+    .select("id", { count: "exact", head: true })
+    .eq("organizer_directory_id", org.id);
+
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  const linkedEvents = eventCount ?? 0;
+  const inUse = linkedEvents > 0;
+
   return (
     <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8">
       <Link
@@ -52,7 +64,7 @@ export default async function AdminOrganizzatoreDetailPage({
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             {org.name}
           </h1>
-          <p className="mt-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             <span
               className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                 org.claim_status === "claimed"
@@ -62,7 +74,18 @@ export default async function AdminOrganizzatoreDetailPage({
             >
               {claimLabel(org.claim_status)}
             </span>
-          </p>
+            <span
+              className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                inUse
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {inUse
+                ? `In uso · ${linkedEvents} event${linkedEvents === 1 ? "o" : "i"}`
+                : "Non usato"}
+            </span>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -74,6 +97,8 @@ export default async function AdminOrganizzatoreDetailPage({
           <DeleteOrganizerButton
             organizerId={org.id}
             organizerName={org.name}
+            inUse={inUse}
+            eventCount={linkedEvents}
           />
         </div>
       </div>
