@@ -77,14 +77,27 @@ export default function Header() {
           >
             Categorie
           </Link>
+          <Link
+            href="/segnala-evento"
+            className="touch-manipulation hover:text-blue-700"
+          >
+            Segnala evento
+          </Link>
         </nav>
 
         <div className="relative z-10 ml-auto flex shrink-0 items-end gap-1.5 sm:gap-2 md:ml-8">
           <Link
+            href="/segnala-evento"
+            className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#E67E22] bg-white px-2.5 text-xs font-bold text-[#E67E22] transition [@media(hover:hover)]:hover:bg-[#E67E22] [@media(hover:hover)]:hover:text-white active:bg-[#E67E22] active:text-white sm:px-3.5 md:hidden"
+          >
+            Segnala
+          </Link>
+          <Link
             href="/pubblica"
             className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5"
           >
-            Pubblica evento
+            <span className="sm:hidden">Pubblica</span>
+            <span className="hidden sm:inline">Pubblica evento</span>
           </Link>
 
           {isAuthenticated ? (

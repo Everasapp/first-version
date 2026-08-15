@@ -128,6 +128,13 @@ export default function Footer() {
             </a>
 
             <Link
+              href="/segnala-evento"
+              className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
+            >
+              Segnala un evento
+            </Link>
+
+            <Link
               href="/contatti"
               className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
             >
