@@ -35,6 +35,10 @@ import { createSlug } from "@/src/lib/slug";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
+import {
+  isValidYoutubeUrl,
+  normalizeYoutubeUrl,
+} from "@/src/lib/youtube";
 
 const steps = [
   "Informazioni",
@@ -68,6 +72,7 @@ export default function PublishEventPage() {
   const [pricing, setPricing] = useState<PricingType>("free");
   const [price, setPrice] = useState("");
   const [ticketUrl, setTicketUrl] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const [description, setDescription] = useState("");
   const [organizer, setOrganizer] = useState("");
@@ -256,6 +261,11 @@ export default function PublishEventPage() {
           "Inserisci una descrizione di almeno 30 caratteri.";
       }
 
+      if (youtubeUrl.trim() && !isValidYoutubeUrl(youtubeUrl)) {
+        nextErrors.youtubeUrl =
+          "Inserisci un link YouTube valido (es. youtube.com/watch?v=… o youtu.be/…).";
+      }
+
       if (canSetOrganizer && !organizer.trim()) {
         nextErrors.organizer =
           "Inserisci almeno un organizzatore associato all’evento.";
@@ -335,6 +345,9 @@ export default function PublishEventPage() {
       const normalizedTicketUrl = ticketUrl.trim()
         ? normalizeTicketUrl(ticketUrl)
         : null;
+      const normalizedYoutubeUrl = youtubeUrl.trim()
+        ? normalizeYoutubeUrl(youtubeUrl)
+        : null;
 
       const { data: createdEvent, error: insertError } = await supabase
         .from("events")
@@ -356,6 +369,7 @@ export default function PublishEventPage() {
           price_from: numericPrice,
           price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
+          youtube_url: normalizedYoutubeUrl,
           organizer_display_name: canSetOrganizer
             ? organizer.trim()
             : defaultOrganizerName,
@@ -1070,13 +1084,61 @@ export default function PublishEventPage() {
                     </label>
 
                     <label className="block">
+                      <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                        <Link2 className="h-4 w-4 text-[#075EAE]" />
+                        Link video YouTube{" "}
+                        <span className="font-medium text-slate-400">
+                          (opzionale)
+                        </span>
+                      </span>
+
+                      <input
+                        type="url"
+                        name="youtubeUrl"
+                        inputMode="url"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        value={youtubeUrl}
+                        onChange={(event) => {
+                          setYoutubeUrl(event.target.value);
+                          clearError("youtubeUrl");
+                        }}
+                        onBlur={() => {
+                          if (!youtubeUrl.trim()) {
+                            return;
+                          }
+
+                          setYoutubeUrl(normalizeYoutubeUrl(youtubeUrl));
+                        }}
+                        placeholder="https://www.youtube.com/watch?v=…"
+                        aria-invalid={Boolean(errors.youtubeUrl)}
+                        className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
+                          errors.youtubeUrl
+                            ? "border-red-400 focus:border-red-500"
+                            : "border-slate-300 focus:border-[#075EAE]"
+                        }`}
+                      />
+
+                      {errors.youtubeUrl && (
+                        <p className="mt-2 text-sm text-red-600">
+                          {errors.youtubeUrl}
+                        </p>
+                      )}
+
+                      <p className="mt-2 text-sm text-slate-500">
+                        Se inserisci un link, sulla pagina dell&apos;evento
+                        comparirà il video player YouTube.
+                      </p>
+                    </label>
+
+                    <label className="block">
                       <span className="text-sm font-bold text-slate-900">
                         Organizzatore associato
                       </span>
                       <p className="mt-1 text-sm text-slate-500">
                         {canSetOrganizer
                           ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
-                          : "Con Free e Plus l’organizzatore è il tuo account. Passa a Pro per associarne altri."}
+                          : "Con Free l’organizzatore è il tuo account. Passa a Pro per personalizzare il profilo organizzatore."}
                       </p>
 
                       <input

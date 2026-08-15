@@ -18,7 +18,7 @@ export function getPlanDisplayName(slug: PlanSlug | string | null | undefined) {
     case "full":
       return "Pro";
     case "regular":
-      return "Plus";
+      return "Promozione";
     case "free":
     default:
       return "Free";
@@ -34,7 +34,14 @@ export function canAssignOrganizers(plan: Pick<Plan, "slug"> | null | undefined)
   return plan?.slug === "full";
 }
 
-export function formatPlanPrice(price: number | string | null | undefined) {
+export function formatPlanPrice(
+  price: number | string | null | undefined,
+  slug?: PlanSlug | string | null,
+) {
+  if (slug === "regular") {
+    return "Su richiesta";
+  }
+
   const value = price === null || price === undefined ? 0 : Number(price);
   if (!Number.isFinite(value) || value <= 0) {
     return "Gratis";

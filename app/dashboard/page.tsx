@@ -460,7 +460,7 @@ async function OrganizerDashboard({
                 </span>
                 {plan?.featured_events_limit
                   ? ` · ${featuredCount}/${plan.featured_events_limit} eventi in evidenza`
-                  : " · promuovi eventi con Plus o Pro"}
+                  : " · promuovi eventi con Promozione"}
               </p>
             </div>
 

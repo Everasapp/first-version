@@ -23,21 +23,20 @@ type PianoPageProps = {
 
 const planBenefits: Record<PlanSlug, string[]> = {
   free: [
-    "1 evento al mese",
-    "Nessun evento in evidenza",
-    "Statistiche essenziali",
-    "Profilo attività",
-  ],
-  regular: [
-    "Fino a 12 eventi al mese",
-    "1 evento in evidenza (homepage)",
-    "Analytics avanzate",
+    "5–10 eventi attivi",
+    "Pagina organizzatore",
+    "Statistiche base",
   ],
   full: [
     "Eventi illimitati",
-    "Fino a 5 eventi in evidenza (homepage)",
-    "Priorità in homepage",
-    "Supporto dedicato",
+    "Maggiore visibilità",
+    "Statistiche",
+    "Profilo organizzatore personalizzato",
+  ],
+  regular: [
+    "Evento in evidenza per 14 giorni",
+    "Banner pubblicitario",
+    "Posizione privilegiata nelle ricerche",
   ],
 };
 
@@ -91,7 +90,8 @@ export default async function PianoPage({ searchParams }: PianoPageProps) {
                 <span className="font-bold text-slate-900">
                   {getPlanDisplayName(currentPlan?.slug)}
                 </span>
-                . Passa a Pro per mettere gli eventi in evidenza.
+                . Passa a Pro per più eventi e visibilità, o richiedi una
+                Promozione per mettere un evento in evidenza.
               </p>
             </div>
             <Link
@@ -106,14 +106,14 @@ export default async function PianoPage({ searchParams }: PianoPageProps) {
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
           {motivo === "promuovi" ? (
             <div className="mb-8 rounded-3xl border border-orange-200 bg-orange-50 px-5 py-4 text-sm font-medium text-[#C96A1A]">
-              Per promuovere un evento serve un piano Plus o Pro.
+              Per promuovere un evento serve il pacchetto Promozione.
             </div>
           ) : null}
 
           <div className="grid gap-6 lg:grid-cols-3">
             {plans.map((plan) => {
               const isCurrent = currentPlan?.id === plan.id;
-              const isProLike = plan.slug === "full" || plan.slug === "regular";
+              const isRequestable = plan.slug === "full" || plan.slug === "regular";
               const benefits = planBenefits[plan.slug] ?? [];
 
               return (
@@ -138,7 +138,7 @@ export default async function PianoPage({ searchParams }: PianoPageProps) {
                   </div>
 
                   <p className="mt-3 text-3xl font-black text-slate-900">
-                    {formatPlanPrice(plan.price_monthly)}
+                    {formatPlanPrice(plan.price_monthly, plan.slug)}
                   </p>
 
                   <ul className="mt-6 space-y-3">
@@ -165,7 +165,7 @@ export default async function PianoPage({ searchParams }: PianoPageProps) {
                       <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
                         Richiesta già inviata: in elaborazione.
                       </p>
-                    ) : isProLike ? (
+                    ) : isRequestable ? (
                       <RequestPlanButton
                         planSlug={plan.slug as "regular" | "full"}
                         label={`Richiedi ${getPlanDisplayName(plan.slug)}`}

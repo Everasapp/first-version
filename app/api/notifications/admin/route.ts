@@ -128,6 +128,17 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: true });
       }
 
+      const { data: publisherProfile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      // Nessuna email se pubblica l'admin (solo organizzatori esterni).
+      if (publisherProfile?.role === "admin") {
+        return NextResponse.json({ ok: true });
+      }
+
       const { data: event } = await supabase
         .from("events")
         .select(
@@ -141,14 +152,7 @@ export async function POST(request: Request) {
       }
 
       if (event.organizer_id !== user.id) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .maybeSingle();
-        if (profile?.role !== "admin") {
-          return NextResponse.json({ ok: true });
-        }
+        return NextResponse.json({ ok: true });
       }
 
       const { data: organizerProfile } = await supabase

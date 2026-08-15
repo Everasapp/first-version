@@ -15,6 +15,8 @@ import EventDescription from "@/src/components/events/EventDescription";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
+import AdminEventViewOnce from "@/src/components/events/AdminEventViewOnce";
+import EventYouTubePlayer from "@/src/components/events/EventYouTubePlayer";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
@@ -71,6 +73,7 @@ type EventRow = {
   is_free: boolean;
   price_from: number | string | null;
   ticket_url: string | null;
+  youtube_url: string | null;
   is_featured: boolean;
   organizer_id: string;
   organizer_display_name: string | null;
@@ -179,7 +182,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, organizer_display_name",
+      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -195,7 +198,24 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   const event = data as EventRow;
 
-  await supabase.rpc("increment_event_views", { event_id: event.id });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let isAdmin = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    isAdmin = profile?.role === "admin";
+  }
+
+  // Visitatori / organizzatori: conta ogni vista. Admin: solo la prima (lato client).
+  if (!isAdmin) {
+    await supabase.rpc("increment_event_views", { event_id: event.id });
+  }
 
   const [
     { data: similarData, error: similarError },
@@ -287,6 +307,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   return (
     <>
+      {isAdmin ? <AdminEventViewOnce eventId={event.id} /> : null}
       <JsonLd
         data={eventSchema({
           name: event.title,
@@ -460,6 +481,15 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 <EventDescription description={event.description} />
               </div>
             </div>
+
+            {event.youtube_url ? (
+              <div className="border-t border-slate-200">
+                <EventYouTubePlayer
+                  youtubeUrl={event.youtube_url}
+                  title={event.title}
+                />
+              </div>
+            ) : null}
 
             <div className="border-t border-slate-200 py-10">
               <h2 className="text-3xl font-bold text-slate-900">

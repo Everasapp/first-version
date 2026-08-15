@@ -28,6 +28,10 @@ import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
+import {
+  isValidYoutubeUrl,
+  normalizeYoutubeUrl,
+} from "@/src/lib/youtube";
 
 type PricingType = "free" | "paid";
 
@@ -52,6 +56,7 @@ export type EditableEvent = {
   is_free: boolean;
   price_from: number | string | null;
   ticket_url: string | null;
+  youtube_url: string | null;
   organizer_display_name: string | null;
   status: string;
 };
@@ -161,6 +166,7 @@ export default function EditEventForm({
       : String(event.price_from),
   );
   const [ticketUrl, setTicketUrl] = useState(event.ticket_url ?? "");
+  const [youtubeUrl, setYoutubeUrl] = useState(event.youtube_url ?? "");
   const [description, setDescription] = useState(event.description ?? "");
   const [organizer, setOrganizer] = useState(
     event.organizer_display_name?.trim() || accountOrganizerName,
@@ -262,6 +268,11 @@ export default function EditEventForm({
         "Inserisci una descrizione di almeno 30 caratteri.";
     }
 
+    if (youtubeUrl.trim() && !isValidYoutubeUrl(youtubeUrl)) {
+      nextErrors.youtubeUrl =
+        "Inserisci un link YouTube valido (es. youtube.com/watch?v=… o youtu.be/…).";
+    }
+
     if (canAssignOrganizer && !organizer.trim()) {
       nextErrors.organizer =
         "Indica almeno un organizzatore associato all'evento.";
@@ -347,6 +358,9 @@ export default function EditEventForm({
       const normalizedTicketUrl = ticketUrl.trim()
         ? normalizeTicketUrl(ticketUrl)
         : null;
+      const normalizedYoutubeUrl = youtubeUrl.trim()
+        ? normalizeYoutubeUrl(youtubeUrl)
+        : null;
 
       const { error: updateError } = await supabase
         .from("events")
@@ -365,6 +379,7 @@ export default function EditEventForm({
           price_from: numericPrice,
           price: numericPrice ?? 0,
           ticket_url: normalizedTicketUrl,
+          youtube_url: normalizedYoutubeUrl,
           organizer_display_name: canAssignOrganizer
             ? organizer.trim()
             : accountOrganizerName,
@@ -826,6 +841,43 @@ export default function EditEventForm({
           </label>
 
           <label className="block">
+            <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+              <Link2 className="h-4 w-4 text-[#075EAE]" />
+              Link video YouTube{" "}
+              <span className="font-medium text-slate-400">(opzionale)</span>
+            </span>
+            <input
+              type="url"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              value={youtubeUrl}
+              onChange={(changeEvent) => {
+                setYoutubeUrl(changeEvent.target.value);
+                clearError("youtubeUrl");
+              }}
+              onBlur={() => {
+                if (!youtubeUrl.trim()) {
+                  return;
+                }
+
+                setYoutubeUrl(normalizeYoutubeUrl(youtubeUrl));
+              }}
+              placeholder="https://www.youtube.com/watch?v=…"
+              className={`${fieldClassName} ${
+                errors.youtubeUrl ? "border-red-400" : "border-slate-300"
+              }`}
+            />
+            {errors.youtubeUrl && (
+              <p className="mt-2 text-sm text-red-600">{errors.youtubeUrl}</p>
+            )}
+            <p className="mt-2 text-sm text-slate-500">
+              Se presente, sulla pagina pubblica dell&apos;evento verrà mostrato
+              il video player YouTube.
+            </p>
+          </label>
+
+          <label className="block">
             <span className="text-sm font-bold text-slate-900">Descrizione</span>
             <textarea
               rows={8}
@@ -850,7 +902,7 @@ export default function EditEventForm({
             <p className="mt-1 text-sm text-slate-500">
               {canAssignOrganizer
                 ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
-                : "Con Free e Plus l’organizzatore è il tuo account. Passa a Pro per associarne altri."}
+                : "Con Free l’organizzatore è il tuo account. Passa a Pro per personalizzare il profilo organizzatore."}
             </p>
             <input
               type="text"
