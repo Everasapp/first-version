@@ -17,7 +17,10 @@ export type EventCardData = {
   /** Database UUID used for favorites */
   eventId: string;
   title: string;
+  /** Primary category display name (backward compatible). */
   category: string;
+  /** All category display names. */
+  categories?: string[];
 
   date: string;
   startDate: string;
@@ -47,6 +50,8 @@ type EventCardProps = {
 
 export default function EventCard({ event }: EventCardProps) {
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
+  const categoryLabels =
+    event.categories?.length ? event.categories : [event.category];
 
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -123,9 +128,16 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
 
       <div className="p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#075EAE]">
-          {event.category}
-        </p>
+        <div className="flex flex-wrap gap-x-2 gap-y-1">
+          {categoryLabels.map((label) => (
+            <p
+              key={label}
+              className="text-xs font-bold uppercase tracking-[0.14em] text-[#075EAE]"
+            >
+              {label}
+            </p>
+          ))}
+        </div>
 
         <h3 className="mt-2 line-clamp-2 text-xl font-bold leading-snug text-slate-900">
           {event.title}

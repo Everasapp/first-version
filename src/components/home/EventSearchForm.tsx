@@ -34,6 +34,52 @@ const dateLabels: Record<string, string> = {
 
 type AccordionKey = "area" | "city" | "category" | "date" | "text" | null;
 
+function AccordionRow({
+  id,
+  icon,
+  title,
+  summary,
+  isOpen,
+  onToggle,
+  children,
+}: {
+  id: Exclude<AccordionKey, null>;
+  icon: ReactNode;
+  title: string;
+  summary: string;
+  isOpen: boolean;
+  onToggle: (id: Exclude<AccordionKey, null>) => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="border-b border-slate-100 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        aria-expanded={isOpen}
+        className="flex w-full items-center gap-3 px-1 py-3 text-left"
+      >
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#075EAE]/10 text-[#075EAE]">
+          {icon}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+            {title}
+          </span>
+          <span className="mt-0.5 block truncate text-sm font-semibold text-slate-900">
+            {summary}
+          </span>
+        </span>
+        <ChevronDown
+          aria-hidden="true"
+          className={`h-5 w-5 shrink-0 text-slate-400 transition ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+      {isOpen ? <div className="pb-3 pl-12 pr-1">{children}</div> : null}
+    </div>
+  );
+}
+
 export default function EventSearchForm() {
   const router = useRouter();
 
@@ -78,7 +124,7 @@ export default function EventSearchForm() {
     categories.find((category) => category.slug === selectedCategory)?.name ??
     "";
 
-  function togglePanel(key: AccordionKey) {
+  function togglePanel(key: Exclude<AccordionKey, null>) {
     setOpenPanel((current) => (current === key ? null : key));
   }
 
@@ -157,50 +203,6 @@ export default function EventSearchForm() {
   const inputClass =
     "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400";
 
-  function AccordionRow({
-    id,
-    icon,
-    title,
-    summary,
-    children,
-  }: {
-    id: Exclude<AccordionKey, null>;
-    icon: ReactNode;
-    title: string;
-    summary: string;
-    children: ReactNode;
-  }) {
-    const isOpen = openPanel === id;
-
-    return (
-      <div className="border-b border-slate-100 last:border-b-0">
-        <button
-          type="button"
-          onClick={() => togglePanel(id)}
-          aria-expanded={isOpen}
-          className="flex w-full items-center gap-3 px-1 py-3 text-left"
-        >
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#075EAE]/10 text-[#075EAE]">
-            {icon}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
-              {title}
-            </span>
-            <span className="mt-0.5 block truncate text-sm font-semibold text-slate-900">
-              {summary}
-            </span>
-          </span>
-          <ChevronDown
-            aria-hidden="true"
-            className={`h-5 w-5 shrink-0 text-slate-400 transition ${isOpen ? "rotate-180" : ""}`}
-          />
-        </button>
-        {isOpen ? <div className="pb-3 pl-12 pr-1">{children}</div> : null}
-      </div>
-    );
-  }
-
   return (
     <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
       <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-8">
@@ -241,6 +243,8 @@ export default function EventSearchForm() {
             selectedArea ? areaLabels[selectedArea] || selectedArea : "Tutta la Sardegna"
           }
           icon={<MapPin aria-hidden="true" className="h-4 w-4" />}
+          isOpen={openPanel === "area"}
+          onToggle={togglePanel}
         >
           <select
             value={selectedArea}
@@ -263,6 +267,8 @@ export default function EventSearchForm() {
           title="Città"
           summary={selectedCity || "Tutte le città"}
           icon={<Building2 aria-hidden="true" className="h-4 w-4" />}
+          isOpen={openPanel === "city"}
+          onToggle={togglePanel}
         >
           <select
             value={selectedCity}
@@ -286,6 +292,8 @@ export default function EventSearchForm() {
           title="Categoria"
           summary={categoryLabel || "Tutte le categorie"}
           icon={<Compass aria-hidden="true" className="h-4 w-4" />}
+          isOpen={openPanel === "category"}
+          onToggle={togglePanel}
         >
           <select
             value={selectedCategory}
@@ -311,6 +319,8 @@ export default function EventSearchForm() {
             selectedDate ? dateLabels[selectedDate] || selectedDate : "Tutte le date"
           }
           icon={<CalendarDays aria-hidden="true" className="h-4 w-4" />}
+          isOpen={openPanel === "date"}
+          onToggle={togglePanel}
         >
           <select
             value={selectedDate}
@@ -333,6 +343,8 @@ export default function EventSearchForm() {
           title="Testo"
           summary={query.trim() || "Parola chiave (opzionale)"}
           icon={<Search aria-hidden="true" className="h-4 w-4" />}
+          isOpen={openPanel === "text"}
+          onToggle={togglePanel}
         >
           <input
             type="search"

@@ -34,6 +34,7 @@ export type CalendarEventListItem = {
   slug: string;
   title: string;
   category: string;
+  categories?: string[] | null;
   municipality: string;
   location_name: string | null;
   start_at: string;
@@ -57,6 +58,7 @@ export async function getCalendarEvents(userId: string) {
         slug,
         title,
         category,
+        categories,
         municipality,
         location_name,
         start_at,
@@ -90,6 +92,7 @@ export async function getCalendarEvents(userId: string) {
       slug: event.slug as string,
       title: event.title as string,
       category: event.category as string,
+      categories: (event.categories as string[] | null) ?? null,
       municipality: event.municipality as string,
       location_name: event.location_name as string | null,
       start_at: event.start_at as string,

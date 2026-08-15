@@ -38,7 +38,7 @@ export default function DuplicateEventButton({
     const { data: source, error: sourceError } = await supabase
       .from("events")
       .select(
-        "title, description, category, subcategory, province, municipality, location_name, address, start_at, end_at, image_url, price, is_free, booking_url, is_family_friendly, is_accessible, is_outdoor, reservation_required, price_from, ticket_url, youtube_url, organizer_display_name",
+        "title, description, category, categories, subcategory, province, municipality, location_name, address, start_at, end_at, image_url, price, is_free, booking_url, is_family_friendly, is_accessible, is_outdoor, reservation_required, price_from, ticket_url, youtube_url, organizer_display_name",
       )
       .eq("id", eventId)
       .eq("organizer_id", user.id)
@@ -67,6 +67,12 @@ export default function DuplicateEventButton({
         slug: uniqueSlug,
         description: source.description,
         category: source.category,
+        categories:
+          source.categories?.length > 0
+            ? source.categories
+            : source.category
+              ? [source.category]
+              : ["celebrazioni"],
         subcategory: source.subcategory,
         province: source.province,
         municipality: source.municipality,

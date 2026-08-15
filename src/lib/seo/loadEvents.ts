@@ -1,6 +1,9 @@
-import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import type { EventCardData } from "@/src/components/home/EventCard";
+import {
+  eventMatchesCategoryFilter,
+  resolveCategoryLabels,
+} from "@/src/lib/event-categories";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
@@ -14,6 +17,7 @@ export type PublishedEventRow = {
   title: string;
   description: string | null;
   category: string | null;
+  categories?: string[] | null;
   province: string | null;
   municipality: string | null;
   location_name: string | null;
@@ -41,16 +45,14 @@ function getEventArea(municipality: string | null) {
 export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
   const status = resolveEventStatusBadge(event.start_at, event.end_at);
   const pricing = resolveEventPricing(event.is_free, event.price_from);
-  const categoryName =
-    categories.find((category) => category.slug === event.category)?.name ??
-    event.category ??
-    "Evento";
+  const categoryLabels = resolveCategoryLabels(event);
 
   return {
     id: event.slug || event.id,
     eventId: event.id,
     title: event.title,
-    category: categoryName,
+    category: categoryLabels[0] ?? "Evento",
+    categories: categoryLabels,
     date: formatEventDateRange(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at || undefined,
@@ -87,6 +89,7 @@ export async function loadFilteredPublishedEvents(
         title,
         description,
         category,
+        categories,
         province,
         municipality,
         location_name,
@@ -110,9 +113,6 @@ export async function loadFilteredPublishedEvents(
   const rows = (data ?? []) as PublishedEventRow[];
   const now = new Date();
   const dateRange = filters.date ? getDateRange(filters.date) : null;
-  const categoryMeta = filters.categorySlug
-    ? categories.find((item) => item.slug === filters.categorySlug)
-    : undefined;
 
   const events = rows
     .filter((event) => {
@@ -129,13 +129,9 @@ export async function loadFilteredPublishedEvents(
         event.municipality?.toLocaleLowerCase("it") ===
           filters.city.toLocaleLowerCase("it");
 
-      const normalizedEventCategory =
-        event.category?.toLocaleLowerCase("it") ?? "";
       const matchesCategory =
         !filters.categorySlug ||
-        normalizedEventCategory === filters.categorySlug.toLocaleLowerCase("it") ||
-        normalizedEventCategory ===
-          categoryMeta?.name.toLocaleLowerCase("it");
+        eventMatchesCategoryFilter(event, filters.categorySlug);
 
       const eventStartDate = new Date(event.start_at);
       const matchesDate =

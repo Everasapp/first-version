@@ -27,7 +27,10 @@ import {
   buildCategoryLandingMetadata,
   buildCityLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
-import { categories } from "@/src/data/categories";
+import {
+  eventCategorySlugs,
+  resolveCategoryLabels,
+} from "@/src/lib/event-categories";
 import { getCurrentUserCalendarEventIds } from "@/src/lib/calendar";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import {
@@ -63,6 +66,7 @@ type EventRow = {
   title: string;
   description: string | null;
   category: string;
+  categories?: string[] | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -85,14 +89,17 @@ function formatEventDate(startAt: string, endAt: string | null) {
 
 function mapEventForCard(event: EventRow, isFavorite = false) {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
+  const categoryLabels = resolveCategoryLabels(event);
 
   return {
     id: event.slug,
     eventId: event.id,
     title: event.title,
-    category: event.category,
+    category: categoryLabels[0] ?? event.category,
+    categories: categoryLabels,
     area: event.province ?? "Sardegna",
     location: event.municipality,
+    municipality: event.municipality,
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
@@ -182,7 +189,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -227,7 +234,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
+        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
       )
       .eq("status", "published")
       .eq("category", event.category)
@@ -294,12 +301,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
     mapAddress,
   )}`;
 
-  const categoryName =
-    categories.find((category) => category.slug === event.category)?.name ??
-    event.category;
+  const categoryLabels = resolveCategoryLabels(event);
+  const categoryName = categoryLabels[0] ?? event.category;
+  const primaryCategorySlug =
+    eventCategorySlugs(event)[0] ?? event.category;
 
   const cityPath = cityEventsPath(event.municipality);
-  const categoryPath = categoryEventsPath(event.category);
+  const categoryPath = categoryEventsPath(primaryCategorySlug);
   const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
   const heroImage = event.image_url ?? "/images/concert.webp";
   const optimizable =
@@ -394,9 +402,20 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
           <div className="mt-6 sm:mt-8">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-              <Link href={categoryPath} className="hover:underline">
-                {categoryName}
-              </Link>
+              {categoryLabels.map((label, index) => {
+                const slug = eventCategorySlugs(event)[index];
+                const href = slug
+                  ? categoryEventsPath(slug)
+                  : categoryPath;
+                return (
+                  <span key={`${label}-${index}`}>
+                    {index > 0 ? " · " : null}
+                    <Link href={href} className="hover:underline">
+                      {label}
+                    </Link>
+                  </span>
+                );
+              })}
               {" · "}
               <Link href={cityPath} className="hover:underline">
                 {event.municipality}

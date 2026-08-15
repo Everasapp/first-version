@@ -1,4 +1,5 @@
 import { cities, type City } from "@/src/data/cities";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
 
 /** Coordinate approssimative dei comuni (centro abitato) per «Vicino a me». */
@@ -369,6 +370,7 @@ export function eventMatchesQuery(
     title: string;
     description: string | null;
     category: string | null;
+    categories?: string[] | null;
     municipality: string | null;
     location_name: string | null;
   },
@@ -381,13 +383,19 @@ export function eventMatchesQuery(
     return true;
   }
 
+  const categoryLabels = resolveCategoryLabels(event);
+
   const haystack = [
     event.title,
     event.description ? stripHtml(event.description) : null,
     event.municipality,
     event.location_name,
     event.category,
+    ...categoryLabels,
     event.category ? categoryNameBySlug.get(event.category) : null,
+    ...(event.categories ?? []).map(
+      (slug) => categoryNameBySlug.get(slug) ?? null,
+    ),
   ]
     .filter(Boolean)
     .join(" ")

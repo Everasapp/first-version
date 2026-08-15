@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-import { categories } from "@/src/data/categories";
+import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import { cities } from "@/src/data/cities";
 import {
   confidenceLabel,
@@ -17,6 +17,7 @@ import {
   type ListingEventCandidate,
   type OrganizerMatch,
 } from "@/src/lib/admin/event-import";
+import { normalizeEventCategories } from "@/src/lib/event-categories";
 
 type AnalyzeResponse = {
   ok?: boolean;
@@ -403,7 +404,6 @@ export default function EventImportPanel() {
                   ["locationName", "Location", draft.locationName],
                   ["address", "Indirizzo", draft.address],
                   ["organizerName", "Organizzatore", draft.organizerName],
-                  ["category", "Categoria", draft.category],
                   ["imageUrl", "Immagine URL", draft.imageUrl],
                   ["ticketUrl", "Link prenotazione / biglietti", draft.ticketUrl],
                 ] as const
@@ -441,21 +441,6 @@ export default function EventImportPanel() {
                           </option>
                         ))}
                       </select>
-                    ) : key === "category" ? (
-                      <select
-                        value={form.category}
-                        onChange={(e) =>
-                          patchForm({ category: e.target.value })
-                        }
-                        className="w-full min-w-[12rem] rounded-lg border border-slate-300 px-2.5 py-1.5"
-                      >
-                        <option value="">Seleziona</option>
-                        {categories.map((c) => (
-                          <option key={c.slug} value={c.slug}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
                     ) : (
                       <input
                         type={
@@ -479,6 +464,35 @@ export default function EventImportPanel() {
                   </td>
                 </tr>
               ))}
+              <tr className="border-t border-slate-100 align-top">
+                <td className="px-4 py-3 font-semibold text-slate-800">
+                  Categorie
+                </td>
+                <td className="px-4 py-3" colSpan={1}>
+                  <CategoryMultiSelect
+                    value={
+                      form.categories?.length
+                        ? form.categories
+                        : form.category
+                          ? [form.category]
+                          : []
+                    }
+                    onChange={(next) => {
+                      const normalized = normalizeEventCategories(next);
+                      patchForm({
+                        categories: normalized,
+                        category: normalized[0] || "",
+                      });
+                    }}
+                  />
+                </td>
+                <td className="px-4 py-3 text-slate-500">
+                  {draft.category.source || "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <ConfidenceBadge level={draft.category.confidence} />
+                </td>
+              </tr>
             </tbody>
           </table>
 

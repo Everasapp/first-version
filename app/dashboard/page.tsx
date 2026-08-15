@@ -28,6 +28,7 @@ import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
 import PublishEventButton from "@/src/components/dashboard/PublishEventButton";
 import { requireProfile } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import {
   buildDashboardHref,
   eventMatchesDashboardSearch,
@@ -163,12 +164,14 @@ function toFavoriteCards(
 ): EventCardData[] {
   return favorites.map((event) => {
     const pricing = resolveEventPricing(event.is_free, event.price_from);
+    const categoryLabels = resolveCategoryLabels(event);
 
     return {
       id: event.slug,
       eventId: event.id,
       title: event.title,
-      category: event.category,
+      category: categoryLabels[0] ?? event.category,
+      categories: categoryLabels,
       date: formatFavoriteDate(event.start_at),
       startDate: event.start_at,
       endDate: event.end_at ?? undefined,

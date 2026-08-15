@@ -5,6 +5,7 @@ import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { getFavoriteEvents } from "@/src/lib/favorites";
@@ -21,12 +22,14 @@ export default async function PreferitiPage() {
 
   const cards: EventCardData[] = favorites.map((event) => {
     const pricing = resolveEventPricing(event.is_free, event.price_from);
+    const categoryLabels = resolveCategoryLabels(event);
 
     return {
       id: event.slug,
       eventId: event.id,
       title: event.title,
-      category: event.category,
+      category: categoryLabels[0] ?? event.category,
+      categories: categoryLabels,
       date: formatEventDate(event.start_at, event.end_at),
       startDate: event.start_at,
       endDate: event.end_at ?? undefined,

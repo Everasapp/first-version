@@ -5,6 +5,7 @@ import CalendarButton from "@/src/components/events/CalendarButton";
 import Header from "@/src/components/home/Header";
 import { requireProfile } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { isOrganizer } from "@/src/lib/profile";
 
 function formatDayHeading(startAt: string) {
@@ -126,7 +127,7 @@ export default async function CalendarioPage() {
                           </div>
                           <div className="min-w-0">
                             <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#075EAE]">
-                              {event.category}
+                              {resolveCategoryLabels(event).join(" · ")}
                             </p>
                             <Link
                               href={`/eventi/${event.slug}`}

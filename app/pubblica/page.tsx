@@ -16,9 +16,13 @@ import {
   Ticket,
 } from "lucide-react";
 
+import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import Header from "@/src/components/home/Header";
-import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import {
+  normalizeEventCategories,
+  resolveCategoryLabels,
+} from "@/src/lib/event-categories";
 import {
   isValidTicketUrl,
   normalizeTicketUrl,
@@ -59,7 +63,7 @@ export default function PublishEventPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const [title, setTitle] = useState("");
-  const [categorySlug, setCategorySlug] = useState("");
+  const [categorySlugs, setCategorySlugs] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -154,8 +158,9 @@ export default function PublishEventPage() {
     );
   }, [area]);
 
-  const selectedCategory = categories.find(
-    (category) => category.slug === categorySlug,
+  const selectedCategoryLabels = useMemo(
+    () => resolveCategoryLabels({ categories: categorySlugs }),
+    [categorySlugs],
   );
 
   const formattedDate = useMemo(() => {
@@ -203,8 +208,8 @@ export default function PublishEventPage() {
         nextErrors.title = "Inserisci il titolo dell'evento.";
       }
 
-      if (!categorySlug) {
-        nextErrors.category = "Seleziona una categoria.";
+      if (categorySlugs.length === 0) {
+        nextErrors.category = "Seleziona almeno una categoria.";
       }
 
       if (!imagePreview) {
@@ -356,7 +361,8 @@ export default function PublishEventPage() {
           title: title.trim(),
           slug: uniqueSlug,
           description: normalizeEventDescription(description),
-          category: categorySlug,
+          category: normalizeEventCategories(categorySlugs)[0],
+          categories: normalizeEventCategories(categorySlugs),
           subcategory: null,
           province: cityRecord?.province ?? null,
           municipality: city,
@@ -619,40 +625,14 @@ export default function PublishEventPage() {
                       )}
                     </label>
 
-                    <label className="block">
-                      <span className="text-sm font-bold text-slate-900">
-                        Categoria
-                      </span>
-
-                      <select
-                        name="category"
-                        value={categorySlug}
-                        onChange={(event) => {
-                          setCategorySlug(event.target.value);
-                          clearError("category");
-                        }}
-                        aria-invalid={Boolean(errors.category)}
-                        className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none transition focus:ring-2 ${
-                          errors.category
-                            ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-                            : "border-slate-300 focus:border-[#075EAE] focus:ring-blue-100"
-                        }`}
-                      >
-                        <option value="">Seleziona una categoria</option>
-
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.slug}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-
-                      {errors.category && (
-                        <p className="mt-2 text-sm text-red-600">
-                          {errors.category}
-                        </p>
-                      )}
-                    </label>
+                    <CategoryMultiSelect
+                      value={categorySlugs}
+                      onChange={(next) => {
+                        setCategorySlugs(next);
+                        clearError("category");
+                      }}
+                      error={errors.category}
+                    />
 
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">
@@ -1350,7 +1330,9 @@ export default function PublishEventPage() {
 
                 <div className="p-5">
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#075EAE]">
-                    {selectedCategory?.name || "Categoria"}
+                    {selectedCategoryLabels.length
+                      ? selectedCategoryLabels.join(" · ")
+                      : "Categoria"}
                   </p>
 
                   <h3 className="mt-2 text-xl font-bold leading-snug text-slate-900">

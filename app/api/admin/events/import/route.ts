@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import type { EditableEventImport } from "@/src/lib/admin/event-import";
 import { cities } from "@/src/data/cities";
+import { normalizeEventCategories } from "@/src/lib/event-categories";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import { createSlug } from "@/src/lib/slug";
 import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
@@ -194,6 +195,15 @@ export async function POST(request: Request) {
   const baseSlug = createSlug(title) || "evento";
   const uniqueSlug = `${baseSlug}-${Date.now().toString(36)}`;
 
+  const categorySlugs = normalizeEventCategories(
+    event.categories?.length
+      ? event.categories
+      : event.category
+        ? [event.category]
+        : ["celebrazioni"],
+  );
+  const primaryCategory = categorySlugs[0] || "celebrazioni";
+
   const nowIso = new Date().toISOString();
   const payload = {
     organizer_id: auth.user.id,
@@ -201,7 +211,8 @@ export async function POST(request: Request) {
     title,
     slug: uniqueSlug,
     description: normalizeEventDescription(event.description) || null,
-    category: event.category.trim() || "celebrazioni",
+    category: primaryCategory,
+    categories: categorySlugs,
     subcategory: event.subcategory.trim() || null,
     province,
     municipality,
@@ -306,7 +317,7 @@ export async function POST(request: Request) {
       organizer: event.organizerName.trim() || "Organizzatore",
       municipality,
       startAt,
-      category: event.category.trim() || "celebrazioni",
+      category: primaryCategory,
       slug: eventSlug,
     });
   }

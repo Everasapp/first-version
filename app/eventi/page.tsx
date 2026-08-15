@@ -9,6 +9,10 @@ import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import JsonLd from "@/src/components/seo/JsonLd";
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import {
+  eventMatchesCategoryFilter,
+  resolveCategoryLabels,
+} from "@/src/lib/event-categories";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
@@ -49,6 +53,7 @@ type DatabaseEvent = {
   title: string;
   description: string | null;
   category: string | null;
+  categories?: string[] | null;
   province: string | null;
   municipality: string | null;
   location_name: string | null;
@@ -96,12 +101,14 @@ function formatEventDate(startAt: string, endAt?: string | null) {
 function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
   const status = resolveEventStatusBadge(event.start_at, event.end_at);
   const pricing = resolveEventPricing(event.is_free, event.price_from);
+  const categoryLabels = resolveCategoryLabels(event);
 
   return {
     id: event.slug || event.id,
     eventId: event.id,
     title: event.title,
-    category: event.category || "Evento",
+    category: categoryLabels[0] ?? "Evento",
+    categories: categoryLabels,
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at || undefined,
@@ -177,6 +184,7 @@ export default async function EventsPage({
         title,
         description,
         category,
+        categories,
         province,
         municipality,
         location_name,
@@ -219,15 +227,9 @@ export default async function EventsPage({
         event.municipality?.toLocaleLowerCase("it") ===
           selectedCity.toLocaleLowerCase("it");
 
-      const normalizedEventCategory =
-        event.category?.toLocaleLowerCase("it") ?? "";
-
       const matchesCategory =
         !selectedCategory ||
-        normalizedEventCategory ===
-          selectedCategory.toLocaleLowerCase("it") ||
-        normalizedEventCategory ===
-          selectedCategoryName?.toLocaleLowerCase("it");
+        eventMatchesCategoryFilter(event, selectedCategory);
 
       const matchesDate =
         !dateRange ||

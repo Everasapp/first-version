@@ -39,6 +39,7 @@ export type EditableEventImport = {
   endDate: string;
   endTime: string;
   category: string;
+  categories: string[];
   subcategory: string;
   municipality: string;
   province: string;
@@ -114,6 +115,7 @@ export function emptyField<T = string>(
 }
 
 export function draftToEditable(draft: ExtractedEventDraft): EditableEventImport {
+  const category = draft.category.value || "";
   return {
     title: draft.title.value?.trim() || "",
     description: draft.description.value?.trim() || "",
@@ -121,7 +123,8 @@ export function draftToEditable(draft: ExtractedEventDraft): EditableEventImport
     startTime: draft.startTime.value || "",
     endDate: draft.endDate.value || "",
     endTime: draft.endTime.value || "",
-    category: draft.category.value || "",
+    category,
+    categories: category ? [category] : [],
     subcategory: draft.subcategory.value || "",
     municipality: draft.municipality.value || "",
     province: draft.province.value || "",

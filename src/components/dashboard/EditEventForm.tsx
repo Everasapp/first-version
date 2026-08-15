@@ -16,9 +16,13 @@ import {
   Send,
 } from "lucide-react";
 
-import { categories } from "@/src/data/categories";
-import { cities } from "@/src/data/cities";
+import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
+import { cities } from "@/src/data/cities";
+import {
+  eventCategorySlugs,
+  normalizeEventCategories,
+} from "@/src/lib/event-categories";
 import {
   isValidTicketUrl,
   normalizeTicketUrl,
@@ -46,6 +50,7 @@ export type EditableEvent = {
   title: string;
   description: string | null;
   category: string;
+  categories?: string[] | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -142,7 +147,9 @@ export default function EditEventForm({
   const cityRecord = cities.find((item) => item.city === event.municipality);
 
   const [title, setTitle] = useState(event.title);
-  const [categorySlug, setCategorySlug] = useState(event.category);
+  const [categorySlugs, setCategorySlugs] = useState<string[]>(() =>
+    eventCategorySlugs(event),
+  );
   const [imagePreview, setImagePreview] = useState(event.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState(event.image_url);
@@ -206,8 +213,8 @@ export default function EditEventForm({
       nextErrors.title = "Inserisci il titolo dell'evento.";
     }
 
-    if (!categorySlug) {
-      nextErrors.category = "Seleziona una categoria.";
+    if (categorySlugs.length === 0) {
+      nextErrors.category = "Seleziona almeno una categoria.";
     }
 
     if (!imagePreview) {
@@ -367,7 +374,8 @@ export default function EditEventForm({
         .update({
           title: title.trim(),
           description: normalizeEventDescription(description),
-          category: categorySlug,
+          category: normalizeEventCategories(categorySlugs)[0],
+          categories: normalizeEventCategories(categorySlugs),
           province: selectedCity?.province ?? null,
           municipality: city,
           location_name: venue.trim(),
@@ -508,29 +516,14 @@ export default function EditEventForm({
             )}
           </label>
 
-          <label className="block">
-            <span className="text-sm font-bold text-slate-900">Categoria</span>
-            <select
-              value={categorySlug}
-              onChange={(changeEvent) => {
-                setCategorySlug(changeEvent.target.value);
-                clearError("category");
-              }}
-              className={`${fieldClassName} ${
-                errors.category ? "border-red-400" : "border-slate-300"
-              }`}
-            >
-              <option value="">Seleziona una categoria</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="mt-2 text-sm text-red-600">{errors.category}</p>
-            )}
-          </label>
+          <CategoryMultiSelect
+            value={categorySlugs}
+            onChange={(next) => {
+              setCategorySlugs(next);
+              clearError("category");
+            }}
+            error={errors.category}
+          />
 
           <label className="block">
             <span className="text-sm font-bold text-slate-900">

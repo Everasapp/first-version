@@ -15,7 +15,7 @@ import {
   getCurrentUserFollowedOrganizerIds,
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
-import { categories } from "@/src/data/categories";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { isOrganizerRole, PROFILE_SELECT, type Profile } from "@/src/lib/profile";
@@ -34,6 +34,7 @@ type EventRow = {
   slug: string;
   title: string;
   category: string;
+  categories?: string[] | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -121,7 +122,7 @@ export default async function OrganizerPublicPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
       )
       .eq("organizer_id", organizer.id)
       .eq("status", "published")
@@ -137,15 +138,14 @@ export default async function OrganizerPublicPage({
     )
     .map((event) => {
       const pricing = resolveEventPricing(event.is_free, event.price_from);
-      const categoryName =
-        categories.find((category) => category.slug === event.category)?.name ??
-        event.category;
+      const categoryLabels = resolveCategoryLabels(event);
 
       return {
         id: event.slug,
         eventId: event.id,
         title: event.title,
-        category: categoryName,
+        category: categoryLabels[0] ?? event.category,
+        categories: categoryLabels,
         date: formatEventDate(event.start_at),
         startDate: event.start_at,
         endDate: event.end_at ?? undefined,

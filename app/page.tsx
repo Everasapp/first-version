@@ -4,7 +4,7 @@ import HappeningToday from "@/src/components/home/HappeningToday";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
-import { categories } from "@/src/data/categories";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
@@ -18,6 +18,7 @@ type EventRow = {
   slug: string;
   title: string;
   category: string;
+  categories?: string[] | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -94,16 +95,14 @@ function getArea(event: EventRow) {
 function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
-
-  const categoryName =
-    categories.find((category) => category.slug === event.category)?.name ??
-    event.category;
+  const categoryLabels = resolveCategoryLabels(event);
 
   return {
     id: event.slug,
     eventId: event.id,
     title: event.title,
-    category: categoryName,
+    category: categoryLabels[0] ?? event.category,
+    categories: categoryLabels,
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
@@ -127,7 +126,7 @@ export default async function Home() {
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
       )
       .eq("status", "published")
       .order("start_at", { ascending: true }),
