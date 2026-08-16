@@ -349,14 +349,38 @@ function htmlFragmentToPlainText(html: string) {
   root.find("p, div, li, h1, h2, h3, h4, h5, tr, section, article").each((_, el) => {
     $(el).append("\n");
   });
-  return root
-    .text()
-    .replace(/\u00a0/g, " ")
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n[ \t]+/g, "\n")
-    .replace(/[ \t]{2,}/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+  return trimRelatedTail(
+    root
+      .text()
+      .replace(/\u00a0/g, " ")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n[ \t]+/g, "\n")
+      .replace(/[ \t]{2,}/g, " ")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim(),
+  );
+}
+
+/** Taglia code di related posts / “Read More …” spesso inclusi in entry-content. */
+function trimRelatedTail(text: string) {
+  const markers = [
+    /\nRead More\b/i,
+    /\nArticoli correlati\b/i,
+    /\nPotrebbe interessarti\b/i,
+    /\nTi potrebbe interessare\b/i,
+    /\nAltri eventi\b/i,
+    /\nRelated posts?\b/i,
+    /\nContinue\s*\n/i,
+  ];
+  let cutAt = -1;
+  for (const marker of markers) {
+    const match = marker.exec(text);
+    if (match && match.index >= 200) {
+      cutAt = cutAt === -1 ? match.index : Math.min(cutAt, match.index);
+    }
+  }
+  if (cutAt === -1) return text;
+  return text.slice(0, cutAt).trim();
 }
 
 function truncateDescription(value: string) {
@@ -382,7 +406,7 @@ function descriptionFromJsonLdValue(raw: unknown): string {
 }
 
 /**
- * Corpo descrizione dalla scheda (Design Italia, CityNews, CMS generici).
+ * Corpo descrizione dalla scheda (Design Italia, CityNews, Elementor/TEC, CMS).
  * Preferito a meta/OG che di solito sono solo un riassunto.
  */
 function extractPageBodyDescription($: cheerio.CheerioAPI): {
@@ -397,10 +421,28 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     { sel: "#cos-e", label: "Sezione Cos’è" },
     { sel: "[data-element='body-description']", label: "Body Design Italia" },
     { sel: "[data-element='body']", label: "Body Design Italia" },
+    {
+      sel: ".elementor-widget-theme-post-content .elementor-widget-container",
+      label: "Contenuto Elementor",
+    },
+    {
+      sel: ".elementor-widget-theme-post-content",
+      label: "Contenuto Elementor",
+    },
+    {
+      sel: ".tec-events-elementor-event-widget__description",
+      label: "Descrizione The Events Calendar",
+    },
+    {
+      sel: ".tribe-events-single-event-description",
+      label: "Descrizione The Events Calendar",
+    },
+    { sel: ".tribe-events-content", label: "Contenuto The Events Calendar" },
     { sel: "article .l-entry__content", label: "Contenuto articolo" },
     { sel: ".l-entry__content", label: "Contenuto articolo" },
     { sel: "article .c-content", label: "Contenuto articolo" },
     { sel: ".entry-content", label: "Entry content" },
+    { sel: ".entry-content-wrap .entry-content", label: "Entry content" },
     { sel: ".post-content", label: "Post content" },
     { sel: ".event-description", label: "Descrizione evento" },
     { sel: ".evento-descrizione", label: "Descrizione evento" },
@@ -410,9 +452,12 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   ];
 
   const noise =
-    "script, style, noscript, iframe, nav, form, button, aside, .share, .social, .breadcrumb, .calendar-date-day, .related, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni";
+    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links";
 
-  for (const { sel, label } of selectors) {
+  let best: { html: string; text: string; source: string; rank: number } | null =
+    null;
+
+  for (const [index, { sel, label }] of selectors.entries()) {
     const node = $(sel).first();
     if (!node.length) continue;
 
@@ -420,7 +465,11 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     clone.find(noise).remove();
 
     const inner =
-      clone.find(".text-serif, .cms-block, .rich-text, .field-items, .field--name-body").first()
+      clone
+        .find(
+          ".text-serif, .cms-block, .rich-text, .field-items, .field--name-body, .elementor-widget-container",
+        )
+        .first()
         .html() ||
       clone.html() ||
       "";
@@ -428,34 +477,53 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     const text = htmlFragmentToPlainText(inner);
     if (text.length < 80) continue;
 
+    // Evita blocchi che sono soprattutto menu/related (“Read More … Continue”)
+    if (/(read more|continua|continue)\s*\S+/i.test(text) && text.length < 400) {
+      continue;
+    }
+
     const html = truncateDescription(sanitizeEventHtml(inner));
-    return {
+    const candidate = {
       html: html || truncateDescription(text),
       text: truncateDescription(text),
       source: label,
+      // Selettori strutturati battano il fallback paragrafi anche se un filo più corti
+      rank: 1000 - index + Math.min(text.length, 5000) / 10,
     };
-  }
 
-  // Fallback: paragrafi principali in article/main (salta quelli troppo corti)
-  const paragraphs: string[] = [];
-  $("article p, main p, .it-page-sections p").each((_, el) => {
-    const parent = $(el).closest(
-      "nav, aside, footer, header, #luogo, #prezzi, #contatti, .share, .social, .calendar-date-day",
-    );
-    if (parent.length) return;
-    const t = cleanText($(el).text());
-    if (t.length >= 40) paragraphs.push(`<p>${escapeBasicHtml(t)}</p>`);
-  });
-
-  if (paragraphs.length >= 2) {
-    const html = truncateDescription(sanitizeEventHtml(paragraphs.join("\n")));
-    const text = truncateDescription(htmlFragmentToPlainText(html));
-    if (text.length >= 120) {
-      return { html, text, source: "Paragrafi pagina" };
+    if (!best || candidate.rank > best.rank) {
+      best = candidate;
     }
   }
 
-  return null;
+  // Fallback paragrafi solo se non abbiamo già un corpo strutturato decente
+  if (!best || best.text.length < 220) {
+    const paragraphs: string[] = [];
+    $(
+      "article .entry-content p, main .entry-content p, .elementor-widget-theme-post-content p, #descrizione p, #cos-e p, .tribe-events-single-event-description p",
+    ).each((_, el) => {
+      const parent = $(el).closest(noise);
+      if (parent.length) return;
+      const t = cleanText($(el).text());
+      if (t.length >= 25) paragraphs.push(`<p>${escapeBasicHtml(t)}</p>`);
+    });
+
+    if (paragraphs.length >= 1) {
+      const html = truncateDescription(sanitizeEventHtml(paragraphs.join("\n")));
+      const text = truncateDescription(htmlFragmentToPlainText(html));
+      if (text.length >= 80 && (!best || text.length > best.text.length + 40)) {
+        best = {
+          html,
+          text,
+          source: "Paragrafi pagina",
+          rank: text.length / 10,
+        };
+      }
+    }
+  }
+
+  if (!best) return null;
+  return { html: best.html, text: best.text, source: best.source };
 }
 
 function escapeBasicHtml(value: string) {
@@ -464,6 +532,13 @@ function escapeBasicHtml(value: string) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function looksLikeTruncatedSummary(value: string) {
+  const text = stripHtml(value || "").trim();
+  if (!text) return true;
+  if (text.length < 220) return true;
+  return /\.\.\.$|…$|&#8230;$/.test(text);
 }
 
 function preferFullerDescription(
@@ -475,10 +550,12 @@ function preferFullerDescription(
   const bodyText = body.text.trim();
   if (!bodyText) return null;
 
+  const truncated = looksLikeTruncatedSummary(currentText);
   const shouldPreferBody =
     !currentText ||
-    bodyText.length >= Math.max(120, Math.floor(currentText.length * 1.25)) ||
-    (bodyText.length > currentText.length + 80 && bodyText.length >= 160);
+    truncated ||
+    bodyText.length > currentText.length ||
+    bodyText.length >= Math.max(120, Math.floor(currentText.length * 1.1));
 
   if (!shouldPreferBody) return null;
 
@@ -487,6 +564,105 @@ function preferFullerDescription(
     source: body.source,
     confidence: "high",
   };
+}
+
+const CONTINUATION_LINK_RE =
+  /(evento completo|articolo completo|continua a leggere|leggi (tutto|di pi[uù])|scopri di pi[uù]|read more|vai all[’']?(?:evento|articolo)|view full)/i;
+
+function findContinuationLink(
+  $: cheerio.CheerioAPI,
+  baseUrl: string,
+): string | null {
+  let found: string | null = null;
+
+  $("a[href]").each((_, el) => {
+    if (found) return;
+    const text = cleanText($(el).text());
+    const href = ($(el).attr("href") || "").trim();
+    if (!href || href.startsWith("#") || href.startsWith("mailto:")) return;
+    if (!CONTINUATION_LINK_RE.test(text) && !CONTINUATION_LINK_RE.test(href)) {
+      return;
+    }
+
+    const abs = absolutize(baseUrl, href);
+    if (!abs) return;
+    try {
+      const baseHost = new URL(baseUrl).hostname.replace(/^www\./, "");
+      const linkHost = new URL(abs).hostname.replace(/^www\./, "");
+      if (baseHost !== linkHost) return;
+      if (abs.replace(/\/$/, "") === baseUrl.replace(/\/$/, "")) return;
+      found = abs;
+    } catch {
+      // ignore
+    }
+  });
+
+  return found;
+}
+
+async function fetchWpJsonContent($: cheerio.CheerioAPI) {
+  const href =
+    $('link[rel="alternate"][type="application/json"]').attr("href") ||
+    $('link[type="application/json"][title="JSON"]').attr("href") ||
+    "";
+  if (!href || !/\/wp-json\//i.test(href)) return null;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(href, {
+        signal: controller.signal,
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept: "application/json",
+        },
+      });
+      if (!response.ok) return null;
+      const data = (await response.json()) as {
+        content?: { rendered?: string };
+      };
+      const rendered = data.content?.rendered?.trim() || "";
+      if (!rendered) return null;
+      const text = htmlFragmentToPlainText(rendered);
+      if (text.length < 80) return null;
+      return {
+        html: truncateDescription(sanitizeEventHtml(rendered)),
+        text: truncateDescription(text),
+        source: "WordPress REST API",
+      };
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch {
+    return null;
+  }
+}
+
+async function expandDescriptionViaContinuationLink(
+  currentHtml: string,
+  linkUrl: string,
+) {
+  const currentLen = stripHtml(currentHtml).length;
+  if (currentLen > 2800 && !CONTINUATION_LINK_RE.test(stripHtml(currentHtml))) {
+    return null;
+  }
+
+  try {
+    const { html } = await fetchHtml(linkUrl);
+    const $ = cheerio.load(html);
+    $("script:not([type='application/ld+json']), style, noscript").remove();
+    const body = extractPageBodyDescription($);
+    if (!body) return null;
+    if (body.text.length < Math.max(400, currentLen + 100)) return null;
+    return {
+      value: body.html || body.text,
+      source: `Pagina collegata (${body.source})`,
+      confidence: "high" as Confidence,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /** "13 agosto 2026" / "dal 10 luglio al 20 settembre 2026" → ISO date (inizio). */
@@ -884,12 +1060,34 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   // Preferisci il corpo pagina completo rispetto a meta/OG o JSON-LD corti
-  const bodyDescription = extractPageBodyDescription($);
+  let bodyDescription = extractPageBodyDescription($);
+  const wpJsonBody = await fetchWpJsonContent($);
+  if (
+    wpJsonBody &&
+    (!bodyDescription || wpJsonBody.text.length > bodyDescription.text.length)
+  ) {
+    bodyDescription = wpJsonBody;
+  }
+
   const fuller = preferFullerDescription(description, bodyDescription);
   if (fuller) {
     description = fuller.value;
     conf.description = fuller.confidence;
     sources.description = fuller.source;
+  }
+
+  // Se la scheda punta a un “evento/articolo completo”, usa quella pagina
+  const continuationUrl = findContinuationLink($, finalUrl);
+  if (continuationUrl) {
+    const expanded = await expandDescriptionViaContinuationLink(
+      description,
+      continuationUrl,
+    );
+    if (expanded) {
+      description = expanded.value;
+      conf.description = expanded.confidence;
+      sources.description = expanded.source;
+    }
   }
 
   // Design Italia municipal detail page: calendar + luogo
