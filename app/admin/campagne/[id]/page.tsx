@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import DeleteCampaignButton from "@/src/components/admin/DeleteCampaignButton";
 import { requireAdmin } from "@/src/lib/auth";
 import {
   campaignStatusLabel,
@@ -81,12 +82,20 @@ export default async function AdminCampagnaDetailPage({ params }: PageProps) {
             </span>
           </p>
         </div>
-        <Link
-          href="/admin/campagne/nuova"
-          className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
-        >
-          Nuova campagna
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/campagne/nuova"
+            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
+          >
+            Nuova campagna
+          </Link>
+          <DeleteCampaignButton
+            campaignId={row.id}
+            subject={row.subject}
+            redirectToList
+            isSending={row.status === "sending"}
+          />
+        </div>
       </div>
 
       <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

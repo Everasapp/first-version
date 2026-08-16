@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 
+import DeleteCampaignButton from "@/src/components/admin/DeleteCampaignButton";
 import { requireAdmin } from "@/src/lib/auth";
 import {
   campaignStatusLabel,
@@ -98,6 +99,7 @@ export default async function AdminCampagnePage() {
                 <th className="px-4 py-3 font-semibold">Errori</th>
                 <th className="px-4 py-3 font-semibold">Stato</th>
                 <th className="px-4 py-3 font-semibold">Dettaglio</th>
+                <th className="px-4 py-3 font-semibold">Azioni</th>
               </tr>
             </thead>
             <tbody>
@@ -137,6 +139,15 @@ export default async function AdminCampagnePage() {
                     >
                       Apri
                     </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <DeleteCampaignButton
+                      campaignId={campaign.id}
+                      subject={campaign.subject}
+                      redirectToList={false}
+                      isSending={campaign.status === "sending"}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    />
                   </td>
                 </tr>
               ))}
