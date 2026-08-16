@@ -92,6 +92,45 @@ function getArea(event: EventRow) {
   return "Sud Sardegna";
 }
 
+/** Alterna Nord / Centro / Sud così Hot this week non è solo Nord. */
+function interleaveByArea<T extends { area?: string }>(events: T[]): T[] {
+  const buckets: Record<string, T[]> = {
+    "Nord Sardegna": [],
+    "Centro Sardegna": [],
+    "Sud Sardegna": [],
+  };
+  const other: T[] = [];
+
+  for (const event of events) {
+    const area = event.area;
+    if (area && area in buckets) {
+      buckets[area].push(event);
+    } else {
+      other.push(event);
+    }
+  }
+
+  const result: T[] = [];
+  const maxLen = Math.max(
+    buckets["Nord Sardegna"].length,
+    buckets["Centro Sardegna"].length,
+    buckets["Sud Sardegna"].length,
+  );
+
+  for (let i = 0; i < maxLen; i += 1) {
+    for (const area of [
+      "Nord Sardegna",
+      "Centro Sardegna",
+      "Sud Sardegna",
+    ] as const) {
+      const next = buckets[area][i];
+      if (next) result.push(next);
+    }
+  }
+
+  return [...result, ...other];
+}
+
 function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
@@ -149,14 +188,9 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekEvents = rows
+  const weekCandidates = rows
     .filter((event) => {
       if (!startsInRomeCalendarWeek(event, now)) {
-        return false;
-      }
-
-      const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
-      if (status.isActiveEvent) {
         return false;
       }
 
@@ -165,8 +199,8 @@ export default async function Home() {
     .sort((a, b) => {
       const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
       const bStatus = resolveEventStatusBadge(b.start_at, b.end_at, now);
-      const aRank = aStatus.happeningNow ? 0 : 1;
-      const bRank = bStatus.happeningNow ? 0 : 1;
+      const aRank = aStatus.happeningNow ? 0 : aStatus.isActiveEvent ? 1 : 2;
+      const bRank = bStatus.happeningNow ? 0 : bStatus.isActiveEvent ? 1 : 2;
       if (aRank !== bRank) return aRank - bRank;
       if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
       return (
@@ -177,6 +211,8 @@ export default async function Home() {
       ...mapEvent(event, now),
       isFavorite: favoriteIds.has(event.id),
     }));
+
+  const weekEvents = interleaveByArea(weekCandidates);
 
   return (
     <>

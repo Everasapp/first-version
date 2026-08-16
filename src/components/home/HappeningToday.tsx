@@ -14,6 +14,46 @@ type HappeningTodayProps = {
 
 const AUTOPLAY_MS = 4500;
 
+const AREA_ORDER = [
+  "Nord Sardegna",
+  "Centro Sardegna",
+  "Sud Sardegna",
+] as const;
+
+/** Alterna le tre aree dopo il ranking (data / distanza). */
+function interleaveByArea(events: EventCardData[]): EventCardData[] {
+  const buckets: Record<string, EventCardData[]> = {
+    "Nord Sardegna": [],
+    "Centro Sardegna": [],
+    "Sud Sardegna": [],
+  };
+  const other: EventCardData[] = [];
+
+  for (const event of events) {
+    const area = event.area;
+    if (area && area in buckets) {
+      buckets[area].push(event);
+    } else {
+      other.push(event);
+    }
+  }
+
+  const result: EventCardData[] = [];
+  const maxLen = Math.max(
+    ...AREA_ORDER.map((area) => buckets[area].length),
+    0,
+  );
+
+  for (let i = 0; i < maxLen; i += 1) {
+    for (const area of AREA_ORDER) {
+      const next = buckets[area][i];
+      if (next) result.push(next);
+    }
+  }
+
+  return [...result, ...other];
+}
+
 function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
   return (
     card.getBoundingClientRect().left -
@@ -29,8 +69,10 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   const { coords, hasLocation } = useUserLocation();
 
   const orderedEvents = useMemo(() => {
-    if (!coords) return events;
-    return sortEventsByProximity(events, coords.lat, coords.lng);
+    const ranked = coords
+      ? sortEventsByProximity(events, coords.lat, coords.lng)
+      : events;
+    return interleaveByArea(ranked);
   }, [coords, events]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
@@ -112,8 +154,8 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             </h2>
             <p className="mt-2 max-w-xl text-slate-600">
               {hasLocation
-                ? "Prima gli eventi vicino a te, poi il resto della settimana in Sardegna."
-                : "Gli eventi più interessanti della settimana in Sardegna."}
+                ? "Prima gli eventi vicino a te, bilanciati tra Nord, Centro e Sud Sardegna."
+                : "Gli eventi della settimana in tutta la Sardegna: Nord, Centro e Sud."}
             </p>
           </div>
 
