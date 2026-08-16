@@ -415,7 +415,7 @@ export default function EventImportPanel() {
                   <td className="px-4 py-3">
                     {key === "description" ? (
                       <textarea
-                        rows={4}
+                        rows={14}
                         value={form[key]}
                         onChange={(e) => patchForm({ [key]: e.target.value })}
                         className="w-full min-w-[16rem] rounded-lg border border-slate-300 px-2.5 py-1.5"

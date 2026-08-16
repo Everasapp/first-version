@@ -10,9 +10,11 @@ import {
   type ExtractedField,
   type ListingEventCandidate,
 } from "@/src/lib/admin/event-import";
+import { sanitizeEventHtml, stripHtml } from "@/src/lib/sanitizeHtml";
 
 const FETCH_TIMEOUT_MS = 20_000;
 const MAX_HTML_BYTES = 2_500_000;
+const MAX_DESCRIPTION_CHARS = 20_000;
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 
@@ -337,6 +339,153 @@ function parseDesignItaliaPlace($: cheerio.CheerioAPI) {
   return {
     name: name || null,
     address: address || null,
+  };
+}
+
+function htmlFragmentToPlainText(html: string) {
+  const $ = cheerio.load(`<div id="__desc">${html}</div>`);
+  const root = $("#__desc");
+  root.find("br").replaceWith("\n");
+  root.find("p, div, li, h1, h2, h3, h4, h5, tr, section, article").each((_, el) => {
+    $(el).append("\n");
+  });
+  return root
+    .text()
+    .replace(/\u00a0/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function truncateDescription(value: string) {
+  if (value.length <= MAX_DESCRIPTION_CHARS) return value;
+  return `${value.slice(0, MAX_DESCRIPTION_CHARS).trim()}…`;
+}
+
+function descriptionFromJsonLdValue(raw: unknown): string {
+  if (!raw) return "";
+  if (typeof raw === "string") return cleanText(raw);
+  if (Array.isArray(raw)) {
+    return raw
+      .map((item) => descriptionFromJsonLdValue(item))
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  if (typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+    if (typeof obj["@value"] === "string") return cleanText(obj["@value"]);
+    if (typeof obj.description === "string") return cleanText(obj.description);
+  }
+  return cleanText(String(raw));
+}
+
+/**
+ * Corpo descrizione dalla scheda (Design Italia, CityNews, CMS generici).
+ * Preferito a meta/OG che di solito sono solo un riassunto.
+ */
+function extractPageBodyDescription($: cheerio.CheerioAPI): {
+  html: string;
+  text: string;
+  source: string;
+} | null {
+  const selectors: Array<{ sel: string; label: string }> = [
+    { sel: "#descrizione .text-serif", label: "Sezione Descrizione" },
+    { sel: "#descrizione", label: "Sezione Descrizione" },
+    { sel: "#cos-e .text-serif", label: "Sezione Cos’è" },
+    { sel: "#cos-e", label: "Sezione Cos’è" },
+    { sel: "[data-element='body-description']", label: "Body Design Italia" },
+    { sel: "[data-element='body']", label: "Body Design Italia" },
+    { sel: "article .l-entry__content", label: "Contenuto articolo" },
+    { sel: ".l-entry__content", label: "Contenuto articolo" },
+    { sel: "article .c-content", label: "Contenuto articolo" },
+    { sel: ".entry-content", label: "Entry content" },
+    { sel: ".post-content", label: "Post content" },
+    { sel: ".event-description", label: "Descrizione evento" },
+    { sel: ".evento-descrizione", label: "Descrizione evento" },
+    { sel: ".page-description", label: "Descrizione pagina" },
+    { sel: "main article .content", label: "Contenuto main" },
+    { sel: "article .content", label: "Contenuto articolo" },
+  ];
+
+  const noise =
+    "script, style, noscript, iframe, nav, form, button, aside, .share, .social, .breadcrumb, .calendar-date-day, .related, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni";
+
+  for (const { sel, label } of selectors) {
+    const node = $(sel).first();
+    if (!node.length) continue;
+
+    const clone = node.clone();
+    clone.find(noise).remove();
+
+    const inner =
+      clone.find(".text-serif, .cms-block, .rich-text, .field-items, .field--name-body").first()
+        .html() ||
+      clone.html() ||
+      "";
+
+    const text = htmlFragmentToPlainText(inner);
+    if (text.length < 80) continue;
+
+    const html = truncateDescription(sanitizeEventHtml(inner));
+    return {
+      html: html || truncateDescription(text),
+      text: truncateDescription(text),
+      source: label,
+    };
+  }
+
+  // Fallback: paragrafi principali in article/main (salta quelli troppo corti)
+  const paragraphs: string[] = [];
+  $("article p, main p, .it-page-sections p").each((_, el) => {
+    const parent = $(el).closest(
+      "nav, aside, footer, header, #luogo, #prezzi, #contatti, .share, .social, .calendar-date-day",
+    );
+    if (parent.length) return;
+    const t = cleanText($(el).text());
+    if (t.length >= 40) paragraphs.push(`<p>${escapeBasicHtml(t)}</p>`);
+  });
+
+  if (paragraphs.length >= 2) {
+    const html = truncateDescription(sanitizeEventHtml(paragraphs.join("\n")));
+    const text = truncateDescription(htmlFragmentToPlainText(html));
+    if (text.length >= 120) {
+      return { html, text, source: "Paragrafi pagina" };
+    }
+  }
+
+  return null;
+}
+
+function escapeBasicHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function preferFullerDescription(
+  current: string,
+  body: { html: string; text: string; source: string } | null,
+): { value: string; source: string; confidence: Confidence } | null {
+  if (!body) return null;
+  const currentText = stripHtml(current || "").trim();
+  const bodyText = body.text.trim();
+  if (!bodyText) return null;
+
+  const shouldPreferBody =
+    !currentText ||
+    bodyText.length >= Math.max(120, Math.floor(currentText.length * 1.25)) ||
+    (bodyText.length > currentText.length + 80 && bodyText.length >= 160);
+
+  if (!shouldPreferBody) return null;
+
+  return {
+    value: body.html || body.text,
+    source: body.source,
+    confidence: "high",
   };
 }
 
@@ -683,9 +832,10 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
 
   if (eventNode) {
     title = cleanText(String(eventNode.name || eventNode.headline || title));
-    description = cleanText(
-      String(eventNode.description || description),
-    );
+    const jsonLdDescription = descriptionFromJsonLdValue(eventNode.description);
+    if (jsonLdDescription) {
+      description = jsonLdDescription;
+    }
     const start = extractDateParts(
       String(eventNode.startDate || eventNode.start_date || ""),
     );
@@ -731,6 +881,15 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
         : offersIsFree(eventNode);
     priceFrom = priceFromOffers(eventNode);
     ticketUrl = ticketFromOffers(eventNode);
+  }
+
+  // Preferisci il corpo pagina completo rispetto a meta/OG o JSON-LD corti
+  const bodyDescription = extractPageBodyDescription($);
+  const fuller = preferFullerDescription(description, bodyDescription);
+  if (fuller) {
+    description = fuller.value;
+    conf.description = fuller.confidence;
+    sources.description = fuller.source;
   }
 
   // Design Italia municipal detail page: calendar + luogo
