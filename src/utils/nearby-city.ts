@@ -100,6 +100,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   "Villanova Monteleone": { lat: 40.5031, lng: 8.4706 },
 
   // Centro
+  Aritzo: { lat: 39.9578, lng: 9.1975 },
   Bosa: { lat: 40.2992, lng: 8.4983 },
   Dorgali: { lat: 40.2925, lng: 9.5911 },
   Fonni: { lat: 40.1192, lng: 9.2522 },
