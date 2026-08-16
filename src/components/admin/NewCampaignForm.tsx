@@ -2,15 +2,42 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { LoaderCircle, MailPlus, Send, Users } from "lucide-react";
+import {
+  FileUp,
+  LoaderCircle,
+  MailPlus,
+  Paperclip,
+  Send,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
 
-import { parseEmailList } from "@/src/lib/admin/email-campaigns";
+import {
+  CAMPAIGN_MAX_ATTACHMENTS,
+  CAMPAIGN_MAX_ATTACHMENT_BYTES,
+  formatBytes,
+  isImageContentType,
+  parseEmailList,
+  resolveAttachmentContentType,
+  sanitizeAttachmentFilename,
+  validateCampaignAttachments,
+} from "@/src/lib/admin/email-campaigns";
+
+type SelectedAttachment = {
+  id: string;
+  file: File;
+  filename: string;
+  contentType: string;
+  previewUrl?: string;
+};
 
 export default function NewCampaignForm() {
   const router = useRouter();
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [recipientsText, setRecipientsText] = useState("");
+  const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,6 +47,68 @@ export default function NewCampaignForm() {
     () => parseEmailList(recipientsText),
     [recipientsText],
   );
+
+  function revokePreviews(files: SelectedAttachment[]) {
+    for (const item of files) {
+      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    }
+  }
+
+  function addFiles(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0) return;
+
+    setErrorMessage("");
+    const incoming = Array.from(fileList);
+    const next: SelectedAttachment[] = [...attachments];
+
+    for (const file of incoming) {
+      if (next.length >= CAMPAIGN_MAX_ATTACHMENTS) {
+        setErrorMessage(`Massimo ${CAMPAIGN_MAX_ATTACHMENTS} allegati.`);
+        break;
+      }
+
+      const filename = sanitizeAttachmentFilename(file.name || "allegato");
+      const contentType = resolveAttachmentContentType(filename, file.type);
+      next.push({
+        id: `${filename}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 8)}`,
+        file,
+        filename,
+        contentType,
+        previewUrl: isImageContentType(contentType)
+          ? URL.createObjectURL(file)
+          : undefined,
+      });
+    }
+
+    const validationError = validateCampaignAttachments(
+      next.map((item) => ({
+        filename: item.filename,
+        contentType: item.contentType,
+        sizeBytes: item.file.size,
+      })),
+    );
+
+    if (validationError) {
+      const added = next.slice(attachments.length);
+      revokePreviews(added);
+      setErrorMessage(validationError);
+      return;
+    }
+
+    const removed = attachments.filter(
+      (old) => !next.some((item) => item.id === old.id),
+    );
+    revokePreviews(removed);
+    setAttachments(next);
+  }
+
+  function removeAttachment(id: string) {
+    setAttachments((prev) => {
+      const target = prev.find((item) => item.id === id);
+      if (target?.previewUrl) URL.revokeObjectURL(target.previewUrl);
+      return prev.filter((item) => item.id !== id);
+    });
+  }
 
   async function loadFromDirectory() {
     setIsLoadingDirectory(true);
@@ -73,22 +162,30 @@ export default function NewCampaignForm() {
       return;
     }
 
+    const attachmentNote =
+      attachments.length > 0
+        ? `\nAllegati: ${attachments.length}`
+        : "";
+
     const confirmed = window.confirm(
-      `Confermi l’invio a ${parsedEmails.length} destinatari?\n\nMittente: info@mail.everas.it\nRisposte: info@everas.it\nOggetto: ${subject.trim()}`,
+      `Confermi l’invio a ${parsedEmails.length} destinatari?\n\nMittente: info@mail.everas.it\nRisposte: info@everas.it\nOggetto: ${subject.trim()}${attachmentNote}`,
     );
     if (!confirmed) return;
 
     setIsSending(true);
 
     try {
+      const formData = new FormData();
+      formData.set("subject", subject.trim());
+      formData.set("message", message.trim());
+      formData.set("emails", parsedEmails.join("\n"));
+      for (const item of attachments) {
+        formData.append("attachments", item.file, item.filename);
+      }
+
       const response = await fetch("/api/admin/campaigns/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject: subject.trim(),
-          message: message.trim(),
-          emails: parsedEmails,
-        }),
+        body: formData,
       });
 
       const data = (await response.json()) as {
@@ -103,6 +200,7 @@ export default function NewCampaignForm() {
         throw new Error(data.error || "Invio campagna non riuscito");
       }
 
+      revokePreviews(attachments);
       router.push(`/admin/campagne/${data.campaignId}`);
       router.refresh();
     } catch (error) {
@@ -149,6 +247,83 @@ export default function NewCampaignForm() {
           verificato). Le risposte vanno a info@everas.it.
         </p>
       </label>
+
+      <div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold text-slate-900">Allegati</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Immagini (JPG, PNG, WebP, GIF) e file (PDF, Word, Excel, testo).
+              Max {CAMPAIGN_MAX_ATTACHMENTS} file,{" "}
+              {formatBytes(CAMPAIGN_MAX_ATTACHMENT_BYTES)} ciascuno. Le immagini
+              compaiono anche nel corpo dell’email.
+            </p>
+          </div>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]">
+            <FileUp className="h-4 w-4" aria-hidden="true" />
+            Carica file
+            <input
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/gif,image/webp,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,application/pdf"
+              className="sr-only"
+              disabled={isSending || attachments.length >= CAMPAIGN_MAX_ATTACHMENTS}
+              onChange={(e) => {
+                addFiles(e.target.files);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        </div>
+
+        {attachments.length > 0 ? (
+          <ul className="mt-4 space-y-3">
+            {attachments.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5"
+              >
+                {item.previewUrl ? (
+                  <img
+                    src={item.previewUrl}
+                    alt=""
+                    className="h-12 w-12 rounded-lg object-cover"
+                  />
+                ) : (
+                  <span className="grid h-12 w-12 place-items-center rounded-lg bg-white text-[#075EAE]">
+                    <Paperclip className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-slate-900">
+                    {item.filename}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {formatBytes(item.file.size)}
+                    {isImageContentType(item.contentType)
+                      ? " · immagine nel messaggio"
+                      : " · allegato"}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeAttachment(item.id)}
+                  disabled={isSending}
+                  className="rounded-lg p-2 text-slate-500 transition hover:bg-white hover:text-red-600 disabled:opacity-50"
+                  aria-label={`Rimuovi ${item.filename}`}
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-slate-500">
+            <X className="h-3.5 w-3.5" aria-hidden="true" />
+            Nessun allegato selezionato
+          </p>
+        )}
+      </div>
 
       <div>
         <div className="flex flex-wrap items-end justify-between gap-3">

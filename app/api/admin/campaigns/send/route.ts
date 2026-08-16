@@ -4,40 +4,116 @@ import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import {
   buildCampaignHtml,
   CAMPAIGN_FROM_EMAIL,
+  CAMPAIGN_MAX_ATTACHMENTS,
   CAMPAIGN_REPLY_TO,
+  isImageContentType,
   parseEmailList,
+  resolveAttachmentContentType,
+  sanitizeAttachmentFilename,
   sendCampaignEmailViaResend,
   sleep,
+  validateCampaignAttachments,
+  type CampaignAttachmentMeta,
+  type CampaignAttachmentPayload,
 } from "@/src/lib/admin/email-campaigns";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-type SendBody = {
-  subject?: string;
-  message?: string;
-  emails?: string[] | string;
-};
+async function fileToBase64(file: File) {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  return {
+    contentBase64: buffer.toString("base64"),
+    sizeBytes: buffer.byteLength,
+  };
+}
+
+async function parseAttachmentsFromForm(formData: FormData) {
+  const files = formData
+    .getAll("attachments")
+    .filter((value): value is File => value instanceof File && value.size > 0);
+
+  if (files.length > CAMPAIGN_MAX_ATTACHMENTS) {
+    throw new Error(`Massimo ${CAMPAIGN_MAX_ATTACHMENTS} allegati`);
+  }
+
+  const preview = files.map((file) => {
+    const filename = sanitizeAttachmentFilename(file.name || "allegato");
+    const contentType = resolveAttachmentContentType(filename, file.type);
+    return {
+      filename,
+      contentType,
+      sizeBytes: file.size,
+    };
+  });
+
+  const validationError = validateCampaignAttachments(preview);
+  if (validationError) {
+    throw new Error(validationError);
+  }
+
+  const attachments: CampaignAttachmentPayload[] = [];
+  let imageIndex = 0;
+
+  for (const file of files) {
+    const filename = sanitizeAttachmentFilename(file.name || "allegato");
+    const contentType = resolveAttachmentContentType(filename, file.type);
+    const { contentBase64, sizeBytes } = await fileToBase64(file);
+    const isImage = isImageContentType(contentType);
+
+    attachments.push({
+      filename,
+      content_type: contentType,
+      size_bytes: sizeBytes,
+      contentBase64,
+      contentId: isImage ? `campaign-img-${imageIndex++}` : undefined,
+    });
+  }
+
+  return attachments;
+}
 
 export async function POST(request: Request) {
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 
-  let body: SendBody;
-  try {
-    body = (await request.json()) as SendBody;
-  } catch {
-    return NextResponse.json({ error: "Body JSON non valido" }, { status: 400 });
-  }
+  const contentType = request.headers.get("content-type") || "";
+  let subject = "";
+  let message = "";
+  let rawEmails = "";
+  let attachments: CampaignAttachmentPayload[] = [];
 
-  const subject = body.subject?.trim() || "";
-  const message = body.message?.trim() || "";
-  const rawEmails =
-    typeof body.emails === "string"
-      ? body.emails
-      : Array.isArray(body.emails)
-        ? body.emails.join("\n")
-        : "";
+  try {
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      subject = String(formData.get("subject") || "").trim();
+      message = String(formData.get("message") || "").trim();
+      rawEmails = String(formData.get("emails") || "");
+      attachments = await parseAttachmentsFromForm(formData);
+    } else {
+      const body = (await request.json()) as {
+        subject?: string;
+        message?: string;
+        emails?: string[] | string;
+      };
+      subject = body.subject?.trim() || "";
+      message = body.message?.trim() || "";
+      rawEmails =
+        typeof body.emails === "string"
+          ? body.emails
+          : Array.isArray(body.emails)
+            ? body.emails.join("\n")
+            : "";
+    }
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Body richiesta non valido",
+      },
+      { status: 400 },
+    );
+  }
 
   if (!subject) {
     return NextResponse.json({ error: "Oggetto obbligatorio" }, { status: 400 });
@@ -64,9 +140,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const bodyHtml = buildCampaignHtml(subject, message);
+  const inlineImages = attachments
+    .filter((file) => file.contentId)
+    .map((file) => ({
+      contentId: file.contentId!,
+      filename: file.filename,
+    }));
+
+  const bodyHtml = buildCampaignHtml(subject, message, inlineImages);
   const fromEmail = CAMPAIGN_FROM_EMAIL;
   const replyTo = CAMPAIGN_REPLY_TO;
+  const attachmentMeta: CampaignAttachmentMeta[] = attachments.map((file) => ({
+    filename: file.filename,
+    content_type: file.content_type,
+    size_bytes: file.size_bytes,
+  }));
 
   const { data: campaign, error: insertCampaignError } = await auth.supabase
     .from("email_campaigns")
@@ -81,6 +169,7 @@ export async function POST(request: Request) {
       sent_count: 0,
       failed_count: 0,
       created_by: auth.user.id,
+      attachments: attachmentMeta,
     })
     .select("id")
     .single();
@@ -153,6 +242,7 @@ export async function POST(request: Request) {
         html: bodyHtml,
         from: fromEmail,
         replyTo,
+        attachments,
       });
 
       sentCount += 1;

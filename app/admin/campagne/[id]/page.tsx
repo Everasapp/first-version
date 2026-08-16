@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/src/lib/auth";
 import {
   campaignStatusLabel,
+  formatBytes,
+  type CampaignAttachmentMeta,
   type EmailCampaignRecipientRow,
   type EmailCampaignRow,
 } from "@/src/lib/admin/email-campaigns";
@@ -52,6 +54,7 @@ export default async function AdminCampagnaDetailPage({ params }: PageProps) {
 
   const row = campaign as EmailCampaignRow;
   const recipientRows = (recipients || []) as EmailCampaignRecipientRow[];
+  const attachments = (row.attachments || []) as CampaignAttachmentMeta[];
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-10 sm:px-8">
@@ -92,6 +95,29 @@ export default async function AdminCampagnaDetailPage({ params }: PageProps) {
         </h2>
         <p className="mt-3 whitespace-pre-wrap text-slate-800">{row.body_text}</p>
       </section>
+
+      {attachments.length > 0 ? (
+        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500">
+            Allegati ({attachments.length})
+          </h2>
+          <ul className="mt-3 space-y-2">
+            {attachments.map((file) => (
+              <li
+                key={`${file.filename}-${file.size_bytes}`}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm"
+              >
+                <span className="font-semibold text-slate-900">
+                  {file.filename}
+                </span>
+                <span className="text-slate-500">
+                  {file.content_type} · {formatBytes(file.size_bytes)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="min-w-full text-left text-sm">

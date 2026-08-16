@@ -11,8 +11,53 @@ export const CAMPAIGN_FROM_EMAIL =
 export const CAMPAIGN_REPLY_TO =
   process.env.CAMPAIGN_REPLY_TO?.trim() || "info@everas.it";
 
+export const CAMPAIGN_MAX_ATTACHMENTS = 5;
+export const CAMPAIGN_MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024; // 5 MB ciascuno
+export const CAMPAIGN_MAX_TOTAL_ATTACHMENT_BYTES = 20 * 1024 * 1024; // 20 MB totali
+
 const EMAIL_RE =
   /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i;
+
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/plain",
+  "text/csv",
+]);
+
+const EXT_TO_MIME: Record<string, string> = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  gif: "image/gif",
+  webp: "image/webp",
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  txt: "text/plain",
+  csv: "text/csv",
+};
+
+export type CampaignAttachmentMeta = {
+  filename: string;
+  content_type: string;
+  size_bytes: number;
+};
+
+export type CampaignAttachmentPayload = CampaignAttachmentMeta & {
+  contentBase64: string;
+  /** Per immagini: content-id usato nel body HTML. */
+  contentId?: string;
+};
 
 export function parseEmailList(raw: string): string[] {
   const parts = raw
@@ -34,10 +79,81 @@ export function isValidCampaignEmail(email: string) {
   return EMAIL_RE.test(email.trim().toLowerCase());
 }
 
-export function buildCampaignHtml(subject: string, message: string) {
+export function isImageContentType(contentType: string) {
+  return contentType.startsWith("image/");
+}
+
+export function resolveAttachmentContentType(
+  filename: string,
+  declaredType?: string | null,
+) {
+  const declared = declaredType?.trim().toLowerCase() || "";
+  if (declared && declared !== "application/octet-stream") {
+    return declared;
+  }
+  const ext = filename.split(".").pop()?.toLowerCase() || "";
+  return EXT_TO_MIME[ext] || declared || "application/octet-stream";
+}
+
+export function sanitizeAttachmentFilename(name: string) {
+  const cleaned = name
+    .replace(/[/\\?%*:|"<>]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+  return cleaned.slice(0, 180) || "allegato";
+}
+
+export function validateCampaignAttachments(
+  files: Array<{
+    filename: string;
+    contentType: string;
+    sizeBytes: number;
+  }>,
+) {
+  if (files.length > CAMPAIGN_MAX_ATTACHMENTS) {
+    return `Massimo ${CAMPAIGN_MAX_ATTACHMENTS} allegati per campagna`;
+  }
+
+  let total = 0;
+  for (const file of files) {
+    if (file.sizeBytes <= 0) {
+      return `Allegato vuoto: ${file.filename}`;
+    }
+    if (file.sizeBytes > CAMPAIGN_MAX_ATTACHMENT_BYTES) {
+      return `«${file.filename}» supera i 5 MB`;
+    }
+    total += file.sizeBytes;
+    const type = resolveAttachmentContentType(file.filename, file.contentType);
+    if (!ALLOWED_ATTACHMENT_TYPES.has(type)) {
+      return `Tipo non supportato per «${file.filename}» (${type}). Usa immagini, PDF, Word, Excel o testo.`;
+    }
+  }
+
+  if (total > CAMPAIGN_MAX_TOTAL_ATTACHMENT_BYTES) {
+    return "Gli allegati superano i 20 MB totali";
+  }
+
+  return null;
+}
+
+export function buildCampaignHtml(
+  subject: string,
+  message: string,
+  inlineImages: Array<{ contentId: string; filename: string }> = [],
+) {
   const siteUrl = getSiteUrl();
   const logoUrl = `${siteUrl}/images/everas-logo-v2.png`;
   const bodyHtml = escapeHtml(message).replaceAll("\n", "<br />");
+
+  const imagesHtml =
+    inlineImages.length > 0
+      ? `<div style="margin-top:20px;">${inlineImages
+          .map(
+            (image) =>
+              `<img src="cid:${escapeHtml(image.contentId)}" alt="${escapeHtml(image.filename)}" style="display:block;width:100%;max-width:504px;height:auto;border-radius:12px;margin:0 0 12px;" />`,
+          )
+          .join("")}</div>`
+      : "";
 
   return `<!DOCTYPE html>
 <html lang="it">
@@ -59,6 +175,7 @@ export function buildCampaignHtml(subject: string, message: string) {
                 <div style="color:#334155;font-size:15px;line-height:1.65;">
                   ${bodyHtml}
                 </div>
+                ${imagesHtml}
               </td>
             </tr>
             <tr>
@@ -82,16 +199,40 @@ export async function sendCampaignEmailViaResend({
   html,
   from,
   replyTo,
+  attachments = [],
 }: {
   to: string;
   subject: string;
   html: string;
   from: string;
   replyTo: string;
+  attachments?: CampaignAttachmentPayload[];
 }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     throw new Error("RESEND_API_KEY non configurata");
+  }
+
+  const payload: Record<string, unknown> = {
+    from,
+    to: [to],
+    reply_to: replyTo,
+    subject,
+    html,
+  };
+
+  if (attachments.length > 0) {
+    payload.attachments = attachments.map((file) => {
+      const item: Record<string, string> = {
+        filename: file.filename,
+        content: file.contentBase64,
+        content_type: file.content_type,
+      };
+      if (file.contentId) {
+        item.content_id = file.contentId;
+      }
+      return item;
+    });
   }
 
   const response = await fetch("https://api.resend.com/emails", {
@@ -100,13 +241,7 @@ export async function sendCampaignEmailViaResend({
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: replyTo,
-      subject,
-      html,
-    }),
+    body: JSON.stringify(payload),
   });
 
   const body = (await response.json().catch(() => ({}))) as {
@@ -130,6 +265,12 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function formatBytes(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 export type EmailCampaignRow = {
   id: string;
   subject: string;
@@ -144,6 +285,7 @@ export type EmailCampaignRow = {
   created_by: string | null;
   created_at: string;
   sent_at: string | null;
+  attachments?: CampaignAttachmentMeta[] | null;
 };
 
 export type EmailCampaignRecipientRow = {
