@@ -74,7 +74,7 @@ export default function NewCampaignForm() {
     }
 
     const confirmed = window.confirm(
-      `Confermi l’invio a ${parsedEmails.length} destinatari?\n\nMittente: info@everas.it\nOggetto: ${subject.trim()}`,
+      `Confermi l’invio a ${parsedEmails.length} destinatari?\n\nMittente: info@mail.everas.it\nRisposte: info@everas.it\nOggetto: ${subject.trim()}`,
     );
     if (!confirmed) return;
 
@@ -144,8 +144,9 @@ export default function NewCampaignForm() {
           disabled={isSending}
         />
         <p className="mt-2 text-xs text-slate-500">
-          Verrà inviato da <strong>EVERAS &lt;info@everas.it&gt;</strong> con
-          risposta a info@everas.it.
+          Verrà inviato da{" "}
+          <strong>EVERAS &lt;info@mail.everas.it&gt;</strong> (dominio Resend
+          verificato). Le risposte vanno a info@everas.it.
         </p>
       </label>
 

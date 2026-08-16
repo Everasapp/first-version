@@ -60,8 +60,8 @@ export default async function AdminCampagnePage() {
             Campagne email
           </h1>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Invia messaggi ai comuni/organizzatori via Resend. Mittente e
-            risposte: info@everas.it.
+            Invia messaggi ai comuni/organizzatori via Resend. Mittente:{" "}
+            info@mail.everas.it · risposte: info@everas.it.
           </p>
         </div>
         <Link

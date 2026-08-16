@@ -1,10 +1,15 @@
 import { getSiteUrl } from "@/src/lib/notifications/config";
 import { escapeHtml } from "@/src/lib/notifications/format";
 
+// Resend ha verificato mail.everas.it (non everas.it).
+// Le risposte restano su info@everas.it (inoltro Outlook).
 export const CAMPAIGN_FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL?.trim() || "EVERAS <info@everas.it>";
+  process.env.CAMPAIGN_FROM_EMAIL?.trim() ||
+  process.env.NEWSLETTER_FROM_EMAIL?.trim() ||
+  "EVERAS <info@mail.everas.it>";
 
-export const CAMPAIGN_REPLY_TO = "info@everas.it";
+export const CAMPAIGN_REPLY_TO =
+  process.env.CAMPAIGN_REPLY_TO?.trim() || "info@everas.it";
 
 const EMAIL_RE =
   /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i;
