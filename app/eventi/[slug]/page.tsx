@@ -261,9 +261,10 @@ async function EventDetailPage({ slug }: { slug: string }) {
     : "Organizzatore";
   const organizerName =
     event.organizer_display_name?.trim() || profileOrganizerName;
+  const customOrganizerName = event.organizer_display_name?.trim() || "";
   const isCustomOrganizerName =
-    Boolean(event.organizer_display_name?.trim()) &&
-    event.organizer_display_name.trim().toLocaleLowerCase("it") !==
+    customOrganizerName.length > 0 &&
+    customOrganizerName.toLocaleLowerCase("it") !==
       profileOrganizerName.toLocaleLowerCase("it");
   const showOrganizerPlace =
     !isCustomOrganizerName &&
