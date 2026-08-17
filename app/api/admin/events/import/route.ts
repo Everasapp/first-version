@@ -199,9 +199,9 @@ export async function POST(request: Request) {
       ? event.categories
       : event.category
         ? [event.category]
-        : ["celebrazioni"],
+        : ["musica-concerti"],
   );
-  const primaryCategory = categorySlugs[0] || "celebrazioni";
+  const primaryCategory = categorySlugs[0] || "musica-concerti";
 
   const nowIso = new Date().toISOString();
   const payload = {

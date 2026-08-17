@@ -72,7 +72,7 @@ export default function DuplicateEventButton({
             ? source.categories
             : source.category
               ? [source.category]
-              : ["celebrazioni"],
+              : ["musica-concerti"],
         subcategory: source.subcategory,
         province: source.province,
         municipality: source.municipality,

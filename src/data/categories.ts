@@ -1,7 +1,6 @@
 import {
   Baby,
   BriefcaseBusiness,
-  Drama,
   Dumbbell,
   GraduationCap,
   Music,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 
 import CelebrazioniIcon from "@/src/components/icons/CelebrazioniIcon";
+import LocaliBalloIcon from "@/src/components/icons/LocaliBalloIcon";
 
 export type Category = {
   id: number;
@@ -26,7 +26,7 @@ export const categories: Category[] = [
     {
       id: 1,
       slug: "musica-concerti",
-      name: "Musica e concerti",
+      name: "Musica e spettacoli",
       icon: Music,
       gradient: "from-blue-600 to-indigo-700",
     },
@@ -39,10 +39,10 @@ export const categories: Category[] = [
     },
     {
       id: 3,
-      slug: "spettacoli",
-      name: "Spettacoli",
-      icon: Drama,
-      gradient: "from-violet-600 to-fuchsia-600",
+      slug: "locali-ballo",
+      name: "Locali e ballo",
+      icon: LocaliBalloIcon,
+      gradient: "from-fuchsia-600 to-violet-800",
     },
     {
       id: 4,

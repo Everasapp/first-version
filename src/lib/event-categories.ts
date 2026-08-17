@@ -2,16 +2,30 @@ import { categories } from "@/src/data/categories";
 
 export const MAX_EVENT_CATEGORIES = 3;
 
+/** Old slugs still stored on events or used in old URLs. */
+const LEGACY_CATEGORY_ALIASES: Record<string, string> = {
+  spettacoli: "musica-concerti",
+  "musica e concerti": "musica-concerti",
+};
+
 const validSlugs = new Set(categories.map((category) => category.slug));
 
+function canonicalCategorySlug(slug: string) {
+  return LEGACY_CATEGORY_ALIASES[slug] ?? slug;
+}
+
 function slugToName(slug: string) {
+  const canonical = canonicalCategorySlug(slug);
   return (
-    categories.find((category) => category.slug === slug)?.name ?? slug
+    categories.find((category) => category.slug === canonical)?.name ?? slug
   );
 }
 
 function nameToSlug(value: string) {
   const needle = value.toLocaleLowerCase("it");
+  if (LEGACY_CATEGORY_ALIASES[needle]) {
+    return LEGACY_CATEGORY_ALIASES[needle];
+  }
   return (
     categories.find(
       (category) =>
@@ -30,7 +44,7 @@ export function normalizeEventCategories(slugs: string[]): string[] {
     const trimmed = raw.trim();
     if (!trimmed) continue;
 
-    const asSlug = nameToSlug(trimmed) ?? trimmed;
+    const asSlug = canonicalCategorySlug(nameToSlug(trimmed) ?? trimmed);
     if (seen.has(asSlug)) continue;
     // Prefer known slugs; keep unknown legacy values so old rows still display
     if (!validSlugs.has(asSlug) && !nameToSlug(trimmed)) {
@@ -87,8 +101,9 @@ export function eventMatchesCategoryFilter(
 ): boolean {
   if (!filterSlug) return true;
 
-  const needle = filterSlug.toLocaleLowerCase("it");
-  const meta = categories.find((item) => item.slug === filterSlug);
+  const resolvedFilter = canonicalCategorySlug(filterSlug.toLocaleLowerCase("it"));
+  const needle = resolvedFilter;
+  const meta = categories.find((item) => item.slug === resolvedFilter);
   const nameNeedle = meta?.name.toLocaleLowerCase("it");
 
   for (const slug of eventCategorySlugs(event)) {

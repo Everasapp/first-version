@@ -22,6 +22,21 @@ const nextConfig: NextConfig = {
         destination: "https://www.everas.it/:path*",
         permanent: true,
       },
+      {
+        source: "/eventi/spettacoli",
+        destination: "/eventi/musica-concerti",
+        permanent: true,
+      },
+      {
+        source: "/categorie/spettacoli",
+        destination: "/eventi/musica-concerti",
+        permanent: true,
+      },
+      {
+        source: "/eventi/:city/spettacoli",
+        destination: "/eventi/:city/musica-concerti",
+        permanent: true,
+      },
     ];
   },
 };

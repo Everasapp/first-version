@@ -13,6 +13,9 @@ export function findCityBySlug(slug: string): City | undefined {
 
 export function findCategoryBySlug(slug: string): Category | undefined {
   const needle = createSlug(slug);
+  if (needle === "spettacoli") {
+    return categories.find((category) => category.slug === "musica-concerti");
+  }
   return categories.find((category) => category.slug === needle);
 }
 

@@ -160,9 +160,25 @@ function guessCategory(text: string): string | null {
   const hay = ` ${text.toLowerCase()} `;
   const rules: Array<{ slug: string; words: string[] }> = [
     { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo", "triathlon", "ironman", "ciclismo", "nuoto"] },
-    { slug: "musica-concerti", words: ["concerto", "musica", " live ", " band ", " dj "] },
+    {
+      slug: "locali-ballo",
+      words: [
+        "discoteca",
+        "discoteche",
+        "night club",
+        "nightclub",
+        "dj set",
+        "salsa",
+        "bachata",
+        "kizomba",
+        "merengue",
+        "ballo latino",
+        "serata danzante",
+        "serate danzanti",
+      ],
+    },
+    { slug: "musica-concerti", words: ["concerto", "musica", " live ", " band ", "spettacolo", "teatro", "cabaret", "show"] },
     { slug: "sagre-tradizioni", words: ["sagra", "tradizion", "festa patronale"] },
-    { slug: "spettacoli", words: ["spettacolo", "teatro", "cabaret", "show"] },
     { slug: "fiere-mercatini", words: ["fiera", "mercatino", "mercato"] },
     { slug: "arte-cultura", words: ["mostra", "arte", "galleria", "esposizion", "cultura"] },
     { slug: "food-drink", words: ["food", "degustazione", "enogastronom", "wine"] },

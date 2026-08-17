@@ -2,24 +2,12 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 import { cities } from "@/src/data/cities";
+import { categories } from "@/src/data/categories";
 import { cityToSlug } from "@/src/lib/seo/paths";
 
 const SITE_URL = "https://www.everas.it";
 
-const CATEGORY_SLUGS = [
-  "musica-concerti",
-  "sagre-tradizioni",
-  "spettacoli",
-  "sport-competizioni",
-  "fiere-mercatini",
-  "arte-cultura",
-  "workshop-corsi",
-  "celebrazioni",
-  "food-drink",
-  "famiglie-bambini",
-  "benessere",
-  "business-networking",
-] as const;
+const CATEGORY_SLUGS = categories.map((category) => category.slug);
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

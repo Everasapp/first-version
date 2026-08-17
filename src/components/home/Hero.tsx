@@ -28,7 +28,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-4 max-w-2xl text-base leading-7 text-blue-50 sm:mt-6 sm:text-xl sm:leading-8">
-          Sagre, concerti, spettacoli, celebrazioni e attività vicino a te.
+          Sagre, concerti, spettacoli, serate e attività vicino a te.
         </p>
 
         <EventSearchForm />
