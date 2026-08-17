@@ -1,3 +1,5 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import {
   CAMPAIGN_FROM_EMAIL,
   CAMPAIGN_REPLY_TO,
@@ -185,20 +187,39 @@ export function buildNewsletterSubject(area: GeoArea | null, weekLabel: string) 
   return `Cosa fare questa settimana in Sardegna · ${weekLabel}`;
 }
 
-export async function loadWeekEvents(now = new Date()) {
-  const week = getCurrentRomeWeekRange(now);
-  const supabase = createAdminClient();
+function getClient(supabase?: SupabaseClient) {
+  return supabase ?? createAdminClient();
+}
 
-  const { data, error } = await supabase
+function eventOverlapsWeek(
+  event: Pick<WeekEventRow, "start_at" | "end_at">,
+  weekStart: Date,
+  weekEnd: Date,
+  now: Date,
+) {
+  if (!isPublicEventActive(event.start_at, event.end_at, now)) {
+    return false;
+  }
+
+  const start = new Date(event.start_at).getTime();
+  const end = event.end_at ? new Date(event.end_at).getTime() : start;
+  return start < weekEnd.getTime() && end >= weekStart.getTime();
+}
+
+export async function loadWeekEvents(
+  now = new Date(),
+  supabase?: SupabaseClient,
+) {
+  const week = getCurrentRomeWeekRange(now);
+  const client = getClient(supabase);
+
+  const { data, error } = await client
     .from("events")
     .select(
       "id, slug, title, municipality, location_name, start_at, end_at, category, categories, is_free, price_from, image_url, is_featured, status, province",
     )
     .eq("status", "published")
     .lt("start_at", week.end.toISOString())
-    .or(
-      `end_at.gte.${week.start.toISOString()},and(end_at.is.null,start_at.gte.${week.start.toISOString()})`,
-    )
     .order("start_at", { ascending: true });
 
   if (error) {
@@ -206,15 +227,15 @@ export async function loadWeekEvents(now = new Date()) {
   }
 
   const events = ((data ?? []) as WeekEventRow[]).filter((event) =>
-    isPublicEventActive(event.start_at, event.end_at, now),
+    eventOverlapsWeek(event, week.start, week.end, now),
   );
 
   return { week, events };
 }
 
-export async function loadNewsletterSubscribers() {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+export async function loadNewsletterSubscribers(supabase?: SupabaseClient) {
+  const client = getClient(supabase);
+  const { data, error } = await client
     .from("profiles")
     .select(
       "id, full_name, municipality, province, newsletter_city, newsletter_category, newsletter_unsub_token",

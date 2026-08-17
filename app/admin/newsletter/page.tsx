@@ -30,11 +30,11 @@ function geoSourceLabel(source: string) {
 }
 
 export default async function AdminNewsletterPage() {
-  await requireAdmin("/admin/newsletter");
+  const { supabase } = await requireAdmin("/admin/newsletter");
 
   const [{ week, events }, subscribers] = await Promise.all([
-    loadWeekEvents(),
-    loadNewsletterSubscribers(),
+    loadWeekEvents(new Date(), supabase),
+    loadNewsletterSubscribers(supabase),
   ]);
   const siteUrl = getSiteUrl();
 
