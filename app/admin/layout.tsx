@@ -47,6 +47,12 @@ export default async function AdminLayout({
               Organizzatori salvati
             </Link>
             <Link
+              href="/admin/newsletter"
+              className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
+            >
+              Newsletter
+            </Link>
+            <Link
               href="/admin/campagne"
               className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
             >

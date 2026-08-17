@@ -238,7 +238,7 @@ function normalizePlaceName(value: string) {
     .replace(/\p{M}/gu, "");
 }
 
-function findCityByName(municipality: string | null | undefined) {
+export function findCityByName(municipality: string | null | undefined) {
   if (!municipality?.trim()) return null;
 
   const needle = normalizePlaceName(municipality);

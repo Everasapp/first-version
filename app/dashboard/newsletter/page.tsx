@@ -24,7 +24,8 @@ export default async function NewsletterPreferencesPage() {
                 Newsletter
               </h1>
               <p className="mt-3 text-lg text-slate-600">
-                Ricevi ogni settimana eventi per città e categoria preferita.
+                Ricevi ogni settimana gli eventi della tua area, con priorità
+                alla città e alla categoria che preferisci.
               </p>
               {profile.newsletter_opt_in ? (
                 <p className="mt-2 text-sm text-slate-500">

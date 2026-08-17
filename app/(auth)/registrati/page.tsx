@@ -231,8 +231,8 @@ export default function RegistratiPage() {
                     Voglio la newsletter settimanale
                   </span>
                   <span className="mt-1 block text-sm text-slate-600">
-                    Una volta a settimana ricevi eventi per la tua città e la
-                    categoria preferita.
+                    Una volta a settimana ricevi gli eventi della tua area, con
+                    priorità alla città e alla categoria preferita.
                   </span>
                 </span>
               </label>

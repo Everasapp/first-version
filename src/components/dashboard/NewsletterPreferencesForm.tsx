@@ -85,7 +85,7 @@ export default function NewsletterPreferencesForm({
             Newsletter settimanale
           </span>
           <span className="mt-1 block text-sm text-slate-600">
-            Eventi filtrati per città e categoria preferita.
+            Eventi della tua area geografica, con priorità a città e categoria.
           </span>
         </span>
       </label>
