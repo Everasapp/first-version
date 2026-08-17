@@ -18,6 +18,7 @@ import {
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
+import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import { cities } from "@/src/data/cities";
 import {
   eventCategorySlugs,
@@ -63,6 +64,7 @@ export type EditableEvent = {
   ticket_url: string | null;
   youtube_url: string | null;
   organizer_display_name: string | null;
+  organizer_directory_id?: string | null;
   status: string;
 };
 
@@ -178,6 +180,9 @@ export default function EditEventForm({
   const [organizer, setOrganizer] = useState(
     event.organizer_display_name?.trim() || accountOrganizerName,
   );
+  const [organizerDirectoryId, setOrganizerDirectoryId] = useState<
+    string | null
+  >(event.organizer_directory_id ?? null);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState("");
@@ -280,9 +285,9 @@ export default function EditEventForm({
         "Inserisci un link YouTube valido (es. youtube.com/watch?v=… o youtu.be/…).";
     }
 
-    if (canAssignOrganizer && !organizer.trim()) {
+    if (canAssignOrganizer && !organizer.trim() && !organizerDirectoryId) {
       nextErrors.organizer =
-        "Indica almeno un organizzatore associato all'evento.";
+        "Scegli un organizzatore associato all'evento.";
     }
 
     setErrors(nextErrors);
@@ -389,8 +394,11 @@ export default function EditEventForm({
           ticket_url: normalizedTicketUrl,
           youtube_url: normalizedYoutubeUrl,
           organizer_display_name: canAssignOrganizer
-            ? organizer.trim()
+            ? organizer.trim() || accountOrganizerName
             : accountOrganizerName,
+          organizer_directory_id: canAssignOrganizer
+            ? organizerDirectoryId
+            : null,
           ...(shouldPublish ? { status: "published" as const } : {}),
         })
         .eq("id", event.id)
@@ -894,27 +902,31 @@ export default function EditEventForm({
             </span>
             <p className="mt-1 text-sm text-slate-500">
               {canAssignOrganizer
-                ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
-                : "Con Free l’organizzatore è il tuo account. Passa a Pro per personalizzare il profilo organizzatore."}
+                ? "Scegli un organizzatore già salvato in rubrica, oppure lascia il tuo account."
+                : "Con Free l’organizzatore è il tuo account. Passa a Pro per associare un profilo dalla rubrica."}
             </p>
-            <input
-              type="text"
-              value={canAssignOrganizer ? organizer : accountOrganizerName}
-              onChange={(changeEvent) => {
-                if (!canAssignOrganizer) {
-                  return;
-                }
-                setOrganizer(changeEvent.target.value);
-                clearError("organizer");
-              }}
-              readOnly={!canAssignOrganizer}
-              placeholder="Es. Associazione Zoe, Comune di Alghero"
-              className={`${fieldClassName} ${
-                !canAssignOrganizer
-                  ? "cursor-not-allowed bg-slate-50 text-slate-600"
-                  : ""
-              } ${errors.organizer ? "border-red-400" : "border-slate-300"}`}
-            />
+            {canAssignOrganizer ? (
+              <OrganizerDirectorySelect
+                accountName={accountOrganizerName}
+                directoryId={organizerDirectoryId}
+                displayName={organizer}
+                onChange={({ directoryId, displayName }) => {
+                  setOrganizerDirectoryId(directoryId);
+                  setOrganizer(displayName);
+                  clearError("organizer");
+                }}
+                error={errors.organizer}
+              />
+            ) : (
+              <input
+                type="text"
+                value={accountOrganizerName}
+                readOnly
+                className={`${fieldClassName} cursor-not-allowed bg-slate-50 text-slate-600 ${
+                  errors.organizer ? "border-red-400" : "border-slate-300"
+                }`}
+              />
+            )}
             {errors.organizer && (
               <p className="mt-2 text-sm text-red-600">{errors.organizer}</p>
             )}

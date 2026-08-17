@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import Header from "@/src/components/home/Header";
 import { cities } from "@/src/data/cities";
 import {
@@ -80,6 +81,9 @@ export default function PublishEventPage() {
 
   const [description, setDescription] = useState("");
   const [organizer, setOrganizer] = useState("");
+  const [organizerDirectoryId, setOrganizerDirectoryId] = useState<
+    string | null
+  >(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -89,7 +93,7 @@ export default function PublishEventPage() {
   const [hasPublished, setHasPublished] = useState(false);
   const publishingLockRef = useRef(false);
 
-  const canSetOrganizer = canAssignOrganizers(plan);
+  const canSetOrganizer = canAssignOrganizers(plan, profile?.role);
   const defaultOrganizerName =
     profile?.business_name?.trim() ||
     profile?.full_name?.trim() ||
@@ -271,9 +275,9 @@ export default function PublishEventPage() {
           "Inserisci un link YouTube valido (es. youtube.com/watch?v=… o youtu.be/…).";
       }
 
-      if (canSetOrganizer && !organizer.trim()) {
+      if (canSetOrganizer && !organizer.trim() && !organizerDirectoryId) {
         nextErrors.organizer =
-          "Inserisci almeno un organizzatore associato all’evento.";
+          "Scegli un organizzatore associato all’evento.";
       }
     }
 
@@ -377,8 +381,11 @@ export default function PublishEventPage() {
           ticket_url: normalizedTicketUrl,
           youtube_url: normalizedYoutubeUrl,
           organizer_display_name: canSetOrganizer
-            ? organizer.trim()
+            ? organizer.trim() || defaultOrganizerName
             : defaultOrganizerName,
+          organizer_directory_id: canSetOrganizer
+            ? organizerDirectoryId
+            : null,
           status: "published",
           is_featured: false,
         })
@@ -1117,34 +1124,31 @@ export default function PublishEventPage() {
                       </span>
                       <p className="mt-1 text-sm text-slate-500">
                         {canSetOrganizer
-                          ? "Con il piano Pro puoi indicare uno o più organizzatori (separati da virgola)."
-                          : "Con Free l’organizzatore è il tuo account. Passa a Pro per personalizzare il profilo organizzatore."}
+                          ? "Scegli un organizzatore già salvato in rubrica, oppure lascia il tuo account."
+                          : "Con Free l’organizzatore è il tuo account. Passa a Pro per associare un profilo dalla rubrica."}
                       </p>
 
-                      <input
-                        type="text"
-                        name="organizer"
-                        value={canSetOrganizer ? organizer : defaultOrganizerName}
-                        onChange={(event) => {
-                          if (!canSetOrganizer) {
-                            return;
-                          }
-                          setOrganizer(event.target.value);
-                          clearError("organizer");
-                        }}
-                        readOnly={!canSetOrganizer}
-                        placeholder="Es. Associazione Zoe, Comune di Alghero"
-                        aria-invalid={Boolean(errors.organizer)}
-                        className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
-                          !canSetOrganizer
-                            ? "cursor-not-allowed bg-slate-50 text-slate-600"
-                            : ""
-                        } ${
-                          errors.organizer
-                            ? "border-red-400 focus:border-red-500"
-                            : "border-slate-300 focus:border-[#075EAE]"
-                        }`}
-                      />
+                      {canSetOrganizer ? (
+                        <OrganizerDirectorySelect
+                          accountName={defaultOrganizerName}
+                          directoryId={organizerDirectoryId}
+                          displayName={organizer}
+                          onChange={({ directoryId, displayName }) => {
+                            setOrganizerDirectoryId(directoryId);
+                            setOrganizer(displayName);
+                            clearError("organizer");
+                          }}
+                          error={errors.organizer}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          name="organizer"
+                          value={defaultOrganizerName}
+                          readOnly
+                          className="mt-2 w-full cursor-not-allowed rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-600 outline-none"
+                        />
+                      )}
 
                       {errors.organizer && (
                         <p className="mt-2 text-sm text-red-600">

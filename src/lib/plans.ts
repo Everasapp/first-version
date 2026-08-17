@@ -1,3 +1,5 @@
+import type { UserRole } from "@/src/lib/profile";
+
 export type PlanSlug = "free" | "regular" | "full";
 
 export type Plan = {
@@ -29,9 +31,12 @@ export function canPromoteEvents(plan: Pick<Plan, "featured_events_limit"> | nul
   return (plan?.featured_events_limit ?? 0) > 0;
 }
 
-/** Pro (full) can set custom associated organizer name(s) per event. */
-export function canAssignOrganizers(plan: Pick<Plan, "slug"> | null | undefined) {
-  return plan?.slug === "full";
+/** Admin and Pro can associate a directory organizer (or a custom name). */
+export function canAssignOrganizers(
+  plan: Pick<Plan, "slug"> | null | undefined,
+  role?: UserRole | null,
+) {
+  return role === "admin" || plan?.slug === "full";
 }
 
 export function formatPlanPrice(

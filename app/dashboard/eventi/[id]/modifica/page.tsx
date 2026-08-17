@@ -34,7 +34,7 @@ export default async function ModificaEventoPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, status",
+        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
       )
       .eq("id", id)
       .eq("organizer_id", user.id)
@@ -87,7 +87,7 @@ export default async function ModificaEventoPage({
           <div className="mt-8">
             <EditEventForm
               event={event}
-              canAssignOrganizer={canAssignOrganizers(plan)}
+              canAssignOrganizer={canAssignOrganizers(plan, profile?.role)}
               accountOrganizerName={accountOrganizerName}
             />
           </div>
