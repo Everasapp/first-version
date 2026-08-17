@@ -14,12 +14,24 @@ export default function AccediPage() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [registerHref, setRegisterHref] = useState("/registrati");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("error") === "conferma") {
       setErrorMessage(
         "Il link di conferma non è valido o è scaduto. Richiedi una nuova email di conferma oppure registrati di nuovo.",
+      );
+    }
+
+    const redirectParam = params.get("redirect");
+    if (
+      redirectParam &&
+      redirectParam.startsWith("/") &&
+      !redirectParam.startsWith("//")
+    ) {
+      setRegisterHref(
+        `/registrati?redirect=${encodeURIComponent(redirectParam)}`,
       );
     }
   }, []);
@@ -156,7 +168,7 @@ export default function AccediPage() {
           <p className="mt-7 text-center text-sm text-slate-600">
             Non hai ancora un account?{" "}
             <Link
-              href="/registrati"
+              href={registerHref}
               className="font-bold text-[#075EAE] hover:underline"
             >
               Registrati

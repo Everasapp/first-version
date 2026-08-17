@@ -34,6 +34,7 @@ import {
   eventMatchesDashboardSearch,
   getEventBucket,
   parseDashboardFilter,
+  parseDashboardFlag,
   parseDashboardSearchDate,
   parseDashboardSearchQuery,
   type DashboardEventStatus,
@@ -72,6 +73,7 @@ type DashboardPageProps = {
     filtro?: string | string[];
     cerca?: string | string[];
     data?: string | string[];
+    rivendicato?: string | string[];
   }>;
 };
 
@@ -400,6 +402,7 @@ async function OrganizerDashboard({
   const searchQuery = parseDashboardSearchQuery(params.cerca);
   const searchDate = parseDashboardSearchDate(params.data);
   const hasSearch = Boolean(searchQuery || searchDate);
+  const justClaimed = parseDashboardFlag(params.rivendicato);
 
   const [{ data, error }, planResult] = await Promise.all([
     supabase
@@ -553,6 +556,12 @@ async function OrganizerDashboard({
         </section>
 
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+          {justClaimed ? (
+            <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+              Profilo rivendicato. Da qui puoi modificare gli eventi e
+              pubblicarne di nuovi.
+            </div>
+          ) : null}
           <div className="grid gap-4 sm:grid-cols-3">
             {filters.map((filter) => {
               const Icon = filter.icon;

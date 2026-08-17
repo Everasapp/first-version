@@ -72,6 +72,11 @@ export function parseDashboardSearchDate(
   return trimmed;
 }
 
+export function parseDashboardFlag(value: string | string[] | undefined) {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return raw === "1" || raw === "true";
+}
+
 function eventStartDayRome(startAt: string): string {
   const date = new Date(startAt);
   if (Number.isNaN(date.getTime())) return "";

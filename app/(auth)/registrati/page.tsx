@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { categories } from "@/src/data/categories";
@@ -10,6 +10,19 @@ import { cities } from "@/src/data/cities";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
+
+function safeRedirectPath() {
+  const params = new URLSearchParams(window.location.search);
+  const redirectParam = params.get("redirect");
+  if (
+    redirectParam &&
+    redirectParam.startsWith("/") &&
+    !redirectParam.startsWith("//")
+  ) {
+    return redirectParam;
+  }
+  return "/dashboard";
+}
 
 export default function RegistratiPage() {
   const router = useRouter();
@@ -23,6 +36,19 @@ export default function RegistratiPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loginHref, setLoginHref] = useState("/accedi");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get("redirect");
+    if (
+      redirectParam &&
+      redirectParam.startsWith("/") &&
+      !redirectParam.startsWith("//")
+    ) {
+      setLoginHref(`/accedi?redirect=${encodeURIComponent(redirectParam)}`);
+    }
+  }, []);
 
   const sortedCities = useMemo(
     () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
@@ -53,6 +79,7 @@ export default function RegistratiPage() {
 
     setIsLoading(true);
     const supabase = createClient();
+    const nextPath = safeRedirectPath();
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
@@ -63,7 +90,7 @@ export default function RegistratiPage() {
           newsletter_city: newsletterOptIn ? newsletterCity : null,
           newsletter_category: newsletterOptIn ? newsletterCategory : null,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
       },
     });
 
@@ -86,7 +113,7 @@ export default function RegistratiPage() {
     }
 
     if (data.session) {
-      router.push("/dashboard");
+      router.push(nextPath);
       router.refresh();
       return;
     }
@@ -320,7 +347,7 @@ export default function RegistratiPage() {
           <p className="mt-7 text-center text-sm text-slate-600">
             Hai già un account?{" "}
             <Link
-              href="/accedi"
+              href={loginHref}
               className="font-bold text-[#075EAE] hover:underline"
             >
               Accedi

@@ -13,6 +13,7 @@ import {
 import CalendarButton from "@/src/components/events/CalendarButton";
 import EventDescription from "@/src/components/events/EventDescription";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
+import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import AdminEventViewOnce from "@/src/components/events/AdminEventViewOnce";
@@ -37,6 +38,10 @@ import {
   getCurrentUserFollowedOrganizerIds,
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
+import {
+  isDirectoryUnclaimed,
+  parseOrganizerDirectoryPublic,
+} from "@/src/lib/organizer-claim";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
@@ -81,6 +86,7 @@ type EventRow = {
   is_featured: boolean;
   organizer_id: string;
   organizer_display_name: string | null;
+  organizer_directory_id: string | null;
 };
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -189,7 +195,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -230,6 +236,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     calendarIds,
     followedIds,
     { data: organizerData },
+    { data: directoryData },
   ] = await Promise.all([
     supabase
       .from("events")
@@ -249,6 +256,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
       .select(PROFILE_SELECT)
       .eq("id", event.organizer_id)
       .maybeSingle(),
+    event.organizer_directory_id
+      ? supabase
+          .from("organizer_directory_public")
+          .select("id, name, claim_status, claimed_by_profile_id")
+          .eq("id", event.organizer_directory_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
   ]);
 
   if (similarError) {
@@ -256,22 +270,36 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const organizer = (organizerData as Profile | null) ?? null;
+  const directory = parseOrganizerDirectoryPublic(directoryData);
   const profileOrganizerName = organizer
     ? getOrganizerDisplayName(organizer)
     : "Organizzatore";
   const organizerName =
-    event.organizer_display_name?.trim() || profileOrganizerName;
+    event.organizer_display_name?.trim() ||
+    directory?.name?.trim() ||
+    profileOrganizerName;
   const customOrganizerName = event.organizer_display_name?.trim() || "";
   const isCustomOrganizerName =
     customOrganizerName.length > 0 &&
     customOrganizerName.toLocaleLowerCase("it") !==
       profileOrganizerName.toLocaleLowerCase("it");
+  const showClaimButton = isDirectoryUnclaimed(directory);
+  const followOrganizerId = showClaimButton
+    ? null
+    : directory?.claimed_by_profile_id ??
+      (isCustomOrganizerName ? null : organizer?.id ?? null);
+  const organizerHref = followOrganizerId
+    ? `/organizzatori/${followOrganizerId}`
+    : null;
   const showOrganizerPlace =
     !isCustomOrganizerName &&
+    !showClaimButton &&
     Boolean(organizer?.municipality || organizer?.province);
   const isFavorite = favoriteIds.has(event.id);
   const inCalendar = calendarIds.has(event.id);
-  const isFollowing = followedIds.has(event.organizer_id);
+  const isFollowing = followOrganizerId
+    ? followedIds.has(followOrganizerId)
+    : false;
 
   const similarEvents = ((similarData ?? []) as EventRow[]).map((item) =>
     mapEventForCard(item, favoriteIds.has(item.id)),
@@ -465,7 +493,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
               </div>
             </div>
 
-            {organizer ? (
+            {organizer || directory ? (
               <div className="flex flex-col gap-4 border-b border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3">
                   <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-50 text-[#075EAE]">
@@ -475,27 +503,46 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     <p className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
                       Organizzatore
                     </p>
-                    <Link
-                      href={`/organizzatori/${organizer.id}`}
-                      className="mt-1 text-xl font-bold text-slate-900 hover:text-[#075EAE]"
-                    >
-                      {organizerName}
-                    </Link>
-                    {showOrganizerPlace ? (
+                    {organizerHref ? (
+                      <Link
+                        href={organizerHref}
+                        className="mt-1 text-xl font-bold text-slate-900 hover:text-[#075EAE]"
+                      >
+                        {organizerName}
+                      </Link>
+                    ) : (
+                      <p className="mt-1 text-xl font-bold text-slate-900">
+                        {organizerName}
+                      </p>
+                    )}
+                    {showOrganizerPlace && organizer ? (
                       <p className="mt-1 text-sm text-slate-600">
                         {[organizer.municipality, organizer.province]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
                     ) : null}
+                    {showClaimButton ? (
+                      <p className="mt-1 text-sm text-slate-500">
+                        Sei tu? Rivendica il profilo per modificare questo
+                        evento e pubblicarne altri.
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
-                <FollowOrganizerButton
-                  organizerId={organizer.id}
-                  organizerName={organizerName}
-                  initialIsFollowing={isFollowing}
-                />
+                {showClaimButton && directory ? (
+                  <ClaimOrganizerButton
+                    directoryId={directory.id}
+                    organizerName={organizerName}
+                  />
+                ) : followOrganizerId ? (
+                  <FollowOrganizerButton
+                    organizerId={followOrganizerId}
+                    organizerName={organizerName}
+                    initialIsFollowing={isFollowing}
+                  />
+                ) : null}
               </div>
             ) : null}
 
