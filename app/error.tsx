@@ -1,6 +1,6 @@
 "use client";
 
-export default function AdminError({
+export default function AppError({
   error,
   unstable_retry,
   reset,
@@ -12,12 +12,12 @@ export default function AdminError({
   const retry = unstable_retry ?? reset;
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
+    <div className="mx-auto max-w-xl px-5 py-16 text-center sm:px-8">
       <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-        Questa pagina admin non si è caricata
+        Questa pagina non si è caricata
       </h1>
       <p className="mt-3 text-slate-600">
-        Errore inatteso. Riprova tra qualche secondo.
+        Errore inatteso sul server. Riprova tra qualche secondo.
       </p>
       {error.digest ? (
         <p className="mt-2 text-xs text-slate-400">Codice: {error.digest}</p>

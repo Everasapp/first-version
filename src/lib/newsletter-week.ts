@@ -36,6 +36,23 @@ export type NewsletterSubscriber = {
   newsletter_unsub_token: string;
 };
 
+type NewsletterRecipient = NewsletterSubscriber & {
+  email: string | null;
+  emailConfirmed: boolean;
+};
+
+type NewsletterRecipientRow = {
+  id: string;
+  full_name: string | null;
+  municipality: string | null;
+  province: string | null;
+  newsletter_city: string | null;
+  newsletter_category: string | null;
+  newsletter_unsub_token: string;
+  email: string | null;
+  email_confirmed: boolean | null;
+};
+
 export type NewsletterPreview = {
   userId: string;
   fullName: string | null;
@@ -249,6 +266,122 @@ export async function loadNewsletterSubscribers(supabase?: SupabaseClient) {
   return (data ?? []) as NewsletterSubscriber[];
 }
 
+function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
+  return {
+    id: row.id,
+    full_name: row.full_name,
+    municipality: row.municipality,
+    province: row.province,
+    newsletter_city: row.newsletter_city,
+    newsletter_category: row.newsletter_category,
+    newsletter_unsub_token: String(row.newsletter_unsub_token ?? ""),
+    email: row.email?.trim() || null,
+    emailConfirmed: Boolean(row.email_confirmed),
+  };
+}
+
+async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
+  recipients: NewsletterRecipient[];
+  writeMode: "rpc" | "admin";
+  writeClient: SupabaseClient;
+}> {
+  if (sessionClient) {
+    const { data, error } = await sessionClient.rpc("admin_newsletter_recipients");
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return {
+      recipients: ((data ?? []) as NewsletterRecipientRow[]).map(mapRpcRecipient),
+      writeMode: "rpc",
+      writeClient: sessionClient,
+    };
+  }
+
+  const admin = tryCreateAdminClient();
+  if (!admin) {
+    throw new Error(
+      "Per l'invio automatico manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
+    );
+  }
+
+  const subscribers = await loadNewsletterSubscribers(admin);
+  const recipients: NewsletterRecipient[] = [];
+
+  for (const subscriber of subscribers) {
+    const { data: userData, error: userError } =
+      await admin.auth.admin.getUserById(subscriber.id);
+
+    if (userError) {
+      recipients.push({
+        ...subscriber,
+        email: null,
+        emailConfirmed: false,
+      });
+      continue;
+    }
+
+    recipients.push({
+      ...subscriber,
+      email: userData.user?.email ?? null,
+      emailConfirmed: Boolean(userData.user?.email_confirmed_at),
+    });
+  }
+
+  return {
+    recipients,
+    writeMode: "admin",
+    writeClient: admin,
+  };
+}
+
+async function recordNewsletterSend(
+  client: SupabaseClient,
+  mode: "rpc" | "admin",
+  payload: {
+    userId: string;
+    eventsCount: number;
+    status: "sent" | "skipped" | "failed";
+    errorMessage?: string | null;
+  },
+) {
+  if (mode === "rpc") {
+    const { error } = await client.rpc("admin_record_newsletter_send", {
+      p_user_id: payload.userId,
+      p_events_count: payload.eventsCount,
+      p_status: payload.status,
+      p_error_message: payload.errorMessage ?? null,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+    return;
+  }
+
+  const { error: insertError } = await client.from("newsletter_sends").insert({
+    user_id: payload.userId,
+    events_count: payload.eventsCount,
+    status: payload.status,
+    error_message: payload.errorMessage ?? null,
+  });
+  if (insertError) {
+    throw new Error(insertError.message);
+  }
+
+  if (payload.status === "sent") {
+    const { error: updateError } = await client
+      .from("profiles")
+      .update({
+        newsletter_last_sent_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", payload.userId);
+    if (updateError) {
+      throw new Error(updateError.message);
+    }
+  }
+}
+
 export function composeSubscriberNewsletter({
   subscriber,
   email,
@@ -357,32 +490,23 @@ export async function runWeeklyNewsletter(options?: {
     return summary;
   }
 
-  const subscribers = await loadNewsletterSubscribers(sessionClient);
-  summary.subscribers = subscribers.length;
+  const { recipients, writeMode, writeClient } =
+    await loadRecipientsForSend(sessionClient);
+  summary.subscribers = recipients.length;
 
-  const supabase = tryCreateAdminClient();
-  if (!supabase) {
-    throw new Error(
-      "Per inviare a tutti gli iscritti manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
-    );
-  }
-
-  for (const subscriber of subscribers) {
+  for (const recipient of recipients) {
     try {
-      const { data: userData, error: userError } =
-        await supabase.auth.admin.getUserById(subscriber.id);
-
-      if (userError || !userData.user?.email) {
-        throw new Error(userError?.message || "Email utente non trovata");
+      if (!recipient.email) {
+        throw new Error("Email utente non trovata");
       }
 
-      if (!userData.user.email_confirmed_at) {
+      if (!recipient.emailConfirmed) {
         if (!dryRun) {
-          await supabase.from("newsletter_sends").insert({
-            user_id: subscriber.id,
-            events_count: 0,
+          await recordNewsletterSend(writeClient, writeMode, {
+            userId: recipient.id,
+            eventsCount: 0,
             status: "skipped",
-            error_message: "Email non confermata",
+            errorMessage: "Email non confermata",
           });
         }
         summary.skipped += 1;
@@ -390,8 +514,8 @@ export async function runWeeklyNewsletter(options?: {
       }
 
       const preview = composeSubscriberNewsletter({
-        subscriber,
-        email: userData.user.email,
+        subscriber: recipient,
+        email: recipient.email,
         events,
         weekLabel: week.label,
         siteUrl,
@@ -399,11 +523,11 @@ export async function runWeeklyNewsletter(options?: {
 
       if (preview.eventsCount === 0) {
         if (!dryRun) {
-          await supabase.from("newsletter_sends").insert({
-            user_id: subscriber.id,
-            events_count: 0,
+          await recordNewsletterSend(writeClient, writeMode, {
+            userId: recipient.id,
+            eventsCount: 0,
             status: "skipped",
-            error_message: preview.skippedReason,
+            errorMessage: preview.skippedReason,
           });
         }
         summary.skipped += 1;
@@ -412,22 +536,15 @@ export async function runWeeklyNewsletter(options?: {
 
       if (!dryRun) {
         await sendNewsletterEmail(
-          userData.user.email,
+          recipient.email,
           preview.subject,
           preview.html,
         );
-        await supabase.from("newsletter_sends").insert({
-          user_id: subscriber.id,
-          events_count: preview.eventsCount,
+        await recordNewsletterSend(writeClient, writeMode, {
+          userId: recipient.id,
+          eventsCount: preview.eventsCount,
           status: "sent",
         });
-        await supabase
-          .from("profiles")
-          .update({
-            newsletter_last_sent_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", subscriber.id);
         await sleep(120);
       }
 
@@ -436,15 +553,19 @@ export async function runWeeklyNewsletter(options?: {
       const message =
         error instanceof Error ? error.message : "Errore sconosciuto";
       summary.failed += 1;
-      summary.errors.push({ userId: subscriber.id, error: message });
+      summary.errors.push({ userId: recipient.id, error: message });
 
       if (!dryRun) {
-        await supabase.from("newsletter_sends").insert({
-          user_id: subscriber.id,
-          events_count: 0,
-          status: "failed",
-          error_message: message,
-        });
+        try {
+          await recordNewsletterSend(writeClient, writeMode, {
+            userId: recipient.id,
+            eventsCount: 0,
+            status: "failed",
+            errorMessage: message,
+          });
+        } catch {
+          // Keep the original send error; recording is best-effort.
+        }
       }
     }
   }
