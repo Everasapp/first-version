@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     const summary = await runWeeklyNewsletter({
       dryRun: Boolean(body.dryRun),
       testEmail: body.testEmail ?? null,
+      supabase: auth.supabase,
     });
     return NextResponse.json({ ok: true, ...summary });
   } catch (error) {

@@ -20,7 +20,7 @@ import {
   type NewsletterEvent,
 } from "@/src/lib/newsletter";
 import { getSiteUrl } from "@/src/lib/notifications/config";
-import { createAdminClient } from "@/src/lib/supabase/admin";
+import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
 const ROME_TZ = "Europe/Rome";
 const MAX_EVENTS = 8;
@@ -311,17 +311,17 @@ async function sendNewsletterEmail(to: string, subject: string, html: string) {
 export async function runWeeklyNewsletter(options?: {
   dryRun?: boolean;
   testEmail?: string | null;
+  supabase?: SupabaseClient;
 }): Promise<WeeklyNewsletterSummary> {
   const dryRun = Boolean(options?.dryRun);
   const testEmail = options?.testEmail?.trim().toLowerCase() || null;
-  const supabase = createAdminClient();
-  const { week, events } = await loadWeekEvents();
-  const subscribers = await loadNewsletterSubscribers();
+  const sessionClient = options?.supabase;
+  const { week, events } = await loadWeekEvents(new Date(), sessionClient);
   const siteUrl = getSiteUrl();
 
   const summary: WeeklyNewsletterSummary = {
     weekLabel: week.label,
-    subscribers: subscribers.length,
+    subscribers: 0,
     sent: 0,
     skipped: 0,
     failed: 0,
@@ -347,10 +347,24 @@ export async function runWeeklyNewsletter(options?: {
     });
 
     if (!dryRun) {
-      await sendNewsletterEmail(testEmail, preview.subject, preview.html);
+      await sendNewsletterEmail(
+        testEmail,
+        `[TEST] ${preview.subject}`,
+        preview.html,
+      );
     }
     summary.sent = 1;
     return summary;
+  }
+
+  const subscribers = await loadNewsletterSubscribers(sessionClient);
+  summary.subscribers = subscribers.length;
+
+  const supabase = tryCreateAdminClient();
+  if (!supabase) {
+    throw new Error(
+      "Per inviare a tutti gli iscritti manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
+    );
   }
 
   for (const subscriber of subscribers) {

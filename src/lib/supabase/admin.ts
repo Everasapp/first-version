@@ -1,13 +1,19 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-export function createAdminClient() {
+function getServiceRoleKey() {
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_SECRET_KEY?.trim() ||
+    ""
+  );
+}
+
+export function tryCreateAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = getServiceRoleKey();
 
   if (!url || !serviceRoleKey) {
-    throw new Error(
-      "Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL for admin client.",
-    );
+    return null;
   }
 
   return createSupabaseClient(url, serviceRoleKey, {
@@ -16,4 +22,15 @@ export function createAdminClient() {
       persistSession: false,
     },
   });
+}
+
+export function createAdminClient() {
+  const client = tryCreateAdminClient();
+  if (!client) {
+    throw new Error(
+      "Manca SUPABASE_SERVICE_ROLE_KEY su Vercel. Aggiungila in Project → Settings → Environment Variables.",
+    );
+  }
+
+  return client;
 }
