@@ -261,6 +261,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
     : "Organizzatore";
   const organizerName =
     event.organizer_display_name?.trim() || profileOrganizerName;
+  const isCustomOrganizerName =
+    Boolean(event.organizer_display_name?.trim()) &&
+    event.organizer_display_name.trim().toLocaleLowerCase("it") !==
+      profileOrganizerName.toLocaleLowerCase("it");
+  const showOrganizerPlace =
+    !isCustomOrganizerName &&
+    Boolean(organizer?.municipality || organizer?.province);
   const isFavorite = favoriteIds.has(event.id);
   const inCalendar = calendarIds.has(event.id);
   const isFollowing = followedIds.has(event.organizer_id);
@@ -473,13 +480,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     >
                       {organizerName}
                     </Link>
-                    {(organizer.municipality || organizer.province) && (
+                    {showOrganizerPlace ? (
                       <p className="mt-1 text-sm text-slate-600">
                         {[organizer.municipality, organizer.province]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
-                    )}
+                    ) : null}
                   </div>
                 </div>
 
