@@ -2,32 +2,35 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, use, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import {
+  buildAuthHref,
+  parseSafeRedirectPath,
+  parseSignupEmail,
+} from "@/src/lib/auth-urls";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
 
-function safeRedirectPath() {
-  const params = new URLSearchParams(window.location.search);
-  const redirectParam = params.get("redirect");
-  if (
-    redirectParam &&
-    redirectParam.startsWith("/") &&
-    !redirectParam.startsWith("//")
-  ) {
-    return redirectParam;
-  }
-  return "/dashboard";
-}
+type RegistratiPageProps = {
+  searchParams: Promise<{
+    redirect?: string | string[];
+    email?: string | string[];
+  }>;
+};
 
-export default function RegistratiPage() {
+export default function RegistratiPage({ searchParams }: RegistratiPageProps) {
+  const params = use(searchParams);
+  const redirectPath = parseSafeRedirectPath(params.redirect);
+  const initialEmail = parseSignupEmail(params.email);
+  const isClaimSignup = redirectPath.startsWith("/rivendica/");
   const router = useRouter();
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
@@ -36,19 +39,10 @@ export default function RegistratiPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [loginHref, setLoginHref] = useState("/accedi");
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const redirectParam = params.get("redirect");
-    if (
-      redirectParam &&
-      redirectParam.startsWith("/") &&
-      !redirectParam.startsWith("//")
-    ) {
-      setLoginHref(`/accedi?redirect=${encodeURIComponent(redirectParam)}`);
-    }
-  }, []);
+  const loginHref = buildAuthHref("/accedi", {
+    redirect: redirectPath,
+    email,
+  });
 
   const sortedCities = useMemo(
     () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
@@ -79,7 +73,7 @@ export default function RegistratiPage() {
 
     setIsLoading(true);
     const supabase = createClient();
-    const nextPath = safeRedirectPath();
+    const nextPath = redirectPath;
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
@@ -97,7 +91,9 @@ export default function RegistratiPage() {
     if (error) {
       setErrorMessage(
         error.message === "User already registered"
-          ? "Esiste già un account associato a questa email."
+          ? isClaimSignup
+            ? "Esiste già un account associato a questa email. Accedi per rivendicare il profilo."
+            : "Esiste già un account associato a questa email."
           : error.message,
       );
       setIsLoading(false);
@@ -157,8 +153,9 @@ export default function RegistratiPage() {
               Crea il tuo account
             </h1>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Registrati come utente. Se un giorno vorrai pubblicare eventi,
-              potrai diventare organizzatore con lo stesso account.
+              {isClaimSignup
+                ? "Crea un account per rivendicare il profilo organizzatore. Dopo la registrazione tornerai alla pagina di rivendicazione."
+                : "Registrati come utente. Se un giorno vorrai pubblicare eventi, potrai diventare organizzatore con lo stesso account."}
             </p>
           </div>
 
@@ -352,6 +349,7 @@ export default function RegistratiPage() {
             >
               Accedi
             </Link>
+            {isClaimSignup ? " per rivendicare il profilo." : ""}
           </p>
 
           <div className="mt-6 border-t border-slate-200 pt-6 text-center">

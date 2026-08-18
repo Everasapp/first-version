@@ -1,3 +1,9 @@
+import {
+  isOutreachEmail,
+  splitEmailField,
+} from "@/src/lib/admin/export-emails";
+import { tryCreateAdminClient } from "@/src/lib/supabase/admin";
+
 export type OrganizerDirectoryPublic = {
   id: string;
   name: string;
@@ -39,4 +45,37 @@ export function parseOrganizerDirectoryPublic(
         ? row.claimed_by_profile_id
         : null,
   };
+}
+
+export async function getSuggestedClaimEmail(directoryId: string) {
+  const admin = tryCreateAdminClient();
+  if (!admin) {
+    return null;
+  }
+
+  const { data, error } = await admin
+    .from("organizer_directory")
+    .select("email, email_eventi, email_cultura, email_turismo")
+    .eq("id", directoryId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const fields = [
+    data.email_eventi,
+    data.email,
+    data.email_cultura,
+    data.email_turismo,
+  ];
+
+  for (const field of fields) {
+    const match = splitEmailField(field).find(isOutreachEmail);
+    if (match) {
+      return match;
+    }
+  }
+
+  return null;
 }

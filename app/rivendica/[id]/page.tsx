@@ -4,12 +4,15 @@ import { Building2 } from "lucide-react";
 
 import ClaimOrganizerForm from "@/src/components/events/ClaimOrganizerForm";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { getProfileForUser } from "@/src/lib/auth";
+import { buildAuthHref } from "@/src/lib/auth-urls";
 import {
+  getSuggestedClaimEmail,
   isDirectoryUnclaimed,
   parseOrganizerDirectoryPublic,
 } from "@/src/lib/organizer-claim";
 import { isOrganizer } from "@/src/lib/profile";
+import { createClient } from "@/src/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +26,23 @@ export default async function ClaimOrganizerPage({
   params,
 }: ClaimOrganizerPageProps) {
   const { id } = await params;
-  const { supabase, user, profile } = await requireProfile(`/rivendica/${id}`);
+  const claimPath = `/rivendica/${id}`;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    const email = await getSuggestedClaimEmail(id);
+    redirect(buildAuthHref("/registrati", { redirect: claimPath, email }));
+  }
+
+  const profile = await getProfileForUser(supabase, user.id);
+  if (!profile) {
+    await supabase.auth.signOut();
+    const email = await getSuggestedClaimEmail(id);
+    redirect(buildAuthHref("/registrati", { redirect: claimPath, email }));
+  }
 
   const { data, error } = await supabase
     .from("organizer_directory_public")

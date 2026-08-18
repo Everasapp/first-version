@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { buildAuthHref } from "@/src/lib/auth-urls";
 import {
   PROFILE_SELECT,
   type Profile,
@@ -23,7 +24,7 @@ export async function requireUser(redirectTo: string) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(`/accedi?redirect=${encodeURIComponent(redirectTo)}`);
+    redirect(buildAuthHref("/accedi", { redirect: redirectTo }));
   }
 
   return { supabase, user };
@@ -57,7 +58,7 @@ export async function requireProfile(redirectTo: string) {
 
   if (!profile) {
     await supabase.auth.signOut();
-    redirect(`/accedi?redirect=${encodeURIComponent(redirectTo)}`);
+    redirect(buildAuthHref("/accedi", { redirect: redirectTo }));
   }
 
   return { supabase, user, profile };

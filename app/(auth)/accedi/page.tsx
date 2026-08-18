@@ -2,39 +2,42 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  buildAuthHref,
+  parseSafeRedirectPath,
+  parseSignupEmail,
+} from "@/src/lib/auth-urls";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { createClient } from "@/src/lib/supabase/client";
 
-export default function AccediPage() {
+type AccediPageProps = {
+  searchParams: Promise<{
+    redirect?: string | string[];
+    email?: string | string[];
+    error?: string | string[];
+  }>;
+};
+
+export default function AccediPage({ searchParams }: AccediPageProps) {
+  const params = use(searchParams);
+  const redirectPath = parseSafeRedirectPath(params.redirect);
+  const initialEmail = parseSignupEmail(params.email);
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(
+    (Array.isArray(params.error) ? params.error[0] : params.error) === "conferma"
+      ? "Il link di conferma non è valido o è scaduto. Richiedi una nuova email di conferma oppure registrati di nuovo."
+      : "",
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [registerHref, setRegisterHref] = useState("/registrati");
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("error") === "conferma") {
-      setErrorMessage(
-        "Il link di conferma non è valido o è scaduto. Richiedi una nuova email di conferma oppure registrati di nuovo.",
-      );
-    }
-
-    const redirectParam = params.get("redirect");
-    if (
-      redirectParam &&
-      redirectParam.startsWith("/") &&
-      !redirectParam.startsWith("//")
-    ) {
-      setRegisterHref(
-        `/registrati?redirect=${encodeURIComponent(redirectParam)}`,
-      );
-    }
-  }, []);
+  const registerHref = buildAuthHref("/registrati", {
+    redirect: redirectPath,
+    email,
+  });
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,17 +64,7 @@ export default function AccediPage() {
     }
 
     markEverasAccountKnown();
-
-    const params = new URLSearchParams(window.location.search);
-    const redirectParam = params.get("redirect");
-    const next =
-      redirectParam &&
-      redirectParam.startsWith("/") &&
-      !redirectParam.startsWith("//")
-        ? redirectParam
-        : "/dashboard";
-
-    router.push(next);
+    router.push(redirectPath);
     router.refresh();
   }
 
@@ -100,7 +93,9 @@ export default function AccediPage() {
             </h1>
 
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Accedi al tuo account per pubblicare e gestire i tuoi eventi.
+              {redirectPath.startsWith("/rivendica/")
+                ? "Accedi per rivendicare il profilo organizzatore."
+                : "Accedi al tuo account per pubblicare e gestire i tuoi eventi."}
             </p>
           </div>
 
