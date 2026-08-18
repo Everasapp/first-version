@@ -242,9 +242,9 @@ export default function NewCampaignForm() {
           disabled={isSending}
         />
         <p className="mt-2 text-xs text-slate-500">
-          Verrà inviato da{" "}
-          <strong>EVERAS &lt;info@mail.everas.it&gt;</strong> (dominio Resend
-          verificato). Le risposte vanno a info@everas.it.
+          Gli indirizzi web e le email nel testo diventano cliccabili. Verrà
+          inviato da <strong>EVERAS &lt;info@mail.everas.it&gt;</strong> (dominio
+          Resend verificato). Le risposte vanno a info@everas.it.
         </p>
       </label>
 

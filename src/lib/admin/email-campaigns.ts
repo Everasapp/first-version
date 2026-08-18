@@ -136,6 +136,70 @@ export function validateCampaignAttachments(
   return null;
 }
 
+const CAMPAIGN_LINK_STYLE =
+  "color:#075EAE;text-decoration:underline;word-break:break-word;";
+
+const CAMPAIGN_TOKEN_RE =
+  /(https?:\/\/[^\s]+|www\.[^\s]+|[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+)/gi;
+
+function isSafeHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function splitTrailingPunctuation(value: string) {
+  const match = /[),.!?:;]+$/.exec(value);
+  if (!match) {
+    return { token: value, trailing: "" };
+  }
+  return {
+    token: value.slice(0, -match[0].length),
+    trailing: match[0],
+  };
+}
+
+function campaignAnchor(href: string, label: string) {
+  return `<a href="${escapeHtml(href)}" style="${CAMPAIGN_LINK_STYLE}">${escapeHtml(label)}</a>`;
+}
+
+function linkifyCampaignToken(token: string) {
+  const lower = token.toLowerCase();
+  if (lower.startsWith("https://") || lower.startsWith("http://")) {
+    return isSafeHttpUrl(token) ? campaignAnchor(token, token) : escapeHtml(token);
+  }
+  if (lower.startsWith("www.")) {
+    const href = `https://${token}`;
+    return isSafeHttpUrl(href) ? campaignAnchor(href, token) : escapeHtml(token);
+  }
+  if (EMAIL_RE.test(token)) {
+    return campaignAnchor(`mailto:${token}`, token);
+  }
+  return escapeHtml(token);
+}
+
+export function linkifyCampaignMessage(message: string) {
+  let html = "";
+  let lastIndex = 0;
+
+  for (const match of message.matchAll(CAMPAIGN_TOKEN_RE)) {
+    const raw = match[0];
+    const index = match.index ?? 0;
+    html += escapeHtml(message.slice(lastIndex, index)).replaceAll("\n", "<br />");
+
+    const { token, trailing } = splitTrailingPunctuation(raw);
+    html +=
+      (token ? linkifyCampaignToken(token) : "") + escapeHtml(trailing);
+    lastIndex = index + raw.length;
+  }
+
+  html += escapeHtml(message.slice(lastIndex)).replaceAll("\n", "<br />");
+  return html;
+}
+
 export function buildCampaignHtml(
   subject: string,
   message: string,
@@ -143,7 +207,7 @@ export function buildCampaignHtml(
 ) {
   const siteUrl = getSiteUrl();
   const logoUrl = `${siteUrl}/images/everas-logo-v2.png`;
-  const bodyHtml = escapeHtml(message).replaceAll("\n", "<br />");
+  const bodyHtml = linkifyCampaignMessage(message);
 
   const imagesHtml =
     inlineImages.length > 0
