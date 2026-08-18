@@ -32,11 +32,23 @@ type SelectedAttachment = {
   previewUrl?: string;
 };
 
-export default function NewCampaignForm() {
+type NewCampaignFormProps = {
+  initialSubject?: string;
+  initialMessage?: string;
+  initialRecipients?: string;
+  isForward?: boolean;
+};
+
+export default function NewCampaignForm({
+  initialSubject = "",
+  initialMessage = "",
+  initialRecipients = "",
+  isForward = false,
+}: NewCampaignFormProps) {
   const router = useRouter();
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const [recipientsText, setRecipientsText] = useState("");
+  const [subject, setSubject] = useState(initialSubject);
+  const [message, setMessage] = useState(initialMessage);
+  const [recipientsText, setRecipientsText] = useState(initialRecipients);
   const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -219,6 +231,14 @@ export default function NewCampaignForm() {
       onSubmit={handleSend}
       className="mt-8 space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
     >
+      {isForward ? (
+        <p className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+          Stai inoltrando una campagna precedente. Puoi cambiare destinatari,
+          oggetto e testo, poi invii un nuovo messaggio. Gli allegati non
+          vengono copiati: se servono, caricali di nuovo.
+        </p>
+      ) : null}
+
       <label className="block">
         <span className="text-sm font-bold text-slate-900">Oggetto</span>
         <input
@@ -331,6 +351,11 @@ export default function NewCampaignForm() {
             <span className="text-sm font-bold text-slate-900">
               Destinatari
             </span>
+            {isForward ? (
+              <span className="mt-1 block text-xs font-normal text-slate-500">
+                Puoi sostituire, aggiungere o togliere email prima di inviare.
+              </span>
+            ) : null}
             <textarea
               rows={8}
               value={recipientsText}

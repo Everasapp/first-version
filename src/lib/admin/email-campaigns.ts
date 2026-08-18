@@ -79,6 +79,19 @@ export function isValidCampaignEmail(email: string) {
   return EMAIL_RE.test(email.trim().toLowerCase());
 }
 
+export function parseCampaignId(value: string | string[] | undefined) {
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (
+    !raw ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      raw,
+    )
+  ) {
+    return null;
+  }
+  return raw;
+}
+
 export function isImageContentType(contentType: string) {
   return contentType.startsWith("image/");
 }

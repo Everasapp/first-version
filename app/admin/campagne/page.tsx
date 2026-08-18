@@ -141,13 +141,21 @@ export default async function AdminCampagnePage() {
                     </Link>
                   </td>
                   <td className="px-4 py-3">
-                    <DeleteCampaignButton
-                      campaignId={campaign.id}
-                      subject={campaign.subject}
-                      redirectToList={false}
-                      isSending={campaign.status === "sending"}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link
+                        href={`/admin/campagne/nuova?from=${campaign.id}`}
+                        className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+                      >
+                        Inoltra
+                      </Link>
+                      <DeleteCampaignButton
+                        campaignId={campaign.id}
+                        subject={campaign.subject}
+                        redirectToList={false}
+                        isSending={campaign.status === "sending"}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}

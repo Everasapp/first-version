@@ -84,6 +84,12 @@ export default async function AdminCampagnaDetailPage({ params }: PageProps) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link
+            href={`/admin/campagne/nuova?from=${row.id}`}
+            className="rounded-xl bg-[#E67E22] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
+          >
+            Inoltra campagna
+          </Link>
+          <Link
             href="/admin/campagne/nuova"
             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
           >
