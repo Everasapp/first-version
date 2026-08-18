@@ -29,6 +29,13 @@ export function parseSafeRedirectPath(
   return raw;
 }
 
+export function parseClaimDirectoryId(path: string) {
+  const match = /^\/rivendica\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.exec(
+    path,
+  );
+  return match?.[1] ?? null;
+}
+
 export function buildAuthHref(
   path: "/accedi" | "/registrati",
   options: { redirect?: string | null; email?: string | null } = {},

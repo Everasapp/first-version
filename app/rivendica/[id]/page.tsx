@@ -33,14 +33,14 @@ export default async function ClaimOrganizerPage({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const email = await getSuggestedClaimEmail(id);
+    const email = await getSuggestedClaimEmail(supabase, id);
     redirect(buildAuthHref("/registrati", { redirect: claimPath, email }));
   }
 
   const profile = await getProfileForUser(supabase, user.id);
   if (!profile) {
     await supabase.auth.signOut();
-    const email = await getSuggestedClaimEmail(id);
+    const email = await getSuggestedClaimEmail(supabase, id);
     redirect(buildAuthHref("/registrati", { redirect: claimPath, email }));
   }
 

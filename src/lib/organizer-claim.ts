@@ -1,8 +1,4 @@
-import {
-  isOutreachEmail,
-  splitEmailField,
-} from "@/src/lib/admin/export-emails";
-import { tryCreateAdminClient } from "@/src/lib/supabase/admin";
+import { parseSignupEmail } from "@/src/lib/auth-urls";
 
 export type OrganizerDirectoryPublic = {
   id: string;
@@ -47,35 +43,23 @@ export function parseOrganizerDirectoryPublic(
   };
 }
 
-export async function getSuggestedClaimEmail(directoryId: string) {
-  const admin = tryCreateAdminClient();
-  if (!admin) {
+export async function getSuggestedClaimEmail(
+  supabase: {
+    rpc: (
+      fn: string,
+      args: { p_directory_id: string },
+    ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+  },
+  directoryId: string,
+) {
+  const { data, error } = await supabase.rpc("suggested_claim_email", {
+    p_directory_id: directoryId,
+  });
+
+  if (error) {
+    console.error("Impossibile caricare l'email organizzatore:", error.message);
     return null;
   }
 
-  const { data, error } = await admin
-    .from("organizer_directory")
-    .select("email, email_eventi, email_cultura, email_turismo")
-    .eq("id", directoryId)
-    .maybeSingle();
-
-  if (error || !data) {
-    return null;
-  }
-
-  const fields = [
-    data.email_eventi,
-    data.email,
-    data.email_cultura,
-    data.email_turismo,
-  ];
-
-  for (const field of fields) {
-    const match = splitEmailField(field).find(isOutreachEmail);
-    if (match) {
-      return match;
-    }
-  }
-
-  return null;
+  return parseSignupEmail(typeof data === "string" ? data : null) || null;
 }
