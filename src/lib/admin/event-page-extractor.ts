@@ -158,6 +158,12 @@ function extractDateParts(isoLike: string | null | undefined): {
 
 function guessCategory(text: string): string | null {
   const hay = ` ${text.toLowerCase()} `;
+  if (
+    /folclor|folklore/.test(hay) &&
+    categories.some((c) => c.slug === "sagre-tradizioni")
+  ) {
+    return "sagre-tradizioni";
+  }
   const rules: Array<{ slug: string; words: string[] }> = [
     { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo", "triathlon", "ironman", "ciclismo", "nuoto"] },
     {
@@ -178,7 +184,10 @@ function guessCategory(text: string): string | null {
       ],
     },
     { slug: "musica-concerti", words: ["concerto", "musica", " live ", " band ", "spettacolo", "teatro", "cabaret", "show"] },
-    { slug: "sagre-tradizioni", words: ["sagra", "tradizion", "festa patronale"] },
+    {
+      slug: "sagre-tradizioni",
+      words: ["sagra", "tradizion", "festa patronale", "folclor", "folklore", "folk "],
+    },
     { slug: "fiere-mercatini", words: ["fiera", "mercatino", "mercato"] },
     { slug: "arte-cultura", words: ["mostra", "arte", "galleria", "esposizion", "cultura"] },
     { slug: "food-drink", words: ["food", "degustazione", "enogastronom", "wine"] },
@@ -614,16 +623,35 @@ function ticketFromOffers(eventNode: Record<string, unknown>): string | null {
 async function fetchHtml(url: string) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const headers: Record<string, string> = {
+    "User-Agent": USER_AGENT,
+    Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
+    Referer: (() => {
+      try {
+        return `${new URL(url).origin}/`;
+      } catch {
+        return url;
+      }
+    })(),
+  };
   try {
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       signal: controller.signal,
       redirect: "follow",
-      headers: {
-        "User-Agent": USER_AGENT,
-        Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
-      },
+      headers,
     });
+    if (response.status === 403 || response.status === 429) {
+      response = await fetch(url, {
+        signal: controller.signal,
+        redirect: "follow",
+        headers: {
+          ...headers,
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        },
+      });
+    }
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -654,11 +682,102 @@ function parseItalianCalendarDate($: cheerio.CheerioAPI) {
 function parseDesignItaliaPlace($: cheerio.CheerioAPI) {
   const place = $("#luogo");
   if (!place.length) return { name: null as string | null, address: null as string | null };
-  const name = cleanText(place.find(".card-title").first().text());
-  const address = cleanText(place.find(".card-text").first().text());
+  const scope = place.closest(".page-content");
+  const root = scope.length ? scope : place;
+  const name = cleanText(root.find(".card-title").first().text());
+  const address = cleanText(root.find(".card-text").first().text());
   return {
     name: name || null,
     address: address || null,
+  };
+}
+
+function municipiumSectionText($: cheerio.CheerioAPI, anchorId: string) {
+  const anchor = $(`#${anchorId}`).first();
+  if (!anchor.length) return "";
+  const section = anchor.closest(".page-content");
+  return cleanText((section.length ? section : anchor.parent()).text());
+}
+
+const JUNK_HEADING =
+  /^(seguici su|indice della pagina|grazie|contatta il comune|valuta|book a ticket|acquista|scopri di pi[uù]|musica sulle bocche)/i;
+
+function isJunkHeading(text: string) {
+  return (
+    JUNK_HEADING.test(text) ||
+    /inizio evento|fine evento/i.test(text) ||
+    /^\d+\s*\/\s*\d+$/.test(text)
+  );
+}
+
+function isMunicipiumEventDetail($: cheerio.CheerioAPI) {
+  return Boolean(
+    $("[data-element='event-title']").length ||
+      $("[data-element='event-description']").length,
+  );
+}
+
+function parseMunicipiumEventFacts($: cheerio.CheerioAPI) {
+  const title = cleanText($("[data-element='event-title']").first().text());
+  const subtitle = cleanText(
+    $("[data-element='event-description']").first().text(),
+  );
+  const header = cleanText($("#page-pnrr").first().text());
+  const cosE =
+    municipiumSectionText($, "cos-") || municipiumSectionText($, "cos-e");
+  const article = cleanText($(".article-content").first().text());
+  const hay = [title, subtitle, header, cosE, article]
+    .filter(Boolean)
+    .join("\n");
+  const timeMatch =
+    hay.match(/orario di inizio[:\s]*ore\s*([01]?\d|2[0-3])[:.]([0-5]\d)/i) ||
+    hay.match(/\bore\s+([01]?\d|2[0-3])[:.]([0-5]\d)\b/i);
+  const venueHay = cosE || subtitle;
+  const venueMatch = venueHay.match(
+    /luogo:\s*(.+?)(?:\s*[.]|\s+orario|\s+ingresso|\s+programma|$)/i,
+  );
+  const costi = municipiumSectionText($, "costo").toLowerCase()
+    || municipiumSectionText($, "prezzi").toLowerCase()
+    || cleanText($("#prezzi, #costo").closest(".page-content").text()).toLowerCase();
+  const isFree =
+    /ingresso[:\s].{0,80}(gratuito|libero)/i.test(hay) ||
+    /libero e gratuito/i.test(hay) ||
+    costi.includes("gratuito") ||
+    costi.includes("ingresso libero")
+      ? true
+      : null;
+  const named =
+    hay.match(
+      new RegExp(
+        `data inizio[:\\s]*(\\d{1,2})\\s+(${MONTH_PATTERN})\\s+(20\\d{2})`,
+        "i",
+      ),
+    ) ||
+    hay.match(
+      new RegExp(`\\b(\\d{1,2})\\s+(${MONTH_PATTERN})\\s+(20\\d{2})\\b`, "i"),
+    );
+  let date: string | null = null;
+  if (named) {
+    const month = ITALIAN_MONTHS[named[2].toLowerCase()];
+    if (month) date = `${named[3]}-${month}-${named[1].padStart(2, "0")}`;
+  }
+
+  let venue = venueMatch ? cleanText(venueMatch[1]) : null;
+  if (
+    venue &&
+    (venue.length > 120 ||
+      /^(comune di|municipio|punti di contatto)/i.test(venue) ||
+      /è lieto|lieto di ospitare/i.test(venue))
+  ) {
+    venue = null;
+  }
+
+  return {
+    title: title || null,
+    date,
+    time: timeMatch ? clockFromParts(timeMatch[1], timeMatch[2]) : null,
+    venue,
+    isFree,
   };
 }
 
@@ -739,6 +858,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     { sel: "#descrizione", label: "Sezione Descrizione" },
     { sel: "#cos-e .text-serif", label: "Sezione Cos’è" },
     { sel: "#cos-e", label: "Sezione Cos’è" },
+    { sel: ".article-content > .page-content", label: "Scheda Municipium" },
     { sel: "[data-element='body-description']", label: "Body Design Italia" },
     { sel: "[data-element='body']", label: "Body Design Italia" },
     {
@@ -1217,9 +1337,10 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   const $ = cheerio.load(html);
+  const isEventDetailPage = isMunicipiumEventDetail($);
 
   // Listing page (Design Italia / OpenCms): pick a single event first
-  const lista = detectListaContenuti($);
+  const lista = isEventDetailPage ? null : detectListaContenuti($);
   if (lista) {
     const listing = await fetchSolrEventListing({
       ...lista,
@@ -1248,11 +1369,15 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
 
   // Listing page HTML (CityNews / SassariToday e simili) — non sulle schede .html
   const pathname = new URL(finalUrl).pathname;
-  const isLikelyDetailPage = /\.html(?:[?#]|$)/i.test(pathname);
+  const lastSegment = pathname.split("/").filter(Boolean).at(-1) || "";
+  const isLikelyDetailPage =
+    /\.html(?:[?#]|$)/i.test(pathname) || isEventDetailPage;
   const isLikelyListingPath =
     /\/eventi\/?$/i.test(pathname) ||
     /\/eventi\/(tipo|tema|dal|data)\b/i.test(pathname) ||
-    (/\/eventi\/[^/]+\/?$/i.test(pathname) && !isLikelyDetailPage);
+    (/\/eventi\/[^/]+\/?$/i.test(pathname) &&
+      !isLikelyDetailPage &&
+      lastSegment.length < 12);
 
   if (!isLikelyDetailPage) {
     const htmlListing = extractHtmlEventListing($, finalUrl);
@@ -1281,9 +1406,13 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   const fullPageTitle = cleanText($("title").first().text());
   const docTitle = fullPageTitle.replace(/\s*[|].*$/, "");
   const h1 =
+    $("[data-element='event-title']").first().text() ||
     $("h1[data-element='news-title']").first().text() ||
     $("h1.l-entry__title").first().text() ||
-    $("h1").first().text();
+    $("h1")
+      .filter((_, el) => !isJunkHeading(cleanText($(el).text())))
+      .first()
+      .text();
 
   const looksLikeScheduleHeading = new RegExp(
     `^\\d{1,2}\\s+(${MONTH_PATTERN})\\b`,
@@ -1294,13 +1423,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     (_, el) => {
       const text = cleanText($(el).text());
       if (!text || text.length < 4 || text.length > 160) return;
-      if (
-        /^(book a ticket|acquista|scopri di pi[uù]|musica sulle bocche)/i.test(
-          text,
-        )
-      ) {
-        return;
-      }
+      if (isJunkHeading(text)) return;
       if (looksLikeScheduleHeading.test(text)) return;
       if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(text)) return;
       if (!headingCandidates.includes(text)) headingCandidates.push(text);
@@ -1449,7 +1572,32 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
 
-  // Design Italia municipal detail page: calendar + luogo
+  // Design Italia / Municipium: calendario + scheda evento
+  const municipium = parseMunicipiumEventFacts($);
+  if (municipium.title && (!title || isJunkHeading(title))) {
+    title = municipium.title;
+    conf.title = "high";
+    sources.title = "Scheda evento";
+  }
+  if (municipium.date && !startDate) {
+    startDate = municipium.date;
+    conf.dates = "high";
+    sources.dates = "Scheda evento";
+  }
+  if (municipium.time) {
+    startTime = municipium.time;
+    conf.dates = startDate ? "high" : conf.dates;
+    sources.dates = sources.dates || "Scheda evento";
+  }
+  if (municipium.venue) {
+    locationName = municipium.venue;
+    conf.place = "high";
+    sources.place = "Scheda evento";
+  }
+  if (isFree === null && municipium.isFree) {
+    isFree = true;
+  }
+
   if (!startDate) {
     const calDate = parseItalianCalendarDate($);
     if (calDate) {
@@ -1459,17 +1607,28 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
   const designPlace = parseDesignItaliaPlace($);
-  if (designPlace.name || designPlace.address) {
+  const townHallPlace = /^(comune di|municipio)/i.test(designPlace.name || "");
+  if ((designPlace.name || designPlace.address) && !townHallPlace) {
     locationName = locationName || designPlace.name;
     address = address || designPlace.address;
     if (!sources.place) {
       conf.place = "high";
       sources.place = "Sezione Luogo";
     }
+  } else if (townHallPlace && !municipality) {
+    const officePlace = matchPlace(
+      [designPlace.name, designPlace.address].filter(Boolean).join(" "),
+    );
+    if (officePlace) {
+      municipality = officePlace.city;
+      province = officePlace.province;
+      conf.place = "medium";
+      sources.place = sources.place || "Scheda evento";
+    }
   }
   if (isFree === null) {
-    const costi = cleanText($("#prezzi").text()).toLowerCase();
-    if (costi.includes("gratuito")) {
+    const costi = cleanText($("#prezzi, #costo").text()).toLowerCase();
+    if (costi.includes("gratuito") || costi.includes("ingresso libero")) {
       isFree = true;
     }
   }
@@ -1479,9 +1638,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     ".elementor-widget-text-editor, .elementor-heading-title, h1, h2, h3",
   ).each((_, el) => {
     const text = cleanText($(el).text());
-    if (text && text.length >= 8 && text.length <= 140) {
-      overlayTexts.push(text);
-    }
+    if (!text || text.length < 8 || text.length > 140) return;
+    if (isJunkHeading(text)) return;
+    overlayTexts.push(text);
   });
   let pathSlug = "";
   try {
@@ -1526,9 +1685,18 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
 
   // Prefer city from title/location over dubious JSON-LD locality
   // (some CMS pages put a wrong addressLocality).
-  const titleCity = matchPlace([title, locationName || "", address || ""].join(" "));
+  const titleCity = matchPlace(
+    [title, locationName || "", address || "", fullPageTitle].join(" "),
+  );
   const pageCity = matchPlace(
-    [title, locationName || "", address || "", municipality || ""].join(" "),
+    [
+      title,
+      locationName || "",
+      address || "",
+      municipality || "",
+      fullPageTitle,
+      stripHtml(description || "").slice(0, 2000),
+    ].join(" "),
   );
   const preferredCity = titleCity || pageCity;
   if (preferredCity) {
@@ -1552,10 +1720,49 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
 
-  if (!organizerName && ogSiteName) {
-    organizerName = cleanText(ogSiteName);
-    conf.organizer = "medium";
-    sources.organizer = "og:site_name";
+  if (!organizerName) {
+    const orgNode = flattenGraph(jsonLd).find((node) =>
+      getTypes(node).some((t) =>
+        /organization|government|localbusiness/i.test(t),
+      ),
+    );
+    if (orgNode?.name) {
+      organizerName = cleanText(String(orgNode.name));
+      organizerWebsite =
+        organizerWebsite || cleanText(String(orgNode.url || "")) || null;
+      organizerEmail =
+        organizerEmail || cleanText(String(orgNode.email || "")) || null;
+      organizerPhone =
+        organizerPhone ||
+        cleanText(String(orgNode.telephone || orgNode.phone || "")) ||
+        null;
+      conf.organizer = "medium";
+      sources.organizer = "JSON-LD organizzazione";
+      if (!municipality) {
+        const orgPlace = matchPlace(
+          [
+            organizerName,
+            typeof orgNode.address === "string" ? orgNode.address : "",
+            orgNode.address && typeof orgNode.address === "object"
+              ? String(
+                  (orgNode.address as Record<string, unknown>).addressLocality ||
+                    "",
+                )
+              : "",
+          ].join(" "),
+        );
+        if (orgPlace) {
+          municipality = orgPlace.city;
+          province = orgPlace.province;
+          conf.place = conf.place === "low" ? "medium" : conf.place;
+          sources.place = sources.place || "JSON-LD organizzazione";
+        }
+      }
+    } else if (ogSiteName) {
+      organizerName = cleanText(ogSiteName);
+      conf.organizer = "medium";
+      sources.organizer = "og:site_name";
+    }
   }
 
   category = guessCategory(`${title} ${description}`);
