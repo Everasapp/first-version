@@ -16,7 +16,16 @@ const FETCH_TIMEOUT_MS = 20_000;
 const MAX_HTML_BYTES = 2_500_000;
 const MAX_DESCRIPTION_CHARS = 20_000;
 const USER_AGENT =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
+const FETCH_HEADERS: Record<string, string> = {
+  "User-Agent": USER_AGENT,
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+  "Cache-Control": "no-cache",
+  "Upgrade-Insecure-Requests": "1",
+};
 
 const ITALIAN_MONTHS: Record<string, string> = {
   gennaio: "01",
@@ -621,46 +630,223 @@ function ticketFromOffers(eventNode: Record<string, unknown>): string | null {
 }
 
 async function fetchHtml(url: string) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  const headers: Record<string, string> = {
-    "User-Agent": USER_AGENT,
-    Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
-    Referer: (() => {
-      try {
-        return `${new URL(url).origin}/`;
-      } catch {
-        return url;
+  const direct = await fetchHtmlAttempt(url, url);
+  if (isUsableHtml(direct)) {
+    return { html: direct.html, finalUrl: direct.finalUrl || url };
+  }
+
+  const blocked =
+    direct.status === 403 ||
+    direct.status === 429 ||
+    direct.status === 401 ||
+    direct.status === 0;
+
+  if (blocked) {
+    const cookie = cookieHeaderFromResponse(direct.response);
+    if (cookie) {
+      const retried = await fetchHtmlAttempt(url, url, { Cookie: cookie });
+      if (isUsableHtml(retried)) {
+        return { html: retried.html, finalUrl: retried.finalUrl || url };
       }
-    })(),
-  };
+    }
+
+    const proxiedHtml = await fetchViaTranslateProxy(url);
+    if (proxiedHtml) {
+      return { html: proxiedHtml, finalUrl: url };
+    }
+  }
+
+  if (direct.error === "Pagina troppo grande da analizzare") {
+    throw new Error(direct.error);
+  }
+  if (direct.status === 403) {
+    throw new Error(
+      "Il sito comunale blocca i server di Everas (HTTP 403). Riprova tra un minuto.",
+    );
+  }
+  if (direct.status > 0) {
+    throw new Error(`HTTP ${direct.status}`);
+  }
+  throw new Error(direct.error || "Impossibile raggiungere la pagina");
+}
+
+function originReferer(url: string) {
   try {
-    let response = await fetch(url, {
-      signal: controller.signal,
-      redirect: "follow",
-      headers,
-    });
-    if (response.status === 403 || response.status === 429) {
-      response = await fetch(url, {
+    return `${new URL(url).origin}/`;
+  } catch {
+    return url;
+  }
+}
+
+function cookieHeaderFromResponse(response: Response | null) {
+  if (!response) return "";
+  const cookies =
+    typeof response.headers.getSetCookie === "function"
+      ? response.headers.getSetCookie()
+      : [];
+  return cookies
+    .map((entry) => entry.split(";")[0]?.trim())
+    .filter(Boolean)
+    .join("; ");
+}
+
+function looksLikeHttpForbidden(html: string) {
+  const head = html.slice(0, 800).replace(/\s+/g, " ").toLowerCase();
+  return (
+    /^403\b/.test(head.trim()) ||
+    head.includes("403 forbidden") ||
+    head.includes("<title>403") ||
+    head.includes("access denied")
+  );
+}
+
+function isUsableHtml(result: { ok: boolean; html: string }) {
+  return result.ok && looksLikeUsefulHtml(result.html);
+}
+
+function looksLikeUsefulHtml(html: string) {
+  if (!html || html.length < 2500) return false;
+  if (looksLikeHttpForbidden(html)) return false;
+  const head = html.slice(0, 2500);
+  if (/ppConfig|429 too many|quota exceeded/i.test(head)) return false;
+  return /og:title|event-title|<article|<h1/i.test(html);
+}
+
+async function sleep(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchViaTranslateProxy(url: string) {
+  const proxiedUrl = googleTranslateProxyUrl(url);
+  const headers = { Referer: "https://translate.google.com/" };
+
+  if (proxiedUrl) {
+    let proxied = await fetchHtmlAttempt(proxiedUrl, url, headers);
+    if (isUsableHtml(proxied)) return proxied.html;
+    if (proxied.status === 429 || proxied.status === 400) {
+      await sleep(800);
+      proxied = await fetchHtmlAttempt(proxiedUrl, url, headers);
+      if (isUsableHtml(proxied)) return proxied.html;
+    }
+  }
+
+  const gateway = `https://translate.google.com/translate?sl=auto&tl=it&hl=it&u=${encodeURIComponent(url)}`;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const first = await fetch(gateway, {
         signal: controller.signal,
-        redirect: "follow",
+        redirect: "manual",
         headers: {
-          ...headers,
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+          ...FETCH_HEADERS,
+          Referer: "https://translate.google.com/",
         },
       });
+      const location = first.headers.get("location");
+      const cookie = cookieHeaderFromResponse(first);
+      if (location) {
+        const next = new URL(location, gateway).toString();
+        const second = await fetchHtmlAttempt(next, url, {
+          Referer: "https://translate.google.com/",
+          ...(cookie ? { Cookie: cookie } : {}),
+        });
+        if (isUsableHtml(second)) return second.html;
+      }
+    } finally {
+      clearTimeout(timer);
     }
+  } catch {
+    // ignore gateway errors, caller will surface the original 403
+  }
+  return null;
+}
+
+function googleTranslateProxyUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    if (!/^https?:$/.test(parsed.protocol)) return null;
+    const host = parsed.hostname.replace(/\./g, "-");
+    const proxied = new URL(
+      `${parsed.pathname}${parsed.search}`,
+      `https://${host}.translate.goog`,
+    );
+    proxied.searchParams.set("_x_tr_sl", "auto");
+    proxied.searchParams.set("_x_tr_tl", "it");
+    proxied.searchParams.set("_x_tr_hl", "it");
+    return proxied.toString();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchHtmlAttempt(
+  requestUrl: string,
+  originalUrl: string,
+  extraHeaders: Record<string, string> = {},
+): Promise<{
+  ok: boolean;
+  status: number;
+  html: string;
+  finalUrl: string;
+  response: Response | null;
+  error?: string;
+}> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(requestUrl, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        ...FETCH_HEADERS,
+        Referer: originReferer(originalUrl),
+        ...extraHeaders,
+      },
+    });
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      return {
+        ok: false,
+        status: response.status,
+        html: "",
+        finalUrl: response.url || originalUrl,
+        response,
+      };
     }
     const buffer = await response.arrayBuffer();
     if (buffer.byteLength > MAX_HTML_BYTES) {
-      throw new Error("Pagina troppo grande da analizzare");
+      return {
+        ok: false,
+        status: response.status,
+        html: "",
+        finalUrl: response.url || originalUrl,
+        response,
+        error: "Pagina troppo grande da analizzare",
+      };
     }
     const html = new TextDecoder("utf-8").decode(buffer);
-    return { html, finalUrl: response.url || url };
+    return {
+      ok: true,
+      status: response.status,
+      html,
+      finalUrl: response.url || originalUrl,
+      response,
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error && error.name === "AbortError"
+        ? "Timeout nel caricamento della pagina"
+        : error instanceof Error
+          ? error.message
+          : "Impossibile raggiungere la pagina";
+    return {
+      ok: false,
+      status: 0,
+      html: "",
+      finalUrl: originalUrl,
+      response: null,
+      error: message,
+    };
   } finally {
     clearTimeout(timer);
   }
