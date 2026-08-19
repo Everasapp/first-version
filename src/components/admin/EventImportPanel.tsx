@@ -638,28 +638,57 @@ export default function EventImportPanel() {
                   Ingresso
                 </td>
                 <td className="px-4 py-3">
-                  <label className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={form.isFree}
-                      onChange={(e) =>
-                        patchForm({
-                          isFree: e.target.checked,
-                          priceFrom: e.target.checked ? "" : form.priceFrom,
-                        })
-                      }
-                    />
-                    Gratuito
-                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <label
+                      className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${
+                        form.isFree
+                          ? "border-[#075EAE] bg-blue-50 text-slate-900"
+                          : "border-slate-300 text-slate-700"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="importPricing"
+                        checked={form.isFree}
+                        onChange={() =>
+                          patchForm({ isFree: true, priceFrom: "" })
+                        }
+                      />
+                      Gratuito
+                    </label>
+                    <label
+                      className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold ${
+                        !form.isFree
+                          ? "border-[#075EAE] bg-blue-50 text-slate-900"
+                          : "border-slate-300 text-slate-700"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="importPricing"
+                        checked={!form.isFree}
+                        onChange={() => patchForm({ isFree: false })}
+                      />
+                      A pagamento
+                    </label>
+                  </div>
                   {!form.isFree ? (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={form.priceFrom}
-                      onChange={(e) => patchForm({ priceFrom: e.target.value })}
-                      placeholder="Prezzo da (€)"
-                      className="mt-2 w-full min-w-[12rem] rounded-lg border border-slate-300 px-2.5 py-1.5"
-                    />
+                    <label className="mt-3 block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Prezzo da (€)
+                      </span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        value={form.priceFrom}
+                        onChange={(e) =>
+                          patchForm({ priceFrom: e.target.value })
+                        }
+                        placeholder="15,00"
+                        className="w-full min-w-[12rem] rounded-lg border border-slate-300 px-2.5 py-1.5"
+                      />
+                    </label>
                   ) : null}
                 </td>
                 <td className="px-4 py-3 text-slate-500">
