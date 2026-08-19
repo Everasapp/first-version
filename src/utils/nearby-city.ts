@@ -104,11 +104,13 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Bosa: { lat: 40.2992, lng: 8.4983 },
   Dorgali: { lat: 40.2925, lng: 9.5911 },
   Fonni: { lat: 40.1192, lng: 9.2522 },
+  Lanusei: { lat: 39.8789, lng: 9.5414 },
   Macomer: { lat: 40.2667, lng: 8.7833 },
   Nuoro: { lat: 40.3211, lng: 9.3297 },
   Orgosolo: { lat: 40.1925, lng: 9.3514 },
   Oristano: { lat: 39.9036, lng: 8.5919 },
   Orosei: { lat: 40.3786, lng: 9.6925 },
+  "Santa Maria Navarrese": { lat: 39.9906, lng: 9.6903 },
   Siniscola: { lat: 40.5734, lng: 9.697 },
   Tortolì: { lat: 39.9264, lng: 9.6556 },
 

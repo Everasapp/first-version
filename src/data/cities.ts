@@ -115,11 +115,13 @@ export const cities: City[] = [
   { id: 94, city: "Bosa", province: "OR", area: "Centro Sardegna" },
   { id: 95, city: "Dorgali", province: "NU", area: "Centro Sardegna" },
   { id: 96, city: "Fonni", province: "NU", area: "Centro Sardegna" },
+  { id: 179, city: "Lanusei", province: "NU", area: "Centro Sardegna" },
   { id: 97, city: "Macomer", province: "NU", area: "Centro Sardegna" },
   { id: 98, city: "Nuoro", province: "NU", area: "Centro Sardegna" },
   { id: 99, city: "Orgosolo", province: "NU", area: "Centro Sardegna" },
   { id: 100, city: "Oristano", province: "OR", area: "Centro Sardegna" },
   { id: 101, city: "Orosei", province: "NU", area: "Centro Sardegna" },
+  { id: 180, city: "Santa Maria Navarrese", province: "NU", area: "Centro Sardegna" },
   { id: 102, city: "Siniscola", province: "NU", area: "Centro Sardegna" },
   { id: 103, city: "Tortolì", province: "NU", area: "Centro Sardegna" },
 
