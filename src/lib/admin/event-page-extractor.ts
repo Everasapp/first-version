@@ -204,6 +204,222 @@ function matchCity(text: string): { city: string; province: string } | null {
   return null;
 }
 
+/** Frazioni / località usate nei cartelloni ma assenti da `cities`. */
+const HAMLET_TO_CITY: Record<string, { city: string; province: string }> = {
+  argentiera: { city: "Sassari", province: "SS" },
+  asinara: { city: "Porto Torres", province: "SS" },
+  "bosa marina": { city: "Bosa", province: "OR" },
+  "torre grande": { city: "Oristano", province: "OR" },
+  platamona: { city: "Sassari", province: "SS" },
+  palmavera: { city: "Alghero", province: "SS" },
+  "nuraghe palmavera": { city: "Alghero", province: "SS" },
+  "cala reale": { city: "Porto Torres", province: "SS" },
+  "monte gonare": { city: "Orani", province: "NU" },
+  "foce del coghinas": { city: "Valledoria", province: "SS" },
+};
+
+const VENUE_HINT =
+  /spiaggia|piazza|chiesa|anfiteatro|teatro|giardino|lungomare|nuraghe|cala\b|convento|cattedrale|terrazza|foce|monte\b|castello|porto\b|quarter|sala\b|scalette/;
+
+function matchPlace(text: string): {
+  city: string;
+  province: string;
+  hamlet?: string;
+} | null {
+  const hay = text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  const hamlets = Object.entries(HAMLET_TO_CITY).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  for (const [hamlet, city] of hamlets) {
+    if (hay.includes(hamlet)) {
+      return {
+        ...city,
+        hamlet: hamlet
+          .split(" ")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" "),
+      };
+    }
+  }
+  const city = matchCity(text);
+  return city;
+}
+
+const MONTH_PATTERN = Object.keys(ITALIAN_MONTHS).join("|");
+
+function clockFromParts(hour: string, minute: string) {
+  return `${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
+}
+
+/** 1900 → 19:00. Evita gli anni 2020-2029. */
+function clockFromCompact(token: string): string | null {
+  if (!/^\d{3,4}$/.test(token)) return null;
+  const padded = token.padStart(4, "0");
+  const hour = Number(padded.slice(0, 2));
+  const minute = Number(padded.slice(2, 4));
+  if (hour > 23 || minute > 59) return null;
+  if (hour === 20 && minute >= 20 && minute <= 29) return null;
+  return clockFromParts(String(hour), padded.slice(2, 4));
+}
+
+function humanizeSlugSegment(value: string) {
+  return value
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+type VisibleScheduleHints = {
+  date: string | null;
+  time: string | null;
+  locationName: string | null;
+  address: string | null;
+  municipality: string | null;
+  province: string | null;
+  isFree: boolean | null;
+  source: string;
+};
+
+/**
+ * Data/ora/luogo spesso sono nel <title>, nello slug o nel testo overlay
+ * sulla locandina (Elementor), non nel JSON-LD.
+ */
+function parseVisibleScheduleHints(texts: string[]): VisibleScheduleHints {
+  const joined = texts.filter(Boolean).join(" \n ");
+  const year =
+    joined.match(/\b(20\d{2})\b/)?.[1] || String(new Date().getFullYear());
+
+  let date: string | null = null;
+  const withYear = joined.match(
+    new RegExp(`\\b(\\d{1,2})\\s+(${MONTH_PATTERN})\\s+(20\\d{2})\\b`, "i"),
+  );
+  const named = joined.match(
+    new RegExp(`\\b(\\d{1,2})\\s+(${MONTH_PATTERN})\\b`, "i"),
+  );
+  if (withYear) {
+    const month = ITALIAN_MONTHS[withYear[2].toLowerCase()];
+    if (month) {
+      date = `${withYear[3]}-${month}-${withYear[1].padStart(2, "0")}`;
+    }
+  } else if (named) {
+    const month = ITALIAN_MONTHS[named[2].toLowerCase()];
+    if (month) {
+      date = `${year}-${month}-${named[1].padStart(2, "0")}`;
+    }
+  }
+
+  let time: string | null = null;
+  const clock = joined.match(/\b([01]?\d|2[0-3])[:.]([0-5]\d)(?!\s*:\s*\d)/);
+  if (clock) time = clockFromParts(clock[1], clock[2]);
+
+  if (!time) {
+    for (const text of texts) {
+      const compact = text.match(/(?:^|[-/])(\d{3,4})(?:[-/]|$)/);
+      if (!compact) continue;
+      time = clockFromCompact(compact[1]);
+      if (time) break;
+    }
+  }
+
+  let locationName: string | null = null;
+  let address: string | null = null;
+
+  const overlay = texts.find(
+    (text) => /evento gratuito|ingresso gratuito/i.test(text) && text.length <= 140,
+  );
+  if (overlay) {
+    const locPart = overlay.split(/[–—-]/)[0] || overlay;
+    const bits = locPart
+      .split(",")
+      .map((bit) => cleanText(bit))
+      .filter(Boolean);
+    if (bits[0]) locationName = bits[0];
+    if (bits[1]) address = bits[1];
+  }
+
+  const title = texts[0] || "";
+  if (!locationName || !address || !time) {
+    const segments = title
+      .split(/\s*[–—]\s*/)
+      .map((segment) => cleanText(segment))
+      .filter(Boolean);
+    for (const segment of segments) {
+      if (/^\d{1,2}\s/.test(segment)) continue;
+      if (/musica sulle bocche|festival jazz/i.test(segment)) continue;
+      const withTime = segment.match(
+        /^(.*?),\s*([01]?\d|2[0-3])[:.]([0-5]\d)\s*$/,
+      );
+      if (withTime) {
+        address = address || cleanText(withTime[1]);
+        time = time || clockFromParts(withTime[2], withTime[3]);
+        continue;
+      }
+      if (!locationName && VENUE_HINT.test(segment.toLowerCase())) {
+        locationName = segment.replace(/\s*,\s*(evento\s+gratuito)?$/i, "").trim();
+      }
+      if (segment.includes("|")) {
+        const [left, right] = segment.split("|").map((part) => cleanText(part));
+        const timed = left.match(/^(.*?),\s*([01]?\d|2[0-3])[:.]([0-5]\d)\s*$/);
+        const cityPart = timed ? cleanText(timed[1]) : left;
+        if (cityPart && !address) address = cityPart;
+        if (right && !locationName) {
+          locationName = right.replace(/\s*,\s*\d{1,2}[:.]\d{2}.*$/, "").trim();
+        }
+      }
+    }
+  }
+
+  const slugText =
+    texts.find((text) => /\/event\/|-\d{3,4}-/.test(text)) || "";
+  const slugMatch = slugText.match(
+    new RegExp(`(\\d{1,2})-(${MONTH_PATTERN})-(.+)$`, "i"),
+  );
+  if (slugMatch) {
+    if (!date) {
+      const month = ITALIAN_MONTHS[slugMatch[2].toLowerCase()];
+      if (month) {
+        date = `${year}-${month}-${slugMatch[1].padStart(2, "0")}`;
+      }
+    }
+    const restParts = slugMatch[3].replace(/\/$/, "").split("-").filter(Boolean);
+    const timeIndex = restParts.findIndex((part) => clockFromCompact(part));
+    if (timeIndex >= 0 && !time) {
+      time = clockFromCompact(restParts[timeIndex]);
+    }
+    const before =
+      timeIndex >= 0 ? restParts.slice(0, timeIndex) : restParts.slice(0, 1);
+    const after =
+      timeIndex >= 0 ? restParts.slice(timeIndex + 1) : restParts.slice(1);
+    if (!address && before.length) {
+      address = humanizeSlugSegment(before.join("-"));
+    }
+    if (!locationName && after.length && VENUE_HINT.test(after.join(" "))) {
+      locationName = humanizeSlugSegment(after.join("-"));
+    }
+  }
+
+  const place = matchPlace(
+    [address, locationName, overlay || "", title].filter(Boolean).join(" "),
+  );
+
+  return {
+    date,
+    time,
+    locationName,
+    address,
+    municipality: place?.city || null,
+    province: place?.province || null,
+    isFree: /evento gratuito|ingresso gratuito|ingresso libero/i.test(joined)
+      ? true
+      : null,
+    source: "Titolo / URL / testo sulla locandina",
+  };
+}
+
 function locationFromJsonLd(eventNode: Record<string, unknown>) {
   const loc = eventNode.location;
   if (!loc) return { name: null, address: null, locality: null };
@@ -783,7 +999,7 @@ function extractHtmlEventListing(
     sourceUrl: pageUrl,
     sourceName,
     total: candidates.length,
-    candidates: candidates.slice(0, 30),
+    candidates: candidates.slice(0, 50),
   };
 }
 
@@ -813,7 +1029,7 @@ async function fetchSolrEventListing(opts: {
     .map((t) => t.trim())
     .filter(Boolean)
     .join(" OR ");
-  const rows = Math.min(Math.max(opts.sizepagina, 9), 24);
+  const rows = Math.min(Math.max(opts.sizepagina, 24), 48);
   let query = `fq=type:(${types})&rows=${rows}&start=0`;
   if (opts.filtri) {
     query += opts.filtri.startsWith("&") ? opts.filtri : `&${opts.filtri}`;
@@ -974,16 +1190,43 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     "";
   const ogImage = $('meta[property="og:image"]').attr("content") || "";
   const ogSiteName = $('meta[property="og:site_name"]').attr("content") || "";
-  const docTitle = cleanText($("title").first().text()).replace(
-    /\s*[|\-–].*$/,
-    "",
-  );
+  const fullPageTitle = cleanText($("title").first().text());
+  const docTitle = fullPageTitle.replace(/\s*[|].*$/, "");
   const h1 =
     $("h1[data-element='news-title']").first().text() ||
     $("h1.l-entry__title").first().text() ||
     $("h1").first().text();
 
-  let title = cleanText(ogTitle || h1 || docTitle);
+  const looksLikeScheduleHeading = new RegExp(
+    `^\\d{1,2}\\s+(${MONTH_PATTERN})\\b`,
+    "i",
+  );
+  const headingCandidates: string[] = [];
+  $("h1, h2.elementor-heading-title, .elementor-widget-heading h2, h2").each(
+    (_, el) => {
+      const text = cleanText($(el).text());
+      if (!text || text.length < 4 || text.length > 160) return;
+      if (
+        /^(book a ticket|acquista|scopri di pi[uù]|musica sulle bocche)/i.test(
+          text,
+        )
+      ) {
+        return;
+      }
+      if (looksLikeScheduleHeading.test(text)) return;
+      if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(text)) return;
+      if (!headingCandidates.includes(text)) headingCandidates.push(text);
+    },
+  );
+  const eventHeading = headingCandidates[0] || cleanText(h1);
+  let title = cleanText(ogTitle || eventHeading || docTitle);
+  if (
+    eventHeading &&
+    looksLikeScheduleHeading.test(title) &&
+    !looksLikeScheduleHeading.test(eventHeading)
+  ) {
+    title = eventHeading;
+  }
   let description = cleanText(ogDescription);
   let startDate: string | null = null;
   let startTime: string | null = null;
@@ -1013,7 +1256,16 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     category: "low" as Confidence,
   };
   const sources = {
-    title: ogTitle ? "Open Graph" : h1 ? "H1" : docTitle ? "Title" : "",
+    title:
+      title === eventHeading && eventHeading
+        ? "Titolo in pagina"
+        : ogTitle
+          ? "Open Graph"
+          : eventHeading
+            ? "Titolo in pagina"
+            : docTitle
+              ? "Title"
+              : "",
     description: ogDescription ? "meta/OG" : "",
     dates: "",
     place: "",
@@ -1131,13 +1383,61 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
 
+  const overlayTexts: string[] = [];
+  $(
+    ".elementor-widget-text-editor, .elementor-heading-title, h1, h2, h3",
+  ).each((_, el) => {
+    const text = cleanText($(el).text());
+    if (text && text.length >= 8 && text.length <= 140) {
+      overlayTexts.push(text);
+    }
+  });
+  let pathSlug = "";
+  try {
+    pathSlug = decodeURIComponent(new URL(finalUrl).pathname);
+  } catch {
+    pathSlug = "";
+  }
+  const scheduleHints = parseVisibleScheduleHints([
+    fullPageTitle,
+    pathSlug,
+    ...overlayTexts,
+  ]);
+  if (scheduleHints.date && !startDate) {
+    startDate = scheduleHints.date;
+    conf.dates = "high";
+    sources.dates = scheduleHints.source;
+  }
+  if (scheduleHints.time && !startTime) {
+    startTime = scheduleHints.time;
+    conf.dates = startDate ? "high" : conf.dates;
+    sources.dates = sources.dates || scheduleHints.source;
+  }
+  if (scheduleHints.locationName && !locationName) {
+    locationName = scheduleHints.locationName;
+    conf.place = "high";
+    sources.place = scheduleHints.source;
+  }
+  if (scheduleHints.address && !address) {
+    address = scheduleHints.address;
+    conf.place = "high";
+    sources.place = sources.place || scheduleHints.source;
+  }
+  if (scheduleHints.municipality && !municipality) {
+    municipality = scheduleHints.municipality;
+    province = scheduleHints.province;
+    conf.place = "high";
+    sources.place = sources.place || scheduleHints.source;
+  }
+  if (isFree === null && scheduleHints.isFree) {
+    isFree = true;
+  }
+
   // Prefer city from title/location over dubious JSON-LD locality
   // (some CMS pages put a wrong addressLocality).
-  const titleCity = matchCity([title, locationName || ""].join(" "));
-  const pageCity = matchCity(
-    [title, description, locationName || "", address || "", municipality || ""].join(
-      " ",
-    ),
+  const titleCity = matchPlace([title, locationName || "", address || ""].join(" "));
+  const pageCity = matchPlace(
+    [title, locationName || "", address || "", municipality || ""].join(" "),
   );
   const preferredCity = titleCity || pageCity;
   if (preferredCity) {
@@ -1202,7 +1502,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
       conf.dates = "medium";
       sources.dates = "Testo pagina";
     }
-    const timeHit = bodyText.match(/\b([01]?\d|2[0-3])[:.]([0-5]\d)\b/);
+    const timeHit = bodyText.match(
+      /\b([01]?\d|2[0-3])[:.]([0-5]\d)(?!\s*:\s*\d)/,
+    );
     if (timeHit && !startTime) {
       startTime = `${timeHit[1].padStart(2, "0")}:${timeHit[2]}`;
     }
@@ -1282,7 +1584,11 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     organizerEmail: field(organizerEmail, conf.organizer, sources.organizer),
     organizerPhone: field(organizerPhone, conf.organizer, sources.organizer),
     imageUrl: field(imageUrl, conf.image, sources.image),
-    isFree: field(isFree, isFree === null ? "low" : "medium", "JSON-LD/offers"),
+    isFree: field(
+      isFree,
+      isFree === null ? "low" : "medium",
+      scheduleHints.isFree ? scheduleHints.source : "JSON-LD/offers",
+    ),
     priceFrom: field(priceFrom, priceFrom ? "medium" : "low", "JSON-LD/offers"),
     ticketUrl: field(ticketUrl, ticketUrl ? "medium" : "low", "JSON-LD/offers"),
     sourceUrl: finalUrl,

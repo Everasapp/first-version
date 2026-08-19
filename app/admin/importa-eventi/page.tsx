@@ -7,9 +7,9 @@ export default function ImportaEventiPage() {
         Importa eventi
       </h1>
       <p className="mt-2 max-w-3xl text-slate-600">
-        Analizza una pagina pubblica, verifica i campi e pubblica. Il creatore
-        tecnico resta l&apos;account admin; l&apos;organizzatore pubblico è il
-        nome/directory indicato.
+        Analizza una pagina pubblica, verifica i campi e pubblica. Se incolli
+        un elenco comunale, l&apos;elenco resta aperto: importi un evento e
+        passi al successivo senza rianalizzare la pagina.
       </p>
 
       <div className="mt-8">

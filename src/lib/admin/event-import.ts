@@ -79,6 +79,12 @@ export type DuplicateCandidate = {
   organizer_display_name: string | null;
 };
 
+export type ExistingImportedEvent = {
+  id: string;
+  slug: string | null;
+  title: string;
+};
+
 /** Evento trovato in una pagina elenco (es. sito comunale Design Italia). */
 export type ListingEventCandidate = {
   title: string;
@@ -86,6 +92,7 @@ export type ListingEventCandidate = {
   startAt: string | null;
   endAt: string | null;
   description: string | null;
+  existingEvent?: ExistingImportedEvent | null;
 };
 
 export type EventListingResult = {

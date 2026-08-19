@@ -84,7 +84,7 @@ type EventRow = {
   ticket_url: string | null;
   youtube_url: string | null;
   is_featured: boolean;
-  organizer_id: string;
+  organizer_id: string | null;
   organizer_display_name: string | null;
   organizer_directory_id: string | null;
 };
@@ -251,11 +251,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
     getCurrentUserFavoriteIds(),
     getCurrentUserCalendarEventIds(),
     getCurrentUserFollowedOrganizerIds(),
-    supabase
-      .from("profiles")
-      .select(PROFILE_SELECT)
-      .eq("id", event.organizer_id)
-      .maybeSingle(),
+    event.organizer_id
+      ? supabase
+          .from("profiles")
+          .select(PROFILE_SELECT)
+          .eq("id", event.organizer_id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
     event.organizer_directory_id
       ? supabase
           .from("organizer_directory_public")

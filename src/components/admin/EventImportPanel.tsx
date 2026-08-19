@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import { cities } from "@/src/data/cities";
 import {
   confidenceLabel,
@@ -79,11 +80,42 @@ export default function EventImportPanel() {
   const [duplicates, setDuplicates] = useState<DuplicateCandidate[]>([]);
   const [imageNote, setImageNote] = useState<string | null>(null);
   const [savedSlug, setSavedSlug] = useState<string | null>(null);
+  const [listingQuery, setListingQuery] = useState("");
+  const [hideImported, setHideImported] = useState(true);
 
   const sortedCities = useMemo(
     () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
     [],
   );
+
+  const directoryMatches = useMemo(
+    () => matches.filter((match) => match.kind === "directory"),
+    [matches],
+  );
+
+  const listingStats = useMemo(() => {
+    if (!listing) return null;
+    const remaining = listing.candidates.filter(
+      (item) => !item.existingEvent,
+    ).length;
+    return {
+      remaining,
+      imported: listing.candidates.length - remaining,
+    };
+  }, [listing]);
+
+  const visibleListing = useMemo(() => {
+    if (!listing) return [];
+    const query = listingQuery.trim().toLocaleLowerCase("it");
+    return listing.candidates.filter((item) => {
+      if (hideImported && item.existingEvent) return false;
+      if (!query) return true;
+      return (
+        item.title.toLocaleLowerCase("it").includes(query) ||
+        (item.description || "").toLocaleLowerCase("it").includes(query)
+      );
+    });
+  }, [listing, listingQuery, hideImported]);
 
   function patchForm(patch: Partial<EditableEventImport>) {
     setForm((prev) => (prev ? { ...prev, ...patch } : prev));
@@ -103,7 +135,10 @@ export default function EventImportPanel() {
     setMatches([]);
     setDuplicates([]);
     setImageNote(null);
-    if (clearListing) setListing(null);
+    if (clearListing) {
+      setListing(null);
+      setListingQuery("");
+    }
 
     try {
       const response = await fetch("/api/admin/events/analyze", {
@@ -153,7 +188,18 @@ export default function EventImportPanel() {
         }
       }
 
-      setListing(null);
+      const directoryHits = (data.organizerMatches || []).filter(
+        (match) => match.kind === "directory",
+      );
+      if (directoryHits.length === 1 && !editable.organizerDirectoryId) {
+        editable = {
+          ...editable,
+          organizerDirectoryId: directoryHits[0].id,
+          organizerName: directoryHits[0].name,
+          createOrganizerDirectory: false,
+        };
+      }
+
       setDraft(data.draft);
       setForm(editable);
       setMatches(data.organizerMatches || []);
@@ -201,6 +247,32 @@ export default function EventImportPanel() {
 
       setSuccess(data.message || "Evento importato");
       setSavedSlug(data.event?.slug || null);
+
+      if (listing) {
+        const importedUrls = new Set([url, form.sourceUrl].filter(Boolean));
+        setListing({
+          ...listing,
+          candidates: listing.candidates.map((item) =>
+            importedUrls.has(item.url)
+              ? {
+                  ...item,
+                  existingEvent: data.event
+                    ? {
+                        id: data.event.id,
+                        slug: data.event.slug,
+                        title: form.title,
+                      }
+                    : item.existingEvent,
+                }
+              : item,
+          ),
+        });
+        setDraft(null);
+        setForm(null);
+        setMatches([]);
+        setDuplicates([]);
+        setImageNote(null);
+      }
     } catch {
       setError("Errore di rete durante l'import");
     } finally {
@@ -254,7 +326,7 @@ export default function EventImportPanel() {
         </p>
       ) : null}
 
-      {success && !listing ? (
+      {success && !form ? (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
           <p>{success}</p>
           {savedSlug ? (
@@ -268,17 +340,70 @@ export default function EventImportPanel() {
         </div>
       ) : null}
 
-      {listing ? (
+      {listing && form ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+          <p className="text-sm text-slate-700">
+            Elenco <strong>{listing.sourceName}</strong>
+            {listingStats ? (
+              <>
+                {" "}
+                · {listingStats.remaining} da importare
+              </>
+            ) : null}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setDraft(null);
+              setForm(null);
+              setMatches([]);
+              setDuplicates([]);
+              setImageNote(null);
+              setError(null);
+            }}
+            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
+          >
+            Torna all’elenco
+          </button>
+        </div>
+      ) : null}
+
+      {listing && !form ? (
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-bold text-slate-900">
             Elenco eventi trovato
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            {listing.sourceName}: {listing.total} eventi totali. Seleziona un
-            evento per caricarlo in verifica.
+            {listing.sourceName}: {listing.total} eventi totali
+            {listingStats
+              ? ` · ${listingStats.remaining} da importare · ${listingStats.imported} già su Everas`
+              : null}
+            . Analizza uno, pubblica, e l’elenco resta qui per il successivo.
           </p>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <input
+              type="search"
+              value={listingQuery}
+              onChange={(e) => setListingQuery(e.target.value)}
+              placeholder="Cerca nell’elenco…"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#075EAE] focus:ring-2 focus:ring-[#075EAE]/20 sm:max-w-sm"
+            />
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={hideImported}
+                onChange={(e) => setHideImported(e.target.checked)}
+              />
+              Nascondi già importati
+            </label>
+          </div>
           <ul className="mt-4 divide-y divide-slate-100">
-            {listing.candidates.map((item) => (
+            {visibleListing.length === 0 ? (
+              <li className="py-6 text-sm text-slate-500">
+                Nessun evento da mostrare con questi filtri.
+              </li>
+            ) : null}
+            {visibleListing.map((item) => (
               <li
                 key={item.url}
                 className="flex flex-col gap-3 py-4 sm:flex-row sm:items-start sm:justify-between"
@@ -287,6 +412,11 @@ export default function EventImportPanel() {
                   <p className="font-semibold text-slate-900">{item.title}</p>
                   <p className="mt-1 text-sm text-slate-500">
                     {formatListingDate(item.startAt)}
+                    {item.existingEvent ? (
+                      <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">
+                        Già su Everas
+                      </span>
+                    ) : null}
                   </p>
                   {item.description ? (
                     <p className="mt-1 line-clamp-2 text-sm text-slate-600">
@@ -294,14 +424,24 @@ export default function EventImportPanel() {
                     </p>
                   ) : null}
                 </div>
-                <button
-                  type="button"
-                  disabled={analyzing}
-                  onClick={() => analyzeUrl(item.url, false, item)}
-                  className="shrink-0 rounded-xl bg-[#075EAE] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#064a8a] disabled:opacity-60"
-                >
-                  Analizza questo
-                </button>
+                <div className="flex shrink-0 items-center gap-2">
+                  {item.existingEvent?.slug ? (
+                    <Link
+                      href={`/eventi/${item.existingEvent.slug}`}
+                      className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-[#075EAE] hover:text-[#075EAE]"
+                    >
+                      Apri
+                    </Link>
+                  ) : null}
+                  <button
+                    type="button"
+                    disabled={analyzing}
+                    onClick={() => analyzeUrl(item.url, false, item)}
+                    className="rounded-xl bg-[#075EAE] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#064a8a] disabled:opacity-60"
+                  >
+                    {item.existingEvent ? "Rianalizza" : "Analizza questo"}
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -376,8 +516,8 @@ export default function EventImportPanel() {
           <div className="border-b border-slate-200 px-5 py-4">
             <h2 className="text-lg font-bold text-slate-900">Verifica evento</h2>
             <p className="mt-1 text-sm text-slate-600">
-              Creatore tecnico: account admin. Organizzatore pubblico: nome sotto
-              (profilo directory non rivendicato se creato).
+              Creatore tecnico: account admin. Organizzatore pubblico: scegli un
+              profilo già in rubrica, oppure creane uno nuovo.
             </p>
           </div>
 
@@ -493,6 +633,42 @@ export default function EventImportPanel() {
                   <ConfidenceBadge level={draft.category.confidence} />
                 </td>
               </tr>
+              <tr className="border-t border-slate-100 align-top">
+                <td className="px-4 py-3 font-semibold text-slate-800">
+                  Ingresso
+                </td>
+                <td className="px-4 py-3">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={form.isFree}
+                      onChange={(e) =>
+                        patchForm({
+                          isFree: e.target.checked,
+                          priceFrom: e.target.checked ? "" : form.priceFrom,
+                        })
+                      }
+                    />
+                    Gratuito
+                  </label>
+                  {!form.isFree ? (
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={form.priceFrom}
+                      onChange={(e) => patchForm({ priceFrom: e.target.value })}
+                      placeholder="Prezzo da (€)"
+                      className="mt-2 w-full min-w-[12rem] rounded-lg border border-slate-300 px-2.5 py-1.5"
+                    />
+                  ) : null}
+                </td>
+                <td className="px-4 py-3 text-slate-500">
+                  {draft.isFree.source || "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <ConfidenceBadge level={draft.isFree.confidence} />
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -529,43 +705,29 @@ export default function EventImportPanel() {
               <p className="text-sm font-semibold text-slate-800">
                 Organizzatore
               </p>
-              {matches.length > 0 ? (
-                <div className="mt-2 space-y-2">
-                  {matches.map((m) => (
-                    <label
-                      key={`${m.kind}-${m.id}`}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <input
-                        type="radio"
-                        name="organizerMatch"
-                        checked={
-                          m.kind === "directory" &&
-                          form.organizerDirectoryId === m.id
-                        }
-                        onChange={() =>
-                          patchForm({
-                            organizerDirectoryId:
-                              m.kind === "directory" ? m.id : null,
-                            createOrganizerDirectory: false,
-                            organizerName: m.name,
-                          })
-                        }
-                      />
-                      <span>
-                        {m.name}{" "}
-                        <span className="text-slate-500">
-                          ({m.kind === "directory" ? "directory" : "profilo"})
-                        </span>
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-1 text-sm text-slate-600">
-                  Organizzatore non presente nel database.
-                </p>
-              )}
+              <p className="mt-1 text-sm text-slate-600">
+                Scegli un organizzatore già presente in rubrica. Se non c’è,
+                crea un nuovo profilo non rivendicato.
+              </p>
+              <OrganizerDirectorySelect
+                variant="directory"
+                directoryId={
+                  form.createOrganizerDirectory
+                    ? null
+                    : form.organizerDirectoryId
+                }
+                displayName={form.organizerName}
+                suggestedIds={directoryMatches.map((match) => match.id)}
+                disabled={form.createOrganizerDirectory}
+                className="[&_input]:rounded-xl [&_input]:px-3 [&_input]:py-2 [&_input]:text-sm [&_select]:rounded-xl [&_select]:px-3 [&_select]:py-2 [&_select]:text-sm"
+                onChange={({ directoryId, displayName }) =>
+                  patchForm({
+                    organizerDirectoryId: directoryId,
+                    organizerName: displayName,
+                    createOrganizerDirectory: false,
+                  })
+                }
+              />
               <label className="mt-3 flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -581,6 +743,37 @@ export default function EventImportPanel() {
                 />
                 Crea nuovo profilo directory (Non rivendicato)
               </label>
+              {form.createOrganizerDirectory ? (
+                <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                  <input
+                    type="url"
+                    value={form.organizerWebsite}
+                    onChange={(e) =>
+                      patchForm({ organizerWebsite: e.target.value })
+                    }
+                    placeholder="Sito web"
+                    className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm"
+                  />
+                  <input
+                    type="email"
+                    value={form.organizerEmail}
+                    onChange={(e) =>
+                      patchForm({ organizerEmail: e.target.value })
+                    }
+                    placeholder="Email"
+                    className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm"
+                  />
+                  <input
+                    type="tel"
+                    value={form.organizerPhone}
+                    onChange={(e) =>
+                      patchForm({ organizerPhone: e.target.value })
+                    }
+                    placeholder="Telefono"
+                    className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm"
+                  />
+                </div>
+              ) : null}
             </div>
 
             <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-700">
@@ -590,6 +783,11 @@ export default function EventImportPanel() {
               <p className="mt-1">
                 <strong>Organizzatore:</strong>{" "}
                 {form.organizerName || "—"}
+                {form.createOrganizerDirectory
+                  ? " · nuovo profilo"
+                  : form.organizerDirectoryId
+                    ? " · rubrica"
+                    : ""}
               </p>
               <p className="mt-1">
                 <strong>Titolo:</strong> {form.title || "—"}
@@ -626,6 +824,23 @@ export default function EventImportPanel() {
               >
                 Salva come pending
               </button>
+              {listing ? (
+                <button
+                  type="button"
+                  disabled={importing}
+                  onClick={() => {
+                    setDraft(null);
+                    setForm(null);
+                    setMatches([]);
+                    setDuplicates([]);
+                    setImageNote(null);
+                    setError(null);
+                  }}
+                  className="inline-flex rounded-xl px-5 py-3 text-sm font-semibold text-slate-500 hover:text-[#075EAE] disabled:opacity-60"
+                >
+                  Annulla e torna all’elenco
+                </button>
+              ) : null}
             </div>
           </div>
         </section>

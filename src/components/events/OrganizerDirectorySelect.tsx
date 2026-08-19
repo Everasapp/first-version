@@ -10,15 +10,18 @@ import { createClient } from "@/src/lib/supabase/client";
 
 const ACCOUNT_VALUE = "__account__";
 const CUSTOM_VALUE = "__custom__";
+const EMPTY_VALUE = "__empty__";
 
 type OrganizerDirectorySelectProps = {
-  accountName: string;
+  accountName?: string;
   directoryId: string | null;
   displayName: string;
   onChange: (next: { directoryId: string | null; displayName: string }) => void;
   disabled?: boolean;
   error?: string;
   className?: string;
+  variant?: "publisher" | "directory";
+  suggestedIds?: string[];
 };
 
 function namesMatch(a: string, b: string) {
@@ -26,17 +29,20 @@ function namesMatch(a: string, b: string) {
 }
 
 export default function OrganizerDirectorySelect({
-  accountName,
+  accountName = "",
   directoryId,
   displayName,
   onChange,
   disabled = false,
   error,
   className = "",
+  variant = "publisher",
+  suggestedIds = [],
 }: OrganizerDirectorySelectProps) {
   const [organizers, setOrganizers] = useState<SavedOrganizerOption[]>([]);
   const [query, setQuery] = useState("");
   const [loadError, setLoadError] = useState("");
+  const isDirectoryPicker = variant === "directory";
 
   useEffect(() => {
     let cancelled = false;
@@ -106,7 +112,9 @@ export default function OrganizerDirectorySelect({
     ? directoryId
     : hasCustomName
       ? CUSTOM_VALUE
-      : ACCOUNT_VALUE;
+      : isDirectoryPicker
+        ? EMPTY_VALUE
+        : ACCOUNT_VALUE;
 
   const filteredOrganizers = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase("it");
@@ -131,13 +139,24 @@ export default function OrganizerDirectorySelect({
     return [selectedOrganizer, ...filteredOrganizers];
   }, [filteredOrganizers, selectedOrganizer]);
 
+  const suggestedIdSet = useMemo(() => new Set(suggestedIds), [suggestedIds]);
+  const suggestedOrganizers = useMemo(
+    () => visibleOrganizers.filter((item) => suggestedIdSet.has(item.id)),
+    [suggestedIdSet, visibleOrganizers],
+  );
+  const otherOrganizers = useMemo(
+    () => visibleOrganizers.filter((item) => !suggestedIdSet.has(item.id)),
+    [suggestedIdSet, visibleOrganizers],
+  );
+
   const fieldClassName = `mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-base text-slate-900 outline-none ${
     error ? "border-red-400" : "border-slate-300"
   } ${disabled ? "cursor-not-allowed bg-slate-50 text-slate-600" : ""}`;
+  const showSearch = organizers.length > (isDirectoryPicker ? 5 : 8);
 
   return (
     <div className={className}>
-      {organizers.length > 8 ? (
+      {showSearch ? (
         <input
           type="search"
           value={query}
@@ -152,14 +171,22 @@ export default function OrganizerDirectorySelect({
         value={
           selectedValue === ACCOUNT_VALUE ||
           selectedValue === CUSTOM_VALUE ||
+          selectedValue === EMPTY_VALUE ||
           organizers.some((item) => item.id === selectedValue) ||
           Boolean(directoryId)
             ? selectedValue
-            : ACCOUNT_VALUE
+            : isDirectoryPicker
+              ? EMPTY_VALUE
+              : ACCOUNT_VALUE
         }
         disabled={disabled}
         onChange={(event) => {
           const value = event.target.value;
+          if (value === EMPTY_VALUE) {
+            onChange({ directoryId: null, displayName: displayName.trim() });
+            return;
+          }
+
           if (value === ACCOUNT_VALUE) {
             onChange({ directoryId: null, displayName: accountName });
             return;
@@ -179,20 +206,45 @@ export default function OrganizerDirectorySelect({
         }}
         className={fieldClassName}
       >
-        <option value={ACCOUNT_VALUE}>
-          Il mio account · {accountName}
-        </option>
+        {isDirectoryPicker ? (
+          <option value={EMPTY_VALUE}>Scegli un organizzatore salvato</option>
+        ) : (
+          <option value={ACCOUNT_VALUE}>
+            Il mio account · {accountName}
+          </option>
+        )}
         {hasCustomName ? (
-          <option value={CUSTOM_VALUE}>{displayName} (nome attuale)</option>
+          <option value={CUSTOM_VALUE}>{displayName} (nome rilevato)</option>
         ) : null}
         {directoryId && !selectedOrganizer ? (
           <option value={directoryId}>Organizzatore selezionato</option>
         ) : null}
-        {visibleOrganizers.map((item) => (
-          <option key={item.id} value={item.id}>
-            {item.label}
-          </option>
-        ))}
+        {suggestedOrganizers.length > 0 ? (
+          <optgroup label="Suggeriti">
+            {suggestedOrganizers.map((item) => (
+              <option key={`suggested-${item.id}`} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </optgroup>
+        ) : null}
+        {otherOrganizers.length > 0 ? (
+          suggestedOrganizers.length > 0 ? (
+            <optgroup label="Tutti gli organizzatori">
+              {otherOrganizers.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : (
+            otherOrganizers.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))
+          )
+        ) : null}
       </select>
 
       {loadError ? (
