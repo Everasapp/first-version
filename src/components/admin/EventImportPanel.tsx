@@ -67,7 +67,11 @@ function formatListingDate(value: string | null) {
   });
 }
 
-export default function EventImportPanel() {
+export default function EventImportPanel({
+  creatorName = "Everas Admin",
+}: {
+  creatorName?: string;
+}) {
   const [url, setUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -807,7 +811,7 @@ export default function EventImportPanel() {
 
             <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-700">
               <p>
-                <strong>Creatore:</strong> Marina Canalis (admin)
+                <strong>Creatore:</strong> {creatorName} (admin)
               </p>
               <p className="mt-1">
                 <strong>Organizzatore:</strong>{" "}

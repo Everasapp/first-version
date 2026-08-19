@@ -1,6 +1,10 @@
 import EventImportPanel from "@/src/components/admin/EventImportPanel";
+import { requireAdmin } from "@/src/lib/auth";
 
-export default function ImportaEventiPage() {
+export default async function ImportaEventiPage() {
+  const { profile } = await requireAdmin("/admin/importa-eventi");
+  const creatorName = profile.full_name?.trim() || "Everas Admin";
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
       <h1 className="text-3xl font-bold tracking-tight text-slate-900">
@@ -13,7 +17,7 @@ export default function ImportaEventiPage() {
       </p>
 
       <div className="mt-8">
-        <EventImportPanel />
+        <EventImportPanel creatorName={creatorName} />
       </div>
     </div>
   );

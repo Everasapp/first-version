@@ -1,7 +1,7 @@
 export const ADMIN_NOTIFICATION_EMAIL =
   process.env.ADMIN_NOTIFICATION_EMAIL?.trim() || "m.canalis@live.it";
 
-export const ADMIN_NOTIFICATION_NAME = "Marina Canalis";
+export const ADMIN_NOTIFICATION_NAME = "Everas Admin";
 
 export function getSiteUrl() {
   return (
