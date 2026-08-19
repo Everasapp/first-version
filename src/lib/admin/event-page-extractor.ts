@@ -486,6 +486,94 @@ function imageFromJsonLd(eventNode: Record<string, unknown>, pageUrl: string) {
   return null;
 }
 
+const LOGO_IMAGE_RE =
+  /logo|favicon|sprite|placeholder|avatar|badge|wordmark|site-icon/i;
+
+function parsePx(value: string | undefined) {
+  const n = Number.parseInt(value || "", 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+function largestFromSrcset(srcset: string | undefined) {
+  if (!srcset) return null;
+  let best: { url: string; width: number } | null = null;
+  for (const part of srcset.split(",")) {
+    const match = part.trim().match(/(\S+)\s+(\d+)w/);
+    if (!match) continue;
+    const width = Number(match[2]);
+    if (!best || width > best.width) {
+      best = { url: match[1], width };
+    }
+  }
+  return best;
+}
+
+function isLikelyLogoImage(
+  src: string,
+  alt = "",
+  width?: number,
+  height?: number,
+) {
+  const hay = `${src} ${alt}`;
+  if (LOGO_IMAGE_RE.test(hay)) return true;
+  if (/\/elementor\/thumbs\//i.test(src)) return true;
+  if (/\.(svg|ico)(\?|$)/i.test(src)) return true;
+  if (width && height && width <= 420 && height <= 220) return true;
+  if (
+    (width && width < 250) ||
+    (height && height < 250 && (!width || width < 600))
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function pickBestPageImage(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): string | null {
+  const candidates: { url: string; score: number }[] = [];
+
+  $("img").each((_, el) => {
+    const node = $(el);
+    if (
+      node.closest(
+        "header, footer, nav, .elementor-location-header, .elementor-location-footer",
+      ).length
+    ) {
+      return;
+    }
+
+    const srcset = largestFromSrcset(
+      node.attr("srcset") || node.attr("data-srcset"),
+    );
+    const src =
+      srcset?.url ||
+      node.attr("src") ||
+      node.attr("data-src") ||
+      node.attr("data-lazy-src") ||
+      "";
+    if (!src) return;
+
+    const width = parsePx(node.attr("width")) || srcset?.width;
+    const height = parsePx(node.attr("height"));
+    const alt = node.attr("alt") || "";
+    if (isLikelyLogoImage(src, alt, width, height)) return;
+
+    const url = absolutize(pageUrl, src);
+    if (!url) return;
+
+    let score = 100;
+    if (width) score += width;
+    if (height) score += height;
+    if (width && height && width >= 800 && height >= 400) score += 2000;
+    candidates.push({ url, score });
+  });
+
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates[0]?.url || null;
+}
+
 function offersIsFree(eventNode: Record<string, unknown>): boolean | null {
   const offers = asArray(eventNode.offers as unknown);
   if (offers.length === 0) return null;
@@ -1241,6 +1329,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   let organizerEmail: string | null = null;
   let organizerPhone: string | null = null;
   let imageUrl = absolutize(finalUrl, ogImage);
+  if (imageUrl && isLikelyLogoImage(imageUrl)) {
+    imageUrl = null;
+  }
   let isFree: boolean | null = null;
   let priceFrom: string | null = null;
   let ticketUrl: string | null = null;
@@ -1252,7 +1343,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     dates: "low" as Confidence,
     place: "low" as Confidence,
     organizer: "low" as Confidence,
-    image: ogImage ? ("high" as Confidence) : ("low" as Confidence),
+    image: imageUrl ? ("high" as Confidence) : ("low" as Confidence),
     category: "low" as Confidence,
   };
   const sources = {
@@ -1270,7 +1361,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     dates: "",
     place: "",
     organizer: "",
-    image: ogImage ? "og:image" : "",
+    image: imageUrl ? "og:image" : "",
     category: "",
   };
 
@@ -1313,7 +1404,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     sources.organizer = org.name ? "JSON-LD Event" : sources.organizer;
 
     const jsonImage = imageFromJsonLd(eventNode, finalUrl);
-    if (jsonImage) {
+    if (jsonImage && !isLikelyLogoImage(jsonImage)) {
       imageUrl = jsonImage;
       conf.image = "high";
       sources.image = "JSON-LD Event";
@@ -1510,19 +1601,11 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
 
-  if (!imageUrl) {
-    const firstImg = $("article img, main img, .event img, img")
-      .filter((_, el) => {
-        const src = $(el).attr("src") || "";
-        return Boolean(src) && !src.includes("logo") && !src.includes("icon");
-      })
-      .first()
-      .attr("src");
-    imageUrl = absolutize(finalUrl, firstImg);
-    if (imageUrl) {
-      conf.image = "medium";
-      sources.image = "Immagine pagina";
-    }
+  const pageImage = pickBestPageImage($, finalUrl);
+  if (pageImage && (!imageUrl || isLikelyLogoImage(imageUrl))) {
+    imageUrl = pageImage;
+    conf.image = "medium";
+    sources.image = "Immagine pagina";
   }
 
   let sourceName = cleanText(ogSiteName);
