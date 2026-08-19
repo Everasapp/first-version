@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import {
   Building2,
   CalendarDays,
@@ -58,6 +58,7 @@ import {
   eventSchema,
 } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
+import { findReplacementEventSlug } from "@/src/lib/seo/event-slug-redirect";
 
 type EventDetailPageProps = {
   params: Promise<{
@@ -138,13 +139,8 @@ export async function generateMetadata({
     .maybeSingle();
 
   if (!data) {
-    return {
-      title: "Evento non trovato",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
+    const replacement = await findReplacementEventSlug(supabase, slug);
+    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
   }
 
   const description =
@@ -206,7 +202,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   if (!data) {
-    notFound();
+    const replacement = await findReplacementEventSlug(supabase, slug);
+    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
   }
 
   const event = data as EventRow;
