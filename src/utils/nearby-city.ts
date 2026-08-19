@@ -217,6 +217,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   // Sulcis
   Carbonia: { lat: 39.1672, lng: 8.5222 },
   Carloforte: { lat: 39.145, lng: 8.3056 },
+  Gonnesa: { lat: 39.2653, lng: 8.4711 },
   Iglesias: { lat: 39.3106, lng: 8.535 },
   "Sant'Antioco": { lat: 39.0653, lng: 8.4542 },
 };

@@ -230,6 +230,7 @@ export const cities: City[] = [
   // Sulcis (fuori dalla Città metropolitana, ma nel Sud operativo)
   { id: 174, city: "Carbonia", province: "SU", area: "Sud Sardegna" },
   { id: 175, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
+  { id: 209, city: "Gonnesa", province: "SU", area: "Sud Sardegna" },
   { id: 176, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
   { id: 177, city: "Sant'Antioco", province: "SU", area: "Sud Sardegna" },
 ];
