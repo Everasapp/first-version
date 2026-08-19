@@ -61,6 +61,27 @@ function emptyToNull(value: string) {
   return trimmed ? trimmed : null;
 }
 
+const EMAIL_FIELD_KEYS = new Set<keyof EditableFields>([
+  "email",
+  "pec",
+  "email_cultura",
+  "email_turismo",
+  "email_eventi",
+]);
+
+function normalizeEmailList(value: string) {
+  const parts = value
+    .split(/[;,\s]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return parts.length > 0 ? parts.join("; ") : null;
+}
+
+function isEmailField(key: keyof EditableFields) {
+  return EMAIL_FIELD_KEYS.has(key);
+}
+
 type EditOrganizerFormProps = {
   organizer: OrganizerDirectoryRow;
 };
@@ -100,13 +121,13 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
       .update({
         name,
         website: emptyToNull(form.website),
-        email: emptyToNull(form.email),
-        pec: emptyToNull(form.pec),
+        email: normalizeEmailList(form.email),
+        pec: normalizeEmailList(form.pec),
         phone: emptyToNull(form.phone),
         address: emptyToNull(form.address),
-        email_cultura: emptyToNull(form.email_cultura),
-        email_turismo: emptyToNull(form.email_turismo),
-        email_eventi: emptyToNull(form.email_eventi),
+        email_cultura: normalizeEmailList(form.email_cultura),
+        email_turismo: normalizeEmailList(form.email_turismo),
+        email_eventi: normalizeEmailList(form.email_eventi),
         facebook: emptyToNull(form.facebook),
         instagram: emptyToNull(form.instagram),
         claim_status: form.claim_status,
@@ -131,6 +152,7 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
   return (
     <form
       onSubmit={handleSave}
+      noValidate
       className="mt-8 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-sm sm:px-6"
     >
       <div className="space-y-4">
@@ -146,13 +168,20 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
               />
             ) : (
               <input
-                type={key === "email" || key.includes("email") || key === "pec" ? "email" : "text"}
+                type="text"
+                inputMode={isEmailField(key) ? "email" : "text"}
                 value={form[key]}
                 onChange={(e) => patchField(key, e.target.value)}
                 className={fieldClassName}
                 autoComplete="off"
               />
             )}
+            {isEmailField(key) ? (
+              <p className="mt-1 text-xs text-slate-500">
+                Puoi inserire più indirizzi, separati da spazio, virgola o
+                punto e virgola.
+              </p>
+            ) : null}
           </label>
         ))}
 
