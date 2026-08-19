@@ -275,11 +275,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? getOrganizerDisplayName(organizer)
     : "Organizzatore";
   const organizerName =
-    event.organizer_display_name?.trim() ||
     directory?.name?.trim() ||
+    event.organizer_display_name?.trim() ||
     profileOrganizerName;
   const customOrganizerName = event.organizer_display_name?.trim() || "";
   const isCustomOrganizerName =
+    !directory &&
     customOrganizerName.length > 0 &&
     customOrganizerName.toLocaleLowerCase("it") !==
       profileOrganizerName.toLocaleLowerCase("it");

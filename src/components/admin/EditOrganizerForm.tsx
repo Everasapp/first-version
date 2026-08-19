@@ -135,13 +135,31 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
       })
       .eq("id", organizer.id);
 
-    setIsSaving(false);
-
     if (error) {
+      setIsSaving(false);
       setErrorMessage(`Salvataggio non riuscito: ${error.message}`);
       return;
     }
 
+    if (name !== organizer.name.trim()) {
+      const { error: eventsError } = await supabase
+        .from("events")
+        .update({
+          organizer_display_name: name,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("organizer_directory_id", organizer.id);
+
+      if (eventsError) {
+        setIsSaving(false);
+        setErrorMessage(
+          `Organizzatore salvato, ma il nome non è stato aggiornato sugli eventi: ${eventsError.message}`,
+        );
+        return;
+      }
+    }
+
+    setIsSaving(false);
     setSuccessMessage("Modifiche salvate.");
     router.refresh();
   }

@@ -81,6 +81,19 @@ export default function OrganizerDirectorySelect({
     };
   }, []);
 
+  useEffect(() => {
+    if (!directoryId || organizers.length === 0) {
+      return;
+    }
+
+    const picked = organizers.find((item) => item.id === directoryId);
+    if (!picked || namesMatch(picked.name, displayName)) {
+      return;
+    }
+
+    onChange({ directoryId: picked.id, displayName: picked.name });
+  }, [directoryId, displayName, onChange, organizers]);
+
   const selectedOrganizer = directoryId
     ? organizers.find((item) => item.id === directoryId)
     : undefined;
