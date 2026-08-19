@@ -48,7 +48,6 @@ export async function POST(request: Request) {
 
   const file = formData.get("file");
   const slugRaw = formData.get("slug");
-  const upsert = formData.get("upsert") === "1" || formData.get("upsert") === "true";
 
   if (!(file instanceof File)) {
     return NextResponse.json(
@@ -83,14 +82,15 @@ export async function POST(request: Request) {
   try {
     const input = Buffer.from(await file.arrayBuffer());
     const webp = await optimizeImageToWebp(input);
-    const path = `${user.id}/${slug}.webp`;
+    const unique = `${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`;
+    const path = `${user.id}/${slug}-${unique}.webp`;
 
     const { error: uploadError } = await supabase.storage
       .from("event-images")
       .upload(path, webp, {
         cacheControl: "31536000",
         contentType: "image/webp",
-        upsert,
+        upsert: false,
       });
 
     if (uploadError) {

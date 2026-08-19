@@ -30,6 +30,7 @@ import {
   parsePrice,
 } from "@/src/lib/eventForm";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
+import { getEventImageStoragePath } from "@/src/lib/images/storagePath";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { createClient } from "@/src/lib/supabase/client";
@@ -73,27 +74,6 @@ type EditEventFormProps = {
   canAssignOrganizer: boolean;
   accountOrganizerName: string;
 };
-
-function getStoragePath(imageUrl: string | null) {
-  if (!imageUrl) {
-    return null;
-  }
-
-  const marker = "/storage/v1/object/public/event-images/";
-  const markerIndex = imageUrl.indexOf(marker);
-
-  if (markerIndex === -1) {
-    return null;
-  }
-
-  const encodedPath = imageUrl.slice(markerIndex + marker.length).split("?")[0];
-
-  try {
-    return decodeURIComponent(encodedPath);
-  } catch {
-    return encodedPath;
-  }
-}
 
 function toDateInputValue(iso: string | null | undefined) {
   if (!iso) return "";
@@ -321,6 +301,7 @@ export default function EditEventForm({
 
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+    changeEvent.target.value = "";
     clearError("image");
   }
 
@@ -354,7 +335,6 @@ export default function EditEventForm({
       if (imageFile) {
         const uploaded = await uploadEventImage(imageFile, {
           slug: event.slug,
-          upsert: true,
         });
         uploadedPath = uploaded.path;
         nextImageUrl = uploaded.publicUrl;
@@ -374,7 +354,7 @@ export default function EditEventForm({
         ? normalizeYoutubeUrl(youtubeUrl)
         : null;
 
-      const { error: updateError } = await supabase
+      const { data: updatedEvent, error: updateError } = await supabase
         .from("events")
         .update({
           title: title.trim(),
@@ -399,10 +379,13 @@ export default function EditEventForm({
           organizer_directory_id: canAssignOrganizer
             ? organizerDirectoryId
             : null,
+          updated_at: new Date().toISOString(),
           ...(shouldPublish ? { status: "published" as const } : {}),
         })
         .eq("id", event.id)
-        .eq("organizer_id", user.id);
+        .eq("organizer_id", user.id)
+        .select("id")
+        .maybeSingle();
 
       if (updateError) {
         if (uploadedPath) {
@@ -411,6 +394,16 @@ export default function EditEventForm({
 
         throw new Error(
           `Salvataggio non riuscito: ${updateError.message}`,
+        );
+      }
+
+      if (!updatedEvent) {
+        if (uploadedPath) {
+          await supabase.storage.from("event-images").remove([uploadedPath]);
+        }
+
+        throw new Error(
+          "Salvataggio non riuscito: l’evento non è stato aggiornato.",
         );
       }
 
@@ -426,7 +419,7 @@ export default function EditEventForm({
           .neq("id", event.id);
 
         if ((count ?? 0) === 0) {
-          const storagePath = getStoragePath(previousImageUrl);
+          const storagePath = getEventImageStoragePath(previousImageUrl);
 
           if (storagePath) {
             await supabase.storage.from("event-images").remove([storagePath]);
@@ -568,8 +561,15 @@ export default function EditEventForm({
             </label>
             <p className="mt-2 text-sm text-slate-500">
               Lascia l&apos;immagine attuale o sostituiscila (JPG, PNG o WebP,
-              max 5 MB). Il nuovo file viene compresso e salvato in WebP.
+              max 5 MB). Poi clicca Salva modifiche: senza salvataggio la nuova
+              foto resta solo in anteprima.
             </p>
+            {imageFile ? (
+              <p className="mt-2 text-sm font-semibold text-[#075EAE]">
+                Nuova immagine selezionata. Clicca Salva modifiche per
+                pubblicarla.
+              </p>
+            ) : null}
             {errors.image && (
               <p className="mt-2 text-sm text-red-600">{errors.image}</p>
             )}

@@ -8,14 +8,11 @@ export type UploadedEventImage = {
  */
 export async function uploadEventImage(
   file: File,
-  options: { slug: string; upsert?: boolean },
+  options: { slug: string },
 ): Promise<UploadedEventImage> {
   const body = new FormData();
   body.append("file", file);
   body.append("slug", options.slug);
-  if (options.upsert) {
-    body.append("upsert", "1");
-  }
 
   const response = await fetch("/api/events/image/upload", {
     method: "POST",
