@@ -113,8 +113,8 @@ export default function AdminHomePage() {
               Organizzatori salvati
             </span>
             <span className="mt-1 block text-sm text-slate-600">
-              Elenco di tutti i profili già salvati (non rivendicati o
-              rivendicati).
+              Elenco di tutti i profili già salvati. Da qui puoi anche crearne
+              uno nuovo a mano.
             </span>
           </span>
         </Link>

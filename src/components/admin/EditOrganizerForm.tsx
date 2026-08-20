@@ -39,8 +39,26 @@ const FIELD_LABELS: { key: keyof Omit<EditableFields, "claim_status">; label: st
   { key: "instagram", label: "Instagram" },
 ];
 
+function emptyForm(): EditableFields {
+  return {
+    name: "",
+    website: "",
+    email: "",
+    pec: "",
+    phone: "",
+    address: "",
+    email_cultura: "",
+    email_turismo: "",
+    email_eventi: "",
+    facebook: "",
+    instagram: "",
+    claim_status: "unclaimed",
+  };
+}
+
 function toFormState(org: OrganizerDirectoryRow): EditableFields {
   return {
+    ...emptyForm(),
     name: org.name ?? "",
     website: org.website ?? "",
     email: org.email ?? "",
@@ -83,13 +101,16 @@ function isEmailField(key: keyof EditableFields) {
 }
 
 type EditOrganizerFormProps = {
-  organizer: OrganizerDirectoryRow;
+  organizer?: OrganizerDirectoryRow;
 };
 
 export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
-  const [form, setForm] = useState<EditableFields>(() => toFormState(organizer));
+  const isCreate = !organizer;
+  const [form, setForm] = useState<EditableFields>(() =>
+    organizer ? toFormState(organizer) : emptyForm(),
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -116,23 +137,64 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
     setErrorMessage("");
     setSuccessMessage("");
 
+    const payload = {
+      name,
+      website: emptyToNull(form.website),
+      email: normalizeEmailList(form.email),
+      pec: normalizeEmailList(form.pec),
+      phone: emptyToNull(form.phone),
+      address: emptyToNull(form.address),
+      email_cultura: normalizeEmailList(form.email_cultura),
+      email_turismo: normalizeEmailList(form.email_turismo),
+      email_eventi: normalizeEmailList(form.email_eventi),
+      facebook: emptyToNull(form.facebook),
+      instagram: emptyToNull(form.instagram),
+      claim_status: organizer ? form.claim_status : ("unclaimed" as const),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (!organizer) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setIsSaving(false);
+        setErrorMessage("Sessione scaduta. Accedi di nuovo.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("organizer_directory")
+        .insert({
+          ...payload,
+          claimed_by_profile_id: null,
+          created_by: user.id,
+          sources: {
+            admin: {
+              value: "inserimento manuale",
+              sourceUrl: "",
+            },
+          },
+        })
+        .select("id")
+        .single();
+
+      if (error || !data) {
+        setIsSaving(false);
+        setErrorMessage(
+          `Creazione non riuscita: ${error?.message || "riprova."}`,
+        );
+        return;
+      }
+
+      router.push(`/admin/organizzatori/${data.id}`);
+      router.refresh();
+      return;
+    }
+
     const { error } = await supabase
       .from("organizer_directory")
-      .update({
-        name,
-        website: emptyToNull(form.website),
-        email: normalizeEmailList(form.email),
-        pec: normalizeEmailList(form.pec),
-        phone: emptyToNull(form.phone),
-        address: emptyToNull(form.address),
-        email_cultura: normalizeEmailList(form.email_cultura),
-        email_turismo: normalizeEmailList(form.email_turismo),
-        email_eventi: normalizeEmailList(form.email_eventi),
-        facebook: emptyToNull(form.facebook),
-        instagram: emptyToNull(form.instagram),
-        claim_status: form.claim_status,
-        updated_at: new Date().toISOString(),
-      })
+      .update(payload)
       .eq("id", organizer.id);
 
     if (error) {
@@ -203,22 +265,24 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
           </label>
         ))}
 
-        <label className="block">
-          <span className="text-sm font-semibold text-slate-700">Stato</span>
-          <select
-            value={form.claim_status}
-            onChange={(e) =>
-              patchField(
-                "claim_status",
-                e.target.value === "claimed" ? "claimed" : "unclaimed",
-              )
-            }
-            className={fieldClassName}
-          >
-            <option value="unclaimed">Non rivendicato</option>
-            <option value="claimed">Rivendicato</option>
-          </select>
-        </label>
+        {isCreate ? null : (
+          <label className="block">
+            <span className="text-sm font-semibold text-slate-700">Stato</span>
+            <select
+              value={form.claim_status}
+              onChange={(e) =>
+                patchField(
+                  "claim_status",
+                  e.target.value === "claimed" ? "claimed" : "unclaimed",
+                )
+              }
+              className={fieldClassName}
+            >
+              <option value="unclaimed">Non rivendicato</option>
+              <option value="claimed">Rivendicato</option>
+            </select>
+          </label>
+        )}
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -232,7 +296,13 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
           ) : (
             <Save aria-hidden="true" className="h-4 w-4" />
           )}
-          {isSaving ? "Salvataggio…" : "Salva modifiche"}
+          {isSaving
+            ? isCreate
+              ? "Creazione…"
+              : "Salvataggio…"
+            : isCreate
+              ? "Crea organizzatore"
+              : "Salva modifiche"}
         </button>
 
         {successMessage ? (

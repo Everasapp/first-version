@@ -108,16 +108,24 @@ export default async function AdminOrganizzatoriPage({
             Organizzatori salvati
           </h1>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Profili raccolti dalla ricerca contatti. Quelli «In uso» sono
-            collegati ad almeno un evento e non si possono eliminare.
+            Profili creati a mano o dalla ricerca contatti. Quelli «In uso»
+            sono collegati ad almeno un evento e non si possono eliminare.
           </p>
         </div>
-        <Link
-          href="/admin/ricerca-contatti"
-          className="inline-flex items-center justify-center rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
-        >
-          Nuova ricerca
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/ricerca-contatti"
+            className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+          >
+            Nuova ricerca
+          </Link>
+          <Link
+            href="/admin/organizzatori/nuovo"
+            className="inline-flex items-center justify-center rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
+          >
+            Crea organizzatore
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -167,14 +175,22 @@ export default async function AdminOrganizzatoriPage({
             Nessun organizzatore salvato
           </p>
           <p className="mt-2 text-sm text-slate-600">
-            Usa la ricerca contatti e conferma con &quot;Salva organizzatore&quot;.
+            Crea un profilo a mano oppure usa la ricerca contatti.
           </p>
-          <Link
-            href="/admin/ricerca-contatti"
-            className="mt-5 inline-flex rounded-xl border border-[#075EAE] px-4 py-2 text-sm font-bold text-[#075EAE]"
-          >
-            Vai alla ricerca
-          </Link>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <Link
+              href="/admin/organizzatori/nuovo"
+              className="inline-flex rounded-xl bg-[#E67E22] px-4 py-2 text-sm font-bold text-white"
+            >
+              Crea organizzatore
+            </Link>
+            <Link
+              href="/admin/ricerca-contatti"
+              className="inline-flex rounded-xl border border-[#075EAE] px-4 py-2 text-sm font-bold text-[#075EAE]"
+            >
+              Vai alla ricerca
+            </Link>
+          </div>
         </div>
       ) : visibleOrganizers.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center">
