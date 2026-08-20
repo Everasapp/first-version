@@ -2,6 +2,7 @@
 
 import { createClient } from "@/src/lib/supabase/server";
 import { notifyNewUser } from "@/src/lib/notifications/notify";
+import { sendSignupConfirmationEmail } from "@/src/lib/auth/send-confirmation-email";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -21,7 +22,7 @@ function mapAuthError(message: string): string {
     return "Email o password non corretti.";
   }
   if (lower.includes("email not confirmed")) {
-    return "Conferma la tua email prima di accedere.";
+    return "Conferma la tua email prima di accedere. Controlla anche Spam e Promozioni.";
   }
   if (lower.includes("user already registered")) {
     return "Esiste già un account con questa email.";
@@ -143,8 +144,16 @@ export async function registerAction(
     registeredAt: data.user?.created_at ?? new Date().toISOString(),
   });
 
+  if (!data.session) {
+    try {
+      await sendSignupConfirmationEmail(email);
+    } catch (sendError) {
+      console.error("[auth] Invio conferma via Resend fallito:", sendError);
+    }
+  }
+
   return {
     success:
-      "Registrazione completata. Controlla la tua email per confermare l'account.",
+      "Registrazione completata. Ti abbiamo inviato un’email da EVERAS: se non la vedi, controlla Spam e Promozioni.",
   };
 }

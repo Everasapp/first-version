@@ -10,6 +10,7 @@ import { cities } from "@/src/data/cities";
 import { buildAuthHref } from "@/src/lib/auth-urls";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
+import { requestConfirmationEmail } from "@/src/lib/auth/request-confirmation-email";
 import { createClient } from "@/src/lib/supabase/client";
 
 type RegisterViewProps = {
@@ -108,8 +109,14 @@ export default function RegisterView({
       return;
     }
 
+    try {
+      await requestConfirmationEmail(email.trim());
+    } catch (sendError) {
+      console.error("[auth] Richiesta email di conferma fallita:", sendError);
+    }
+
     setSuccessMessage(
-      "Registrazione completata. Controlla la tua email, apri il messaggio di EVERAS e tocca «Conferma email» nella pagina che si apre.",
+      "Registrazione completata. Ti abbiamo inviato un’email da EVERAS (info@mail.everas.it). Se non la vedi, controlla Spam e Promozioni, poi tocca «Conferma email».",
     );
     setFullName("");
     setEmail("");

@@ -10,6 +10,7 @@ import {
   parseSignupEmail,
 } from "@/src/lib/auth-urls";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
+import { requestConfirmationEmail } from "@/src/lib/auth/request-confirmation-email";
 import { createClient } from "@/src/lib/supabase/client";
 
 type AccediPageProps = {
@@ -33,7 +34,12 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
       ? "Il link di conferma non è valido o è scaduto. Richiedi una nuova email di conferma oppure registrati di nuovo."
       : "",
   );
+  const [infoMessage, setInfoMessage] = useState("");
+  const [needsConfirmation, setNeedsConfirmation] = useState(
+    (Array.isArray(params.error) ? params.error[0] : params.error) === "conferma",
+  );
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const registerHref = buildAuthHref("/registrati", {
     redirect: redirectPath,
     email,
@@ -43,6 +49,8 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
     event.preventDefault();
 
     setErrorMessage("");
+    setInfoMessage("");
+    setNeedsConfirmation(false);
     setIsLoading(true);
 
     const supabase = createClient();
@@ -53,10 +61,16 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
     });
 
     if (error) {
+      const notConfirmed =
+        error.message.toLowerCase().includes("email not confirmed") ||
+        error.message.toLowerCase().includes("email_not_confirmed");
+      setNeedsConfirmation(notConfirmed);
       setErrorMessage(
-        error.message === "Invalid login credentials"
-          ? "Email o password non corretti. Se ti sei appena registrato, conferma prima la tua email."
-          : error.message,
+        notConfirmed
+          ? "Devi confermare l’email prima di accedere. Controlla anche Spam e Promozioni, oppure invia di nuovo il messaggio."
+          : error.message === "Invalid login credentials"
+            ? "Email o password non corretti. Se ti sei appena registrato, conferma prima la tua email."
+            : error.message,
       );
 
       setIsLoading(false);
@@ -151,6 +165,15 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
               </div>
             )}
 
+            {infoMessage ? (
+              <div
+                role="status"
+                className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700"
+              >
+                {infoMessage}
+              </div>
+            ) : null}
+
             <button
               type="submit"
               disabled={isLoading}
@@ -158,6 +181,30 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
             >
               {isLoading ? "Accesso in corso..." : "Accedi"}
             </button>
+
+            {needsConfirmation ? (
+              <button
+                type="button"
+                disabled={isResending || !email.trim()}
+                onClick={async () => {
+                  setIsResending(true);
+                  setInfoMessage("");
+                  try {
+                    const message = await requestConfirmationEmail(email.trim());
+                    setInfoMessage(message);
+                  } catch {
+                    setInfoMessage(
+                      "Non è stato possibile inviare l’email. Riprova tra un minuto.",
+                    );
+                  } finally {
+                    setIsResending(false);
+                  }
+                }}
+                className="inline-flex h-12 w-full items-center justify-center rounded-xl border-2 border-[#E67E22] bg-white px-5 font-bold text-[#E67E22] transition hover:bg-[#E67E22] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isResending ? "Invio in corso..." : "Invia di nuovo l’email di conferma"}
+              </button>
+            ) : null}
           </form>
 
           <p className="mt-7 text-center text-sm text-slate-600">

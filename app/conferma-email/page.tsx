@@ -31,7 +31,7 @@ function safeNext(value: string | null) {
   return "/dashboard";
 }
 
-const OTP_TYPES: EmailOtpType[] = ["signup", "email"];
+const OTP_TYPES: EmailOtpType[] = ["signup", "email", "magiclink"];
 
 function ConfermaEmailContent() {
   const router = useRouter();
