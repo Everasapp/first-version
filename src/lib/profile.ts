@@ -3,8 +3,12 @@ export type UserRole = "utente" | "organizzatore" | "admin";
 export type Profile = {
   id: string;
   full_name: string | null;
+  display_name: string | null;
   role: UserRole;
   avatar_url: string | null;
+  interests: string[];
+  open_to_meeting: boolean;
+  show_in_community: boolean;
   municipality: string | null;
   province: string | null;
   business_name: string | null;
@@ -22,7 +26,7 @@ export type Profile = {
 };
 
 export const PROFILE_SELECT =
-  "id, full_name, role, avatar_url, municipality, province, business_name, vat_number, organizer_since, plan_id, newsletter_opt_in, newsletter_city, newsletter_category, newsletter_opted_at, newsletter_last_sent_at, newsletter_unsub_token, created_at, updated_at";
+  "id, full_name, display_name, role, avatar_url, interests, open_to_meeting, show_in_community, municipality, province, business_name, vat_number, organizer_since, plan_id, newsletter_opt_in, newsletter_city, newsletter_category, newsletter_opted_at, newsletter_last_sent_at, newsletter_unsub_token, created_at, updated_at";
 
 export function isOrganizerRole(role: UserRole | null | undefined) {
   return role === "organizzatore" || role === "admin";

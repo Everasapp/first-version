@@ -49,7 +49,16 @@ export async function getProfileForUser(
     throw new Error(`Impossibile caricare il profilo: ${error.message}`);
   }
 
-  return (data as Profile | null) ?? null;
+  if (!data) return null;
+
+  const row = data as Profile;
+  return {
+    ...row,
+    display_name: row.display_name ?? null,
+    interests: Array.isArray(row.interests) ? row.interests : [],
+    open_to_meeting: Boolean(row.open_to_meeting),
+    show_in_community: row.show_in_community !== false,
+  };
 }
 
 export async function requireProfile(redirectTo: string) {

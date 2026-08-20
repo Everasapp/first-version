@@ -1,18 +1,14 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Building2 } from "lucide-react";
+import { Users } from "lucide-react";
 
-import OrganizerProfileForm from "@/src/components/dashboard/OrganizerProfileForm";
+import CommunityProfileForm from "@/src/components/dashboard/CommunityProfileForm";
 import Header from "@/src/components/home/Header";
 import { requireProfile } from "@/src/lib/auth";
-import { isOrganizer } from "@/src/lib/profile";
 
-export default async function OrganizerProfilePage() {
-  const { profile } = await requireProfile("/dashboard/profilo");
+export const dynamic = "force-dynamic";
 
-  if (!isOrganizer(profile)) {
-    redirect("/diventa-organizzatore?next=/dashboard/profilo");
-  }
+export default async function CommunityProfilePage() {
+  const { profile } = await requireProfile("/dashboard/comunita");
 
   return (
     <>
@@ -23,14 +19,14 @@ export default async function OrganizerProfilePage() {
           <div className="mx-auto flex max-w-3xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 sm:flex-row sm:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Area organizzatore
+                Community
               </p>
               <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">
-                Profilo attività
+                Come compari agli eventi
               </h1>
               <p className="mt-3 text-lg text-slate-600">
-                Aggiorna i dati della tua attività. Compariranno sul profilo
-                pubblico.
+                Incontrare persone con interessi in comune, di persona, intorno
+                agli eventi della Sardegna. Sempre con rispetto.
               </p>
             </div>
             <Link
@@ -46,35 +42,19 @@ export default async function OrganizerProfilePage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
             <div className="mb-8 flex items-start gap-3">
               <div className="grid h-11 w-11 place-items-center rounded-2xl bg-orange-50 text-[#E67E22]">
-                <Building2 aria-hidden="true" className="h-5 w-5" />
+                <Users aria-hidden="true" className="h-5 w-5" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
-                  Informazioni attività
+                  Profilo visibile
                 </h2>
                 <p className="mt-1 text-sm text-slate-600">
-                  Nome, P.IVA e sede operativa.
+                  Nome, foto e interessi. Niente email, telefono o indirizzo.
                 </p>
               </div>
             </div>
 
-            <OrganizerProfileForm profile={profile} />
-          </div>
-
-          <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
-            <h2 className="text-xl font-bold text-slate-900">
-              Come compari agli eventi
-            </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Nome visibile, foto e interessi per incontrare persone con rispetto.
-              Niente email o telefono.
-            </p>
-            <Link
-              href="/dashboard/comunita"
-              className="mt-5 inline-flex font-bold text-[#075EAE] hover:underline"
-            >
-              Apri il profilo community
-            </Link>
+            <CommunityProfileForm profile={profile} />
           </div>
         </section>
       </main>

@@ -1,6 +1,7 @@
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
+import CommunityInvite from "@/src/components/home/CommunityInvite";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -166,7 +167,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
 export default async function Home() {
   const supabase = await createClient();
 
-  const [{ data, error }, favoriteIds] = await Promise.all([
+  const [{ data, error }, favoriteIds, auth] = await Promise.all([
     supabase
       .from("events")
       .select(
@@ -175,6 +176,7 @@ export default async function Home() {
       .eq("status", "published")
       .order("start_at", { ascending: true }),
     getCurrentUserFavoriteIds(),
+    supabase.auth.getUser(),
   ]);
 
   if (error) {
@@ -227,6 +229,8 @@ export default async function Home() {
         <HappeningToday events={weekEvents} />
 
         <Hero />
+
+        <CommunityInvite isAuthenticated={Boolean(auth.data.user)} />
 
         <AreaSection
           title="Nord Sardegna"

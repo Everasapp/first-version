@@ -9,6 +9,7 @@ import {
   MapPin,
   Pencil,
   Share2,
+  Users,
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
@@ -16,6 +17,7 @@ import {
   getEventBucket,
   type DashboardEventStatus,
 } from "@/src/lib/dashboardEvents";
+import { getEventCommunitySummary } from "@/src/lib/community-data";
 import { createClient } from "@/src/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -102,6 +104,9 @@ export default async function StatisticheEventoPage({
   const views = event.views_count ?? 0;
   const likes = event.favorites_count ?? 0;
   const shares = event.shares_count ?? 0;
+  const community = await getEventCommunitySummary(event.id);
+  const going = community.goingCount;
+  const meet = community.meetCount;
 
   return (
     <>
@@ -155,6 +160,26 @@ export default async function StatisticheEventoPage({
               </p>
               <p className="mt-1 text-sm font-semibold text-slate-500">
                 Inoltri
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Users aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
+              <p className="mt-4 text-3xl font-black text-slate-900">
+                {new Intl.NumberFormat("it-IT").format(going)}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">
+                Persone che ci vanno
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Users aria-hidden="true" className="h-6 w-6 text-[#E67E22]" />
+              <p className="mt-4 text-3xl font-black text-slate-900">
+                {new Intl.NumberFormat("it-IT").format(meet)}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">
+                Aperte a conoscere gente nuova
               </p>
             </div>
 
