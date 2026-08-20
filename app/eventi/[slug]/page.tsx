@@ -229,12 +229,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   // Visitatori: conta ogni vista e mostrala subito.
-  // Admin: se l’evento è ancora a 0, conta almeno questa visita.
+  // Organizzatore e admin vedono lo stesso numero delle statistiche in dashboard.
+  const isOwner = Boolean(user && event.organizer_id === user.id);
   let displayedViews = event.views_count ?? 0;
-  if (!isAdmin) {
+  if (!isAdmin && !isOwner) {
     await supabase.rpc("increment_event_views", { event_id: event.id });
     displayedViews += 1;
-  } else if (displayedViews === 0) {
+  } else if (isAdmin && displayedViews === 0) {
     await supabase.rpc("increment_event_views", { event_id: event.id });
     displayedViews = 1;
   }

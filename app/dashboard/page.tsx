@@ -54,6 +54,8 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { isOrganizer, type Profile } from "@/src/lib/profile";
 
+export const dynamic = "force-dynamic";
+
 type DashboardEvent = {
   id: string;
   slug: string;

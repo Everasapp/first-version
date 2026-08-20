@@ -18,6 +18,8 @@ import {
 } from "@/src/lib/dashboardEvents";
 import { createClient } from "@/src/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 type StatisticheEventoPageProps = {
   params: Promise<{
     id: string;
