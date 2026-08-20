@@ -225,7 +225,7 @@ export default async function Home() {
     <>
       <Header />
 
-      <main>
+      <main className="overflow-x-hidden">
         <HappeningToday events={weekEvents} />
 
         <Hero />

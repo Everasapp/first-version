@@ -182,7 +182,7 @@ export default function AreaSection({
           onBlurCapture={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
-          className="mt-5 flex snap-x snap-proximity gap-6 overflow-x-auto scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mt-5 flex min-w-0 snap-x snap-proximity gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {areaEvents.map((event) => (
             <div

@@ -4,13 +4,13 @@ import { buildAuthHref } from "@/src/lib/auth-urls";
 
 function CommunityRing() {
   return (
-    <div className="mx-auto w-full max-w-[320px]" aria-hidden="true">
+    <div className="mx-auto min-w-0 w-full max-w-[320px]" aria-hidden="true">
       <img
         src="/images/community/community-ring.webp"
         alt=""
         width={734}
         height={749}
-        className="h-auto w-full"
+        className="block h-auto w-full max-w-full"
       />
     </div>
   );
@@ -28,10 +28,10 @@ export default function CommunityInvite({
     : buildAuthHref("/registrati", { redirect: "/dashboard/comunita" });
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section className="overflow-x-hidden bg-white py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-10 overflow-hidden rounded-[28px] border border-slate-200 bg-white px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6 lg:px-14 lg:py-12">
-          <div className="max-w-xl">
+        <div className="grid min-w-0 items-center gap-10 overflow-hidden rounded-[28px] border border-slate-200 bg-white px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-6 lg:px-14 lg:py-12">
+          <div className="min-w-0 max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#E67E22]">
               La community
             </p>
