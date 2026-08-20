@@ -28,6 +28,7 @@ import {
   shareStoryFile,
 } from "@/src/lib/share/generateStoryImage";
 import type { InstagramStoryEventData } from "@/src/lib/share/types";
+import { STORY_SITE_LABEL } from "@/src/lib/share/types";
 import { createClient } from "@/src/lib/supabase/client";
 
 function InstagramIcon({ className }: { className?: string }) {

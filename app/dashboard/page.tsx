@@ -52,6 +52,7 @@ import {
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { engagementFromRow } from "@/src/lib/event-engagement";
+import { isOrganizer, type Profile } from "@/src/lib/profile";
 
 type DashboardEvent = {
   id: string;
