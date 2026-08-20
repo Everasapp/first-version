@@ -228,9 +228,15 @@ async function EventDetailPage({ slug }: { slug: string }) {
     isAdmin = profile?.role === "admin";
   }
 
-  // Visitatori / organizzatori: conta ogni vista. Admin: solo la prima (lato client).
+  // Visitatori: conta ogni vista e mostrala subito.
+  // Admin: se l’evento è ancora a 0, conta almeno questa visita.
+  let displayedViews = event.views_count ?? 0;
   if (!isAdmin) {
     await supabase.rpc("increment_event_views", { event_id: event.id });
+    displayedViews += 1;
+  } else if (displayedViews === 0) {
+    await supabase.rpc("increment_event_views", { event_id: event.id });
+    displayedViews = 1;
   }
 
   const [
@@ -357,7 +363,9 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   return (
     <>
-      {isAdmin ? <AdminEventViewOnce eventId={event.id} /> : null}
+      {isAdmin && displayedViews > 1 ? (
+        <AdminEventViewOnce eventId={event.id} />
+      ) : null}
       <JsonLd
         data={eventSchema({
           name: event.title,
@@ -470,6 +478,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
             <EventEngagementStats
               className="mt-4"
               {...engagementFromRow(event)}
+              viewsCount={displayedViews}
             />
           </div>
         </section>
