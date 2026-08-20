@@ -1490,6 +1490,25 @@ async function fetchSolrEventListing(opts: {
   }
 }
 
+function facebookImportError(url: string) {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+    const blocked = [
+      "facebook.com",
+      "m.facebook.com",
+      "mbasic.facebook.com",
+      "fb.com",
+      "fb.watch",
+      "instagram.com",
+      "m.instagram.com",
+    ];
+    if (!blocked.includes(host)) return null;
+    return "Facebook e Instagram bloccano la lettura automatica. Serve il link di una pagina evento pubblica (sito, comune, biglietteria), non un post o una storia.";
+  } catch {
+    return null;
+  }
+}
+
 export async function extractEventFromUrl(inputUrl: string): Promise<{
   ok: boolean;
   error?: string;
@@ -1504,6 +1523,11 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     pageUrl = new URL(normalized).toString();
   } catch {
     return { ok: false, error: "URL non valido" };
+  }
+
+  const facebookBlocked = facebookImportError(pageUrl);
+  if (facebookBlocked) {
+    return { ok: false, error: facebookBlocked };
   }
 
   let html: string;
