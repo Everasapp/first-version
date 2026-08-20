@@ -29,7 +29,7 @@ import {
 } from "@/src/lib/share/generateStoryImage";
 import type { InstagramStoryEventData } from "@/src/lib/share/types";
 import { STORY_SITE_LABEL } from "@/src/lib/share/types";
-import { createClient } from "@/src/lib/supabase/client";
+import { incrementEventShares } from "@/src/lib/event-engagement";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -130,14 +130,17 @@ export default function ShareEventButton({
   const [storyEvent, setStoryEvent] = useState<InstagramStoryEventData | null>(
     null,
   );
+  const lastShareAtRef = useRef(0);
 
   const dimension = size === "md" ? "h-12 w-12" : "h-10 w-10";
   // Sempre URL pubblico: localhost non serve per lo sticker Instagram
   const eventShareUrl = buildEventShareUrl(slug, "https://www.everas.it");
 
   function recordShare() {
-    const supabase = createClient();
-    void supabase.rpc("increment_event_shares", { event_id: eventId });
+    const now = Date.now();
+    if (now - lastShareAtRef.current < 4000) return;
+    lastShareAtRef.current = now;
+    incrementEventShares(eventId);
   }
 
   useEffect(() => {
@@ -192,6 +195,23 @@ export default function ShareEventButton({
     };
   }, [downloadUrl]);
 
+  useEffect(() => {
+    if (!open && !showDownloadPanel) return;
+    function onCopy() {
+      const selected = window.getSelection()?.toString().trim() ?? "";
+      if (!selected) return;
+      if (
+        eventShareUrl.includes(selected) ||
+        selected.includes(eventShareUrl) ||
+        selected.includes("/eventi/")
+      ) {
+        recordShare();
+      }
+    }
+    document.addEventListener("copy", onCopy);
+    return () => document.removeEventListener("copy", onCopy);
+  }, [open, showDownloadPanel, eventShareUrl, eventId]);
+
   function markCopied() {
     setCopied(true);
     setCopyError(false);
@@ -199,9 +219,7 @@ export default function ShareEventButton({
     window.setTimeout(() => setCopied(false), 2500);
   }
 
-  function handleCopyClick(event: ReactMouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    event.stopPropagation();
+  function copyLink() {
     setCopyError(false);
     const ok = copyTextSync(eventShareUrl);
     if (ok) {
@@ -219,13 +237,21 @@ export default function ShareEventButton({
       setCopyError(true);
       setStatusMessage("Seleziona e copia il link qui sotto.");
       window.prompt("Copia il link dell’evento:", eventShareUrl);
+      recordShare();
     })();
+  }
+
+  function handleCopyClick(event: ReactMouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    copyLink();
   }
 
   async function shareNative(event: ReactMouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
     setOpen(false);
+    recordShare();
 
     try {
       if (typeof navigator.share === "function") {
@@ -234,7 +260,6 @@ export default function ShareEventButton({
           text: `Scopri questo evento su Everas: ${title}`,
           url: eventShareUrl,
         });
-        recordShare();
         return;
       }
     } catch (error) {
@@ -245,7 +270,6 @@ export default function ShareEventButton({
 
     const ok = await copyTextAsync(eventShareUrl);
     if (ok) {
-      recordShare();
       markCopied();
       setStatusMessage("Condivisione non disponibile: link copiato.");
     } else {
@@ -263,8 +287,9 @@ export default function ShareEventButton({
     setOpen(false);
     setStatusMessage("");
 
-    // Copia subito nel gesto utente (prima degli await lunghi)
+    // Copia e conta subito, prima che l’utente passi a Instagram.
     const copiedNow = copyTextSync(eventShareUrl);
+    recordShare();
     if (copiedNow) markCopied();
 
     let revokeSafeImage: (() => void) | undefined;
@@ -309,7 +334,6 @@ export default function ShareEventButton({
       if (shareable) {
         try {
           await shareStoryFile(file, title, payload.eventUrl);
-          recordShare();
           setShowDownloadPanel(true);
           return;
         } catch (shareError) {
@@ -325,7 +349,6 @@ export default function ShareEventButton({
 
       if (downloadUrl) URL.revokeObjectURL(downloadUrl);
       setDownloadUrl(URL.createObjectURL(blob));
-      recordShare();
       setShowDownloadPanel(true);
     } catch (error) {
       console.error("[share] Instagram Story generation failed:", error);
@@ -378,15 +401,17 @@ export default function ShareEventButton({
                 Link per sticker Instagram
               </p>
 
-              <p
-                className={`mt-2 break-all rounded-xl border px-3 py-2 text-xs font-medium ${
+              <button
+                type="button"
+                onClick={handleCopyClick}
+                className={`mt-2 w-full break-all rounded-xl border px-3 py-2 text-left text-xs font-medium ${
                   copyError
                     ? "border-red-300 bg-red-50 text-red-800"
                     : "border-slate-200 bg-slate-50 text-slate-700"
                 }`}
               >
                 {eventShareUrl}
-              </p>
+              </button>
 
               <button
                 type="button"
@@ -480,9 +505,13 @@ export default function ShareEventButton({
                   "Copia il link, poi su Instagram aggiungi lo sticker Link e incollalo."}
               </p>
 
-              <p className="mt-3 break-all rounded-xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3 py-2 text-xs font-medium text-slate-800">
+              <button
+                type="button"
+                onClick={handleCopyClick}
+                className="mt-3 w-full break-all rounded-xl border border-[#E67E22]/30 bg-[#E67E22]/10 px-3 py-2 text-left text-xs font-medium text-slate-800"
+              >
                 {eventShareUrl}
-              </p>
+              </button>
 
               <button
                 type="button"
