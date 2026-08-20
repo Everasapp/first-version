@@ -20,6 +20,7 @@ import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 import { getDateRange } from "@/src/lib/seo/dateRange";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
@@ -67,6 +68,9 @@ type DatabaseEvent = {
   ticket_url: string | null;
   status: string;
   is_featured: boolean;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 const areaLabels: Record<string, string> = {
@@ -122,6 +126,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    ...engagementFromRow(event),
   };
 }
 
@@ -197,7 +202,10 @@ export default async function EventsPage({
         price_from,
         ticket_url,
         status,
-        is_featured
+        is_featured,
+        views_count,
+        favorites_count,
+        shares_count
       `,
       )
       .eq("status", "published")

@@ -12,6 +12,7 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { createClient } from "@/src/lib/supabase/server";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 
 type EventRow = {
   id: string;
@@ -28,6 +29,9 @@ type EventRow = {
   is_free: boolean;
   price_from: number | string | null;
   is_featured: boolean;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 function formatRomeDayKey(value: Date) {
@@ -155,6 +159,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    ...engagementFromRow(event),
   };
 }
 
@@ -165,7 +170,7 @@ export default async function Home() {
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
       .order("start_at", { ascending: true }),

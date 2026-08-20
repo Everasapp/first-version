@@ -42,6 +42,9 @@ export type FavoriteEventListItem = {
   image_url: string | null;
   is_free: boolean;
   price_from: number | string | null;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 export async function getFavoriteEvents(userId: string) {
@@ -66,6 +69,9 @@ export async function getFavoriteEvents(userId: string) {
         image_url,
         is_free,
         price_from,
+        views_count,
+        favorites_count,
+        shares_count,
         status
       )
     `,
@@ -100,6 +106,9 @@ export async function getFavoriteEvents(userId: string) {
       image_url: event.image_url as string | null,
       is_free: Boolean(event.is_free),
       price_from: event.price_from as number | string | null,
+      views_count: (event.views_count as number | null) ?? 0,
+      favorites_count: (event.favorites_count as number | null) ?? 0,
+      shares_count: (event.shares_count as number | null) ?? 0,
     });
   }
 

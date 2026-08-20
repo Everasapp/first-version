@@ -9,6 +9,7 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 import { createClient } from "@/src/lib/supabase/server";
 import { getDateRange } from "@/src/lib/seo/dateRange";
 
@@ -31,6 +32,9 @@ export type PublishedEventRow = {
   ticket_url: string | null;
   status: string;
   is_featured: boolean;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 function getEventArea(municipality: string | null) {
@@ -66,6 +70,7 @@ export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    ...engagementFromRow(event),
   };
 }
 
@@ -102,7 +107,10 @@ export async function loadFilteredPublishedEvents(
         price_from,
         ticket_url,
         status,
-        is_featured
+        is_featured,
+        views_count,
+        favorites_count,
+        shares_count
       `,
       )
       .eq("status", "published")

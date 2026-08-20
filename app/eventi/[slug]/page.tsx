@@ -17,6 +17,7 @@ import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import AdminEventViewOnce from "@/src/components/events/AdminEventViewOnce";
+import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import EventYouTubePlayer from "@/src/components/events/EventYouTubePlayer";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
@@ -46,6 +47,7 @@ import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 import { createClient } from "@/src/lib/supabase/server";
 import {
   findCategoryBySlug,
@@ -88,6 +90,9 @@ type EventRow = {
   organizer_id: string | null;
   organizer_display_name: string | null;
   organizer_directory_id: string | null;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -115,6 +120,7 @@ function mapEventForCard(event: EventRow, isFavorite = false) {
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     isFavorite,
+    ...engagementFromRow(event),
   };
 }
 
@@ -191,7 +197,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -238,7 +244,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id",
+        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
       .eq("category", event.category)
@@ -424,6 +430,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 className="shadow-lg"
               />
               <ShareEventButton
+                eventId={event.id}
                 title={event.title}
                 slug={event.slug}
                 imageUrl={heroImage}
@@ -460,6 +467,10 @@ async function EventDetailPage({ slug }: { slug: string }) {
             <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               {event.title}
             </h1>
+            <EventEngagementStats
+              className="mt-4"
+              {...engagementFromRow(event)}
+            />
           </div>
         </section>
 

@@ -20,6 +20,7 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { isOrganizerRole, PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 import { absoluteUrl } from "@/src/lib/seo/site";
 import { breadcrumbListSchema } from "@/src/lib/seo/schema";
 
@@ -44,6 +45,9 @@ type EventRow = {
   is_free: boolean;
   price_from: number | string | null;
   is_featured: boolean;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 function formatEventDate(startAt: string) {
@@ -122,7 +126,7 @@ export default async function OrganizerPublicPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
       )
       .eq("organizer_id", organizer.id)
       .eq("status", "published")
@@ -156,6 +160,7 @@ export default async function OrganizerPublicPage({
         priceFrom: pricing.priceFrom,
         isFeatured: event.is_featured,
         isFavorite: favoriteIds.has(event.id),
+        ...engagementFromRow(event),
       };
     });
 

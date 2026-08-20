@@ -28,7 +28,7 @@ import {
   shareStoryFile,
 } from "@/src/lib/share/generateStoryImage";
 import type { InstagramStoryEventData } from "@/src/lib/share/types";
-import { STORY_SITE_LABEL } from "@/src/lib/share/types";
+import { createClient } from "@/src/lib/supabase/client";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -86,6 +86,7 @@ async function copyTextAsync(text: string) {
 }
 
 type ShareEventButtonProps = {
+  eventId: string;
   title: string;
   slug: string;
   imageUrl?: string;
@@ -100,6 +101,7 @@ type ShareEventButtonProps = {
 type MenuPosition = { top: number; left: number };
 
 export default function ShareEventButton({
+  eventId,
   title,
   slug,
   imageUrl = "/images/concert.webp",
@@ -131,6 +133,11 @@ export default function ShareEventButton({
   const dimension = size === "md" ? "h-12 w-12" : "h-10 w-10";
   // Sempre URL pubblico: localhost non serve per lo sticker Instagram
   const eventShareUrl = buildEventShareUrl(slug, "https://www.everas.it");
+
+  function recordShare() {
+    const supabase = createClient();
+    void supabase.rpc("increment_event_shares", { event_id: eventId });
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -197,12 +204,14 @@ export default function ShareEventButton({
     setCopyError(false);
     const ok = copyTextSync(eventShareUrl);
     if (ok) {
+      recordShare();
       markCopied();
       return;
     }
     void (async () => {
       const asyncOk = await copyTextAsync(eventShareUrl);
       if (asyncOk) {
+        recordShare();
         markCopied();
         return;
       }
@@ -224,6 +233,7 @@ export default function ShareEventButton({
           text: `Scopri questo evento su Everas: ${title}`,
           url: eventShareUrl,
         });
+        recordShare();
         return;
       }
     } catch (error) {
@@ -234,6 +244,7 @@ export default function ShareEventButton({
 
     const ok = await copyTextAsync(eventShareUrl);
     if (ok) {
+      recordShare();
       markCopied();
       setStatusMessage("Condivisione non disponibile: link copiato.");
     } else {
@@ -297,6 +308,7 @@ export default function ShareEventButton({
       if (shareable) {
         try {
           await shareStoryFile(file, title, payload.eventUrl);
+          recordShare();
           setShowDownloadPanel(true);
           return;
         } catch (shareError) {
@@ -312,6 +324,7 @@ export default function ShareEventButton({
 
       if (downloadUrl) URL.revokeObjectURL(downloadUrl);
       setDownloadUrl(URL.createObjectURL(blob));
+      recordShare();
       setShowDownloadPanel(true);
     } catch (error) {
       console.error("[share] Instagram Story generation failed:", error);

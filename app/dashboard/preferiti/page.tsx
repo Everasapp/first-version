@@ -7,6 +7,7 @@ import EventCard, {
 import Header from "@/src/components/home/Header";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { getFavoriteEvents } from "@/src/lib/favorites";
 import { isOrganizer } from "@/src/lib/profile";
@@ -38,6 +39,7 @@ export default async function PreferitiPage() {
       isFree: pricing.isFree,
       priceFrom: pricing.priceFrom,
       isFavorite: true,
+      ...engagementFromRow(event),
     };
   });
 

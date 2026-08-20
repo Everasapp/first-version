@@ -22,6 +22,7 @@ import EventCard, {
 } from "@/src/components/home/EventCard";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
+import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import DashboardEventSearch from "@/src/components/dashboard/DashboardEventSearch";
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
@@ -50,7 +51,7 @@ import {
 } from "@/src/lib/plans";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
-import { isOrganizer, type Profile } from "@/src/lib/profile";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 
 type DashboardEvent = {
   id: string;
@@ -65,6 +66,8 @@ type DashboardEvent = {
   is_free: boolean;
   price_from: number | string | null;
   views_count: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
   is_featured: boolean;
 };
 
@@ -182,6 +185,7 @@ function toFavoriteCards(
       isFree: pricing.isFree,
       priceFrom: pricing.priceFrom,
       isFavorite: true,
+      ...engagementFromRow(event),
     };
   });
 }
@@ -408,7 +412,7 @@ async function OrganizerDashboard({
     supabase
       .from("events")
       .select(
-        "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count, is_featured",
+        "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count, favorites_count, shares_count, is_featured",
       )
       .eq("organizer_id", userId)
       .order("created_at", { ascending: false }),
@@ -730,6 +734,11 @@ async function OrganizerDashboard({
                           {event.location_name || event.municipality}
                         </p>
                       </div>
+
+                      <EventEngagementStats
+                        className="mt-4"
+                        {...engagementFromRow(event)}
+                      />
 
                       <div className="mt-6 flex flex-wrap gap-3 border-t border-slate-100 pt-5">
                         <Link

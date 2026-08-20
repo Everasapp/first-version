@@ -95,6 +95,8 @@ export default function DuplicateEventButton({
         status: "draft",
         is_featured: false,
         views_count: 0,
+        favorites_count: 0,
+        shares_count: 0,
       })
       .select("id")
       .single();

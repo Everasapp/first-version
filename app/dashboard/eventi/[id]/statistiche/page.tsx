@@ -5,8 +5,10 @@ import {
   BarChart3,
   CalendarDays,
   Eye,
+  Heart,
   MapPin,
   Pencil,
+  Share2,
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
@@ -75,7 +77,7 @@ export default async function StatisticheEventoPage({
   const { data: event, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, municipality, location_name, start_at, end_at, status, views_count, created_at, updated_at",
+      "id, slug, title, municipality, location_name, start_at, end_at, status, views_count, favorites_count, shares_count, created_at, updated_at",
     )
     .eq("id", id)
     .eq("organizer_id", user.id)
@@ -96,6 +98,8 @@ export default async function StatisticheEventoPage({
     end_at: event.end_at,
   });
   const views = event.views_count ?? 0;
+  const likes = event.favorites_count ?? 0;
+  const shares = event.shares_count ?? 0;
 
   return (
     <>
@@ -121,7 +125,7 @@ export default async function StatisticheEventoPage({
             Panoramica delle performance della pagina evento su EVERAS.
           </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <Eye aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
               <p className="mt-4 text-3xl font-black text-slate-900">
@@ -129,6 +133,26 @@ export default async function StatisticheEventoPage({
               </p>
               <p className="mt-1 text-sm font-semibold text-slate-500">
                 Visualizzazioni
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Heart aria-hidden="true" className="h-6 w-6 text-[#E67E22]" />
+              <p className="mt-4 text-3xl font-black text-slate-900">
+                {new Intl.NumberFormat("it-IT").format(likes)}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">
+                Mi piace
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Share2 aria-hidden="true" className="h-6 w-6 text-slate-600" />
+              <p className="mt-4 text-3xl font-black text-slate-900">
+                {new Intl.NumberFormat("it-IT").format(shares)}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-500">
+                Inoltri
               </p>
             </div>
 

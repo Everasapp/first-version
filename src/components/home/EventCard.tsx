@@ -9,6 +9,7 @@ import {
 
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
+import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 
 export type EventCardData = {
@@ -42,6 +43,9 @@ export type EventCardData = {
   isActiveEvent?: boolean;
   statusLabel?: string;
   isFavorite?: boolean;
+  likesCount?: number;
+  viewsCount?: number;
+  sharesCount?: number;
 };
 
 type EventCardProps = {
@@ -116,6 +120,7 @@ export default function EventCard({ event }: EventCardProps) {
             initialIsFavorite={Boolean(event.isFavorite)}
           />
           <ShareEventButton
+            eventId={event.eventId}
             title={event.title}
             slug={event.id}
             imageUrl={event.imageUrl}
@@ -163,6 +168,13 @@ export default function EventCard({ event }: EventCardProps) {
             </span>
           </div>
         </div>
+
+        <EventEngagementStats
+          className="mt-4"
+          likesCount={event.likesCount}
+          viewsCount={event.viewsCount}
+          sharesCount={event.sharesCount}
+        />
 
         <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <span

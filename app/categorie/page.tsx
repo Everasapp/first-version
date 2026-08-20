@@ -10,6 +10,7 @@ import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { createClient } from "@/src/lib/supabase/server";
+import { engagementFromRow } from "@/src/lib/event-engagement";
 
 type CategoriesPageProps = {
   searchParams: Promise<{
@@ -31,6 +32,9 @@ type EventRow = {
   is_free: boolean;
   price_from: number | string | null;
   is_featured: boolean;
+  views_count?: number | null;
+  favorites_count?: number | null;
+  shares_count?: number | null;
 };
 
 function formatEventDate(startAt: string) {
@@ -66,6 +70,7 @@ function mapEvent(event: EventRow, isFavorite: boolean): EventCardData {
     priceFrom: pricing.priceFrom,
     isFeatured: event.is_featured,
     isFavorite,
+    ...engagementFromRow(event),
   };
 }
 
@@ -90,7 +95,7 @@ export default async function CategoriesPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured",
+        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
       .order("start_at", { ascending: true }),
