@@ -89,10 +89,10 @@ export default function RootLayout({
       lang="it"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full min-w-0 flex-col overflow-x-hidden">
+      <body className="flex min-h-full min-w-0 flex-col">
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />
-        <div className="flex min-w-0 max-w-full flex-1 flex-col overflow-x-hidden">
+        <div className="flex min-w-0 max-w-full flex-1 flex-col">
           {children}
           <Footer />
         </div>

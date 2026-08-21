@@ -47,8 +47,8 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 isolate overflow-x-hidden border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-20 min-w-0 max-w-7xl items-end gap-1.5 overflow-x-hidden px-3 pb-3.5 sm:gap-3 sm:px-8">
+    <header className="sticky top-0 z-50 isolate overflow-x-clip border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-20 min-w-0 max-w-7xl items-end gap-1.5 px-3 pb-3.5 sm:gap-3 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
             src="/images/everas-logo-v2.webp"

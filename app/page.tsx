@@ -225,7 +225,7 @@ export default async function Home() {
     <>
       <Header />
 
-      <main className="min-w-0 max-w-full overflow-x-hidden">
+      <main className="min-w-0 max-w-full">
         <HappeningToday events={weekEvents} />
 
         <Hero />

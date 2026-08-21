@@ -111,7 +111,7 @@ export default function AreaSection({
   const areaHref = `/eventi?area=${areaSlugs[area] ?? ""}`;
 
   return (
-    <section className="overflow-x-hidden bg-white py-14 sm:py-16">
+    <section className="overflow-x-clip bg-white py-14 sm:py-16">
       <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="relative h-56 overflow-hidden rounded-[32px] sm:h-72">
           <Image
@@ -189,7 +189,7 @@ export default function AreaSection({
             onBlurCapture={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
-            className="absolute inset-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="absolute inset-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none gap-6 pr-16">
               {areaEvents.map((event) => (
