@@ -1088,7 +1088,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     null;
 
   for (const [index, { sel, label }] of selectors.entries()) {
-    $(sel).each((_, el) => {
+    for (const el of $(sel).toArray()) {
       const clone = $(el).clone();
       clone.find(noise).remove();
 
@@ -1103,11 +1103,11 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
         "";
 
       const text = htmlFragmentToPlainText(inner);
-      if (text.length < 80) return;
+      if (text.length < 80) continue;
 
       // Evita blocchi che sono soprattutto menu/related (“Read More … Continue”)
       if (/(read more|continua|continue)\s*\S+/i.test(text) && text.length < 400) {
-        return;
+        continue;
       }
 
       const html = truncateDescription(sanitizeEventHtml(inner));
@@ -1122,7 +1122,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
       if (!best || candidate.rank > best.rank) {
         best = candidate;
       }
-    });
+    }
   }
 
   // Fallback paragrafi solo se non abbiamo già un corpo strutturato decente
