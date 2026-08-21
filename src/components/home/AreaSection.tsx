@@ -182,17 +182,19 @@ export default function AreaSection({
           onBlurCapture={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
-          className="mt-5 flex w-full min-w-0 snap-x snap-proximity gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 pr-[calc(100%-min(85%,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mt-5 w-full min-w-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {areaEvents.map((event) => (
-            <div
-              key={event.eventId || event.id}
-              data-area-card
-              className="w-[min(85%,22rem)] shrink-0 snap-start sm:w-[20rem] lg:w-[22rem]"
-            >
-              <EventCard event={event} />
-            </div>
-          ))}
+          <div className="flex w-max gap-6 pr-16">
+            {areaEvents.map((event) => (
+              <div
+                key={event.eventId || event.id}
+                data-area-card
+                className="w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
+              >
+                <EventCard event={event} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

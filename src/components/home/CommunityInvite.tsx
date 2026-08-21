@@ -35,7 +35,7 @@ export default function CommunityInvite({
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#E67E22]">
               La community
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-[2.6rem] lg:leading-[1.12]">
+            <h2 className="mt-3 break-words text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-[2.6rem] lg:leading-[1.12]">
               Una community da far crescere insieme
             </h2>
             <p className="mt-3 text-base text-slate-500 sm:text-lg">

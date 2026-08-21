@@ -485,8 +485,8 @@ export default function EventSearchForm() {
         </button>
       </form>
 
-      <div className="mt-3 hidden max-w-7xl sm:mt-5 md:block">
-        <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
+      <div className="mt-3 hidden min-w-0 max-w-7xl sm:mt-5 md:block">
+        <div className="flex min-w-0 flex-nowrap gap-2 overflow-x-auto pb-1 touch-pan-x">
           <button
             type="button"
             onClick={() => router.push("/eventi?area=nord-sardegna")}
