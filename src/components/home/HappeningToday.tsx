@@ -179,26 +179,34 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
           </div>
         </div>
 
-        <div
-          ref={scrollerRef}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocusCapture={() => setIsPaused(true)}
-          onBlurCapture={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="mt-8 w-full min-w-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          <div className="flex w-max gap-6 pr-16">
-            {orderedEvents.map((event) => (
-              <div
-                key={event.eventId}
-                data-today-card
-                className="w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
-              >
-                <EventCard event={event} />
-              </div>
-            ))}
+        <div className="relative mt-8 min-w-0 overflow-hidden contain-paint">
+          <div
+            className="pointer-events-none invisible w-72 select-none pb-2 sm:w-80 lg:w-[22rem]"
+            aria-hidden="true"
+          >
+            <EventCard event={orderedEvents[0]} />
+          </div>
+          <div
+            ref={scrollerRef}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onFocusCapture={() => setIsPaused(true)}
+            onBlurCapture={() => setIsPaused(false)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setIsPaused(false)}
+            className="absolute inset-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 touch-pan-x [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            <div className="flex w-max max-w-none gap-6 pr-16">
+              {orderedEvents.map((event) => (
+                <div
+                  key={event.eventId}
+                  data-today-card
+                  className="w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
+                >
+                  <EventCard event={event} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

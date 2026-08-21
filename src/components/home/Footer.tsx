@@ -106,7 +106,7 @@ export default function Footer() {
             </nav>
           </div>
 
-          <div className="flex shrink-0 items-center gap-4 self-start sm:self-auto">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 self-start sm:self-auto">
             <a
               href="https://www.instagram.com/everas.app/"
               target="_blank"
