@@ -111,8 +111,8 @@ export default function AreaSection({
   const areaHref = `/eventi?area=${areaSlugs[area] ?? ""}`;
 
   return (
-    <section className="bg-white py-14 sm:py-16">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <section className="overflow-x-hidden bg-white py-14 sm:py-16">
+      <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="relative h-56 overflow-hidden rounded-[32px] sm:h-72">
           <Image
             src={image}
@@ -182,13 +182,13 @@ export default function AreaSection({
           onBlurCapture={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
-          className="mt-5 flex min-w-0 snap-x snap-proximity gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 pr-[calc(100%-min(85vw,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mt-5 flex w-full min-w-0 snap-x snap-proximity gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 pr-[calc(100%-min(85%,22rem))] sm:pr-[calc(100%-20rem)] lg:pr-[calc(100%-22rem)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {areaEvents.map((event) => (
             <div
               key={event.eventId || event.id}
               data-area-card
-              className="w-[min(85vw,22rem)] shrink-0 snap-start sm:w-[20rem] lg:w-[22rem]"
+              className="w-[min(85%,22rem)] shrink-0 snap-start sm:w-[20rem] lg:w-[22rem]"
             >
               <EventCard event={event} />
             </div>

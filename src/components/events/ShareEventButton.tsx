@@ -587,12 +587,13 @@ export default function ShareEventButton({
           aria-hidden="true"
           style={{
             position: "fixed",
-            left: "-100vw",
+            left: 0,
             top: 0,
             zIndex: -1,
             opacity: 1,
             pointerEvents: "none",
             overflow: "hidden",
+            transform: "translateX(-100%)",
           }}
         >
           <InstagramStoryTemplate ref={storyRef} event={storyEvent} />

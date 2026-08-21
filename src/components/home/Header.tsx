@@ -47,8 +47,8 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 isolate border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-20 max-w-7xl items-end gap-2 px-4 pb-3.5 sm:gap-3 sm:px-8">
+    <header className="sticky top-0 z-50 isolate overflow-x-clip border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-20 min-w-0 max-w-7xl items-end gap-1.5 px-3 pb-3.5 sm:gap-3 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
             src="/images/everas-logo-v2.webp"
@@ -85,10 +85,10 @@ export default function Header() {
           </Link>
         </nav>
 
-        <div className="relative z-10 ml-auto flex shrink-0 items-end gap-1.5 sm:gap-2 md:ml-8">
+        <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2 md:ml-8">
           <Link
             href="/segnala-evento"
-            className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#E67E22] bg-white px-2.5 text-xs font-bold text-[#E67E22] transition [@media(hover:hover)]:hover:bg-[#E67E22] [@media(hover:hover)]:hover:text-white active:bg-[#E67E22] active:text-white sm:px-3.5 md:hidden"
+            className="hidden h-9 touch-manipulation items-center justify-center rounded-lg border border-[#E67E22] bg-white px-2.5 text-xs font-bold text-[#E67E22] transition min-[400px]:inline-flex [@media(hover:hover)]:hover:bg-[#E67E22] [@media(hover:hover)]:hover:text-white active:bg-[#E67E22] active:text-white sm:px-3.5 md:hidden"
           >
             Segnala
           </Link>

@@ -92,7 +92,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col overflow-x-clip">
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />
-        <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+        <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden">{children}</div>
         <Footer />
         <PWARegister />
         <PWAInstallBanner />
