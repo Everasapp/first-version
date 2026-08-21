@@ -505,7 +505,7 @@ function imageFromJsonLd(eventNode: Record<string, unknown>, pageUrl: string) {
 }
 
 const LOGO_IMAGE_RE =
-  /logo|favicon|sprite|placeholder|avatar|badge|wordmark|site-icon/i;
+  /logo|favicon|sprite|placeholder|avatar|badge|wordmark|site-icon|stemma|coat-?of-?arms/i;
 
 function parsePx(value: string | undefined) {
   const n = Number.parseInt(value || "", 10);
@@ -578,7 +578,7 @@ function pickBestPageImage(
     const alt = node.attr("alt") || "";
     if (isLikelyLogoImage(src, alt, width, height)) return;
 
-    const url = absolutize(pageUrl, src);
+    const url = unwrapResizedCdnUrl(absolutize(pageUrl, src) || "");
     if (!url) return;
 
     let score = 100;
@@ -649,11 +649,11 @@ async function fetchHtml(url: string) {
         return { html: retried.html, finalUrl: retried.finalUrl || url };
       }
     }
+  }
 
-    const proxiedHtml = await fetchViaTranslateProxy(url);
-    if (proxiedHtml) {
-      return { html: proxiedHtml, finalUrl: url };
-    }
+  const proxiedHtml = await fetchViaTranslateProxy(url);
+  if (proxiedHtml) {
+    return { html: proxiedHtml, finalUrl: url };
   }
 
   if (direct.error === "Pagina troppo grande da analizzare") {
@@ -878,11 +878,37 @@ function parseDesignItaliaPlace($: cheerio.CheerioAPI) {
   };
 }
 
+function unwrapResizedCdnUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    parsed.pathname = parsed.pathname.replace(/\/s3\/\d+x\d+\/s3\//i, "/s3/");
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 function municipiumSectionText($: cheerio.CheerioAPI, anchorId: string) {
-  const anchor = $(`#${anchorId}`).first();
+  const escaped = anchorId.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  const anchor = $(`[id="${escaped}"]`).first();
   if (!anchor.length) return "";
   const section = anchor.closest(".page-content");
-  return cleanText((section.length ? section : anchor.parent()).text());
+  const clone = (section.length ? section : anchor.parent()).clone();
+  clone.find(".anchor-content").remove();
+  return cleanText(clone.text());
+}
+
+function isEventIndexPath(pathname: string) {
+  return /\/(?:eventi|events)\/?$/i.test(pathname);
+}
+
+function isMunicipiumDetailPath(pathname: string) {
+  const lastSegment = pathname.split("/").filter(Boolean).at(-1) || "";
+  return (
+    /\/(?:eventi|events)\/[a-z0-9-]+\/?$/i.test(pathname) &&
+    lastSegment.length >= 16 &&
+    lastSegment.includes("-")
+  );
 }
 
 const JUNK_HEADING =
@@ -920,7 +946,7 @@ function parseMunicipiumEventFacts($: cheerio.CheerioAPI) {
     hay.match(/\bore\s+([01]?\d|2[0-3])[:.]([0-5]\d)\b/i);
   const venueHay = cosE || subtitle;
   const venueMatch = venueHay.match(
-    /luogo:\s*(.+?)(?:\s*[.]|\s+orario|\s+ingresso|\s+programma|$)/i,
+    /luogo:\s*(.+?)(?=\s+(?:costo|orario|ingresso|programma|data)\s*:|[.]|$)/i,
   );
   const costi = municipiumSectionText($, "costo").toLowerCase()
     || municipiumSectionText($, "prezzi").toLowerCase()
@@ -1008,6 +1034,29 @@ function trimRelatedTail(text: string) {
   return text.slice(0, cutAt).trim();
 }
 
+/** Municipium: la sezione Cos’è spesso include un blocco “Dettagli dell'Evento”. */
+function trimMunicipiumDetails(
+  html: string,
+  text: string,
+  label: string,
+): { html: string; text: string } {
+  if (!/cos[’']e|municipium/i.test(label) && !/dettagli dell['’]?evento/i.test(text)) {
+    return { html, text };
+  }
+  const split = /<[^>]*>\s*dettagli dell['’]?evento\s*</i.exec(html);
+  const htmlCut = (split ? html.slice(0, split.index) : html)
+    .replace(/<h2>\s*Cos['’]?è\s*<\/h2>/i, "")
+    .trim();
+  const textCut = text
+    .replace(/\n?dettagli dell['’]?evento[\s\S]*$/i, "")
+    .replace(/^Cos['’]?è\s*/i, "")
+    .trim();
+  return {
+    html: htmlCut || html,
+    text: textCut || text,
+  };
+}
+
 function truncateDescription(value: string) {
   if (value.length <= MAX_DESCRIPTION_CHARS) return value;
   return `${value.slice(0, MAX_DESCRIPTION_CHARS).trim()}…`;
@@ -1046,6 +1095,8 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
     { sel: ".field--name-field-contenuto", label: "Contenuto bando" },
     { sel: "#descrizione .text-serif", label: "Sezione Descrizione" },
     { sel: "#descrizione", label: "Sezione Descrizione" },
+    { sel: ".page-content:has([id='cos-']) .text-serif", label: "Sezione Cos’è" },
+    { sel: ".page-content:has([id='cos-'])", label: "Sezione Cos’è" },
     { sel: "#cos-e .text-serif", label: "Sezione Cos’è" },
     { sel: "#cos-e", label: "Sezione Cos’è" },
     { sel: ".article-content > .page-content", label: "Scheda Municipium" },
@@ -1082,7 +1133,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   ];
 
   const noise =
-    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links, .field--name-field-file-bando, .paragraph__allegati, .bando-dettaglio__date, .hero, llm-chatbot";
+    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links, .field--name-field-file-bando, .paragraph__allegati, .bando-dettaglio__date, .hero, llm-chatbot, .anchor-content";
 
   let best: { html: string; text: string; source: string; rank: number } | null =
     null;
@@ -1110,13 +1161,14 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
         continue;
       }
 
-      const html = truncateDescription(sanitizeEventHtml(inner));
+      const trimmed = trimMunicipiumDetails(inner, text, label);
+      const html = truncateDescription(sanitizeEventHtml(trimmed.html));
       const candidate = {
-        html: html || truncateDescription(text),
-        text: truncateDescription(text),
+        html: html || truncateDescription(trimmed.text),
+        text: truncateDescription(trimmed.text),
         source: label,
         // Selettori strutturati battano il fallback paragrafi anche se un filo più corti
-        rank: 1000 - index + Math.min(text.length, 5000) / 10,
+        rank: 1000 - index + Math.min(trimmed.text.length, 5000) / 10,
       };
 
       if (!best || candidate.rank > best.rank) {
@@ -1400,6 +1452,70 @@ function extractHtmlEventListing(
   };
 }
 
+/**
+ * Elenco Municipium / Design Italia: card con data-element="event-link"
+ * (URL /it/events/slug o /it/eventi/slug, senza .html).
+ */
+function extractMunicipiumEventListing(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): EventListingResult | null {
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+
+  $(
+    "a[data-element='event-link'][href], a.link-detail[href*='/events/'], a.link-detail[href*='/eventi/']",
+  ).each((_, el) => {
+    const link = $(el);
+    const href = link.attr("href") || "";
+    const card = link.closest("article, .card, .card-wrapper");
+    const scope = card.length ? card : link;
+    const abs = absolutize(pageUrl, href);
+    if (!abs || seen.has(abs)) return;
+    try {
+      const path = new URL(abs).pathname;
+      if (isEventIndexPath(path)) return;
+      if (!/\/(?:eventi|events)\/[a-z0-9-]+\/?$/i.test(path)) return;
+    } catch {
+      return;
+    }
+    const title = cleanText(
+      link.find("h1, h2, h3, .card-title").first().text() ||
+        link.attr("title") ||
+        link.text(),
+    );
+    if (!title || title.length < 8 || isJunkHeading(title)) return;
+    seen.add(abs);
+    const dateText = cleanText(
+      scope.find(".card-pretitle, .calendar-date-day, time").first().text(),
+    );
+    const startDate = guessDateFromItalianText(dateText || title);
+    const description = cleanText(scope.find(".card-text, p").first().text());
+    candidates.push({
+      title,
+      url: abs,
+      startAt: startDate ? `${startDate}T12:00:00+02:00` : null,
+      endAt: null,
+      description:
+        description && description !== title ? description.slice(0, 280) : null,
+    });
+  });
+
+  if (candidates.length < 2) return null;
+
+  const sourceName =
+    cleanText($('meta[property="og:site_name"]').attr("content") || "") ||
+    cleanText($("title").first().text()).split(/[|\-–]/)[0]?.trim() ||
+    "sito comunale";
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName,
+    total: candidates.length,
+    candidates: candidates.slice(0, 50),
+  };
+}
+
 function detectListaContenuti($: cheerio.CheerioAPI) {
   const el = $("app-lista-contenuti").first();
   if (!el.length) return null;
@@ -1550,7 +1666,10 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   const $ = cheerio.load(html);
-  const isEventDetailPage = isMunicipiumEventDetail($);
+  const pathname = new URL(finalUrl).pathname;
+  const lastSegment = pathname.split("/").filter(Boolean).at(-1) || "";
+  const isEventDetailPage =
+    isMunicipiumEventDetail($) || isMunicipiumDetailPath(pathname);
 
   // Listing page (Design Italia / OpenCms): pick a single event first
   const lista = isEventDetailPage ? null : detectListaContenuti($);
@@ -1580,19 +1699,25 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     };
   }
 
-  // Listing page HTML (CityNews / SassariToday e simili) — non sulle schede .html
-  const pathname = new URL(finalUrl).pathname;
-  const lastSegment = pathname.split("/").filter(Boolean).at(-1) || "";
   const isLikelyDetailPage =
     /\.html(?:[?#]|$)/i.test(pathname) || isEventDetailPage;
   const isLikelyListingPath =
-    /\/eventi\/?$/i.test(pathname) ||
+    isEventIndexPath(pathname) ||
     /\/eventi\/(tipo|tema|dal|data)\b/i.test(pathname) ||
     (/\/eventi\/[^/]+\/?$/i.test(pathname) &&
       !isLikelyDetailPage &&
       lastSegment.length < 12);
 
   if (!isLikelyDetailPage) {
+    const municipiumListing = extractMunicipiumEventListing($, finalUrl);
+    if (
+      municipiumListing &&
+      (municipiumListing.candidates.length >= 2 ||
+        (isEventIndexPath(pathname) && municipiumListing.candidates.length >= 1))
+    ) {
+      return { ok: true, listing: municipiumListing };
+    }
+
     const htmlListing = extractHtmlEventListing($, finalUrl);
     if (
       htmlListing &&
@@ -1600,6 +1725,14 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
         (isLikelyListingPath && htmlListing.candidates.length >= 2))
     ) {
       return { ok: true, listing: htmlListing };
+    }
+
+    if (isEventIndexPath(pathname)) {
+      return {
+        ok: false,
+        error:
+          "Questa sembra una pagina elenco eventi, non un singolo evento. Apri la scheda di un evento e usa quella URL, oppure riprova più tardi.",
+      };
     }
   }
 
@@ -1664,7 +1797,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   let organizerWebsite: string | null = null;
   let organizerEmail: string | null = null;
   let organizerPhone: string | null = null;
-  let imageUrl = absolutize(finalUrl, ogImage);
+  let imageUrl = ogImage ? unwrapResizedCdnUrl(absolutize(finalUrl, ogImage) || "") : null;
   if (imageUrl && isLikelyLogoImage(imageUrl)) {
     imageUrl = null;
   }
@@ -1803,7 +1936,18 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     sources.dates = sources.dates || "Scheda evento";
   }
   if (municipium.venue) {
+    const venuePlace = matchPlace(municipium.venue);
     locationName = municipium.venue;
+    if (venuePlace) {
+      const withoutCity = municipium.venue
+        .replace(new RegExp(`,\\s*${venuePlace.city}.*$`, "i"), "")
+        .replace(/\s*\(\s*(?:SS|OT|NU|CA|OR)\s*\)\s*$/i, "")
+        .trim();
+      locationName = withoutCity || municipium.venue;
+      address = address || municipium.venue;
+      municipality = municipality || venuePlace.city;
+      province = province || venuePlace.province;
+    }
     conf.place = "high";
     sources.place = "Scheda evento";
   }
@@ -2054,9 +2198,8 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     GENERIC_LISTING_TITLES.has(normalizedTitle) ||
     normalizedTitle.startsWith("tutti gli eventi");
   if (
-    !startDate &&
-    (looksLikeListingTitle ||
-      /\/eventi\/?$/i.test(new URL(finalUrl).pathname))
+    isEventIndexPath(new URL(finalUrl).pathname) ||
+    (!startDate && looksLikeListingTitle)
   ) {
     return {
       ok: false,

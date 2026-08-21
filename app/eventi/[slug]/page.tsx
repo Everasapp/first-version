@@ -7,6 +7,7 @@ import {
   CalendarDays,
   ExternalLink,
   MapPin,
+  Pencil,
   Ticket,
 } from "lucide-react";
 
@@ -245,6 +246,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   // Visitatori: conta ogni vista e mostrala subito.
   // Organizzatore e admin vedono lo stesso numero delle statistiche in dashboard.
   const isOwner = Boolean(user && event.organizer_id === user.id);
+  const canEditEvent = isOwner || isAdmin;
   let displayedViews = event.views_count ?? 0;
   if (!isAdmin && !isOwner) {
     await supabase.rpc("increment_event_views", { event_id: event.id });
@@ -680,6 +682,16 @@ async function EventDetailPage({ slug }: { slug: string }) {
               </p>
 
               <div className="mt-6 space-y-3">
+                {canEditEvent ? (
+                  <Link
+                    href={`/dashboard/eventi/${event.id}/modifica`}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#075EAE] px-6 py-4 text-center font-bold text-white transition hover:bg-[#064a8a]"
+                  >
+                    <Pencil aria-hidden="true" className="h-5 w-5" />
+                    Modifica
+                  </Link>
+                ) : null}
+
                 {event.ticket_url && (
                   <a
                     href={event.ticket_url}

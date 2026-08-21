@@ -30,21 +30,27 @@ export default async function ModificaEventoPage({
     redirect(`/accedi?redirect=/dashboard/eventi/${id}/modifica`);
   }
 
-  const [{ data: event, error }, { data: profileData }] = await Promise.all([
-    supabase
-      .from("events")
-      .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
-      )
-      .eq("id", id)
-      .eq("organizer_id", user.id)
-      .maybeSingle(),
-    supabase
-      .from("profiles")
-      .select(PROFILE_SELECT)
-      .eq("id", user.id)
-      .maybeSingle(),
-  ]);
+  const { data: profileData } = await supabase
+    .from("profiles")
+    .select(PROFILE_SELECT)
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const profile = profileData as Profile | null;
+  const isAdmin = profile?.role === "admin";
+
+  let eventQuery = supabase
+    .from("events")
+    .select(
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
+    )
+    .eq("id", id);
+
+  if (!isAdmin) {
+    eventQuery = eventQuery.eq("organizer_id", user.id);
+  }
+
+  const { data: event, error } = await eventQuery.maybeSingle();
 
   if (error) {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);
@@ -54,7 +60,6 @@ export default async function ModificaEventoPage({
     notFound();
   }
 
-  const profile = profileData as Profile | null;
   let plan: Plan | null = null;
 
   if (profile?.plan_id) {

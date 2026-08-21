@@ -37,6 +37,24 @@ const nextConfig: NextConfig = {
         destination: "/eventi/:city/musica-concerti",
         permanent: true,
       },
+      {
+        source: "/eventi/festa-del-gusto",
+        destination:
+          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
+        permanent: true,
+      },
+      {
+        source: "/eventi/festa-del-gusto-santa-teresa-gallura",
+        destination:
+          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
+        permanent: true,
+      },
+      {
+        source: "/eventi/festa-del-gusto-santa-teresa-gallura-turismo",
+        destination:
+          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
+        permanent: true,
+      },
     ];
   },
 };
