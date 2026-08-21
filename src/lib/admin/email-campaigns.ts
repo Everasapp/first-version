@@ -92,6 +92,46 @@ export function parseCampaignId(value: string | string[] | undefined) {
   return raw;
 }
 
+export type CampaignTemplateId = "community";
+
+export function getCampaignTemplate(
+  id: string | string[] | undefined,
+): { id: CampaignTemplateId; subject: string; message: string } | null {
+  const raw = Array.isArray(id) ? id[0] : id;
+  if (raw !== "community") return null;
+
+  return {
+    id: "community",
+    subject: "Su EVERAS nasce la community",
+    message: `Ciao,
+
+su EVERAS è nata la community: uno spazio semplice, intorno agli eventi, per far sapere se ci sarai e incontrare persone con cui condividere la serata.
+
+Come funziona
+• Apri un evento e tocca Ci vado
+• Nella sezione Chi ci sarà vedi chi ha già scelto di partecipare
+• Se vuoi, puoi indicare se sei aperto/a a conoscere persone nuove, se vai da solo/a o se vieni con amici
+
+Non è una chat di incontri: è partecipazione reale agli eventi, sempre con rispetto.
+
+Per iniziare, configura come compari nella community:
+https://www.everas.it/dashboard/comunita
+
+Oppure esplora gli eventi e marca quelli a cui andrai:
+https://www.everas.it/eventi
+
+Se hai dubbi o idee, rispondi pure a questa email: le leggo io.
+
+A presto,
+Marina
+EVERAS
+
+—
+Ricevi questa email perché hai scelto di restare aggiornato/a su EVERAS.
+Preferenze e disiscrizione: https://www.everas.it/dashboard/newsletter`,
+  };
+}
+
 export function isImageContentType(contentType: string) {
   return contentType.startsWith("image/");
 }

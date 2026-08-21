@@ -51,6 +51,7 @@ export default function NewCampaignForm({
   const [recipientsText, setRecipientsText] = useState(initialRecipients);
   const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false);
+  const [isLoadingNewsletter, setIsLoadingNewsletter] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
@@ -153,6 +154,50 @@ export default function NewCampaignForm({
       );
     } finally {
       setIsLoadingDirectory(false);
+    }
+  }
+
+  async function loadFromNewsletter() {
+    setIsLoadingNewsletter(true);
+    setErrorMessage("");
+    setInfoMessage("");
+
+    try {
+      const response = await fetch("/api/admin/campaigns/newsletter-emails");
+      const data = (await response.json()) as {
+        ok?: boolean;
+        emails?: string[];
+        count?: number;
+        totalOptIn?: number;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error || "Caricamento iscritti newsletter non riuscito",
+        );
+      }
+
+      const merged = parseEmailList(
+        `${recipientsText}\n${(data.emails || []).join("\n")}`,
+      );
+      setRecipientsText(merged.join("\n"));
+      setInfoMessage(
+        `Aggiunte ${data.count ?? 0} email dagli iscritti newsletter` +
+          (typeof data.totalOptIn === "number" &&
+          data.totalOptIn !== data.count
+            ? ` (${data.totalOptIn} opt-in totali; solo email confermate)`
+            : "") +
+          ` · dopo dedupe: ${merged.length}.`,
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Errore caricamento iscritti newsletter",
+      );
+    } finally {
+      setIsLoadingNewsletter(false);
     }
   }
 
@@ -370,8 +415,21 @@ export default function NewCampaignForm({
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <button
             type="button"
+            onClick={loadFromNewsletter}
+            disabled={isLoadingNewsletter || isLoadingDirectory || isSending}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
+          >
+            {isLoadingNewsletter ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <MailPlus className="h-4 w-4" aria-hidden="true" />
+            )}
+            Carica iscritti newsletter
+          </button>
+          <button
+            type="button"
             onClick={loadFromDirectory}
-            disabled={isLoadingDirectory || isSending}
+            disabled={isLoadingDirectory || isLoadingNewsletter || isSending}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
           >
             {isLoadingDirectory ? (
@@ -386,6 +444,10 @@ export default function NewCampaignForm({
             {parsedEmails.length} email valide
           </p>
         </div>
+        <p className="mt-2 text-xs text-slate-500">
+          Gli iscritti newsletter sono profili (utenti e organizzatori) con
+          opt-in attivo. La rubrica è l’elenco comuni/organizzatori.
+        </p>
       </div>
 
       {infoMessage ? (

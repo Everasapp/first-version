@@ -61,17 +61,25 @@ export default async function AdminCampagnePage() {
             Campagne email
           </h1>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Invia messaggi ai comuni/organizzatori via Resend. Mittente:{" "}
-            info@mail.everas.it · risposte: info@everas.it.
+            Invia messaggi via Resend (rubrica organizzatori o iscritti
+            newsletter). Mittente: info@mail.everas.it · risposte: info@everas.it.
           </p>
         </div>
-        <Link
-          href="/admin/campagne/nuova"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
-        >
-          <Mail className="h-4 w-4" aria-hidden="true" />
-          Nuova campagna
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/admin/campagne/nuova?template=community"
+            className="inline-flex items-center gap-2 rounded-xl border border-[#075EAE]/30 bg-blue-50 px-4 py-2.5 text-sm font-bold text-[#075EAE] transition hover:bg-blue-100"
+          >
+            Annuncia community
+          </Link>
+          <Link
+            href="/admin/campagne/nuova"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
+          >
+            <Mail className="h-4 w-4" aria-hidden="true" />
+            Nuova campagna
+          </Link>
+        </div>
       </div>
 
       {campaigns.length === 0 ? (
