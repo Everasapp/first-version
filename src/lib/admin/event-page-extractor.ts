@@ -1040,6 +1040,10 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   source: string;
 } | null {
   const selectors: Array<{ sel: string; label: string }> = [
+    { sel: ".field--name-field-descrizione", label: "Descrizione bando" },
+    { sel: ".bando-dettaglio .col-lg-9", label: "Scheda bando" },
+    { sel: "article.node--view-mode-full .node__content", label: "Scheda Drupal" },
+    { sel: ".field--name-field-contenuto", label: "Contenuto bando" },
     { sel: "#descrizione .text-serif", label: "Sezione Descrizione" },
     { sel: "#descrizione", label: "Sezione Descrizione" },
     { sel: "#cos-e .text-serif", label: "Sezione Cos’è" },
@@ -1078,55 +1082,54 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   ];
 
   const noise =
-    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links";
+    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links, .field--name-field-file-bando, .paragraph__allegati, .bando-dettaglio__date, .hero, llm-chatbot";
 
   let best: { html: string; text: string; source: string; rank: number } | null =
     null;
 
   for (const [index, { sel, label }] of selectors.entries()) {
-    const node = $(sel).first();
-    if (!node.length) continue;
+    $(sel).each((_, el) => {
+      const clone = $(el).clone();
+      clone.find(noise).remove();
 
-    const clone = node.clone();
-    clone.find(noise).remove();
+      const inner =
+        clone
+          .find(
+            ".text-serif, .cms-block, .rich-text, .field-items, .field--name-body, .elementor-widget-container",
+          )
+          .first()
+          .html() ||
+        clone.html() ||
+        "";
 
-    const inner =
-      clone
-        .find(
-          ".text-serif, .cms-block, .rich-text, .field-items, .field--name-body, .elementor-widget-container",
-        )
-        .first()
-        .html() ||
-      clone.html() ||
-      "";
+      const text = htmlFragmentToPlainText(inner);
+      if (text.length < 80) return;
 
-    const text = htmlFragmentToPlainText(inner);
-    if (text.length < 80) continue;
+      // Evita blocchi che sono soprattutto menu/related (“Read More … Continue”)
+      if (/(read more|continua|continue)\s*\S+/i.test(text) && text.length < 400) {
+        return;
+      }
 
-    // Evita blocchi che sono soprattutto menu/related (“Read More … Continue”)
-    if (/(read more|continua|continue)\s*\S+/i.test(text) && text.length < 400) {
-      continue;
-    }
+      const html = truncateDescription(sanitizeEventHtml(inner));
+      const candidate = {
+        html: html || truncateDescription(text),
+        text: truncateDescription(text),
+        source: label,
+        // Selettori strutturati battano il fallback paragrafi anche se un filo più corti
+        rank: 1000 - index + Math.min(text.length, 5000) / 10,
+      };
 
-    const html = truncateDescription(sanitizeEventHtml(inner));
-    const candidate = {
-      html: html || truncateDescription(text),
-      text: truncateDescription(text),
-      source: label,
-      // Selettori strutturati battano il fallback paragrafi anche se un filo più corti
-      rank: 1000 - index + Math.min(text.length, 5000) / 10,
-    };
-
-    if (!best || candidate.rank > best.rank) {
-      best = candidate;
-    }
+      if (!best || candidate.rank > best.rank) {
+        best = candidate;
+      }
+    });
   }
 
   // Fallback paragrafi solo se non abbiamo già un corpo strutturato decente
   if (!best || best.text.length < 220) {
     const paragraphs: string[] = [];
     $(
-      "article .entry-content p, main .entry-content p, .elementor-widget-theme-post-content p, #descrizione p, #cos-e p, .tribe-events-single-event-description p",
+      "article .entry-content p, main .entry-content p, .elementor-widget-theme-post-content p, #descrizione p, #cos-e p, .tribe-events-single-event-description p, .field--name-field-descrizione p, .field--name-field-testo-paragrafo p, article.node p",
     ).each((_, el) => {
       const parent = $(el).closest(noise);
       if (parent.length) return;
