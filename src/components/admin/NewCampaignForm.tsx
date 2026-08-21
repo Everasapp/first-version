@@ -16,6 +16,7 @@ import {
 import {
   CAMPAIGN_MAX_ATTACHMENTS,
   CAMPAIGN_MAX_ATTACHMENT_BYTES,
+  COMMUNITY_CAMPAIGN_IMAGE_MARKER,
   formatBytes,
   isImageContentType,
   parseEmailList,
@@ -37,19 +38,37 @@ type NewCampaignFormProps = {
   initialMessage?: string;
   initialRecipients?: string;
   isForward?: boolean;
+  templateId?: string;
+  previewImageSrc?: string;
+  previewImageAlt?: string;
 };
+
+function stripCampaignImageMarker(message: string) {
+  return message
+    .replace(COMMUNITY_CAMPAIGN_IMAGE_MARKER, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
 
 export default function NewCampaignForm({
   initialSubject = "",
   initialMessage = "",
   initialRecipients = "",
   isForward = false,
+  templateId = "",
+  previewImageSrc,
+  previewImageAlt = "Anteprima immagine campagna",
 }: NewCampaignFormProps) {
   const router = useRouter();
   const [subject, setSubject] = useState(initialSubject);
-  const [message, setMessage] = useState(initialMessage);
+  const [message, setMessage] = useState(
+    stripCampaignImageMarker(initialMessage),
+  );
   const [recipientsText, setRecipientsText] = useState(initialRecipients);
   const [attachments, setAttachments] = useState<SelectedAttachment[]>([]);
+  const [includeTemplateImage, setIncludeTemplateImage] = useState(
+    Boolean(previewImageSrc),
+  );
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false);
   const [isLoadingNewsletter, setIsLoadingNewsletter] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -234,8 +253,25 @@ export default function NewCampaignForm({
     try {
       const formData = new FormData();
       formData.set("subject", subject.trim());
-      formData.set("message", message.trim());
+      let messageForSend = message.trim();
+      if (includeTemplateImage && templateId === "community") {
+        if (!messageForSend.includes(COMMUNITY_CAMPAIGN_IMAGE_MARKER)) {
+          const parts = messageForSend.split(/\n\s*\n/);
+          messageForSend =
+            parts.length >= 2
+              ? `${parts[0]}\n\n${COMMUNITY_CAMPAIGN_IMAGE_MARKER}\n\n${parts
+                  .slice(1)
+                  .join("\n\n")}`
+              : `${messageForSend}\n\n${COMMUNITY_CAMPAIGN_IMAGE_MARKER}`;
+        }
+      } else {
+        messageForSend = stripCampaignImageMarker(messageForSend);
+      }
+      formData.set("message", messageForSend);
       formData.set("emails", parsedEmails.join("\n"));
+      if (templateId) {
+        formData.set("template", templateId);
+      }
       for (const item of attachments) {
         formData.append("attachments", item.file, item.filename);
       }
@@ -312,6 +348,33 @@ export default function NewCampaignForm({
           Resend verificato). Le risposte vanno a info@everas.it.
         </p>
       </label>
+
+      {previewImageSrc ? (
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <label className="flex items-start gap-3 text-sm text-slate-800">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={includeTemplateImage}
+              onChange={(e) => setIncludeTemplateImage(e.target.checked)}
+              disabled={isSending}
+            />
+            <span>
+              <span className="font-bold">Includi immagine “come funziona”</span>
+              <span className="mt-1 block text-slate-600">
+                Comparirà nel messaggio, dopo l’introduzione.
+              </span>
+            </span>
+          </label>
+          {includeTemplateImage ? (
+            <img
+              src={previewImageSrc}
+              alt={previewImageAlt}
+              className="mt-4 w-full max-w-lg rounded-2xl border border-slate-200 bg-white"
+            />
+          ) : null}
+        </div>
+      ) : null}
 
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">

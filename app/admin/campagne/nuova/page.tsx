@@ -116,6 +116,9 @@ export default async function AdminNuovaCampagnaPage({
         initialMessage={initialMessage}
         initialRecipients={initialRecipients}
         isForward={isForward}
+        templateId={template?.id}
+        previewImageSrc={template?.hostedImagePath}
+        previewImageAlt={template?.hostedImageAlt}
       />
     </div>
   );

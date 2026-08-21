@@ -6,6 +6,9 @@ import {
   CAMPAIGN_FROM_EMAIL,
   CAMPAIGN_MAX_ATTACHMENTS,
   CAMPAIGN_REPLY_TO,
+  COMMUNITY_CAMPAIGN_IMAGE_PATH,
+  COMMUNITY_CAMPAIGN_IMAGE_MARKER,
+  getCampaignTemplate,
   isImageContentType,
   parseEmailList,
   resolveAttachmentContentType,
@@ -16,6 +19,7 @@ import {
   type CampaignAttachmentMeta,
   type CampaignAttachmentPayload,
 } from "@/src/lib/admin/email-campaigns";
+import { getSiteUrl } from "@/src/lib/notifications/config";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -81,6 +85,7 @@ export async function POST(request: Request) {
   let subject = "";
   let message = "";
   let rawEmails = "";
+  let templateId = "";
   let attachments: CampaignAttachmentPayload[] = [];
 
   try {
@@ -89,15 +94,18 @@ export async function POST(request: Request) {
       subject = String(formData.get("subject") || "").trim();
       message = String(formData.get("message") || "").trim();
       rawEmails = String(formData.get("emails") || "");
+      templateId = String(formData.get("template") || "").trim();
       attachments = await parseAttachmentsFromForm(formData);
     } else {
       const body = (await request.json()) as {
         subject?: string;
         message?: string;
         emails?: string[] | string;
+        template?: string;
       };
       subject = body.subject?.trim() || "";
       message = body.message?.trim() || "";
+      templateId = body.template?.trim() || "";
       rawEmails =
         typeof body.emails === "string"
           ? body.emails
@@ -147,7 +155,30 @@ export async function POST(request: Request) {
       filename: file.filename,
     }));
 
-  const bodyHtml = buildCampaignHtml(subject, message, inlineImages);
+  const template = getCampaignTemplate(templateId || undefined);
+  const hostedImages =
+    template?.hostedImagePath
+      ? [
+          {
+            url: `${getSiteUrl()}${template.hostedImagePath}`,
+            alt: template.hostedImageAlt || "Immagine campagna",
+          },
+        ]
+      : message.includes(COMMUNITY_CAMPAIGN_IMAGE_MARKER)
+        ? [
+            {
+              url: `${getSiteUrl()}${COMMUNITY_CAMPAIGN_IMAGE_PATH}`,
+              alt: "Come funziona la community EVERAS: Ci vado, Chi ci sarà, Incontra",
+            },
+          ]
+        : [];
+
+  const bodyHtml = buildCampaignHtml(
+    subject,
+    message,
+    inlineImages,
+    hostedImages,
+  );
   const fromEmail = CAMPAIGN_FROM_EMAIL;
   const replyTo = CAMPAIGN_REPLY_TO;
   const attachmentMeta: CampaignAttachmentMeta[] = attachments.map((file) => ({

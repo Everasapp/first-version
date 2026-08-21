@@ -94,18 +94,32 @@ export function parseCampaignId(value: string | string[] | undefined) {
 
 export type CampaignTemplateId = "community";
 
+export const COMMUNITY_CAMPAIGN_IMAGE_MARKER = "{{COMMUNITY_IMAGE}}";
+export const COMMUNITY_CAMPAIGN_IMAGE_PATH =
+  "/images/community/community-how-it-works.webp";
+
 export function getCampaignTemplate(
   id: string | string[] | undefined,
-): { id: CampaignTemplateId; subject: string; message: string } | null {
+): {
+  id: CampaignTemplateId;
+  subject: string;
+  message: string;
+  hostedImagePath?: string;
+  hostedImageAlt?: string;
+} | null {
   const raw = Array.isArray(id) ? id[0] : id;
   if (raw !== "community") return null;
 
   return {
     id: "community",
     subject: "Su EVERAS nasce la community",
+    hostedImagePath: COMMUNITY_CAMPAIGN_IMAGE_PATH,
+    hostedImageAlt: "Come funziona la community EVERAS: Ci vado, Chi ci sarà, Incontra",
     message: `Ciao,
 
 su EVERAS è nata la community: uno spazio semplice, intorno agli eventi, per far sapere se ci sarai e incontrare persone con cui condividere la serata.
+
+${COMMUNITY_CAMPAIGN_IMAGE_MARKER}
 
 Come funziona
 • Apri un evento e tocca Ci vado
@@ -257,10 +271,33 @@ export function buildCampaignHtml(
   subject: string,
   message: string,
   inlineImages: Array<{ contentId: string; filename: string }> = [],
+  hostedImages: Array<{ url: string; alt: string }> = [],
 ) {
   const siteUrl = getSiteUrl();
   const logoUrl = `${siteUrl}/images/everas-logo-v2.png`;
-  const bodyHtml = linkifyCampaignMessage(message);
+
+  const hostedBlock = (image: { url: string; alt: string }) =>
+    `<div style="margin:20px 0;"><img src="${escapeHtml(image.url)}" alt="${escapeHtml(image.alt)}" width="504" style="display:block;width:100%;max-width:504px;height:auto;border-radius:16px;border:1px solid #e2e8f0;" /></div>`;
+
+  let bodyHtml: string;
+  if (
+    message.includes(COMMUNITY_CAMPAIGN_IMAGE_MARKER) &&
+    hostedImages.length > 0
+  ) {
+    const [before = "", after = ""] = message.split(
+      COMMUNITY_CAMPAIGN_IMAGE_MARKER,
+    );
+    bodyHtml =
+      linkifyCampaignMessage(before.trimEnd()) +
+      hostedImages.map(hostedBlock).join("") +
+      linkifyCampaignMessage(after.trimStart());
+  } else {
+    bodyHtml =
+      linkifyCampaignMessage(message) +
+      (hostedImages.length > 0
+        ? hostedImages.map(hostedBlock).join("")
+        : "");
+  }
 
   const imagesHtml =
     inlineImages.length > 0
