@@ -222,6 +222,7 @@ export const cities: City[] = [
   { id: 166, city: "Vallermosa", province: "CA", area: "Sud Sardegna" },
   { id: 167, city: "Villa San Pietro", province: "CA", area: "Sud Sardegna" },
   { id: 168, city: "Villanova Tulo", province: "CA", area: "Sud Sardegna" },
+  { id: 211, city: "Villanovaforru", province: "SU", area: "Sud Sardegna" },
   { id: 169, city: "Villaputzu", province: "CA", area: "Sud Sardegna" },
   { id: 170, city: "Villasalto", province: "CA", area: "Sud Sardegna" },
   { id: 171, city: "Villasimius", province: "CA", area: "Sud Sardegna" },

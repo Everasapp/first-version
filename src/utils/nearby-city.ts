@@ -209,6 +209,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Vallermosa: { lat: 39.3644, lng: 8.7963 },
   "Villa San Pietro": { lat: 39.034, lng: 8.9955 },
   "Villanova Tulo": { lat: 39.7803, lng: 9.2132 },
+  Villanovaforru: { lat: 39.6322, lng: 8.8697 },
   Villaputzu: { lat: 39.441, lng: 9.574 },
   Villasalto: { lat: 39.4921, lng: 9.393 },
   Villasimius: { lat: 39.1436, lng: 9.5183 },
