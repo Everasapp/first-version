@@ -186,6 +186,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Quartucciu: { lat: 39.2541, lng: 9.1788 },
   Sadali: { lat: 39.8132, lng: 9.2719 },
   Samatzai: { lat: 39.4832, lng: 9.0346 },
+  Samugheo: { lat: 39.8753, lng: 8.9414 },
   "San Basilio": { lat: 39.5371, lng: 9.1982 },
   "San Nicolò Gerrei": { lat: 39.4974, lng: 9.3071 },
   "San Sperate": { lat: 39.3587, lng: 9.0067 },

@@ -199,6 +199,7 @@ export const cities: City[] = [
   { id: 142, city: "Quartucciu", province: "CA", area: "Sud Sardegna" },
   { id: 143, city: "Sadali", province: "CA", area: "Sud Sardegna" },
   { id: 144, city: "Samatzai", province: "CA", area: "Sud Sardegna" },
+  { id: 214, city: "Samugheo", province: "SU", area: "Sud Sardegna" },
   { id: 145, city: "San Basilio", province: "CA", area: "Sud Sardegna" },
   { id: 146, city: "San Nicolò Gerrei", province: "CA", area: "Sud Sardegna" },
   { id: 147, city: "San Sperate", province: "CA", area: "Sud Sardegna" },
