@@ -136,6 +136,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   "Santa Maria Navarrese": { lat: 39.9906, lng: 9.6903 },
   Sarule: { lat: 40.2286, lng: 9.1664 },
   "Scano di Montiferro": { lat: 40.2167, lng: 8.5833 },
+  Seneghe: { lat: 40.0814, lng: 8.5331 },
   Siniscola: { lat: 40.5734, lng: 9.697 },
   Sorgono: { lat: 40.0264, lng: 9.1031 },
   Tiana: { lat: 40.0681, lng: 9.1486 },

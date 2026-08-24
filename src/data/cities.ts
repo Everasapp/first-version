@@ -147,6 +147,7 @@ export const cities: City[] = [
   { id: 180, city: "Santa Maria Navarrese", province: "NU", area: "Centro Sardegna" },
   { id: 204, city: "Sarule", province: "NU", area: "Centro Sardegna" },
   { id: 210, city: "Scano di Montiferro", province: "OR", area: "Centro Sardegna" },
+  { id: 212, city: "Seneghe", province: "OR", area: "Centro Sardegna" },
   { id: 102, city: "Siniscola", province: "NU", area: "Centro Sardegna" },
   { id: 205, city: "Sorgono", province: "NU", area: "Centro Sardegna" },
   { id: 206, city: "Tiana", province: "NU", area: "Centro Sardegna" },
