@@ -172,6 +172,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Maracalagonis: { lat: 39.2853, lng: 9.2294 },
   Monastir: { lat: 39.3847, lng: 9.0448 },
   Monserrato: { lat: 39.2539, lng: 9.1432 },
+  Mogoro: { lat: 39.6847, lng: 8.8569 },
   Muravera: { lat: 39.4209, lng: 9.5736 },
   Nuragus: { lat: 39.7762, lng: 9.0381 },
   Nurallao: { lat: 39.7903, lng: 9.0807 },

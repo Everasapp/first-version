@@ -185,6 +185,7 @@ export const cities: City[] = [
   { id: 129, city: "Maracalagonis", province: "CA", area: "Sud Sardegna" },
   { id: 130, city: "Monastir", province: "CA", area: "Sud Sardegna" },
   { id: 131, city: "Monserrato", province: "CA", area: "Sud Sardegna" },
+  { id: 213, city: "Mogoro", province: "SU", area: "Sud Sardegna" },
   { id: 132, city: "Muravera", province: "CA", area: "Sud Sardegna" },
   { id: 133, city: "Nuragus", province: "CA", area: "Sud Sardegna" },
   { id: 134, city: "Nurallao", province: "CA", area: "Sud Sardegna" },
