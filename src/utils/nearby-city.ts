@@ -103,6 +103,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Aritzo: { lat: 39.9578, lng: 9.1975 },
   Atzara: { lat: 39.9917, lng: 9.0764 },
   Austis: { lat: 40.0714, lng: 9.1203 },
+  Baunei: { lat: 40.0781, lng: 9.6653 },
   Belvì: { lat: 39.9608, lng: 9.1856 },
   Bitti: { lat: 40.4794, lng: 9.3819 },
   Barumini: { lat: 39.7025, lng: 8.9994 },

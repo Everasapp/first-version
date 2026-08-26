@@ -114,6 +114,7 @@ export const cities: City[] = [
   { id: 178, city: "Aritzo", province: "NU", area: "Centro Sardegna" },
   { id: 181, city: "Atzara", province: "NU", area: "Centro Sardegna" },
   { id: 182, city: "Austis", province: "NU", area: "Centro Sardegna" },
+  { id: 220, city: "Baunei", province: "NU", area: "Centro Sardegna" },
   { id: 183, city: "Belvì", province: "NU", area: "Centro Sardegna" },
   { id: 184, city: "Bitti", province: "NU", area: "Centro Sardegna" },
   { id: 94, city: "Bosa", province: "OR", area: "Centro Sardegna" },
