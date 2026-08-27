@@ -230,6 +230,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Carloforte: { lat: 39.145, lng: 8.3056 },
   Gonnesa: { lat: 39.2653, lng: 8.4711 },
   Iglesias: { lat: 39.3106, lng: 8.535 },
+  Portoscuso: { lat: 39.2047, lng: 8.3794 },
   "Sant'Antioco": { lat: 39.0653, lng: 8.4542 },
 };
 

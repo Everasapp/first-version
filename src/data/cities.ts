@@ -243,5 +243,6 @@ export const cities: City[] = [
   { id: 175, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
   { id: 209, city: "Gonnesa", province: "SU", area: "Sud Sardegna" },
   { id: 176, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
+  { id: 221, city: "Portoscuso", province: "SU", area: "Sud Sardegna" },
   { id: 177, city: "Sant'Antioco", province: "SU", area: "Sud Sardegna" },
 ];
