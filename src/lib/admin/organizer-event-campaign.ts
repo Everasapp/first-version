@@ -30,9 +30,7 @@ const COMUNE_EVENT_OVERRIDES: Record<string, { slug: string; title: string }> =
 export type OrganizerEventCampaignRecipient = {
   name: string;
   email: string;
-  title: string;
-  slug: string;
-  url: string;
+  events: Array<{ title: string; slug: string; url: string }>;
 };
 
 export type OrganizerEventCampaignSkipped = {
@@ -98,23 +96,10 @@ function pickExternalOrganizerEmail(raw: string | null | undefined) {
   return preferred || null;
 }
 
-function pickEvent(
-  name: string,
-  events: EventRow[],
-  nowMs: number,
-  overrides: Record<string, { slug: string; title: string }>,
-): EventRow | null {
-  if (events.length === 0) return null;
-
-  const override = overrides[name];
-  if (override) {
-    const found = events.find((event) => event.slug === override.slug);
-    if (found) {
-      return { ...found, title: override.title, slug: override.slug };
-    }
-  }
-
+function sortEventsForCampaign(events: EventRow[], nowMs: number) {
   const dated = events.filter((event) => event.start_at);
+  const undated = events.filter((event) => !event.start_at);
+
   const upcoming = dated
     .filter((event) => new Date(event.start_at as string).getTime() >= nowMs)
     .sort(
@@ -122,14 +107,66 @@ function pickEvent(
         new Date(a.start_at as string).getTime() -
         new Date(b.start_at as string).getTime(),
     );
-  if (upcoming[0]) return upcoming[0];
+  const past = dated
+    .filter((event) => new Date(event.start_at as string).getTime() < nowMs)
+    .sort(
+      (a, b) =>
+        new Date(b.start_at as string).getTime() -
+        new Date(a.start_at as string).getTime(),
+    );
 
-  const past = dated.sort(
-    (a, b) =>
-      new Date(b.start_at as string).getTime() -
-      new Date(a.start_at as string).getTime(),
-  );
-  return past[0] || events[0];
+  return [...upcoming, ...past, ...undated];
+}
+
+function pickEvents(
+  name: string,
+  events: EventRow[],
+  nowMs: number,
+  overrides: Record<string, { slug: string; title: string }>,
+): EventRow[] {
+  if (events.length === 0) return [];
+
+  const override = overrides[name];
+  if (override) {
+    const found = events.find((event) => event.slug === override.slug);
+    if (found) {
+      const prioritized = {
+        ...found,
+        title: override.title,
+        slug: override.slug,
+      };
+      const rest = events.filter((event) => event.slug !== override.slug);
+      return [prioritized, ...sortEventsForCampaign(rest, nowMs)];
+    }
+  }
+
+  return sortEventsForCampaign(events, nowMs);
+}
+
+function dedupeEvents(events: EventRow[]) {
+  const seen = new Set<string>();
+  const unique: EventRow[] = [];
+  for (const event of events) {
+    const slug = event.slug?.trim();
+    if (!slug || seen.has(slug)) continue;
+    seen.add(slug);
+    unique.push(event);
+  }
+  return unique;
+}
+
+function mergeRecipientEvents(
+  current: OrganizerEventCampaignRecipient["events"],
+  incoming: OrganizerEventCampaignRecipient["events"],
+) {
+  const seen = new Set(current.map((event) => event.slug));
+  const merged = [...current];
+  for (const event of incoming) {
+    if (seen.has(event.slug)) continue;
+    seen.add(event.slug);
+    merged.push(event);
+  }
+  return merged;
 }
 
 async function loadAlreadyContactedEmails(supabase: SupabaseClient) {
@@ -213,9 +250,11 @@ async function listDirectoryEventCampaignRecipients(
   }
 
   const nowMs = Date.now();
-  const recipients: OrganizerEventCampaignRecipient[] = [];
+  const recipientsByEmail = new Map<
+    string,
+    OrganizerEventCampaignRecipient & { names: Set<string> }
+  >();
   const skipped: OrganizerEventCampaignSkipped[] = [];
-  const usedEmails = new Set<string>();
 
   for (const row of directory.sort((a, b) =>
     a.name.localeCompare(b.name, "it"),
@@ -231,13 +270,10 @@ async function listDirectoryEventCampaignRecipients(
       continue;
     }
 
-    const event = pickEvent(
-      row.name,
-      organizerEvents,
-      nowMs,
-      options.eventOverrides,
+    const events = dedupeEvents(
+      pickEvents(row.name, organizerEvents, nowMs, options.eventOverrides),
     );
-    if (!event) continue;
+    if (events.length === 0) continue;
 
     const email = options.pickEmail(row.email);
     if (!email) {
@@ -248,7 +284,7 @@ async function listDirectoryEventCampaignRecipients(
       continue;
     }
 
-    if (alreadyContacted.has(email) || usedEmails.has(email)) {
+    if (alreadyContacted.has(email)) {
       skipped.push({
         name: row.name,
         reason: `già contattato (${email})`,
@@ -256,15 +292,33 @@ async function listDirectoryEventCampaignRecipients(
       continue;
     }
 
-    usedEmails.add(email);
-    recipients.push({
-      name: row.name,
-      email,
+    const mappedEvents = events.map((event) => ({
       title: event.title,
       slug: event.slug,
       url: publicEventUrl(event.slug),
+    }));
+
+    const existing = recipientsByEmail.get(email);
+    if (existing) {
+      existing.names.add(row.name);
+      existing.events = mergeRecipientEvents(existing.events, mappedEvents);
+      existing.name = Array.from(existing.names)
+        .sort((a, b) => a.localeCompare(b, "it"))
+        .join(" · ");
+      continue;
+    }
+
+    recipientsByEmail.set(email, {
+      name: row.name,
+      email,
+      events: mappedEvents,
+      names: new Set([row.name]),
     });
   }
+
+  const recipients = Array.from(recipientsByEmail.values()).map(
+    ({ names: _names, ...recipient }) => recipient,
+  );
 
   return { recipients, skipped };
 }

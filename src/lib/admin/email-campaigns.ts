@@ -147,10 +147,26 @@ export const COMMUNITY_CAMPAIGN_IMAGE_PATH =
 export const EVENT_LINK_MARKER = "{{EVENT_LINK}}";
 export const EVENT_LINK_PLACEHOLDER = '👉 "LINK EVENTO"';
 
-export type CampaignEventLink = {
+export type CampaignEventItem = {
   url: string;
   title?: string;
 };
+
+export type CampaignEventLink = {
+  url?: string;
+  title?: string;
+  events?: CampaignEventItem[];
+};
+
+function campaignEventItems(link: CampaignEventLink): CampaignEventItem[] {
+  if (link.events?.length) {
+    return link.events.filter((item) => isSafeHttpUrl(item.url.trim()));
+  }
+  const url = link.url?.trim();
+  if (!url || !isSafeHttpUrl(url)) return [];
+  const title = link.title?.trim();
+  return title ? [{ url, title }] : [{ url }];
+}
 
 export function hasCampaignEventLinkPlaceholder(message: string) {
   return (
@@ -160,8 +176,18 @@ export function hasCampaignEventLinkPlaceholder(message: string) {
 }
 
 export function formatCampaignEventLink(link: CampaignEventLink) {
-  const title = link.title?.trim();
-  return title ? `${title}\n${link.url}` : link.url;
+  const items = campaignEventItems(link);
+  if (items.length === 0) return "";
+  if (items.length === 1) {
+    const title = items[0].title?.trim();
+    return title ? `${title}\n${items[0].url}` : items[0].url;
+  }
+  return items
+    .map((item) => {
+      const title = item.title?.trim();
+      return title ? `• ${title}\n  ${item.url}` : `• ${item.url}`;
+    })
+    .join("\n\n");
 }
 
 export function applyCampaignEventLink(
@@ -201,7 +227,29 @@ export function parseCampaignEventLinks(raw: unknown): Record<
     }
 
     if (!value || typeof value !== "object" || Array.isArray(value)) continue;
-    const record = value as { url?: unknown; title?: unknown };
+    const record = value as {
+      url?: unknown;
+      title?: unknown;
+      events?: unknown;
+    };
+
+    if (Array.isArray(record.events)) {
+      const events: CampaignEventItem[] = [];
+      for (const item of record.events) {
+        if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+        const row = item as { url?: unknown; title?: unknown };
+        const url = typeof row.url === "string" ? row.url.trim() : "";
+        if (!isSafeHttpUrl(url)) continue;
+        const title =
+          typeof row.title === "string" ? row.title.trim() : undefined;
+        events.push(title ? { url, title } : { url });
+      }
+      if (events.length > 0) {
+        links[key] = { events };
+      }
+      continue;
+    }
+
     const url = typeof record.url === "string" ? record.url.trim() : "";
     if (!isSafeHttpUrl(url)) continue;
     const title =

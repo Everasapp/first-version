@@ -22,7 +22,12 @@ export async function GET() {
       eventLinks: Object.fromEntries(
         recipients.map((row) => [
           row.email,
-          { url: row.url, title: row.title },
+          {
+            events: row.events.map((event) => ({
+              url: event.url,
+              title: event.title,
+            })),
+          },
         ]),
       ),
     });
