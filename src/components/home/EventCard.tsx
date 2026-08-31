@@ -52,6 +52,21 @@ type EventCardProps = {
   event: EventCardData;
 };
 
+function formatEventPlace(event: EventCardData): string {
+  const city = event.municipality?.trim();
+  const venue = event.location?.trim();
+
+  if (
+    venue &&
+    city &&
+    venue.toLocaleLowerCase("it") !== city.toLocaleLowerCase("it")
+  ) {
+    return `${venue} · ${city}`;
+  }
+
+  return city || venue || "";
+}
+
 export default function EventCard({ event }: EventCardProps) {
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
   const categoryLabels =
@@ -162,10 +177,7 @@ export default function EventCard({ event }: EventCardProps) {
               aria-hidden="true"
               className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]"
             />
-            <span>
-              {event.location}
-              {event.area ? ` · ${event.area}` : ""}
-            </span>
+            <span>{formatEventPlace(event)}</span>
           </div>
         </div>
 

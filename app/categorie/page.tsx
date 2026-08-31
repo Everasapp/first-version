@@ -107,6 +107,7 @@ function mapEvent(event: EventRow, isFavorite: boolean): EventCardData {
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
     location: event.location_name || event.municipality,
+    municipality: event.municipality ?? undefined,
     area: event.province ?? undefined,
     imageUrl: event.image_url ?? "/images/concert.webp",
     isFree: pricing.isFree,
