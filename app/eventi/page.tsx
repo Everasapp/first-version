@@ -23,21 +23,11 @@ import { eventMatchesQuery } from "@/src/utils/nearby-city";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { getDateRange } from "@/src/lib/seo/dateRange";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
-import { absoluteUrl } from "@/src/lib/seo/site";
-
-export const metadata: Metadata = {
-  title: "Eventi in Sardegna",
-  description:
-    "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data. Concerti, sagre, mostre e appuntamenti su EVERAS.",
-  alternates: { canonical: "/eventi" },
-  openGraph: {
-    title: "Eventi in Sardegna | EVERAS",
-    description:
-      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
-    url: "/eventi",
-    type: "website",
-  },
-};
+import {
+  absoluteUrl,
+  defaultOgImages,
+  filteredListingRobots,
+} from "@/src/lib/seo/site";
 
 type EventsPageProps = {
   searchParams: Promise<{
@@ -48,6 +38,50 @@ type EventsPageProps = {
     q?: string;
   }>;
 };
+
+const eventsListingMetadata: Metadata = {
+  title: "Eventi in Sardegna",
+  description:
+    "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data. Concerti, sagre, mostre e appuntamenti su EVERAS.",
+  alternates: { canonical: "/eventi" },
+  openGraph: {
+    title: "Eventi in Sardegna | EVERAS",
+    description:
+      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
+    url: "/eventi",
+    type: "website",
+    images: defaultOgImages(),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Eventi in Sardegna | EVERAS",
+    description:
+      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
+    images: defaultOgImages().map((image) => image.url),
+  },
+};
+
+export async function generateMetadata({
+  searchParams,
+}: EventsPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const hasFilters = Boolean(
+    params.area ||
+      params.city ||
+      params.category ||
+      params.date ||
+      params.q?.trim(),
+  );
+
+  if (hasFilters) {
+    return {
+      ...eventsListingMetadata,
+      robots: filteredListingRobots(),
+    };
+  }
+
+  return eventsListingMetadata;
+}
 
 type DatabaseEvent = {
   id: string;

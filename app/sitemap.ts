@@ -3,7 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 
 import { cities } from "@/src/data/cities";
 import { categories } from "@/src/data/categories";
-import { cityToSlug } from "@/src/lib/seo/paths";
+import { eventCategorySlugs } from "@/src/lib/event-categories";
+import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 
 const SITE_URL = "https://www.everas.it";
 
@@ -124,10 +125,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const [
       { data: events, error: eventsError },
       { data: organizers, error: organizersError },
+      { data: directoryPages, error: directoryError },
     ] = await Promise.all([
       supabase
         .from("events")
-        .select("slug, updated_at, start_at")
+        .select("slug, updated_at, start_at, municipality, category, categories")
         .eq("status", "published")
         .not("slug", "is", null)
         .order("start_at", { ascending: false })
@@ -136,6 +138,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .from("profiles")
         .select("id, updated_at")
         .in("role", ["organizzatore", "admin"])
+        .limit(2000),
+      supabase
+        .from("organizer_directory_public")
+        .select("slug, claimed_by_profile_id")
+        .eq("public_page_enabled", true)
+        .not("slug", "is", null)
         .limit(2000),
     ]);
 
@@ -149,6 +157,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         organizersError.message,
       );
     }
+
+    if (directoryError) {
+      console.error(
+        "Sitemap organizer pages query failed:",
+        directoryError.message,
+      );
+    }
+
+    const claimedProfileIds = new Set(
+      (directoryPages ?? [])
+        .map((row) =>
+          typeof row.claimed_by_profile_id === "string"
+            ? row.claimed_by_profile_id
+            : "",
+        )
+        .filter(Boolean),
+    );
 
     const reserved = new Set([
       ...CATEGORY_SLUGS,
@@ -169,16 +194,53 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
 
-    const organizerRoutes: MetadataRoute.Sitemap = (organizers ?? []).map(
-      (organizer) => ({
+    const cityCategoryPaths = new Set<string>();
+    for (const event of events ?? []) {
+      const municipality =
+        typeof event.municipality === "string" ? event.municipality.trim() : "";
+      if (!municipality) continue;
+
+      const citySlug = cityToSlug(municipality);
+      if (!citySlug || reserved.has(citySlug)) continue;
+
+      for (const categorySlug of eventCategorySlugs(event)) {
+        if (!categorySlug || reserved.has(categorySlug)) continue;
+        cityCategoryPaths.add(cityCategoryEventsPath(municipality, categorySlug));
+      }
+    }
+
+    const cityCategoryRoutes: MetadataRoute.Sitemap = [...cityCategoryPaths].map(
+      (path) => ({
+        url: `${SITE_URL}${path}`,
+        changeFrequency: "daily" as const,
+        priority: 0.7,
+      }),
+    );
+
+    const organizerRoutes: MetadataRoute.Sitemap = (organizers ?? [])
+      .filter((organizer) => !claimedProfileIds.has(organizer.id))
+      .map((organizer) => ({
         url: `${SITE_URL}/organizzatori/${organizer.id}`,
         lastModified: toLastModified(organizer.updated_at),
         changeFrequency: "weekly" as const,
         priority: 0.6,
-      }),
-    );
+      }));
 
-    return [...base, ...eventRoutes, ...organizerRoutes];
+    const directoryRoutes: MetadataRoute.Sitemap = (directoryPages ?? [])
+      .filter((row) => typeof row.slug === "string" && row.slug.length > 0)
+      .map((row) => ({
+        url: `${SITE_URL}/organizzatori/${row.slug}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      }));
+
+    return [
+      ...base,
+      ...eventRoutes,
+      ...cityCategoryRoutes,
+      ...organizerRoutes,
+      ...directoryRoutes,
+    ];
   } catch (error) {
     console.error("Sitemap generation failed:", error);
     return base;

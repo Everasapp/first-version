@@ -5,12 +5,13 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  faqPageSchema,
 } from "@/src/lib/seo/schema";
 import {
   DATE_LANDING_META,
   type DateLandingKey,
 } from "@/src/lib/seo/dateRange";
-import { absoluteUrl } from "@/src/lib/seo/site";
+import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { categories } from "@/src/data/categories";
 
 type DateLandingPageProps = {
@@ -30,11 +31,13 @@ export function buildDateLandingMetadata(
       description: meta.description,
       url: meta.path,
       type: "website",
+      images: defaultOgImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${meta.title} | EVERAS`,
       description: meta.description,
+      images: defaultOgImages().map((image) => image.url),
     },
   };
 }
@@ -93,7 +96,8 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
           { name: "Eventi", path: "/eventi" },
           { name: meta.h1, path: meta.path },
         ]),
-      ]}
+        faqPageSchema(faqs),
+      ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );
 }

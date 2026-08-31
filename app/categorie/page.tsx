@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Search } from "lucide-react";
 
@@ -11,12 +12,54 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { createClient } from "@/src/lib/supabase/server";
 import { engagementFromRow } from "@/src/lib/event-engagement";
+import {
+  defaultOgImages,
+  filteredListingRobots,
+} from "@/src/lib/seo/site";
 
 type CategoriesPageProps = {
   searchParams: Promise<{
     category?: string | string[];
   }>;
 };
+
+const categoriesMetadata: Metadata = {
+  title: "Categorie eventi in Sardegna",
+  description:
+    "Esplora eventi in Sardegna per categoria: concerti, sagre, festival, cultura, sport e molto altro su EVERAS.",
+  alternates: { canonical: "/categorie" },
+  openGraph: {
+    title: "Categorie eventi in Sardegna | EVERAS",
+    description:
+      "Esplora eventi in Sardegna per categoria: concerti, sagre, festival e cultura.",
+    url: "/categorie",
+    type: "website",
+    images: defaultOgImages(),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Categorie eventi in Sardegna | EVERAS",
+    description:
+      "Esplora eventi in Sardegna per categoria: concerti, sagre, festival e cultura.",
+    images: defaultOgImages().map((image) => image.url),
+  },
+};
+
+export async function generateMetadata({
+  searchParams,
+}: CategoriesPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const hasFilter = Boolean(params.category);
+
+  if (hasFilter) {
+    return {
+      ...categoriesMetadata,
+      robots: filteredListingRobots(),
+    };
+  }
+
+  return categoriesMetadata;
+}
 
 type EventRow = {
   id: string;

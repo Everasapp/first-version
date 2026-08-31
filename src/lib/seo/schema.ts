@@ -138,3 +138,24 @@ export function collectionPageSchema(input: {
     },
   };
 }
+
+export function faqPageSchema(
+  faqs: Array<{ question: string; answer: string }>,
+): Record<string, unknown> | undefined {
+  if (!faqs.length) {
+    return undefined;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}

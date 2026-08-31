@@ -32,6 +32,7 @@ import {
   buildCategoryLandingMetadata,
   buildCityLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
+import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   eventCategorySlugs,
   resolveCategoryLabels,
@@ -46,6 +47,10 @@ import {
   isDirectoryUnclaimed,
   parseOrganizerDirectoryPublic,
 } from "@/src/lib/organizer-claim";
+import {
+  ORGANIZER_DIRECTORY_PUBLIC_SELECT,
+  getOrganizerPublicHref,
+} from "@/src/lib/organizer-page";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { buildAuthHref } from "@/src/lib/auth-urls";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
@@ -139,10 +144,18 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const city = findCityBySlug(slug);
-  if (city) return buildCityLandingMetadata(city);
+  if (city) {
+    const { events } = await loadFilteredPublishedEvents({ city: city.city });
+    return buildCityLandingMetadata(city, events.length);
+  }
 
   const category = findCategoryBySlug(slug);
-  if (category) return buildCategoryLandingMetadata(category);
+  if (category) {
+    const { events } = await loadFilteredPublishedEvents({
+      categorySlug: category.slug,
+    });
+    return buildCategoryLandingMetadata(category, events.length);
+  }
 
   const supabase = await createClient();
 
@@ -290,7 +303,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     event.organizer_directory_id
       ? supabase
           .from("organizer_directory_public")
-          .select("id, name, claim_status, claimed_by_profile_id")
+          .select(ORGANIZER_DIRECTORY_PUBLIC_SELECT)
           .eq("id", event.organizer_directory_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
@@ -323,9 +336,10 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? null
     : directory?.claimed_by_profile_id ??
       (isCustomOrganizerName ? null : organizer?.id ?? null);
-  const organizerHref = followOrganizerId
-    ? `/organizzatori/${followOrganizerId}`
-    : null;
+  const organizerHref = getOrganizerPublicHref(
+    directory,
+    followOrganizerId,
+  );
   const showOrganizerPlace =
     !isCustomOrganizerName &&
     !showClaimButton &&

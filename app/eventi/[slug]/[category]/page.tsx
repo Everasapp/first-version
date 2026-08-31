@@ -6,6 +6,7 @@ import {
   buildCityCategoryLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
 import { findCategoryBySlug, findCityBySlug } from "@/src/lib/seo/paths";
+import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 
 type CityCategoryPageProps = {
   params: Promise<{
@@ -28,7 +29,12 @@ export async function generateMetadata({
     };
   }
 
-  return buildCityCategoryLandingMetadata(city, category);
+  const { events } = await loadFilteredPublishedEvents({
+    city: city.city,
+    categorySlug: category.slug,
+  });
+
+  return buildCityCategoryLandingMetadata(city, category, events.length);
 }
 
 export default async function CityCategoryPage({

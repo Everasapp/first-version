@@ -9,15 +9,23 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  faqPageSchema,
 } from "@/src/lib/seo/schema";
 import {
   categoryEventsPath,
   cityCategoryEventsPath,
   cityEventsPath,
 } from "@/src/lib/seo/paths";
-import { absoluteUrl } from "@/src/lib/seo/site";
+import {
+  absoluteUrl,
+  defaultOgImages,
+  landingRobots,
+} from "@/src/lib/seo/site";
 
-export function buildCityLandingMetadata(city: City): Metadata {
+export function buildCityLandingMetadata(
+  city: City,
+  eventCount?: number,
+): Metadata {
   const title = `Eventi a ${city.city}`;
   const description = `Scopri gli eventi a ${city.city} (${city.area}): concerti, sagre, mostre e appuntamenti su EVERAS.`;
   const path = cityEventsPath(city.city);
@@ -25,21 +33,28 @@ export function buildCityLandingMetadata(city: City): Metadata {
     title,
     description,
     alternates: { canonical: path },
+    robots:
+      eventCount === undefined ? undefined : landingRobots(eventCount),
     openGraph: {
       title: `${title} | EVERAS`,
       description,
       url: path,
       type: "website",
+      images: defaultOgImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | EVERAS`,
       description,
+      images: defaultOgImages().map((image) => image.url),
     },
   };
 }
 
-export function buildCategoryLandingMetadata(category: Category): Metadata {
+export function buildCategoryLandingMetadata(
+  category: Category,
+  eventCount?: number,
+): Metadata {
   const title = `${category.name} in Sardegna`;
   const description = `Eventi di ${category.name.toLocaleLowerCase("it")} in tutta la Sardegna. Trova date, luoghi e biglietti su EVERAS.`;
   const path = categoryEventsPath(category.slug);
@@ -47,16 +62,20 @@ export function buildCategoryLandingMetadata(category: Category): Metadata {
     title,
     description,
     alternates: { canonical: path },
+    robots:
+      eventCount === undefined ? undefined : landingRobots(eventCount),
     openGraph: {
       title: `${title} | EVERAS`,
       description,
       url: path,
       type: "website",
+      images: defaultOgImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | EVERAS`,
       description,
+      images: defaultOgImages().map((image) => image.url),
     },
   };
 }
@@ -64,6 +83,7 @@ export function buildCategoryLandingMetadata(category: Category): Metadata {
 export function buildCityCategoryLandingMetadata(
   city: City,
   category: Category,
+  eventCount?: number,
 ): Metadata {
   const title = `${category.name} a ${city.city}`;
   const description = `${category.name} a ${city.city}: calendario aggiornato di eventi, date e luoghi su EVERAS.`;
@@ -72,16 +92,20 @@ export function buildCityCategoryLandingMetadata(
     title,
     description,
     alternates: { canonical: path },
+    robots:
+      eventCount === undefined ? undefined : landingRobots(eventCount),
     openGraph: {
       title: `${title} | EVERAS`,
       description,
       url: path,
       type: "website",
+      images: defaultOgImages(),
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | EVERAS`,
       description,
+      images: defaultOgImages().map((image) => image.url),
     },
   };
 }
@@ -135,7 +159,17 @@ export async function CityLandingPage({ city }: { city: City }) {
           { name: "Eventi", path: "/eventi" },
           { name: city.city, path },
         ]),
-      ]}
+        faqPageSchema([
+          {
+            question: `Quali eventi ci sono a ${city.city}?`,
+            answer: `Su EVERAS trovi gli eventi pubblicati a ${city.city} e dintorni, con data, luogo e dettagli utili per organizzarti.`,
+          },
+          {
+            question: "Posso filtrare per categoria?",
+            answer: `Sì: esplora le categorie collegate sotto, oppure apri una pagina come Concerti a ${city.city}.`,
+          },
+        ]),
+      ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );
 }
@@ -188,7 +222,14 @@ export async function CategoryLandingPage({
           { name: "Eventi", path: "/eventi" },
           { name: category.name, path },
         ]),
-      ]}
+        faqPageSchema([
+          {
+            question: `Come trovo ${category.name.toLocaleLowerCase("it")} vicino a me?`,
+            answer:
+              "Apri una città dal menu Esplora o dalla home, oppure combina città e categoria dalle pagine locali.",
+          },
+        ]),
+      ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );
 }
@@ -249,7 +290,13 @@ export async function CityCategoryLandingPage({
           { name: city.city, path: cityEventsPath(city.city) },
           { name: category.name, path },
         ]),
-      ]}
+        faqPageSchema([
+          {
+            question: `Ci sono ${category.name.toLocaleLowerCase("it")} a ${city.city} questo mese?`,
+            answer: `Controlla l’elenco aggiornato qui sopra. Se non trovi risultati, esplora tutti gli eventi a ${city.city} o la categoria in tutta la Sardegna.`,
+          },
+        ]),
+      ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );
 }

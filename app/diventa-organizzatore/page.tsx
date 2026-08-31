@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Building2 } from "lucide-react";
@@ -6,6 +7,29 @@ import BecomeOrganizerForm from "@/src/components/auth/BecomeOrganizerForm";
 import Header from "@/src/components/home/Header";
 import { requireProfile } from "@/src/lib/auth";
 import { isOrganizer } from "@/src/lib/profile";
+import { defaultOgImages } from "@/src/lib/seo/site";
+
+export const metadata: Metadata = {
+  title: "Diventa organizzatore",
+  description:
+    "Pubblica e promuovi i tuoi eventi in Sardegna con EVERAS: calendario, pagina organizzatore e visibilità su Google.",
+  alternates: { canonical: "/diventa-organizzatore" },
+  openGraph: {
+    title: "Diventa organizzatore | EVERAS",
+    description:
+      "Pubblica e promuovi i tuoi eventi in Sardegna con EVERAS.",
+    url: "/diventa-organizzatore",
+    type: "website",
+    images: defaultOgImages(),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Diventa organizzatore | EVERAS",
+    description:
+      "Pubblica e promuovi i tuoi eventi in Sardegna con EVERAS.",
+    images: defaultOgImages().map((image) => image.url),
+  },
+};
 
 type BecomeOrganizerPageProps = {
   searchParams: Promise<{
