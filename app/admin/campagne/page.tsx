@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail } from "lucide-react";
 
 import DeleteCampaignButton from "@/src/components/admin/DeleteCampaignButton";
+import SendExternalOrganizersButton from "@/src/components/admin/SendExternalOrganizersButton";
 import { requireAdmin } from "@/src/lib/auth";
 import {
   campaignStatusLabel,
@@ -72,6 +73,13 @@ export default async function AdminCampagnePage() {
           >
             Annuncia community
           </Link>
+          <Link
+            href="/admin/campagne/nuova?template=rivendica-organizzatori"
+            className="inline-flex items-center gap-2 rounded-xl border border-[#075EAE]/30 bg-blue-50 px-4 py-2.5 text-sm font-bold text-[#075EAE] transition hover:bg-blue-100"
+          >
+            Rivendica organizzatori
+          </Link>
+          <SendExternalOrganizersButton />
           <Link
             href="/admin/campagne/nuova"
             className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A]"
