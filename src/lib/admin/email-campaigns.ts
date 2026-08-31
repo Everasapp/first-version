@@ -92,11 +92,125 @@ export function parseCampaignId(value: string | string[] | undefined) {
   return raw;
 }
 
-export type CampaignTemplateId = "community";
+export type CampaignTemplateId =
+  | "community"
+  | "rivendica-comuni"
+  | "rivendica-organizzatori";
+
+const RIVENDICA_SUBJECT =
+  "Il vostro evento è già su EVERAS – rivendicate il vostro profilo gratuitamente";
+
+function rivendicaIntro() {
+  return `Buongiorno,
+
+sono Marina Canalis, fondatrice di EVERAS, una nuova piattaforma dedicata agli eventi in Sardegna, nata con un obiettivo semplice: rendere più facile scoprire ciò che accade sul territorio e dare maggiore visibilità agli eventi locali.
+
+L'idea nasce da un problema che probabilmente conoscete bene: in Sardegna vengono organizzati ogni giorno concerti, sagre, feste, mostre, manifestazioni culturali e sportive, ma le informazioni sono spesso distribuite tra siti istituzionali, social, locandine e pagine dei singoli organizzatori.
+
+EVERAS vuole raccoglierle in un unico spazio, facilmente consultabile da cittadini e visitatori.
+
+La piattaforma è online da poche settimane e sta iniziando a farsi conoscere, superando già 8.780 visualizzazioni.
+
+Ho trovato particolarmente interessante il vostro evento e ho deciso di inserirlo personalmente su EVERAS per contribuire a dargli maggiore visibilità:
+
+${EVENT_LINK_PLACEHOLDER}`;
+}
+
+function rivendicaOutro(audienceLine: string, pageLine: string) {
+  return `Se lo desiderate, potete rivendicare gratuitamente il vostro profilo Organizzatore e gestire direttamente la vostra presenza sulla piattaforma.
+
+Potrete così:
+• modificare o integrare le informazioni degli eventi già presenti;
+• pubblicare gratuitamente i vostri prossimi eventi;
+• ${pageLine}
+• utilizzare EVERAS come ulteriore canale per raggiungere persone interessate agli eventi e alle iniziative del territorio.
+
+La pubblicazione degli eventi è gratuita.
+
+Il mio obiettivo è far crescere EVERAS insieme ${audienceLine}, creando nel tempo un punto di riferimento unico per chi vuole sapere cosa fare e cosa succede sull'isola.
+
+Se avete domande o desiderate aiuto per rivendicare il profilo, potete semplicemente rispondere a questa email: sarò felice di seguirvi personalmente.
+
+Grazie per il vostro lavoro di valorizzazione del territorio e spero di avervi presto tra gli organizzatori di EVERAS.
+
+Un caro saluto,
+
+Marina Canalis
+Fondatrice di EVERAS
+everas.it`;
+}
 
 export const COMMUNITY_CAMPAIGN_IMAGE_MARKER = "{{COMMUNITY_IMAGE}}";
 export const COMMUNITY_CAMPAIGN_IMAGE_PATH =
   "/images/community/community-how-it-works.webp";
+
+export const EVENT_LINK_MARKER = "{{EVENT_LINK}}";
+export const EVENT_LINK_PLACEHOLDER = '👉 "LINK EVENTO"';
+
+export type CampaignEventLink = {
+  url: string;
+  title?: string;
+};
+
+export function hasCampaignEventLinkPlaceholder(message: string) {
+  return (
+    message.includes(EVENT_LINK_MARKER) ||
+    message.includes("LINK EVENTO")
+  );
+}
+
+export function formatCampaignEventLink(link: CampaignEventLink) {
+  const title = link.title?.trim();
+  return title ? `${title}\n${link.url}` : link.url;
+}
+
+export function applyCampaignEventLink(
+  message: string,
+  link: CampaignEventLink,
+) {
+  const block = formatCampaignEventLink(link);
+  return message
+    .replaceAll(EVENT_LINK_PLACEHOLDER, `👉 ${block}`)
+    .replaceAll(EVENT_LINK_MARKER, block)
+    .replaceAll('👉 "LINK EVENTO"', `👉 ${block}`)
+    .replaceAll('👉 “LINK EVENTO”', `👉 ${block}`)
+    .replaceAll('"LINK EVENTO"', block)
+    .replaceAll("“LINK EVENTO”", block)
+    .replaceAll("LINK EVENTO", block);
+}
+
+export function parseCampaignEventLinks(raw: unknown): Record<
+  string,
+  CampaignEventLink
+> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return {};
+  }
+
+  const links: Record<string, CampaignEventLink> = {};
+  for (const [email, value] of Object.entries(
+    raw as Record<string, unknown>,
+  )) {
+    const key = email.trim().toLowerCase();
+    if (!key || !isValidCampaignEmail(key)) continue;
+
+    if (typeof value === "string") {
+      const url = value.trim();
+      if (isSafeHttpUrl(url)) links[key] = { url };
+      continue;
+    }
+
+    if (!value || typeof value !== "object" || Array.isArray(value)) continue;
+    const record = value as { url?: unknown; title?: unknown };
+    const url = typeof record.url === "string" ? record.url.trim() : "";
+    if (!isSafeHttpUrl(url)) continue;
+    const title =
+      typeof record.title === "string" ? record.title.trim() : undefined;
+    links[key] = title ? { url, title } : { url };
+  }
+
+  return links;
+}
 
 export function getCampaignTemplate(
   id: string | string[] | undefined,
@@ -108,6 +222,33 @@ export function getCampaignTemplate(
   hostedImageAlt?: string;
 } | null {
   const raw = Array.isArray(id) ? id[0] : id;
+
+  if (raw === "rivendica-comuni") {
+    return {
+      id: "rivendica-comuni",
+      subject: RIVENDICA_SUBJECT,
+      message: `${rivendicaIntro()}
+
+${rivendicaOutro(
+  "ai Comuni, alle Pro Loco, alle associazioni e alle tante realtà che animano la Sardegna",
+  "creare una pagina dedicata al Comune o alla Pro Loco con tutti gli appuntamenti organizzati",
+)}`,
+    };
+  }
+
+  if (raw === "rivendica-organizzatori") {
+    return {
+      id: "rivendica-organizzatori",
+      subject: RIVENDICA_SUBJECT,
+      message: `${rivendicaIntro()}
+
+${rivendicaOutro(
+  "a Comuni, Pro Loco, associazioni culturali, festival e organizzatori che animano la Sardegna",
+  "creare una pagina dedicata alla vostra organizzazione con tutti gli appuntamenti",
+)}`,
+    };
+  }
+
   if (raw !== "community") return null;
 
   return {

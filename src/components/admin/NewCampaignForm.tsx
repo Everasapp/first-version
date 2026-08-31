@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   FileUp,
+  Landmark,
   LoaderCircle,
   MailPlus,
   Paperclip,
@@ -11,18 +12,22 @@ import {
   Trash2,
   Users,
   X,
+  Building2,
 } from "lucide-react";
 
 import {
   CAMPAIGN_MAX_ATTACHMENTS,
   CAMPAIGN_MAX_ATTACHMENT_BYTES,
   COMMUNITY_CAMPAIGN_IMAGE_MARKER,
+  EVENT_LINK_PLACEHOLDER,
   formatBytes,
+  hasCampaignEventLinkPlaceholder,
   isImageContentType,
   parseEmailList,
   resolveAttachmentContentType,
   sanitizeAttachmentFilename,
   validateCampaignAttachments,
+  type CampaignEventLink,
 } from "@/src/lib/admin/email-campaigns";
 
 type SelectedAttachment = {
@@ -71,6 +76,12 @@ export default function NewCampaignForm({
   );
   const [isLoadingDirectory, setIsLoadingDirectory] = useState(false);
   const [isLoadingNewsletter, setIsLoadingNewsletter] = useState(false);
+  const [isLoadingComuni, setIsLoadingComuni] = useState(false);
+  const [isLoadingExternalOrganizers, setIsLoadingExternalOrganizers] =
+    useState(false);
+  const [eventLinks, setEventLinks] = useState<
+    Record<string, CampaignEventLink>
+  >({});
   const [isSending, setIsSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
@@ -176,6 +187,103 @@ export default function NewCampaignForm({
     }
   }
 
+  async function loadFromComuniWithEvents() {
+    setIsLoadingComuni(true);
+    setErrorMessage("");
+    setInfoMessage("");
+
+    try {
+      const response = await fetch(
+        "/api/admin/campaigns/comune-event-emails",
+      );
+      const data = (await response.json()) as {
+        ok?: boolean;
+        emails?: string[];
+        count?: number;
+        skipped?: Array<{ name: string; reason: string }>;
+        eventLinks?: Record<string, CampaignEventLink>;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error || "Caricamento Comuni con eventi non riuscito",
+        );
+      }
+
+      setRecipientsText((data.emails || []).join("\n"));
+      setEventLinks(data.eventLinks || {});
+
+      const skippedCount = data.skipped?.length ?? 0;
+      setInfoMessage(
+        `Caricati ${data.count ?? 0} Comuni con evento pubblicato e email.` +
+          (skippedCount > 0
+            ? ` Saltati ${skippedCount} (già contattati o senza email).`
+            : "") +
+          (hasCampaignEventLinkPlaceholder(message)
+            ? " Ogni email riceverà il link del proprio evento."
+            : ` Inserisci nel testo ${EVENT_LINK_PLACEHOLDER} per personalizzare il link.`),
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Errore caricamento Comuni con eventi",
+      );
+    } finally {
+      setIsLoadingComuni(false);
+    }
+  }
+
+  async function loadFromExternalOrganizersWithEvents() {
+    setIsLoadingExternalOrganizers(true);
+    setErrorMessage("");
+    setInfoMessage("");
+
+    try {
+      const response = await fetch(
+        "/api/admin/campaigns/external-organizer-event-emails",
+      );
+      const data = (await response.json()) as {
+        ok?: boolean;
+        emails?: string[];
+        count?: number;
+        skipped?: Array<{ name: string; reason: string }>;
+        eventLinks?: Record<string, CampaignEventLink>;
+        error?: string;
+      };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error ||
+            "Caricamento organizzatori esterni con eventi non riuscito",
+        );
+      }
+
+      setRecipientsText((data.emails || []).join("\n"));
+      setEventLinks(data.eventLinks || {});
+
+      const skippedCount = data.skipped?.length ?? 0;
+      setInfoMessage(
+        `Caricati ${data.count ?? 0} organizzatori esterni con evento e email.` +
+          (skippedCount > 0
+            ? ` Saltati ${skippedCount} (già contattati o senza email).`
+            : "") +
+          (hasCampaignEventLinkPlaceholder(message)
+            ? " Ogni email riceverà il link del proprio evento."
+            : ` Inserisci nel testo ${EVENT_LINK_PLACEHOLDER} per personalizzare il link.`),
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Errore caricamento organizzatori esterni",
+      );
+    } finally {
+      setIsLoadingExternalOrganizers(false);
+    }
+  }
+
   async function loadFromNewsletter() {
     setIsLoadingNewsletter(true);
     setErrorMessage("");
@@ -269,6 +377,9 @@ export default function NewCampaignForm({
       }
       formData.set("message", messageForSend);
       formData.set("emails", parsedEmails.join("\n"));
+      if (Object.keys(eventLinks).length > 0) {
+        formData.set("eventLinks", JSON.stringify(eventLinks));
+      }
       if (templateId) {
         formData.set("template", templateId);
       }
@@ -343,9 +454,11 @@ export default function NewCampaignForm({
           disabled={isSending}
         />
         <p className="mt-2 text-xs text-slate-500">
-          Gli indirizzi web e le email nel testo diventano cliccabili. Verrà
-          inviato da <strong>EVERAS &lt;info@mail.everas.it&gt;</strong> (dominio
-          Resend verificato). Le risposte vanno a info@everas.it.
+          Gli indirizzi web e le email nel testo diventano cliccabili. Se usi{" "}
+          <code>{EVENT_LINK_PLACEHOLDER}</code>, ogni destinatario riceve il
+          link del proprio evento. Verrà inviato da{" "}
+          <strong>EVERAS &lt;info@mail.everas.it&gt;</strong> (dominio Resend
+          verificato). Le risposte vanno a info@everas.it.
         </p>
       </label>
 
@@ -479,7 +592,13 @@ export default function NewCampaignForm({
           <button
             type="button"
             onClick={loadFromNewsletter}
-            disabled={isLoadingNewsletter || isLoadingDirectory || isSending}
+            disabled={
+              isLoadingNewsletter ||
+              isLoadingDirectory ||
+              isLoadingComuni ||
+              isLoadingExternalOrganizers ||
+              isSending
+            }
             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
           >
             {isLoadingNewsletter ? (
@@ -492,7 +611,13 @@ export default function NewCampaignForm({
           <button
             type="button"
             onClick={loadFromDirectory}
-            disabled={isLoadingDirectory || isLoadingNewsletter || isSending}
+            disabled={
+              isLoadingDirectory ||
+              isLoadingNewsletter ||
+              isLoadingComuni ||
+              isLoadingExternalOrganizers ||
+              isSending
+            }
             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
           >
             {isLoadingDirectory ? (
@@ -502,6 +627,44 @@ export default function NewCampaignForm({
             )}
             Carica dalla rubrica
           </button>
+          <button
+            type="button"
+            onClick={loadFromComuniWithEvents}
+            disabled={
+              isLoadingDirectory ||
+              isLoadingNewsletter ||
+              isLoadingComuni ||
+              isLoadingExternalOrganizers ||
+              isSending
+            }
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
+          >
+            {isLoadingComuni ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Landmark className="h-4 w-4" aria-hidden="true" />
+            )}
+            Carica Comuni con eventi
+          </button>
+          <button
+            type="button"
+            onClick={loadFromExternalOrganizersWithEvents}
+            disabled={
+              isLoadingDirectory ||
+              isLoadingNewsletter ||
+              isLoadingComuni ||
+              isLoadingExternalOrganizers ||
+              isSending
+            }
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] disabled:opacity-60"
+          >
+            {isLoadingExternalOrganizers ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            ) : (
+              <Building2 className="h-4 w-4" aria-hidden="true" />
+            )}
+            Carica organizzatori esterni
+          </button>
           <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700">
             <MailPlus className="h-4 w-4 text-[#075EAE]" aria-hidden="true" />
             {parsedEmails.length} email valide
@@ -509,7 +672,10 @@ export default function NewCampaignForm({
         </div>
         <p className="mt-2 text-xs text-slate-500">
           Gli iscritti newsletter sono profili (utenti e organizzatori) con
-          opt-in attivo. La rubrica è l’elenco comuni/organizzatori.
+          opt-in attivo. La rubrica è l’elenco comuni/organizzatori. “Comuni con
+          eventi” e “Organizzatori esterni” caricano solo chi ha un evento
+          pubblicato e un’email, con link evento personalizzato tramite{" "}
+          <code>{EVENT_LINK_PLACEHOLDER}</code>.
         </p>
       </div>
 

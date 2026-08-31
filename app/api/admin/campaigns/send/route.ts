@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import {
+  applyCampaignEventLink,
   buildCampaignHtml,
   CAMPAIGN_FROM_EMAIL,
   CAMPAIGN_MAX_ATTACHMENTS,
@@ -9,7 +10,9 @@ import {
   COMMUNITY_CAMPAIGN_IMAGE_PATH,
   COMMUNITY_CAMPAIGN_IMAGE_MARKER,
   getCampaignTemplate,
+  hasCampaignEventLinkPlaceholder,
   isImageContentType,
+  parseCampaignEventLinks,
   parseEmailList,
   resolveAttachmentContentType,
   sanitizeAttachmentFilename,
@@ -18,6 +21,7 @@ import {
   validateCampaignAttachments,
   type CampaignAttachmentMeta,
   type CampaignAttachmentPayload,
+  type CampaignEventLink,
 } from "@/src/lib/admin/email-campaigns";
 import { getSiteUrl } from "@/src/lib/notifications/config";
 
@@ -86,6 +90,7 @@ export async function POST(request: Request) {
   let message = "";
   let rawEmails = "";
   let templateId = "";
+  let eventLinks: Record<string, CampaignEventLink> = {};
   let attachments: CampaignAttachmentPayload[] = [];
 
   try {
@@ -96,12 +101,17 @@ export async function POST(request: Request) {
       rawEmails = String(formData.get("emails") || "");
       templateId = String(formData.get("template") || "").trim();
       attachments = await parseAttachmentsFromForm(formData);
+      const rawLinks = String(formData.get("eventLinks") || "").trim();
+      if (rawLinks) {
+        eventLinks = parseCampaignEventLinks(JSON.parse(rawLinks));
+      }
     } else {
       const body = (await request.json()) as {
         subject?: string;
         message?: string;
         emails?: string[] | string;
         template?: string;
+        eventLinks?: unknown;
       };
       subject = body.subject?.trim() || "";
       message = body.message?.trim() || "";
@@ -112,6 +122,7 @@ export async function POST(request: Request) {
           : Array.isArray(body.emails)
             ? body.emails.join("\n")
             : "";
+      eventLinks = parseCampaignEventLinks(body.eventLinks);
     }
   } catch (error) {
     return NextResponse.json(
@@ -172,6 +183,19 @@ export async function POST(request: Request) {
             },
           ]
         : [];
+
+  const needsEventLinks = hasCampaignEventLinkPlaceholder(message);
+  if (needsEventLinks) {
+    const missing = emails.filter((email) => !eventLinks[email]);
+    if (missing.length > 0) {
+      return NextResponse.json(
+        {
+          error: `Manca il link evento per ${missing.length} destinatari (es. ${missing.slice(0, 3).join(", ")}).`,
+        },
+        { status: 400 },
+      );
+    }
+  }
 
   const bodyHtml = buildCampaignHtml(
     subject,
@@ -267,10 +291,19 @@ export async function POST(request: Request) {
     const recipientId = recipient.id as string;
 
     try {
+      const html = needsEventLinks
+        ? buildCampaignHtml(
+            subject,
+            applyCampaignEventLink(message, eventLinks[email]!),
+            inlineImages,
+            hostedImages,
+          )
+        : bodyHtml;
+
       const result = await sendCampaignEmailViaResend({
         to: email,
         subject,
-        html: bodyHtml,
+        html,
         from: fromEmail,
         replyTo,
         attachments,

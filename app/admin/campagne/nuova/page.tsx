@@ -93,16 +93,24 @@ export default async function AdminNuovaCampagnaPage({
       <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
         {isForward
           ? "Inoltra campagna"
-          : template
-            ? "Campagna community"
-            : "Nuova campagna"}
+          : template?.id === "rivendica-organizzatori"
+            ? "Campagna rivendica — organizzatori"
+            : template?.id === "rivendica-comuni"
+              ? "Campagna rivendica — Comuni"
+              : template
+                ? "Campagna community"
+                : "Nuova campagna"}
       </h1>
       <p className="mt-2 text-slate-600">
         {isForward
           ? "Modifica oggetto, messaggio e destinatari, poi invia. Verrà creata una nuova campagna nello storico."
-          : template
-            ? "Messaggio e iscritti newsletter sono già compilati. Controlla tutto e invia solo quando sei pronta."
-            : "Compila oggetto e messaggio, importa i destinatari e invia via Resend."}
+          : template?.id === "rivendica-organizzatori"
+            ? "Testo pronto per associazioni e organizzatori. Clicca “Carica organizzatori esterni”, verifica i destinatari e invia: ogni email avrà il link del proprio evento."
+            : template?.id === "rivendica-comuni"
+              ? "Testo pronto per i Comuni. Clicca “Carica Comuni con eventi”, verifica i destinatari e invia."
+              : template
+                ? "Messaggio e iscritti newsletter sono già compilati. Controlla tutto e invia solo quando sei pronta."
+                : "Compila oggetto e messaggio, importa i destinatari e invia via Resend."}
       </p>
 
       {templateNote ? (
