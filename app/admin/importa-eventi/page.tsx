@@ -1,3 +1,4 @@
+import DiscoverDraftsButton from "@/src/components/admin/DiscoverDraftsButton";
 import EventImportPanel from "@/src/components/admin/EventImportPanel";
 import { requireAdmin } from "@/src/lib/auth";
 
@@ -17,6 +18,7 @@ export default async function ImportaEventiPage() {
       </p>
 
       <div className="mt-8">
+        <DiscoverDraftsButton />
         <EventImportPanel creatorName={creatorName} />
       </div>
     </div>
