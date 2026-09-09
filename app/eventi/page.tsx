@@ -8,7 +8,7 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import JsonLd from "@/src/components/seo/JsonLd";
 import { categories } from "@/src/data/categories";
-import { cities } from "@/src/data/cities";
+import { cities, isSulcisCity, isSulcisRegionName } from "@/src/data/cities";
 import {
   eventMatchesCategoryFilter,
   resolveCategoryLabels,
@@ -199,7 +199,9 @@ export default async function EventsPage({
   ].filter(Boolean) as string[];
 
   const pageTitle = selectedCity
-    ? `Eventi a ${selectedCity}`
+    ? isSulcisRegionName(selectedCity)
+      ? "Eventi nel Sulcis"
+      : `Eventi a ${selectedCity}`
     : selectedAreaLabel
       ? `Eventi in ${selectedAreaLabel}`
       : searchQuery
@@ -266,8 +268,10 @@ export default async function EventsPage({
 
       const matchesCity =
         !selectedCity ||
-        event.municipality?.toLocaleLowerCase("it") ===
-          selectedCity.toLocaleLowerCase("it");
+        (isSulcisRegionName(selectedCity)
+          ? isSulcisCity(event.municipality ?? "")
+          : event.municipality?.toLocaleLowerCase("it") ===
+            selectedCity.toLocaleLowerCase("it"));
 
       const matchesCategory =
         !selectedCategory ||

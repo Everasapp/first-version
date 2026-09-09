@@ -19,6 +19,7 @@ import {
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
+import CitySelect from "@/src/components/events/CitySelect";
 import { cities } from "@/src/data/cities";
 import {
   eventCategorySlugs,
@@ -682,29 +683,24 @@ export default function EditEventForm({
               )}
             </label>
 
-            <label className="block">
+            <div>
               <span className="text-sm font-bold text-slate-900">Città</span>
-              <select
+              <CitySelect
                 value={city}
-                onChange={(changeEvent) => {
-                  setCity(changeEvent.target.value);
+                onChange={(nextCity) => {
+                  setCity(nextCity);
                   clearError("city");
                 }}
+                cities={availableCities}
+                invalid={Boolean(errors.city)}
                 className={`${fieldClassName} ${
                   errors.city ? "border-red-400" : "border-slate-300"
                 }`}
-              >
-                <option value="">Seleziona una città</option>
-                {availableCities.map((item) => (
-                  <option key={item.id} value={item.city}>
-                    {item.city} ({item.province})
-                  </option>
-                ))}
-              </select>
+              />
               {errors.city && (
                 <p className="mt-2 text-sm text-red-600">{errors.city}</p>
               )}
-            </label>
+            </div>
 
             <label className="block sm:col-span-2">
               <span className="flex items-center gap-2 text-sm font-bold text-slate-900">

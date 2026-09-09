@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import CitySelect from "@/src/components/events/CitySelect";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import Header from "@/src/components/home/Header";
 import { cities } from "@/src/data/cities";
@@ -796,40 +797,33 @@ export default function PublishEventPage() {
                       )}
                     </label>
 
-                    <label className="block">
+                    <div>
                       <span className="text-sm font-bold text-slate-900">
                         Città
                       </span>
 
-                      <select
+                      <CitySelect
                         name="city"
                         value={city}
-                        onChange={(event) => {
-                          setCity(event.target.value);
+                        onChange={(nextCity) => {
+                          setCity(nextCity);
                           clearError("city");
                         }}
-                        aria-invalid={Boolean(errors.city)}
-                        className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
+                        cities={availableCities}
+                        invalid={Boolean(errors.city)}
+                        className={`w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
                           errors.city
                             ? "border-red-400 focus:border-red-500"
                             : "border-slate-300 focus:border-[#075EAE]"
                         }`}
-                      >
-                        <option value="">Seleziona una città</option>
-
-                        {availableCities.map((item) => (
-                          <option key={item.id} value={item.city}>
-                            {item.city} ({item.province})
-                          </option>
-                        ))}
-                      </select>
+                      />
 
                       {errors.city && (
                         <p className="mt-2 text-sm text-red-600">
                           {errors.city}
                         </p>
                       )}
-                    </label>
+                    </div>
 
                     <label className="block sm:col-span-2">
                       <span className="flex items-center gap-2 text-sm font-bold text-slate-900">

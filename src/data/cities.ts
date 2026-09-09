@@ -243,6 +243,57 @@ export const cities: City[] = [
   { id: 175, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
   { id: 209, city: "Gonnesa", province: "SU", area: "Sud Sardegna" },
   { id: 176, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
+  { id: 222, city: "Narcao", province: "SU", area: "Sud Sardegna" },
   { id: 221, city: "Portoscuso", province: "SU", area: "Sud Sardegna" },
   { id: 177, city: "Sant'Antioco", province: "SU", area: "Sud Sardegna" },
 ];
+
+const SULCIS_CITY_NAMES = new Set([
+  "Carbonia",
+  "Carloforte",
+  "Gonnesa",
+  "Iglesias",
+  "Narcao",
+  "Portoscuso",
+  "Sant'Antioco",
+]);
+
+function normalizeCityQuery(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase("it")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "");
+}
+
+const SULCIS_CITY_NAMES_NORMALIZED = new Set(
+  [...SULCIS_CITY_NAMES].map(normalizeCityQuery),
+);
+
+export function isSulcisCity(cityName: string) {
+  return SULCIS_CITY_NAMES_NORMALIZED.has(normalizeCityQuery(cityName));
+}
+
+export function isSulcisRegionName(value: string) {
+  return normalizeCityQuery(value) === "sulcis";
+}
+
+export function filterCitiesByQuery(list: City[], query: string) {
+  const needle = normalizeCityQuery(query);
+  if (!needle) return list;
+
+  if (needle.length >= 3 && "sulcis".startsWith(needle)) {
+    return list.filter((city) => isSulcisCity(city.city));
+  }
+
+  return list.filter((city) =>
+    normalizeCityQuery(city.city).includes(needle),
+  );
+}
+
+export function partitionCitiesForSelect(list: City[]) {
+  const byName = (a: City, b: City) => a.city.localeCompare(b.city, "it");
+  const sulcis = list.filter((city) => isSulcisCity(city.city)).sort(byName);
+  const rest = list.filter((city) => !isSulcisCity(city.city)).sort(byName);
+  return { sulcis, rest };
+}

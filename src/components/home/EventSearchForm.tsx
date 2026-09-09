@@ -16,6 +16,7 @@ import {
 
 import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
+import CitySelect from "@/src/components/events/CitySelect";
 import { saveGeoCoords, markGeoDenied } from "@/src/lib/geo-preference";
 import { areaToSlug, findNearestCity } from "@/src/utils/nearby-city";
 
@@ -270,21 +271,17 @@ export default function EventSearchForm() {
           isOpen={openPanel === "city"}
           onToggle={togglePanel}
         >
-          <select
+          <CitySelect
             value={selectedCity}
-            onChange={(event) => {
-              setSelectedCity(event.target.value);
+            onChange={(nextCity) => {
+              setSelectedCity(nextCity);
               setOpenPanel("category");
             }}
+            cities={availableCities}
+            emptyLabel="Tutte le città"
+            includeSulcisShortcut
             className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
-          >
-            <option value="">Tutte le città</option>
-            {availableCities.map((city) => (
-              <option key={city.id} value={city.city}>
-                {city.city} ({city.province})
-              </option>
-            ))}
-          </select>
+          />
         </AccordionRow>
 
         <AccordionRow
@@ -400,19 +397,16 @@ export default function EventSearchForm() {
             />
             Città
           </span>
-          <select
+          <CitySelect
             name="city"
             value={selectedCity}
-            onChange={(event) => setSelectedCity(event.target.value)}
+            onChange={setSelectedCity}
+            cities={availableCities}
+            emptyLabel="Tutte le città"
+            showSearch={false}
+            includeSulcisShortcut
             className={inputClass}
-          >
-            <option value="">Tutte le città</option>
-            {availableCities.map((city) => (
-              <option key={city.id} value={city.city}>
-                {city.city} ({city.province})
-              </option>
-            ))}
-          </select>
+          />
         </label>
 
         <label className={fieldClass}>
