@@ -7,7 +7,11 @@ import {
 } from "@/src/lib/admin/event-import";
 import { extractEventFromUrl } from "@/src/lib/admin/event-page-extractor";
 import { normalizeEventCategories } from "@/src/lib/event-categories";
-import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
+import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
+import {
+  normalizeEventDescription,
+  stripHtml,
+} from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
 
 const LISTING_SOURCES: Array<{ url: string; label: string }> = [
@@ -45,6 +49,72 @@ function isUpcoming(startAt: string | null) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return parsed >= today;
+}
+
+const MIN_DESCRIPTION_CHARS = 280;
+
+function hasUsableImage(imageUrl: string) {
+  const url = imageUrl.trim();
+  if (!/^https?:\/\//i.test(url)) return false;
+  if (/\.(svg|ico)(\?|$)/i.test(url)) return false;
+  if (/logo|placeholder|sprite|default[-_]?img/i.test(url)) return false;
+  return true;
+}
+
+function hasCompleteDescription(description: string) {
+  const text = stripHtml(description).trim();
+  if (text.length < MIN_DESCRIPTION_CHARS) return false;
+  if (/\.\.\.$|…$/.test(text) && text.length < 600) return false;
+  return true;
+}
+
+function missingMediaReason(editable: ReturnType<typeof draftToEditable>) {
+  if (!hasUsableImage(editable.imageUrl)) return "immagine mancante";
+  if (!hasCompleteDescription(editable.description)) {
+    return "descrizione incompleta";
+  }
+  return null;
+}
+
+async function downloadAndStoreEventImage(
+  supabase: SupabaseClient,
+  adminUserId: string,
+  title: string,
+  imageUrl: string,
+) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20_000);
+  try {
+    const response = await fetch(imageUrl, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        Referer: `${new URL(imageUrl).origin}/`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Download immagine fallito (${response.status})`);
+    }
+    const webp = await optimizeImageToWebp(
+      Buffer.from(await response.arrayBuffer()),
+    );
+    const path = `imports/${adminUserId}/${createSlug(title) || "evento"}-${Date.now()}.webp`;
+    const { error: uploadError } = await supabase.storage
+      .from("event-images")
+      .upload(path, webp, {
+        contentType: "image/webp",
+        upsert: false,
+      });
+    if (uploadError) throw new Error(uploadError.message);
+    const { data } = supabase.storage.from("event-images").getPublicUrl(path);
+    if (!data.publicUrl) throw new Error("URL pubblico immagine mancante");
+    return data.publicUrl;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function loadExistingSourceUrls(supabase: SupabaseClient) {
@@ -153,6 +223,12 @@ async function importDraft(
   const primaryCategory = categorySlugs[0] || "musica-concerti";
   const nowIso = new Date().toISOString();
   const uniqueSlug = `${createSlug(title) || "evento"}-${Date.now().toString(36)}`;
+  const storedImageUrl = await downloadAndStoreEventImage(
+    supabase,
+    adminUserId,
+    title,
+    editable.imageUrl.trim(),
+  );
 
   const { data, error } = await supabase
     .from("events")
@@ -171,7 +247,7 @@ async function importDraft(
       address: editable.address.trim() || editable.locationName.trim() || null,
       start_at: startAt,
       end_at: endAt,
-      image_url: editable.imageUrl.trim() || null,
+      image_url: storedImageUrl,
       is_free: editable.isFree,
       price_from: Number.isFinite(numericPrice as number) ? numericPrice : null,
       price: Number.isFinite(numericPrice as number) ? numericPrice : 0,
@@ -295,6 +371,16 @@ export async function discoverAndImportEventDrafts({
         continue;
       }
 
+      const mediaReason = missingMediaReason(editable);
+      if (mediaReason) {
+        skipped.push({
+          title: candidate.title,
+          url: candidate.url,
+          reason: mediaReason,
+        });
+        continue;
+      }
+
       const row = await importDraft(supabase, adminUserId, editable, publish);
       imported.push({
         id: row.id as string,
@@ -305,11 +391,21 @@ export async function discoverAndImportEventDrafts({
         source_url: candidate.url,
       });
     } catch (error) {
-      errors.push({
-        title: candidate.title,
-        url: candidate.url,
-        error: error instanceof Error ? error.message : "import fallito",
-      });
+      const message =
+        error instanceof Error ? error.message : "import fallito";
+      if (/immagine/i.test(message)) {
+        skipped.push({
+          title: candidate.title,
+          url: candidate.url,
+          reason: "immagine non scaricabile",
+        });
+      } else {
+        errors.push({
+          title: candidate.title,
+          url: candidate.url,
+          error: message,
+        });
+      }
     }
     await sleep(250);
   }

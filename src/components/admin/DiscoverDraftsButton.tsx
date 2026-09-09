@@ -55,8 +55,8 @@ export default function DiscoverDraftsButton() {
       <p className="text-sm text-blue-900">
         Scansione delle fonti esterne (SassariToday, CagliariToday, Santa Teresa
         Gallura, SardegnaTurismo, SardegnaEventi24). Ogni mattina un controllo
-        automatico pubblica i nuovi eventi; da qui puoi anche salvarli come bozze
-        da verificare.
+        automatico pubblica solo i nuovi eventi con locandina e descrizione
+        completa; da qui puoi anche salvarli come bozze da verificare.
       </p>
       <button
         type="button"
