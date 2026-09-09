@@ -25,6 +25,10 @@ body {
   max-width: 100%;
 }
 
+header nav a:visited {
+  color: #c96a1a;
+}
+
 html {
   overflow-x: clip;
 }

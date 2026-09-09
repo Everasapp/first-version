@@ -73,7 +73,7 @@ export default function EventCard({ event }: EventCardProps) {
     event.categories?.length ? event.categories : [event.category];
 
   return (
-    <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-square overflow-hidden bg-slate-100">
         <Image
           src={event.imageUrl}
@@ -147,7 +147,7 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
           {categoryLabels.map((label) => (
             <p
@@ -188,7 +188,7 @@ export default function EventCard({ event }: EventCardProps) {
           sharesCount={event.sharesCount}
         />
 
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
           <span
             className={`font-bold ${
               pricing.isFree ? "text-emerald-600" : "text-[#E67E22]"

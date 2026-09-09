@@ -179,13 +179,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
           </div>
         </div>
 
-        <div className="relative mt-8 min-w-0 overflow-hidden contain-paint">
-          <div
-            className="pointer-events-none invisible w-72 select-none pb-2 sm:w-80 lg:w-[22rem]"
-            aria-hidden="true"
-          >
-            <EventCard event={orderedEvents[0]} />
-          </div>
+        <div className="relative mt-8 min-w-0">
           <div
             ref={scrollerRef}
             onMouseEnter={() => setIsPaused(true)}
@@ -194,14 +188,14 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             onBlurCapture={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
-            className="absolute inset-0 snap-x snap-proximity overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            <div className="flex w-max max-w-none gap-6 pr-16">
+            <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
               {orderedEvents.map((event) => (
                 <div
                   key={event.eventId}
                   data-today-card
-                  className="w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
+                  className="flex w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
                   <EventCard event={event} />
                 </div>
