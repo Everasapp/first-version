@@ -58,8 +58,8 @@ export default function ClaimOrganizerForm({
     <div className="space-y-5">
       <p className="text-sm leading-6 text-slate-600">
         {isAlreadyOrganizer
-          ? `Confermi di rappresentare ${organizerName}? Potrai modificare ${eventsLabel} e pubblicarne altri dal tuo account.`
-          : `Con lo stesso account diventi organizzatore di ${organizerName}, puoi modificare ${eventsLabel} e crearne di nuovi.`}
+          ? `Confermi di rappresentare ${organizerName}? Potrai modificare ${eventsLabel}, pubblicarne altri e creare la pagina pubblica con tutti gli appuntamenti.`
+          : `Con lo stesso account diventi organizzatore di ${organizerName}, puoi modificare ${eventsLabel}, crearne di nuovi e pubblicare la pagina con tutti gli appuntamenti.`}
       </p>
 
       {errorMessage ? (

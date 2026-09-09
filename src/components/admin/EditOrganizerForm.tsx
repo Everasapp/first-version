@@ -22,10 +22,18 @@ type EditableFields = {
   email_eventi: string;
   facebook: string;
   instagram: string;
+  public_description: string;
+  public_page_enabled: boolean;
   claim_status: OrganizerClaimStatus;
 };
 
-const FIELD_LABELS: { key: keyof Omit<EditableFields, "claim_status">; label: string }[] = [
+const FIELD_LABELS: {
+  key: keyof Omit<
+    EditableFields,
+    "claim_status" | "public_description" | "public_page_enabled"
+  >;
+  label: string;
+}[] = [
   { key: "name", label: "Nome" },
   { key: "website", label: "Sito web" },
   { key: "email", label: "Email" },
@@ -52,6 +60,8 @@ function emptyForm(): EditableFields {
     email_eventi: "",
     facebook: "",
     instagram: "",
+    public_description: "",
+    public_page_enabled: false,
     claim_status: "unclaimed",
   };
 }
@@ -70,6 +80,8 @@ function toFormState(org: OrganizerDirectoryRow): EditableFields {
     email_eventi: org.email_eventi ?? "",
     facebook: org.facebook ?? "",
     instagram: org.instagram ?? "",
+    public_description: org.public_description ?? "",
+    public_page_enabled: org.public_page_enabled === true,
     claim_status: org.claim_status === "claimed" ? "claimed" : "unclaimed",
   };
 }
@@ -149,6 +161,8 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
       email_eventi: normalizeEmailList(form.email_eventi),
       facebook: emptyToNull(form.facebook),
       instagram: emptyToNull(form.instagram),
+      public_description: emptyToNull(form.public_description),
+      public_page_enabled: form.public_page_enabled,
       claim_status: organizer ? form.claim_status : ("unclaimed" as const),
       updated_at: new Date().toISOString(),
     };
@@ -266,22 +280,56 @@ export default function EditOrganizerForm({ organizer }: EditOrganizerFormProps)
         ))}
 
         {isCreate ? null : (
-          <label className="block">
-            <span className="text-sm font-semibold text-slate-700">Stato</span>
-            <select
-              value={form.claim_status}
-              onChange={(e) =>
-                patchField(
-                  "claim_status",
-                  e.target.value === "claimed" ? "claimed" : "unclaimed",
-                )
-              }
-              className={fieldClassName}
-            >
-              <option value="unclaimed">Non rivendicato</option>
-              <option value="claimed">Rivendicato</option>
-            </select>
-          </label>
+          <>
+            {organizer?.slug ? (
+              <p className="text-sm text-slate-600">
+                Pagina pubblica:{" "}
+                <span className="font-semibold text-slate-900">
+                  /organizzatori/{organizer.slug}
+                </span>
+              </p>
+            ) : null}
+            <label className="block">
+              <span className="text-sm font-semibold text-slate-700">
+                Presentazione pubblica
+              </span>
+              <textarea
+                rows={3}
+                value={form.public_description}
+                onChange={(e) => patchField("public_description", e.target.value)}
+                className={fieldClassName}
+              />
+            </label>
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={form.public_page_enabled}
+                onChange={(e) =>
+                  patchField("public_page_enabled", e.target.checked)
+                }
+                className="mt-1 h-4 w-4 rounded border-slate-300 text-[#075EAE]"
+              />
+              <span className="text-sm font-semibold text-slate-700">
+                Pagina pubblica visibile su EVERAS
+              </span>
+            </label>
+            <label className="block">
+              <span className="text-sm font-semibold text-slate-700">Stato</span>
+              <select
+                value={form.claim_status}
+                onChange={(e) =>
+                  patchField(
+                    "claim_status",
+                    e.target.value === "claimed" ? "claimed" : "unclaimed",
+                  )
+                }
+                className={fieldClassName}
+              >
+                <option value="unclaimed">Non rivendicato</option>
+                <option value="claimed">Rivendicato</option>
+              </select>
+            </label>
+          </>
         )}
       </div>
 

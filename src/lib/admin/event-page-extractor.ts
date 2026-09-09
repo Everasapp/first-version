@@ -174,7 +174,7 @@ function guessCategory(text: string): string | null {
     return "sagre-tradizioni";
   }
   const rules: Array<{ slug: string; words: string[] }> = [
-    { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo", "triathlon", "ironman", "ciclismo", "nuoto"] },
+    { slug: "sport-competizioni", words: ["sport", "gara", "maratona", "torneo", "triathlon", "ironman", "ciclismo", "nuoto", "regata", "yacht"] },
     {
       slug: "locali-ballo",
       words: [
@@ -195,7 +195,7 @@ function guessCategory(text: string): string | null {
     { slug: "musica-concerti", words: ["concerto", "musica", " live ", " band ", "spettacolo", "teatro", "cabaret", "show"] },
     {
       slug: "sagre-tradizioni",
-      words: ["sagra", "tradizion", "festa patronale", "folclor", "folklore", "folk "],
+      words: ["sagra", "tradizion", "festa patronale", "feste della tradizione", "folclor", "folklore", "folk "],
     },
     { slug: "fiere-mercatini", words: ["fiera", "mercatino", "mercato"] },
     { slug: "arte-cultura", words: ["mostra", "arte", "galleria", "esposizion", "cultura"] },
@@ -234,6 +234,8 @@ const HAMLET_TO_CITY: Record<string, { city: string; province: string }> = {
   "cala reale": { city: "Porto Torres", province: "SS" },
   "monte gonare": { city: "Orani", province: "NU" },
   "foce del coghinas": { city: "Valledoria", province: "SS" },
+  "porto cervo": { city: "Arzachena", province: "SS" },
+  "santa maria navarrese": { city: "Baunei", province: "NU" },
 };
 
 const VENUE_HINT =
@@ -899,7 +901,7 @@ function municipiumSectionText($: cheerio.CheerioAPI, anchorId: string) {
 }
 
 function isEventIndexPath(pathname: string) {
-  return /\/(?:eventi|events)\/?$/i.test(pathname);
+  return /\/(?:eventi|events|eventi-in-sardegna)\/?$/i.test(pathname);
 }
 
 function isMunicipiumDetailPath(pathname: string) {
@@ -1089,6 +1091,8 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   source: string;
 } | null {
   const selectors: Array<{ sel: string; label: string }> = [
+    { sel: ".ovaev-event-content", label: "Descrizione OVA Events" },
+    { sel: ".field--name-body", label: "Corpo Drupal" },
     { sel: ".field--name-field-descrizione", label: "Descrizione bando" },
     { sel: ".bando-dettaglio .col-lg-9", label: "Scheda bando" },
     { sel: "article.node--view-mode-full .node__content", label: "Scheda Drupal" },
@@ -1368,6 +1372,165 @@ function guessDateFromItalianText(text: string, fallbackYear?: string | null) {
     if (mm) return `${year}-${mm}-${partial[1].padStart(2, "0")}`;
   }
   return null;
+}
+
+function isSardegnaTurismoHost(pageUrl: string) {
+  try {
+    return (
+      new URL(pageUrl).hostname.replace(/^www\./, "").toLowerCase() ===
+      "sardegnaturismo.it"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function isSardegnaEventi24Host(pageUrl: string) {
+  try {
+    return (
+      new URL(pageUrl).hostname.replace(/^www\./, "").toLowerCase() ===
+      "sardegnaeventi24.it"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function parseOvaDayMonthYear(value: string) {
+  const match = cleanText(value).match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  if (!match) return null;
+  return `${match[3]}-${match[2]}-${match[1]}`;
+}
+
+function parseOvaEventFacts($: cheerio.CheerioAPI) {
+  const title = cleanText($(".ovaev-event-title").first().text());
+  const dateParts = $(".ovaev-event-date span.second_font")
+    .toArray()
+    .map((el) => cleanText($(el).text()))
+    .filter((text) => text && text !== "-");
+  const startDate = dateParts[0] ? parseOvaDayMonthYear(dateParts[0]) : null;
+  const endDate = dateParts[1] ? parseOvaDayMonthYear(dateParts[1]) : startDate;
+  const location = cleanText($(".ovaev-event-location span").first().text());
+  const categoryLabel = cleanText(
+    $(".ovaev-event-categories .event-category").first().text(),
+  );
+  return { title, startDate, endDate, location, categoryLabel };
+}
+
+/**
+ * Elenco SardegnaEventi24 (plugin OVA Events): card .item-event con /event/slug.
+ */
+function extractSardegnaEventi24Listing(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): EventListingResult | null {
+  if (!isSardegnaEventi24Host(pageUrl)) return null;
+
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+
+  $(".item-event, .event_post").each((_, el) => {
+    const node = $(el);
+    const href =
+      node.find('a[href*="/event/"]').first().attr("href") ||
+      node.find("h2 a, h3 a, .event_title a, .title a").first().attr("href") ||
+      "";
+    const abs = absolutize(pageUrl, href.replace(/%20/g, "").trim());
+    if (!abs || seen.has(abs)) return;
+    try {
+      const path = new URL(abs).pathname.replace(/\/+$/, "");
+      if (!/^\/event\/[a-z0-9-]+$/i.test(path)) return;
+      if (/\/event\/(?:page|feed)$/i.test(path)) return;
+    } catch {
+      return;
+    }
+    const title = cleanText(
+      node.find("h2, h3, .event_title, .title").first().text() ||
+        node.find("a").first().text(),
+    );
+    if (!title || title.length < 4 || isJunkHeading(title)) return;
+    seen.add(abs);
+    const dateText = cleanText(
+      node.find(".date, .time, .date-event").first().text(),
+    );
+    const startDate = guessDateFromItalianText(dateText || title);
+    candidates.push({
+      title,
+      url: abs,
+      startAt: startDate ? `${startDate}T12:00:00+02:00` : null,
+      endAt: null,
+      description: null,
+    });
+  });
+
+  if (candidates.length < 1) return null;
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName: "SardegnaEventi24",
+    total: candidates.length,
+    candidates: candidates.slice(0, 60),
+  };
+}
+
+/**
+ * Elenco SardegnaTurismo (Drupal): teaser .node-evento con about="/it/eventi/slug".
+ */
+function extractSardegnaTurismoListing(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): EventListingResult | null {
+  if (!isSardegnaTurismoHost(pageUrl)) return null;
+
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+
+  $(".node.node-evento, .node-evento.node-teaser, div[about^='/it/eventi/']").each(
+    (_, el) => {
+      const node = $(el);
+      const about =
+        node.attr("about") ||
+        node.find("a[href*='/it/eventi/']").first().attr("href") ||
+        "";
+      const abs = absolutize(pageUrl, about);
+      if (!abs || seen.has(abs)) return;
+      try {
+        const path = new URL(abs).pathname;
+        if (isEventIndexPath(path)) return;
+        if (!/\/it\/eventi\/[a-z0-9-]+\/?$/i.test(path)) return;
+      } catch {
+        return;
+      }
+      const title = cleanText(
+        node.find('[property="schema:name"]').attr("content") ||
+          node.find("h2, h3, .field--name-title").first().text() ||
+          "",
+      );
+      if (!title || title.length < 4 || isJunkHeading(title)) return;
+      seen.add(abs);
+      const dateText = cleanText(
+        node.find("time, .date, .field--name-field-data").first().text() ||
+          node.text(),
+      );
+      const startDate = guessDateFromItalianText(dateText || title);
+      candidates.push({
+        title,
+        url: abs,
+        startAt: startDate ? `${startDate}T12:00:00+02:00` : null,
+        endAt: null,
+        description: null,
+      });
+    },
+  );
+
+  if (candidates.length < 1) return null;
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName: "SardegnaTurismo",
+    total: candidates.length,
+    candidates: candidates.slice(0, 60),
+  };
 }
 
 /**
@@ -1699,8 +1862,20 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     };
   }
 
+  const isSardegnaTurismoDetail =
+    isSardegnaTurismoHost(finalUrl) &&
+    /\/it\/eventi\/[a-z0-9-]+\/?$/i.test(pathname) &&
+    $(".field--name-body").length > 0;
+
+  const isSardegnaEventi24Detail =
+    isSardegnaEventi24Host(finalUrl) &&
+    /^\/event\/[a-z0-9-]+\/?$/i.test(pathname);
+
   const isLikelyDetailPage =
-    /\.html(?:[?#]|$)/i.test(pathname) || isEventDetailPage;
+    /\.html(?:[?#]|$)/i.test(pathname) ||
+    isEventDetailPage ||
+    isSardegnaTurismoDetail ||
+    isSardegnaEventi24Detail;
   const isLikelyListingPath =
     isEventIndexPath(pathname) ||
     /\/eventi\/(tipo|tema|dal|data)\b/i.test(pathname) ||
@@ -1709,6 +1884,22 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
       lastSegment.length < 12);
 
   if (!isLikelyDetailPage) {
+    const se24Listing = extractSardegnaEventi24Listing($, finalUrl);
+    if (
+      se24Listing &&
+      (isEventIndexPath(pathname) || se24Listing.candidates.length >= 2)
+    ) {
+      return { ok: true, listing: se24Listing };
+    }
+
+    const sardegnaListing = extractSardegnaTurismoListing($, finalUrl);
+    if (
+      sardegnaListing &&
+      (isEventIndexPath(pathname) || sardegnaListing.candidates.length >= 2)
+    ) {
+      return { ok: true, listing: sardegnaListing };
+    }
+
     const municipiumListing = extractMunicipiumEventListing($, finalUrl);
     if (
       municipiumListing &&
@@ -1752,6 +1943,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   const fullPageTitle = cleanText($("title").first().text());
   const docTitle = fullPageTitle.replace(/\s*[|].*$/, "");
   const h1 =
+    $(".ovaev-event-title").first().text() ||
     $("[data-element='event-title']").first().text() ||
     $("h1[data-element='news-title']").first().text() ||
     $("h1.l-entry__title").first().text() ||
@@ -1915,6 +2107,48 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
       description = expanded.value;
       conf.description = expanded.confidence;
       sources.description = expanded.source;
+    }
+  }
+
+  const ova = parseOvaEventFacts($);
+  if (
+    ova.title &&
+    (!title || isJunkHeading(title) || /sardegnaeventi24/i.test(title))
+  ) {
+    title = ova.title;
+    conf.title = "high";
+    sources.title = "Scheda OVA Events";
+  }
+  if (ova.startDate) {
+    startDate = ova.startDate;
+    if (ova.endDate && ova.endDate !== ova.startDate) {
+      endDate = ova.endDate;
+    }
+    conf.dates = "high";
+    sources.dates = "Scheda OVA Events";
+  }
+  if (ova.location) {
+    locationName = locationName || ova.location;
+    const venuePlace = matchPlace(ova.location);
+    if (venuePlace) {
+      municipality = municipality || venuePlace.city;
+      province = province || venuePlace.province;
+      const withoutCity = ova.location
+        .replace(new RegExp(`^${venuePlace.city}\\s*[-–,]\\s*`, "i"), "")
+        .replace(new RegExp(`,\\s*${venuePlace.city}.*$`, "i"), "")
+        .replace(/^presso\s+/i, "")
+        .trim();
+      locationName = withoutCity || ova.location;
+      address = address || ova.location;
+    }
+    conf.place = "high";
+    sources.place = "Scheda OVA Events";
+  }
+  if (ova.categoryLabel && !category) {
+    category = guessCategory(ova.categoryLabel);
+    if (category) {
+      conf.category = "medium";
+      sources.category = "Categoria OVA Events";
     }
   }
 

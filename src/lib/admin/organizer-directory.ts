@@ -28,6 +28,7 @@ export type OrganizerDirectorySources = Partial<
 export type OrganizerDirectoryRow = {
   id: string;
   name: string;
+  slug?: string | null;
   website: string | null;
   email: string | null;
   pec: string | null;
@@ -38,6 +39,8 @@ export type OrganizerDirectoryRow = {
   email_cultura: string | null;
   email_turismo: string | null;
   email_eventi: string | null;
+  public_description: string | null;
+  public_page_enabled?: boolean;
   claim_status: OrganizerClaimStatus;
   claimed_by_profile_id: string | null;
   sources: OrganizerDirectorySources;

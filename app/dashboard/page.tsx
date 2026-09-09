@@ -184,6 +184,7 @@ function toFavoriteCards(
       startDate: event.start_at,
       endDate: event.end_at ?? undefined,
       location: event.location_name || event.municipality,
+      municipality: event.municipality ?? undefined,
       imageUrl: event.image_url ?? "/images/concert.webp",
       isFree: pricing.isFree,
       priceFrom: pricing.priceFrom,
@@ -533,6 +534,14 @@ async function OrganizerDashboard({
               </Link>
 
               <Link
+                href="/dashboard/pagina"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
+              >
+                <ExternalLink aria-hidden="true" className="h-5 w-5" />
+                Pagina pubblica
+              </Link>
+
+              <Link
                 href="/dashboard/comunita"
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
               >
@@ -597,8 +606,12 @@ async function OrganizerDashboard({
         <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
           {justClaimed ? (
             <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
-              Profilo rivendicato. Da qui puoi modificare gli eventi e
-              pubblicarne di nuovi.
+              Profilo rivendicato. Da qui puoi modificare gli eventi, pubblicarne
+              di nuovi e{" "}
+              <Link href="/dashboard/pagina" className="font-bold underline">
+                creare la pagina del Comune o della Pro Loco
+              </Link>{" "}
+              con tutti gli appuntamenti.
             </div>
           ) : null}
           <div className="grid gap-4 sm:grid-cols-3">

@@ -46,7 +46,7 @@ export default async function ClaimOrganizerPage({
 
   const { data, error } = await supabase
     .from("organizer_directory_public")
-    .select("id, name, claim_status, claimed_by_profile_id")
+    .select("id, name, slug, claim_status, claimed_by_profile_id, public_page_enabled")
     .eq("id", id)
     .maybeSingle();
 
@@ -122,7 +122,11 @@ export default async function ClaimOrganizerPage({
                   </p>
                   {directory.claimed_by_profile_id ? (
                     <Link
-                      href={`/organizzatori/${directory.claimed_by_profile_id}`}
+                      href={
+                        directory.public_page_enabled && directory.slug
+                          ? `/organizzatori/${directory.slug}`
+                          : `/organizzatori/${directory.claimed_by_profile_id}`
+                      }
                       className="inline-flex h-12 items-center justify-center rounded-xl bg-[#075EAE] px-5 font-bold text-white transition hover:bg-[#064E91]"
                     >
                       Vai al profilo

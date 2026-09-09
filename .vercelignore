@@ -1,0 +1,4 @@
+.tmp-venv
+.tmp-*
+supabase/.temp
+instagram-carousel-settimana

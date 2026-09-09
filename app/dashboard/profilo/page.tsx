@@ -63,6 +63,22 @@ export default async function OrganizerProfilePage() {
 
           <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
             <h2 className="text-xl font-bold text-slate-900">
+              Pagina del Comune o della Pro Loco
+            </h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Dopo aver rivendicato il profilo, puoi pubblicare una pagina con
+              tutti gli appuntamenti organizzati.
+            </p>
+            <Link
+              href="/dashboard/pagina"
+              className="mt-5 inline-flex font-bold text-[#075EAE] hover:underline"
+            >
+              Gestisci la pagina pubblica
+            </Link>
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
+            <h2 className="text-xl font-bold text-slate-900">
               Come compari agli eventi
             </h2>
             <p className="mt-2 text-sm text-slate-600">
