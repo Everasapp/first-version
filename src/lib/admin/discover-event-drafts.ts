@@ -108,6 +108,7 @@ async function importDraft(
   supabase: SupabaseClient,
   adminUserId: string,
   editable: ReturnType<typeof draftToEditable>,
+  publish: boolean,
 ) {
   const title = editable.title.trim();
   const municipality = editable.municipality.trim();
@@ -182,9 +183,9 @@ async function importDraft(
       imported_at: nowIso,
       imported_by: adminUserId,
       import_method: "url",
-      verification_status: "pending_verification",
-      last_verified_at: null,
-      status: "pending",
+      verification_status: publish ? "verified" : "pending_verification",
+      last_verified_at: publish ? nowIso : null,
+      status: publish ? "published" : "pending",
       is_featured: false,
     })
     .select("id, slug, title, municipality, start_at")
@@ -200,7 +201,13 @@ async function importDraft(
     source_name: editable.sourceName,
     import_method: "url",
     status: "success",
-    payload: { title, municipality, publish: false, autoDiscovery: true },
+    payload: {
+      title,
+      municipality,
+      publish,
+      autoDiscovery: true,
+      autoPublish: publish,
+    },
   });
 
   return data;
@@ -236,10 +243,12 @@ export async function discoverAndImportEventDrafts({
   supabase,
   adminUserId,
   limit = 20,
+  publish = false,
 }: {
   supabase: SupabaseClient;
   adminUserId: string;
   limit?: number;
+  publish?: boolean;
 }) {
   const existingUrls = await loadExistingSourceUrls(supabase);
   const candidates = await collectCandidates(existingUrls);
@@ -286,7 +295,7 @@ export async function discoverAndImportEventDrafts({
         continue;
       }
 
-      const row = await importDraft(supabase, adminUserId, editable);
+      const row = await importDraft(supabase, adminUserId, editable, publish);
       imported.push({
         id: row.id as string,
         slug: row.slug as string,

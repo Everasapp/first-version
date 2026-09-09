@@ -4,6 +4,7 @@
  * Uso:
  *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --dry-run
  *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --limit=20
+ *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --publish
  */
 import { discoverAndImportEventDrafts } from "../src/lib/admin/discover-event-drafts";
 import { createAdminClient } from "../src/lib/supabase/admin";
@@ -76,6 +77,7 @@ async function main() {
     supabase,
     adminUserId: adminProfile.id as string,
     limit,
+    publish: hasFlag("publish"),
   });
   console.log(JSON.stringify(result, null, 2));
 }

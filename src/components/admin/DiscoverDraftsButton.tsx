@@ -10,7 +10,7 @@ export default function DiscoverDraftsButton() {
 
   async function handleDiscover() {
     const confirmed = window.confirm(
-      "Cercare nuovi eventi su SassariToday, CagliariToday e Santa Teresa Gallura e salvarli come bozze (pending)?",
+      "Cercare nuovi eventi su SassariToday, CagliariToday, Santa Teresa Gallura, SardegnaTurismo e SardegnaEventi24 e salvarli come bozze (pending)?",
     );
     if (!confirmed) return;
 
@@ -53,8 +53,10 @@ export default function DiscoverDraftsButton() {
   return (
     <div className="mb-6 flex flex-col items-start gap-2 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-4">
       <p className="text-sm text-blue-900">
-        Scansione automatica di fonti esterne (CityNews e calendari comunali) per
-        trovare eventi non ancora su EVERAS e salvarli come bozze da verificare.
+        Scansione delle fonti esterne (SassariToday, CagliariToday, Santa Teresa
+        Gallura, SardegnaTurismo, SardegnaEventi24). Ogni mattina un controllo
+        automatico pubblica i nuovi eventi; da qui puoi anche salvarli come bozze
+        da verificare.
       </p>
       <button
         type="button"
