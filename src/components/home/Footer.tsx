@@ -86,22 +86,34 @@ export default function Footer() {
                 Weekend
               </Link>
               <Link
-                href="/eventi?area=nord-sardegna"
+                href="/eventi/sassari"
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >
-                Nord Sardegna
+                Sassari
               </Link>
               <Link
-                href="/eventi?area=centro-sardegna"
+                href="/eventi/olbia"
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >
-                Centro Sardegna
+                Olbia
               </Link>
               <Link
-                href="/eventi?area=sud-sardegna"
+                href="/eventi/alghero"
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >
-                Sud Sardegna
+                Alghero
+              </Link>
+              <Link
+                href="/eventi/cagliari"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Cagliari
+              </Link>
+              <Link
+                href="/eventi/nuoro"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Nuoro
               </Link>
             </nav>
           </div>

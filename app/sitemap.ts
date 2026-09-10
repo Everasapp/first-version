@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { cities } from "@/src/data/cities";
 import { categories } from "@/src/data/categories";
 import { eventCategorySlugs } from "@/src/lib/event-categories";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 
 const SITE_URL = "https://www.everas.it";
@@ -107,13 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
-  const cityRoutes: MetadataRoute.Sitemap = cities.map((city) => ({
-    url: `${SITE_URL}/eventi/${cityToSlug(city.city)}`,
-    changeFrequency: "daily" as const,
-    priority: 0.8,
-  }));
-
-  const base = [...staticRoutes, ...categoryRoutes, ...cityRoutes];
+  const base = [...staticRoutes, ...categoryRoutes];
 
   try {
     const supabase = getSupabase();
@@ -129,7 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ] = await Promise.all([
       supabase
         .from("events")
-        .select("slug, updated_at, start_at, municipality, category, categories")
+        .select("slug, updated_at, start_at, end_at, municipality, category, categories")
         .eq("status", "published")
         .not("slug", "is", null)
         .order("start_at", { ascending: false })
@@ -179,8 +174,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...CATEGORY_SLUGS,
       ...cities.map((city) => cityToSlug(city.city)),
     ]);
+    const knownCitySlugs = new Set(cities.map((city) => cityToSlug(city.city)));
 
-    const eventRoutes: MetadataRoute.Sitemap = (events ?? [])
+    const upcomingEvents = (events ?? []).filter(
+      (event) =>
+        typeof event.start_at === "string" &&
+        isPublicEventActive(event.start_at, event.end_at),
+    );
+
+    const eventRoutes: MetadataRoute.Sitemap = upcomingEvents
       .filter(
         (event) =>
           typeof event.slug === "string" &&
@@ -194,20 +196,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       }));
 
+    const citiesWithUpcoming = new Set<string>();
     const cityCategoryPaths = new Set<string>();
-    for (const event of events ?? []) {
+    for (const event of upcomingEvents) {
       const municipality =
         typeof event.municipality === "string" ? event.municipality.trim() : "";
       if (!municipality) continue;
 
       const citySlug = cityToSlug(municipality);
-      if (!citySlug || reserved.has(citySlug)) continue;
+      if (!citySlug || !knownCitySlugs.has(citySlug)) continue;
+      citiesWithUpcoming.add(citySlug);
 
       for (const categorySlug of eventCategorySlugs(event)) {
-        if (!categorySlug || reserved.has(categorySlug)) continue;
+        if (
+          !categorySlug ||
+          knownCitySlugs.has(categorySlug) ||
+          !CATEGORY_SLUGS.includes(categorySlug)
+        ) {
+          continue;
+        }
         cityCategoryPaths.add(cityCategoryEventsPath(municipality, categorySlug));
       }
     }
+
+    const cityRoutes: MetadataRoute.Sitemap = [...citiesWithUpcoming].map(
+      (slug) => ({
+        url: `${SITE_URL}/eventi/${slug}`,
+        changeFrequency: "daily" as const,
+        priority: 0.8,
+      }),
+    );
 
     const cityCategoryRoutes: MetadataRoute.Sitemap = [...cityCategoryPaths].map(
       (path) => ({
@@ -236,6 +254,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
       ...base,
+      ...cityRoutes,
       ...eventRoutes,
       ...cityCategoryRoutes,
       ...organizerRoutes,

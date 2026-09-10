@@ -56,6 +56,11 @@ import { buildAuthHref } from "@/src/lib/auth-urls";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
+import {
+  eventDetailRobots,
+  eventSeoDescription,
+  eventSeoTitle,
+} from "@/src/lib/seo/event-meta";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import {
   getCurrentUserRsvp,
@@ -161,7 +166,7 @@ export async function generateMetadata({
 
   const { data } = await supabase
     .from("events")
-    .select("title, description, image_url, municipality")
+    .select("title, description, image_url, municipality, start_at, end_at")
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
@@ -171,28 +176,37 @@ export async function generateMetadata({
     permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
   }
 
-  const description =
-    stripHtml(data.description || "").slice(0, 155) ||
-    `Scopri ${data.title} a ${data.municipality} su EVERAS.`;
+  const seoTitle = eventSeoTitle(
+    data.title,
+    data.municipality,
+    data.start_at,
+  );
+  const description = eventSeoDescription(
+    data.title,
+    data.municipality,
+    data.start_at,
+    data.description,
+  );
 
   return {
-    title: data.title,
+    title: seoTitle,
     description,
+    robots: eventDetailRobots(data.start_at, data.end_at),
     alternates: {
       canonical: `/eventi/${slug}`,
     },
     openGraph: {
-      title: `${data.title} | EVERAS`,
+      title: `${seoTitle} | EVERAS`,
       description,
       url: `/eventi/${slug}`,
       type: "article",
       images: data.image_url
-        ? [{ url: data.image_url, alt: data.title }]
+        ? [{ url: data.image_url, alt: seoTitle }]
         : [{ url: "/og.jpg", width: 1200, height: 630, alt: "EVERAS" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${data.title} | EVERAS`,
+      title: `${seoTitle} | EVERAS`,
       description,
       images: data.image_url ? [data.image_url] : ["/og.jpg"],
     },
@@ -450,8 +464,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
           <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] bg-slate-100 sm:aspect-[21/9]">
             <Image
               src={heroImage}
-              alt={event.title}
-              title={event.title}
+              alt={`${event.title} a ${event.municipality}`}
+              title={`${event.title} a ${event.municipality}`}
               fill
               priority
               sizes="(max-width: 1280px) 100vw, 1280px"

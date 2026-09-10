@@ -205,10 +205,10 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         </div>
 
         <Link
-          href="/eventi?date=settimana"
+          href="/eventi"
           className="mt-8 inline-flex font-bold text-[#075EAE] hover:underline"
         >
-          Tutti gli eventi di questa settimana →
+          Tutti gli eventi in programma →
         </Link>
       </div>
     </section>

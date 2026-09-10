@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "./EventCard";
 import type { City } from "@/src/data/cities";
+import { cityEventsPath } from "@/src/lib/seo/paths";
 import { sortEventsByUpcomingDate } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
@@ -17,10 +18,10 @@ type AreaSectionProps = {
   events?: EventCardData[];
 };
 
-const areaSlugs: Record<string, string> = {
-  "Nord Sardegna": "nord-sardegna",
-  "Centro Sardegna": "centro-sardegna",
-  "Sud Sardegna": "sud-sardegna",
+const AREA_CITY_HUBS: Record<City["area"], string[]> = {
+  "Nord Sardegna": ["Sassari", "Olbia", "Alghero"],
+  "Centro Sardegna": ["Nuoro", "Oristano"],
+  "Sud Sardegna": ["Cagliari", "Quartu Sant'Elena"],
 };
 
 const AUTOPLAY_MS = 4500;
@@ -108,7 +109,9 @@ export default function AreaSection({
     return null;
   }
 
-  const areaHref = `/eventi?area=${areaSlugs[area] ?? ""}`;
+  const hubCities = AREA_CITY_HUBS[area] ?? [];
+  const primaryCity = hubCities[0];
+  const areaHref = primaryCity ? cityEventsPath(primaryCity) : "/eventi";
 
   return (
     <section className="overflow-x-clip bg-white py-14 sm:py-16">
@@ -143,8 +146,21 @@ export default function AreaSection({
               href={areaHref}
               className="mt-5 inline-flex w-fit rounded-2xl bg-white px-5 py-3 font-bold text-[#075EAE] transition hover:bg-slate-100"
             >
-              Scopri tutti →
+              {primaryCity ? `Eventi a ${primaryCity} →` : "Scopri tutti →"}
             </Link>
+            {hubCities.length > 1 ? (
+              <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-white">
+                {hubCities.slice(1).map((city) => (
+                  <Link
+                    key={city}
+                    href={cityEventsPath(city)}
+                    className="underline-offset-2 hover:underline"
+                  >
+                    {city}
+                  </Link>
+                ))}
+              </p>
+            ) : null}
           </div>
         </div>
 
