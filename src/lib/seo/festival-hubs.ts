@@ -149,15 +149,15 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
       "La processione di Sant’Efisio: 1 maggio a Cagliari, il cammino verso Nora e come seguire il corteo senza perderti.",
     titleIncludes: ["sant'efisio", "sant efisio", "sant’efisio"],
     paragraphs: [
-      "Sant’Efisio è la festa più grande di Cagliari e una delle processioni più lunghe del Mediterraneo. Il 1° maggio la statua esce da Stampace e il corteo di traccas, gruppi in costume e cavalieri attraversa la città verso Nora, a Pula. Chi cerca “Sant’Efisio 2026” vuole l’ora di partenza, il percorso e se il rientro è il 4 maggio.",
-      "Non è solo folklore da cartolina: è un voto della città, con migliaia di persone in abito tradizionale. Il centro si ferma, i palchi si riempiono, e conviene arrivare all’alba se vuoi vedere l’uscita dalla chiesa. Lungo la strada statale il corteo è più disteso: molte famiglie lo aspettano nei paesi del percorso.",
-      "Su EVERAS trovi la scheda della festa e gli eventi collaterali (concerti, veglie, mostre) quando sono pubblicati. Per la viabilità e le chiusure al traffico resta decisivo il Comune di Cagliari. Usa il calendario per non confondere l’andata del 1° maggio con il rientro, che è un altro momento, altrettanto sentito.",
+      "Sant’Efisio è la festa più grande di Cagliari e una delle processioni più lunghe del Mediterraneo. Il 1° maggio la statua esce da Stampace e il corteo attraversa la città verso Nora, a Pula. Chi cerca “Sant’Efisio 2026” vuole l’ora di partenza, il percorso e il rientro: nel 2026 la 370ª edizione è stata dal 1° al 4 maggio.",
+      "Non è solo folklore da cartolina: è un voto della città, con migliaia di persone in abito tradizionale. Il centro si ferma e conviene arrivare presto se vuoi vedere l’uscita dalla chiesa. Lungo la statale il corteo è più disteso: molte famiglie lo aspettano a Giorgino, Capoterra, Sarroch, Villa San Pietro o Pula.",
+      "Su EVERAS tieni la scheda dell’edizione con date e tappe. L’edizione 2026 è conclusa: resta online per chi cerca processione e rientro. Quando il Comune pubblica il 2027, la aggiorniamo. Per la viabilità resta decisivo il Comune di Cagliari.",
     ],
     faqs: [
       {
         question: "Quando è Sant’Efisio a Cagliari?",
         answer:
-          "La processione principale è il 1° maggio. Il rientro da Nora è nei giorni successivi, di solito il 4 maggio.",
+          "Nel 2026 la 370ª edizione è stata dal 1° al 4 maggio: partenza da Stampace il 1° a mezzogiorno, rientro il 4 sera. Le date 2027 le indica il Comune: quando ci sono, le trovi sulla scheda.",
       },
       {
         question: "Si può seguire a piedi?",
