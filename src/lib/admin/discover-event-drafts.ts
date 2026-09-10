@@ -29,6 +29,10 @@ const LISTING_SOURCES: Array<{ url: string; label: string }> = [
     url: "https://sardegnaeventi24.it/eventi-in-sardegna/",
     label: "SardegnaEventi24",
   },
+  {
+    url: "https://saludetrigu.it/",
+    label: "Salude & Trigu",
+  },
 ];
 
 function sleep(ms: number) {
@@ -117,6 +121,10 @@ async function downloadAndStoreEventImage(
   }
 }
 
+function normalizeSourceUrl(url: string) {
+  return url.trim().replace(/\/+$/, "").toLowerCase();
+}
+
 async function loadExistingSourceUrls(supabase: SupabaseClient) {
   const urls = new Set<string>();
   let from = 0;
@@ -133,7 +141,7 @@ async function loadExistingSourceUrls(supabase: SupabaseClient) {
     if (!data?.length) break;
 
     for (const row of data) {
-      if (row.source_url) urls.add(row.source_url as string);
+      if (row.source_url) urls.add(normalizeSourceUrl(row.source_url as string));
     }
     if (data.length < pageSize) break;
     from += pageSize;
@@ -298,9 +306,10 @@ async function collectCandidates(existingUrls: Set<string>) {
     if (!result.listing?.candidates.length) continue;
 
     for (const item of result.listing.candidates) {
-      if (existingUrls.has(item.url) || seen.has(item.url)) continue;
+      const urlKey = normalizeSourceUrl(item.url);
+      if (existingUrls.has(urlKey) || seen.has(urlKey)) continue;
       if (!isUpcoming(item.startAt)) continue;
-      seen.add(item.url);
+      seen.add(urlKey);
       candidates.push({ ...item, listingLabel: source.label });
     }
     await sleep(300);

@@ -1396,6 +1396,218 @@ function isSardegnaEventi24Host(pageUrl: string) {
   }
 }
 
+function unwrapTranslateProxyUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    const hostMatch = parsed.hostname.match(
+      /^(.+)-([a-z]{2,24})\.translate\.goog$/i,
+    );
+    if (!hostMatch) return url;
+    const realHost = `${hostMatch[1].replace(/-/g, ".")}.${hostMatch[2]}`;
+    const path = parsed.pathname.replace(/\/+$/, "") || "/";
+    return `https://${realHost}${path}/`.replace(/\/\/$/, "/");
+  } catch {
+    return url;
+  }
+}
+
+function isSaludeTriguHost(pageUrl: string) {
+  try {
+    return (
+      new URL(pageUrl).hostname.replace(/^www\./, "").toLowerCase() ===
+      "saludetrigu.it"
+    );
+  } catch {
+    return false;
+  }
+}
+
+/** Sessioni giornaliere di festival già in catalogo (es. Isole che Parlano). */
+function isSaludeTriguFestivalSession(title: string, url: string) {
+  const haystack = `${title} ${url}`.toLowerCase();
+  return haystack.includes("isole-che-parlano") || haystack.includes("isole che parlano");
+}
+
+function isSaludeTriguDetailPath(pathname: string) {
+  return /^\/(?:(?:en|es|fr)\/)?evento\/[a-z0-9-]+\/?$/i.test(pathname);
+}
+
+function isSaludeTriguItalianEventPath(pathname: string) {
+  return /^\/evento\/[a-z0-9-]+\/?$/i.test(pathname);
+}
+
+function isSaludeTriguListingPath(pathname: string) {
+  const path = pathname.replace(/\/+$/, "") || "/";
+  return (
+    path === "/" ||
+    path === "/eventi" ||
+    path === "/evento" ||
+    path === "/calendario" ||
+    path === "/calendario-eventi" ||
+    path === "/tutti-gli-eventi"
+  );
+}
+
+type TribeEventsListResponse = {
+  events?: Array<{
+    title?: string;
+    url?: string;
+    start_date?: string;
+    end_date?: string;
+    utc_start_date?: string;
+    utc_end_date?: string;
+    hide_from_listings?: boolean;
+  }>;
+  next_rest_url?: string | null;
+  total?: number;
+};
+
+function tribeDateToIso(utcValue?: string, localValue?: string) {
+  const utc = (utcValue || "").trim();
+  if (utc) {
+    const iso = utc.includes("T") ? utc : utc.replace(" ", "T");
+    return /Z$|[+-]\d{2}:\d{2}$/.test(iso) ? iso : `${iso}Z`;
+  }
+  const local = (localValue || "").trim();
+  if (!local) return null;
+  const iso = local.includes("T") ? local : local.replace(" ", "T");
+  if (/Z$|[+-]\d{2}:\d{2}$/.test(iso)) return iso;
+  const month = Number(iso.slice(5, 7));
+  const offset = month >= 4 && month <= 10 ? "+02:00" : "+01:00";
+  return `${iso}${offset}`;
+}
+
+/**
+ * Elenco Salude & Trigu (The Events Calendar): REST /tribe/events/v1/events.
+ */
+async function fetchSaludeTriguListing(
+  pageUrl: string,
+): Promise<EventListingResult | null> {
+  if (!isSaludeTriguHost(pageUrl)) return null;
+
+  const startDate = new Date().toISOString().slice(0, 10);
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+  let nextUrl: string | null =
+    `https://saludetrigu.it/wp-json/tribe/events/v1/events?per_page=50&start_date=${startDate}&status=publish`;
+  let pages = 0;
+  let total = 0;
+
+  while (nextUrl && pages < 2 && candidates.length < 60) {
+    pages += 1;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(nextUrl, {
+        signal: controller.signal,
+        redirect: "follow",
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept: "application/json",
+        },
+      });
+      if (!response.ok) break;
+      const data = (await response.json()) as TribeEventsListResponse;
+      total = data.total || total;
+      for (const event of data.events || []) {
+        if (event.hide_from_listings) continue;
+        const abs = (event.url || "").split("#")[0].replace(/\/+$/, "") + "/";
+        const title = cleanText(event.title || "");
+        if (!abs || !title || title.length < 4 || seen.has(abs)) continue;
+        if (isSaludeTriguFestivalSession(title, abs)) continue;
+        try {
+          const host = new URL(abs).hostname.replace(/^www\./, "").toLowerCase();
+          if (host !== "saludetrigu.it") continue;
+          if (!isSaludeTriguItalianEventPath(new URL(abs).pathname)) continue;
+        } catch {
+          continue;
+        }
+        seen.add(abs);
+        candidates.push({
+          title,
+          url: abs,
+          startAt: tribeDateToIso(event.utc_start_date, event.start_date),
+          endAt: tribeDateToIso(event.utc_end_date, event.end_date),
+          description: null,
+        });
+      }
+      nextUrl = data.next_rest_url || null;
+    } catch {
+      break;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  if (candidates.length < 1) return null;
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName: "Salude & Trigu",
+    total: total || candidates.length,
+    candidates: candidates.slice(0, 60),
+  };
+}
+
+function extractSaludeTriguHtmlListing(
+  $: cheerio.CheerioAPI,
+  pageUrl: string,
+): EventListingResult | null {
+  if (!isSaludeTriguHost(pageUrl)) return null;
+
+  const candidates: ListingEventCandidate[] = [];
+  const seen = new Set<string>();
+
+  $('a[href*="/evento/"]').each((_, el) => {
+    const link = $(el);
+    const href = unwrapTranslateProxyUrl(
+      (link.attr("href") || "").split("#")[0].trim(),
+    );
+    const abs = (absolutize(pageUrl, href) || "").replace(/\/+$/, "") + "/";
+    if (!abs || seen.has(abs)) return;
+    try {
+      const parsed = new URL(abs);
+      if (parsed.hostname.replace(/^www\./, "").toLowerCase() !== "saludetrigu.it") {
+        return;
+      }
+      if (!isSaludeTriguItalianEventPath(parsed.pathname)) return;
+    } catch {
+      return;
+    }
+    const slugTitle = decodeURIComponent(
+      abs.split("/evento/")[1] || "",
+    )
+      .replace(/\/+$/, "")
+      .replace(/-/g, " ");
+    let title = cleanText(
+      link.attr("title") || link.find("h2, h3, h4").first().text() || link.text(),
+    );
+    if (!title || title.length < 4 || /^dettagli evento$/i.test(title)) {
+      title = cleanText(slugTitle);
+    }
+    if (!title || title.length < 4 || isJunkHeading(title)) return;
+    if (isSaludeTriguFestivalSession(title, abs)) return;
+    const startDate = guessDateFromItalianText(title);
+    seen.add(abs);
+    candidates.push({
+      title,
+      url: abs,
+      startAt: startDate ? `${startDate}T12:00:00+02:00` : null,
+      endAt: null,
+      description: null,
+    });
+  });
+
+  if (candidates.length < 1) return null;
+
+  return {
+    sourceUrl: pageUrl,
+    sourceName: "Salude & Trigu",
+    total: candidates.length,
+    candidates: candidates.slice(0, 60),
+  };
+}
+
 function parseOvaDayMonthYear(value: string) {
   const match = cleanText(value).match(/^(\d{2})-(\d{2})-(\d{4})$/);
   if (!match) return null;
@@ -1812,6 +2024,16 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     return { ok: false, error: facebookBlocked };
   }
 
+  if (
+    isSaludeTriguHost(pageUrl) &&
+    isSaludeTriguListingPath(new URL(pageUrl).pathname)
+  ) {
+    const listing = await fetchSaludeTriguListing(pageUrl);
+    if (listing?.candidates.length) {
+      return { ok: true, listing };
+    }
+  }
+
   let html: string;
   let finalUrl: string;
   try {
@@ -1871,19 +2093,32 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     isSardegnaEventi24Host(finalUrl) &&
     /^\/event\/[a-z0-9-]+\/?$/i.test(pathname);
 
+  const isSaludeTriguDetail =
+    isSaludeTriguHost(finalUrl) && isSaludeTriguDetailPath(pathname);
+
   const isLikelyDetailPage =
     /\.html(?:[?#]|$)/i.test(pathname) ||
     isEventDetailPage ||
     isSardegnaTurismoDetail ||
-    isSardegnaEventi24Detail;
+    isSardegnaEventi24Detail ||
+    isSaludeTriguDetail;
   const isLikelyListingPath =
     isEventIndexPath(pathname) ||
+    isSaludeTriguListingPath(pathname) ||
     /\/eventi\/(tipo|tema|dal|data)\b/i.test(pathname) ||
     (/\/eventi\/[^/]+\/?$/i.test(pathname) &&
       !isLikelyDetailPage &&
       lastSegment.length < 12);
 
   if (!isLikelyDetailPage) {
+    const saludeHtmlListing = extractSaludeTriguHtmlListing($, finalUrl);
+    if (
+      saludeHtmlListing &&
+      (isSaludeTriguListingPath(pathname) ||
+        saludeHtmlListing.candidates.length >= 2)
+    ) {
+      return { ok: true, listing: saludeHtmlListing };
+    }
     const se24Listing = extractSardegnaEventi24Listing($, finalUrl);
     if (
       se24Listing &&
@@ -1944,6 +2179,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   const docTitle = fullPageTitle.replace(/\s*[|].*$/, "");
   const h1 =
     $(".ovaev-event-title").first().text() ||
+    $(".tribe-events-single-event-title").first().text() ||
     $("[data-element='event-title']").first().text() ||
     $("h1[data-element='news-title']").first().text() ||
     $("h1.l-entry__title").first().text() ||
@@ -1969,6 +2205,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   );
   const eventHeading = headingCandidates[0] || cleanText(h1);
   let title = cleanText(ogTitle || eventHeading || docTitle);
+  if (isSaludeTriguHost(finalUrl)) {
+    title = title.replace(/\s*[-|–]\s*Salude\s*&\s*Trigu\s*$/i, "").trim();
+  }
   if (
     eventHeading &&
     looksLikeScheduleHeading.test(title) &&

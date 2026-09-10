@@ -10,7 +10,7 @@ export default function DiscoverDraftsButton() {
 
   async function handleDiscover() {
     const confirmed = window.confirm(
-      "Cercare nuovi eventi su SassariToday, CagliariToday, Santa Teresa Gallura, SardegnaTurismo e SardegnaEventi24 e salvarli come bozze (pending)?",
+      "Cercare nuovi eventi su SassariToday, CagliariToday, Santa Teresa Gallura, SardegnaTurismo, SardegnaEventi24 e Salude & Trigu e salvarli come bozze (pending)?",
     );
     if (!confirmed) return;
 
@@ -54,9 +54,10 @@ export default function DiscoverDraftsButton() {
     <div className="mb-6 flex flex-col items-start gap-2 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-4">
       <p className="text-sm text-blue-900">
         Scansione delle fonti esterne (SassariToday, CagliariToday, Santa Teresa
-        Gallura, SardegnaTurismo, SardegnaEventi24). Ogni mattina un controllo
-        automatico pubblica solo i nuovi eventi con locandina e descrizione
-        completa; da qui puoi anche salvarli come bozze da verificare.
+        Gallura, SardegnaTurismo, SardegnaEventi24, Salude & Trigu). Ogni mattina
+        alle 8 un controllo automatico pubblica solo i nuovi eventi con locandina
+        e descrizione completa; da qui puoi anche salvarli come bozze da
+        verificare.
       </p>
       <button
         type="button"

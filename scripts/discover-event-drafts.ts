@@ -46,6 +46,9 @@ async function main() {
       "https://www.sassaritoday.it/eventi/",
       "https://www.cagliaritoday.it/eventi/",
       "https://www.comune.santateresagallura.ss.it/it/eventi",
+      "https://www.sardegnaturismo.it/it/eventi",
+      "https://sardegnaeventi24.it/eventi-in-sardegna/",
+      "https://saludetrigu.it/",
     ];
     const { data: existing } = await supabase
       .from("events")
