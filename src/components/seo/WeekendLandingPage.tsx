@@ -14,12 +14,27 @@ import {
   weekendExploreLinks,
   type CalendarWeekend,
 } from "@/src/lib/seo/weekends";
-import { absoluteUrl, defaultOgImages, landingRobots } from "@/src/lib/seo/site";
+import { absoluteUrl, landingRobots } from "@/src/lib/seo/site";
+import {
+  pickWeekendPosterUrls,
+  WEEKEND_MOSAIC_MIN_POSTERS,
+  WEEKEND_OG_SIZE,
+  weekendOgPath,
+} from "@/src/lib/seo/weekend-mosaic";
 
 export function buildWeekendLandingMetadata(
   weekend: CalendarWeekend,
   eventCount: number,
 ): Metadata {
+  const mosaicPath = weekendOgPath(weekend.slug, eventCount);
+  const ogImage = {
+    url: mosaicPath,
+    width: WEEKEND_OG_SIZE.width,
+    height: WEEKEND_OG_SIZE.height,
+    alt: `Locandine del weekend ${weekend.dateLabel} in Sardegna`,
+    type: "image/png" as const,
+  };
+
   return {
     title: weekend.title,
     description: weekend.description,
@@ -30,13 +45,13 @@ export function buildWeekendLandingMetadata(
       description: weekend.description,
       url: weekend.path,
       type: "website",
-      images: defaultOgImages(),
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title: `${weekend.title} | EVERAS`,
       description: weekend.description,
-      images: defaultOgImages().map((image) => image.url),
+      images: [ogImage.url],
     },
   };
 }
@@ -53,6 +68,8 @@ export default async function WeekendLandingPage({
   const highlights = formatEventHighlightList(
     events.slice(0, 4).map((event) => event.title),
   );
+  const posterUrls = pickWeekendPosterUrls(events);
+  const mosaicSrc = weekendOgPath(weekend.slug, events.length);
   const paragraphs = highlights
     ? [
         weekend.paragraphs[0],
@@ -81,6 +98,14 @@ export default async function WeekendLandingPage({
       paragraphs={paragraphs}
       events={events}
       errorMessage={error?.message}
+      cover={
+        posterUrls.length >= WEEKEND_MOSAIC_MIN_POSTERS
+          ? {
+              src: mosaicSrc,
+              alt: `Locandine degli eventi del weekend ${weekend.dateLabel} in Sardegna`,
+            }
+          : undefined
+      }
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi e sagre", href: "/eventi-sardegna" },

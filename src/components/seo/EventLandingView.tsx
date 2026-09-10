@@ -22,6 +22,7 @@ type EventLandingViewProps = {
   jsonLd: Array<Record<string, unknown>>;
   faqs?: FaqItem[];
   relatedLinks?: Array<{ href: string; label: string }>;
+  cover?: { src: string; alt: string };
 };
 
 export default function EventLandingView({
@@ -35,6 +36,7 @@ export default function EventLandingView({
   jsonLd,
   faqs = [],
   relatedLinks = [],
+  cover,
 }: EventLandingViewProps) {
   return (
     <>
@@ -93,25 +95,45 @@ export default function EventLandingView({
               </div>
             ) : null}
 
-            {events.length > 0 ? (
-              <EventsExploreGrid events={events} />
-            ) : (
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
-                <h2 className="text-xl font-bold text-slate-900">
-                  Nessun evento in programma
-                </h2>
-                <p className="mt-3 text-slate-600">
-                  Torna presto: aggiorniamo continuamente il calendario della
-                  Sardegna.
-                </p>
-                <Link
-                  href="/eventi"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#064a8a]"
-                >
-                  Vedi tutti gli eventi
-                </Link>
-              </div>
-            )}
+            {cover ? (
+              <a
+                href="#elenco-eventi"
+                aria-label="Vai all’elenco degli eventi"
+                className="mb-10 block overflow-hidden rounded-3xl border border-slate-200 shadow-sm outline-none ring-[#075EAE] transition hover:shadow-md focus-visible:ring-2"
+              >
+                {/* Same-origin generated PNG; skip next/image optimization. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cover.src}
+                  alt={cover.alt}
+                  width={1200}
+                  height={630}
+                  className="h-auto w-full bg-white"
+                />
+              </a>
+            ) : null}
+
+            <div id="elenco-eventi" className="scroll-mt-24">
+              {events.length > 0 ? (
+                <EventsExploreGrid events={events} />
+              ) : (
+                <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
+                  <h2 className="text-xl font-bold text-slate-900">
+                    Nessun evento in programma
+                  </h2>
+                  <p className="mt-3 text-slate-600">
+                    Torna presto: aggiorniamo continuamente il calendario della
+                    Sardegna.
+                  </p>
+                  <Link
+                    href="/eventi"
+                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#064a8a]"
+                  >
+                    Vedi tutti gli eventi
+                  </Link>
+                </div>
+              )}
+            </div>
 
             {faqs.length > 0 ? (
               <section className="mt-16 border-t border-slate-200 pt-12">
