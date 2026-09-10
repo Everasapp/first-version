@@ -19,6 +19,7 @@ import {
   pickWeekendPosterUrls,
   WEEKEND_MOSAIC_MIN_POSTERS,
   WEEKEND_OG_SIZE,
+  WEEKEND_OG_TYPE,
   weekendOgPath,
 } from "@/src/lib/seo/weekend-mosaic";
 
@@ -32,7 +33,7 @@ export function buildWeekendLandingMetadata(
     width: WEEKEND_OG_SIZE.width,
     height: WEEKEND_OG_SIZE.height,
     alt: `Locandine del weekend ${weekend.dateLabel} in Sardegna`,
-    type: "image/png" as const,
+    type: WEEKEND_OG_TYPE,
   };
 
   return {

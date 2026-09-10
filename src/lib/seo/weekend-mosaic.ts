@@ -2,13 +2,16 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 import { absoluteUrl } from "@/src/lib/seo/site";
 
 export const WEEKEND_OG_SIZE = { width: 1200, height: 630 } as const;
+export const WEEKEND_OG_TYPE = "image/webp";
 export const WEEKEND_MOSAIC_MIN_POSTERS = 4;
 export const WEEKEND_MOSAIC_MAX_POSTERS = 8;
 
 export function weekendOgPath(slug: string, cacheKey?: number | string) {
-  const path = `/og/weekend/${encodeURIComponent(slug)}`;
-  if (cacheKey === undefined || cacheKey === "") return path;
-  return `${path}?n=${encodeURIComponent(String(cacheKey))}`;
+  const params = new URLSearchParams({ fmt: "webp" });
+  if (cacheKey !== undefined && cacheKey !== "") {
+    params.set("n", String(cacheKey));
+  }
+  return `/og/weekend/${encodeURIComponent(slug)}?${params.toString()}`;
 }
 
 export function isPlaceholderPoster(url: string) {

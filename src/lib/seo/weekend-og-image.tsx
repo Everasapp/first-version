@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 
 import {
   WEEKEND_OG_SIZE,
+  WEEKEND_OG_TYPE,
   splitPosterRows,
 } from "@/src/lib/seo/weekend-mosaic";
 import type { CalendarWeekend } from "@/src/lib/seo/weekends";
@@ -147,6 +148,15 @@ export async function buildWeekendOgImage(
     ),
     WEEKEND_OG_SIZE,
   );
-  image.headers.set("Cache-Control", "public, max-age=3600, s-maxage=86400");
-  return image;
+  const png = Buffer.from(await image.arrayBuffer());
+  const webp = await sharp(png)
+    .webp({ quality: 80, effort: 5 })
+    .toBuffer();
+
+  return new Response(new Uint8Array(webp), {
+    headers: {
+      "Content-Type": WEEKEND_OG_TYPE,
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+    },
+  });
 }
