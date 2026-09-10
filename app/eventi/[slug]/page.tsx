@@ -4,7 +4,6 @@ import Link from "next/link";
 import { permanentRedirect } from "next/navigation";
 import {
   Building2,
-  CalendarDays,
   ExternalLink,
   MapPin,
   Pencil,
@@ -13,6 +12,7 @@ import {
 
 import CalendarButton from "@/src/components/events/CalendarButton";
 import EventDescription from "@/src/components/events/EventDescription";
+import EventPracticalFacts from "@/src/components/events/EventPracticalFacts";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
@@ -55,6 +55,7 @@ import {
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { buildAuthHref } from "@/src/lib/auth-urls";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
+import { formatHowToArrive } from "@/src/lib/event-practical";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
 import {
@@ -539,33 +540,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
         <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
-            <div className="grid gap-5 border-b border-slate-200 pb-10 sm:grid-cols-2">
-              <div className="flex items-start gap-3">
-                <CalendarDays
-                  aria-hidden="true"
-                  className="mt-1 h-5 w-5 shrink-0 text-[#075EAE]"
-                />
-
-                <div>
-                  <p className="text-sm font-bold text-slate-900">Data e ora</p>
-                  <p className="mt-1 text-slate-600">
-                    {formatEventDate(event.start_at, event.end_at)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <MapPin
-                  aria-hidden="true"
-                  className="mt-1 h-5 w-5 shrink-0 text-[#075EAE]"
-                />
-
-                <div>
-                  <p className="text-sm font-bold text-slate-900">Luogo</p>
-                  <p className="mt-1 text-slate-600">{locationDetails}</p>
-                </div>
-              </div>
-            </div>
+            <EventPracticalFacts
+              startAt={event.start_at}
+              endAt={event.end_at}
+              isFree={event.is_free}
+              priceFrom={event.price_from}
+              ticketUrl={event.ticket_url}
+            />
 
             {organizer || directory ? (
               <div className="flex flex-col gap-4 border-b border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
@@ -631,12 +612,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
             />
 
             <div className="py-10">
-              <h2 className="text-3xl font-bold text-slate-900">
-                Informazioni sull&apos;evento
-              </h2>
+              <h2 className="text-3xl font-bold text-slate-900">Programma</h2>
 
               <div className="mt-5">
-                <EventDescription description={event.description} />
+                <EventDescription
+                  description={event.description}
+                  emptyLabel="Il programma viene aggiornato sulla locandina e in questa scheda. Controlla orari e ingresso qui sopra."
+                />
               </div>
             </div>
 
@@ -651,8 +633,16 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
             <div className="border-t border-slate-200 py-10">
               <h2 className="text-3xl font-bold text-slate-900">
-                Dove si svolge
+                Come arrivare
               </h2>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+                {formatHowToArrive({
+                  locationName: event.location_name,
+                  address: event.address,
+                  municipality: event.municipality,
+                  province: event.province,
+                })}
+              </p>
 
               <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
                 <iframe

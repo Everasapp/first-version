@@ -89,3 +89,75 @@ export function formatEventDateRange(
   const endTime = romeTime(end);
   return `${startDateLabel} · ${startTime} – ${endDateLabel} · ${endTime}`;
 }
+
+export function formatEventHoursDetail(
+  startAt: string,
+  endAt?: string | null,
+) {
+  const summary = formatEventDateRange(startAt, endAt, { includeWeekday: true });
+  const start = new Date(startAt);
+  if (Number.isNaN(start.getTime())) {
+    return { summary, lines: [] as string[] };
+  }
+
+  const dateLabel = new Intl.DateTimeFormat("it-IT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: ROME_TZ,
+  }).format(start);
+
+  if (!endAt) {
+    if (isMidnightRome(start)) {
+      return { summary: dateLabel, lines: [`Tutto il giorno, ${dateLabel}`] };
+    }
+    return {
+      summary,
+      lines: [`Inizio: ${dateLabel} alle ${romeTime(start)}`],
+    };
+  }
+
+  const end = new Date(endAt);
+  if (Number.isNaN(end.getTime())) {
+    return {
+      summary,
+      lines: [`Inizio: ${dateLabel} alle ${romeTime(start)}`],
+    };
+  }
+
+  const sameDay = romeDayKey(start) === romeDayKey(end);
+  const endDateLabel = new Intl.DateTimeFormat("it-IT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: ROME_TZ,
+  }).format(end);
+
+  if (sameDay && isMidnightRome(start) && isEndOfDayRome(end)) {
+    return { summary: dateLabel, lines: [`Tutto il giorno, ${dateLabel}`] };
+  }
+
+  if (sameDay) {
+    if (isMidnightRome(start)) {
+      return {
+        summary,
+        lines: [`Il ${dateLabel}, fino alle ${romeTime(end)}`],
+      };
+    }
+    return {
+      summary,
+      lines: [`${dateLabel}, dalle ${romeTime(start)} alle ${romeTime(end)}`],
+    };
+  }
+
+  const startBit = isMidnightRome(start)
+    ? `Dal ${dateLabel}`
+    : `Dal ${dateLabel} alle ${romeTime(start)}`;
+  const endBit = isEndOfDayRome(end)
+    ? `al ${endDateLabel}`
+    : `al ${endDateLabel} alle ${romeTime(end)}`;
+
+  return { summary, lines: [`${startBit} ${endBit}`] };
+}
