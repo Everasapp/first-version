@@ -141,6 +141,7 @@ export async function CityLandingPage({ city }: { city: City }) {
         },
       ]}
       relatedLinks={[
+        { href: "/eventi-sardegna", label: "Eventi e sagre" },
         { href: "/eventi-oggi", label: "Eventi oggi" },
         { href: "/eventi-weekend", label: "Questo weekend" },
         ...categories.slice(0, 6).map((category) => ({
@@ -205,6 +206,7 @@ export async function CategoryLandingPage({
         },
       ]}
       relatedLinks={[
+        { href: "/eventi-sardegna", label: "Eventi e sagre" },
         { href: "/categorie", label: "Tutte le categorie" },
         { href: "/eventi-oggi", label: "Eventi oggi" },
         { href: cityEventsPath("Sassari"), label: "Eventi a Sassari" },
@@ -271,6 +273,7 @@ export async function CityCategoryLandingPage({
         },
       ]}
       relatedLinks={[
+        { href: "/eventi-sardegna", label: "Eventi e sagre" },
         { href: cityEventsPath(city.city), label: `Tutti gli eventi a ${city.city}` },
         {
           href: categoryEventsPath(category.slug),

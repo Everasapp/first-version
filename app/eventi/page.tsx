@@ -345,6 +345,24 @@ export default async function EventsPage({
                   {pageTitle}
                 </h1>
 
+                {!searchQuery &&
+                !selectedArea &&
+                !selectedCity &&
+                !selectedCategory &&
+                !selectedDate ? (
+                  <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                    Elenco completo da filtrare. Per sagre, weekend e feste
+                    dell’isola apri la guida{" "}
+                    <Link
+                      href="/eventi-sardegna"
+                      className="font-semibold text-[#075EAE] hover:underline"
+                    >
+                      Eventi e sagre in Sardegna
+                    </Link>
+                    .
+                  </p>
+                ) : null}
+
                 <p className="mt-2 text-sm font-semibold text-slate-500">
                   {filteredEvents.length}{" "}
                   {filteredEvents.length === 1

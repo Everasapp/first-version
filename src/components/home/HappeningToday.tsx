@@ -205,10 +205,10 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         </div>
 
         <Link
-          href="/eventi"
+          href="/eventi-sardegna"
           className="mt-8 inline-flex font-bold text-[#075EAE] hover:underline"
         >
-          Tutti gli eventi in programma →
+          Eventi e sagre in Sardegna →
         </Link>
       </div>
     </section>

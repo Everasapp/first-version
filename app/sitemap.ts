@@ -6,6 +6,8 @@ import { categories } from "@/src/data/categories";
 import { eventCategorySlugs } from "@/src/lib/event-categories";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
+import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
+import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
 
 const SITE_URL = "https://www.everas.it";
 
@@ -65,6 +67,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.85,
     },
+    {
+      url: `${SITE_URL}/eventi-sardegna`,
+      lastModified: new Date(),
+      changeFrequency: "hourly",
+      priority: 0.95,
+    },
+    ...upcomingCalendarMonths(8).map((month) => ({
+      url: `${SITE_URL}${month.path}`,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    })),
+    ...FESTIVAL_HUBS.map((hub) => ({
+      url: `${SITE_URL}${hub.path}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    })),
     {
       url: `${SITE_URL}/categorie`,
       changeFrequency: "weekly",

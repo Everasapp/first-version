@@ -11,7 +11,7 @@ import { isPublicEventActive } from "@/src/lib/eventActive";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { createClient } from "@/src/lib/supabase/server";
-import { getDateRange } from "@/src/lib/seo/dateRange";
+import { getDateRange, getMonthRange } from "@/src/lib/seo/dateRange";
 
 export type PublishedEventRow = {
   id: string;
@@ -79,6 +79,8 @@ export type EventListFilters = {
   categorySlug?: string;
   date?: string;
   areaLabel?: string;
+  month?: { year: number; monthIndex: number };
+  titleIncludes?: string[];
 };
 
 export async function loadFilteredPublishedEvents(
@@ -146,7 +148,35 @@ export async function loadFilteredPublishedEvents(
         !dateRange ||
         (eventStartDate >= dateRange.start && eventStartDate < dateRange.end);
 
-      return matchesArea && matchesCity && matchesCategory && matchesDate;
+      const monthRange = filters.month
+        ? getMonthRange(filters.month.year, filters.month.monthIndex)
+        : null;
+      const eventEndDate = event.end_at
+        ? new Date(event.end_at)
+        : eventStartDate;
+      const matchesMonth =
+        !monthRange ||
+        (eventStartDate < monthRange.end && eventEndDate >= monthRange.start);
+
+      const needles = (filters.titleIncludes ?? []).map((value) =>
+        value.toLocaleLowerCase("it"),
+      );
+      const haystack =
+        `${event.title} ${event.description ?? ""} ${event.municipality ?? ""}`.toLocaleLowerCase(
+          "it",
+        );
+      const matchesTitle =
+        needles.length === 0 ||
+        needles.some((needle) => haystack.includes(needle));
+
+      return (
+        matchesArea &&
+        matchesCity &&
+        matchesCategory &&
+        matchesDate &&
+        matchesMonth &&
+        matchesTitle
+      );
     })
     .map((event) => ({
       ...mapPublishedEvent(event),

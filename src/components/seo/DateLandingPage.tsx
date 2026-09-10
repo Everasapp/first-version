@@ -62,10 +62,12 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
   ];
 
   const relatedLinks = [
+    { href: "/eventi-sardegna", label: "Eventi e sagre" },
     { href: "/eventi", label: "Tutti gli eventi" },
     { href: "/eventi-oggi", label: "Eventi oggi" },
     { href: "/eventi-domani", label: "Eventi domani" },
     { href: "/eventi-weekend", label: "Eventi weekend" },
+    { href: "/eventi/sagre-tradizioni", label: "Sagre e tradizioni" },
     ...categories.slice(0, 4).map((category) => ({
       href: `/eventi/${category.slug}`,
       label: category.name,

@@ -74,6 +74,12 @@ export default function Footer() {
               className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold"
             >
               <Link
+                href="/eventi-sardegna"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Eventi e sagre
+              </Link>
+              <Link
                 href="/eventi-oggi"
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >

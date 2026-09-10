@@ -15,6 +15,7 @@ type EventLandingViewProps = {
   eyebrow?: string;
   h1: string;
   intro: string;
+  paragraphs?: string[];
   events: EventCardData[];
   errorMessage?: string | null;
   breadcrumbs: BreadcrumbItem[];
@@ -27,6 +28,7 @@ export default function EventLandingView({
   eyebrow = "Eventi in Sardegna",
   h1,
   intro,
+  paragraphs = [],
   events,
   errorMessage,
   breadcrumbs,
@@ -58,6 +60,14 @@ export default function EventLandingView({
                 <p className="mt-3 text-base leading-relaxed text-slate-600">
                   {intro}
                 </p>
+                {paragraphs.map((paragraph) => (
+                  <p
+                    key={paragraph.slice(0, 40)}
+                    className="mt-3 text-base leading-relaxed text-slate-600"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
                 <p className="mt-3 text-sm font-semibold text-slate-500">
                   {events.length}{" "}
                   {events.length === 1 ? "evento trovato" : "eventi trovati"}

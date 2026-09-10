@@ -69,3 +69,9 @@ export function getDateRange(filter: string) {
       return null;
   }
 }
+
+export function getMonthRange(year: number, monthIndex: number) {
+  const start = new Date(year, monthIndex, 1);
+  const end = new Date(year, monthIndex + 1, 1);
+  return { start, end };
+}
