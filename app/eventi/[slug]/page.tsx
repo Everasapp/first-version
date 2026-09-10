@@ -548,69 +548,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
               ticketUrl={event.ticket_url}
             />
 
-            {organizer || directory ? (
-              <div className="flex flex-col gap-4 border-b border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-start gap-3">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-50 text-[#075EAE]">
-                    <Building2 aria-hidden="true" className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
-                      Organizzatore
-                    </p>
-                    {organizerHref ? (
-                      <Link
-                        href={organizerHref}
-                        className="mt-1 text-xl font-bold text-slate-900 hover:text-[#075EAE]"
-                      >
-                        {organizerName}
-                      </Link>
-                    ) : (
-                      <p className="mt-1 text-xl font-bold text-slate-900">
-                        {organizerName}
-                      </p>
-                    )}
-                    {showOrganizerPlace && organizer ? (
-                      <p className="mt-1 text-sm text-slate-600">
-                        {[organizer.municipality, organizer.province]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    ) : null}
-                    {showClaimButton ? (
-                      <p className="mt-1 text-sm text-slate-500">
-                        Sei tu? Rivendica il profilo per modificare questo
-                        evento e pubblicarne altri.
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-
-                {showClaimButton && directory ? (
-                  <ClaimOrganizerButton
-                    directoryId={directory.id}
-                    organizerName={organizerName}
-                  />
-                ) : followOrganizerId ? (
-                  <FollowOrganizerButton
-                    organizerId={followOrganizerId}
-                    organizerName={organizerName}
-                    initialIsFollowing={isFollowing}
-                  />
-                ) : null}
-              </div>
-            ) : null}
-
-            <EventCommunityPreview
-              summary={communitySummary}
-              people={communityPreview}
-              isAuthenticated={Boolean(user)}
-              currentUserInterests={viewerInterests}
-              loginHref={buildAuthHref("/accedi", {
-                redirect: `/eventi/${event.slug}`,
-              })}
-            />
-
             <div className="py-10">
               <h2 className="text-3xl font-bold text-slate-900">Programma</h2>
 
@@ -688,6 +625,69 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 </div>
               </div>
             </div>
+
+            {organizer || directory ? (
+              <div className="flex flex-col gap-4 border-t border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-blue-50 text-[#075EAE]">
+                    <Building2 aria-hidden="true" className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-slate-500">
+                      Organizzatore
+                    </p>
+                    {organizerHref ? (
+                      <Link
+                        href={organizerHref}
+                        className="mt-1 text-xl font-bold text-slate-900 hover:text-[#075EAE]"
+                      >
+                        {organizerName}
+                      </Link>
+                    ) : (
+                      <p className="mt-1 text-xl font-bold text-slate-900">
+                        {organizerName}
+                      </p>
+                    )}
+                    {showOrganizerPlace && organizer ? (
+                      <p className="mt-1 text-sm text-slate-600">
+                        {[organizer.municipality, organizer.province]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    ) : null}
+                    {showClaimButton ? (
+                      <p className="mt-1 text-sm text-slate-500">
+                        Sei tu? Rivendica il profilo per modificare questo
+                        evento e pubblicarne altri.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                {showClaimButton && directory ? (
+                  <ClaimOrganizerButton
+                    directoryId={directory.id}
+                    organizerName={organizerName}
+                  />
+                ) : followOrganizerId ? (
+                  <FollowOrganizerButton
+                    organizerId={followOrganizerId}
+                    organizerName={organizerName}
+                    initialIsFollowing={isFollowing}
+                  />
+                ) : null}
+              </div>
+            ) : null}
+
+            <EventCommunityPreview
+              summary={communitySummary}
+              people={communityPreview}
+              isAuthenticated={Boolean(user)}
+              currentUserInterests={viewerInterests}
+              loginHref={buildAuthHref("/accedi", {
+                redirect: `/eventi/${event.slug}`,
+              })}
+            />
 
             <EventSourceLink
               sourceUrl={event.source_url}
