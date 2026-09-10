@@ -22,6 +22,7 @@ import EventCommunityPreview from "@/src/components/events/EventCommunityPreview
 import EventRsvpCard from "@/src/components/events/EventRsvpCard";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import EventYouTubePlayer from "@/src/components/events/EventYouTubePlayer";
+import EventSourceLink from "@/src/components/events/EventSourceLink";
 import EventCard from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
@@ -112,6 +113,8 @@ type EventRow = {
   views_count?: number | null;
   favorites_count?: number | null;
   shares_count?: number | null;
+  source_url?: string | null;
+  source_name?: string | null;
 };
 
 function formatEventDate(startAt: string, endAt: string | null) {
@@ -233,7 +236,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
     )
     .eq("slug", slug)
     .eq("status", "published")
@@ -695,6 +698,11 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 </div>
               </div>
             </div>
+
+            <EventSourceLink
+              sourceUrl={event.source_url}
+              sourceName={event.source_name}
+            />
           </div>
 
           <aside>
