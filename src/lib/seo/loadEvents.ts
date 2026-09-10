@@ -82,6 +82,8 @@ export type EventListFilters = {
   month?: { year: number; monthIndex: number };
   range?: { start: Date; end: Date };
   titleIncludes?: string[];
+  /** Guide festa: tieni l’ultima edizione visibile anche dopo la chiusura. */
+  includeExpired?: boolean;
 };
 
 export async function loadFilteredPublishedEvents(
@@ -127,7 +129,10 @@ export async function loadFilteredPublishedEvents(
 
   const events = rows
     .filter((event) => {
-      if (!isPublicEventActive(event.start_at, event.end_at, now)) {
+      if (
+        !filters.includeExpired &&
+        !isPublicEventActive(event.start_at, event.end_at, now)
+      ) {
         return false;
       }
 

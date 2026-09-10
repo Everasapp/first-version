@@ -39,6 +39,7 @@ export function buildFestivalLandingMetadata(hub: FestivalHub): Metadata {
 export default async function FestivalLandingPage({ hub }: { hub: FestivalHub }) {
   const { events, error } = await loadFilteredPublishedEvents({
     titleIncludes: hub.titleIncludes,
+    includeExpired: true,
   });
 
   return (

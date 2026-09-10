@@ -253,15 +253,15 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
       "La Sagra degli Agrumi nel Sarrabus: quando si fa a Muravera, sfilate, stand e cosa vedere nel weekend.",
     titleIncludes: ["sagra degli agrumi", "agrumi a muravera"],
     paragraphs: [
-      "La Sagra degli Agrumi è la festa di Muravera e del Sarrabus: arance, sfilate in costume, carri e stand in paese. Chi cerca “Sagra degli Agrumi 2026” vuole il weekend esatto (di solito a febbraio o inizio primavera), se c’è la sfilata della domenica e dove parcheggiare.",
-      "Non è solo gastronomia. C’è un corteo, musica, bancarelle e un centro che si riempie per due o tre giorni. Conviene arrivare la mattina, lasciare l’auto fuori dal nucleo e muoversi a piedi. Se vieni da Cagliari, calcola la Statale Orientale Sarda e il traffico della domenica.",
-      "Su EVERAS raccogliamo la sagra e gli eventi collegati (concerti, InVaso, iniziative in piazza) quando sono pubblicati. Se a febbraio la scheda non è ancora online, manca la locandina dell’edizione: la aggiungiamo appena il Comune e la Pro Loco la confermano.",
+      "La Sagra degli Agrumi è la festa di Muravera e del Sarrabus: arance, sfilate in costume, carri e stand in paese. Chi cerca “Sagra degli Agrumi 2026” vuole i weekend esatti, se c’è la sfilata della domenica e dove parcheggiare. Nel 2026 la 52ª edizione è stata il 16–19 e il 24–25 aprile.",
+      "Non è solo gastronomia. C’è un corteo, musica, bancarelle e un centro che si riempie. Conviene arrivare la mattina, lasciare l’auto fuori dal nucleo e muoversi a piedi. Se vieni da Cagliari, calcola la Statale Orientale Sarda e il traffico della domenica della sfilata.",
+      "Su EVERAS tieni la scheda dell’edizione con date e programma. L’edizione 2026 è conclusa: resta online per chi cerca date e sfilata. Quando il Comune pubblica il 2027, la aggiorniamo.",
     ],
     faqs: [
       {
         question: "Quando è la Sagra degli Agrumi a Muravera?",
         answer:
-          "In genere a febbraio, in un weekend indicato dal Comune. Le date si spostano di anno in anno: guarda il calendario Everas.",
+          "Nel 2026 la 52ª edizione è stata il 16–19 e il 24–25 aprile, con Sa Festa (sfilata) domenica 19. Le date 2027 le indica il Comune: quando ci sono, le trovi sulla scheda.",
       },
       {
         question: "L’ingresso è a pagamento?",
