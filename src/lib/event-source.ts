@@ -12,13 +12,19 @@ const TRACKING_PARAMS = [
 
 const HOST_LABELS: Record<string, string> = {
   "saludetrigu.it": "Salude & Trigu",
-  "paradisola.it": "Paradisola",
   "sardegnaturismo.it": "SardegnaTurismo",
   "sardegnaeventi24.it": "SardegnaEventi24",
   "sassaritoday.it": "SassariToday",
   "cagliaritoday.it": "CagliariToday",
   "eventbrite.it": "Eventbrite",
   "eventbrite.com": "Eventbrite",
+  "nu.camcom.it": "Camera di commercio di Nuoro",
+  "cuoredellasardegna.it": "Camera di commercio di Nuoro",
+};
+
+const CAMERA_COMMERCIO_NUORO = {
+  href: "https://www.cuoredellasardegna.it/autunnoinbarbagia/it/index.html",
+  label: "Camera di commercio di Nuoro",
 };
 
 export function publicSourceHref(rawUrl: string | null | undefined) {
@@ -41,17 +47,59 @@ export function publicSourceHref(rawUrl: string | null | undefined) {
   }
 }
 
+function hostFromHref(href: string) {
+  try {
+    return new URL(href).hostname.replace(/^www\./, "").toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+function stripCompetitorName(name: string) {
+  return name
+    .replace(/paradisola(\.it)?/gi, "")
+    .replace(/^[/\s–—-]+|[/\s–—-]+$/g, "")
+    .replace(/\s*\/\s*/g, " / ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function publicSourceLabel(
   sourceName: string | null | undefined,
   href: string,
 ) {
-  const named = (sourceName || "").trim();
+  const named = stripCompetitorName(sourceName || "");
   if (named) return named;
 
-  try {
-    const host = new URL(href).hostname.replace(/^www\./, "").toLowerCase();
-    return HOST_LABELS[host] || host;
-  } catch {
-    return "sito originale";
+  const host = hostFromHref(href);
+  return HOST_LABELS[host] || host || "sito originale";
+}
+
+export function publicSourceAttribution(
+  sourceName: string | null | undefined,
+  sourceUrl: string | null | undefined,
+) {
+  const rawName = (sourceName || "").trim();
+  const href = publicSourceHref(sourceUrl);
+  const host = href ? hostFromHref(href) : "";
+  const isCompetitorHost = host === "paradisola.it";
+  const cleanedName = stripCompetitorName(rawName);
+
+  if (/camera di commercio/i.test(rawName) || /camera di commercio/i.test(cleanedName)) {
+    return {
+      href: isCompetitorHost || !href ? CAMERA_COMMERCIO_NUORO.href : href,
+      label: cleanedName || CAMERA_COMMERCIO_NUORO.label,
+    };
   }
+
+  if (isCompetitorHost || !href) {
+    return null;
+  }
+
+  const label = publicSourceLabel(cleanedName, href);
+  if (!label || /paradisola/i.test(label)) {
+    return null;
+  }
+
+  return { href, label };
 }
