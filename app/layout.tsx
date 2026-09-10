@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 import Footer from "@/src/components/home/Footer";
 import PWAInstallBanner from "@/src/components/PWAInstallBanner";
@@ -52,6 +53,9 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  other: {
+    "google-adsense-account": "ca-pub-5513319548780658",
+  },
   openGraph: {
     title: "Eventi in Sardegna: concerti, sagre e festival | EVERAS",
     description:
@@ -90,6 +94,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full min-w-0 flex-col">
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5513319548780658"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />
         <div className="flex min-w-0 max-w-full flex-1 flex-col">
