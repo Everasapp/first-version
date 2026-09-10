@@ -58,7 +58,7 @@ export default function EventsExploreGrid({ events }: EventsExploreGridProps) {
         ) : null}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {orderedEvents.map((event) => (
           <EventCard key={event.eventId || event.id} event={event} />
         ))}

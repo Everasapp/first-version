@@ -777,7 +777,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 Eventi simili
               </h2>
 
-              <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {similarEvents.map((similarEvent) => (
                   <EventCard key={similarEvent.id} event={similarEvent} />
                 ))}

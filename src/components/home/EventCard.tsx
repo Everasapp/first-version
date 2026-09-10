@@ -73,8 +73,8 @@ export default function EventCard({ event }: EventCardProps) {
     event.categories?.length ? event.categories : [event.category];
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="relative aspect-square overflow-hidden bg-slate-100">
+    <article className="group flex h-full min-w-0 w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
         <Image
           src={event.imageUrl}
           alt={event.title}

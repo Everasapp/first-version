@@ -206,7 +206,7 @@ export default function AreaSection({
                 <div
                   key={event.eventId || event.id}
                   data-area-card
-                  className="flex w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
+                  className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
                   <EventCard event={event} />
                 </div>

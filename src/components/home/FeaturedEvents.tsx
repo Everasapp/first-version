@@ -50,7 +50,7 @@ export default function FeaturedEvents({
           </Link>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {featuredEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}

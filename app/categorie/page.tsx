@@ -248,7 +248,7 @@ export default async function CategoriesPage({
             </h2>
 
             {events.length > 0 ? (
-              <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {events.map((event) => (
                   <EventCard key={event.eventId} event={event} />
                 ))}
