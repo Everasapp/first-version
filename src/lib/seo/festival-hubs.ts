@@ -166,6 +166,162 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
       },
     ],
   },
+  {
+    slug: "cavalcata-sarda",
+    path: "/eventi-sardegna/cavalcata-sarda",
+    title: "Cavalcata Sarda a Sassari: data, sfilata e come vederla",
+    h1: "Cavalcata Sarda a Sassari",
+    description:
+      "La Cavalcata Sarda: quando si svolge a Sassari, il corteo in costume e dove sistemarsi per vedere la sfilata.",
+    titleIncludes: ["cavalcata sarda"],
+    paragraphs: [
+      "La Cavalcata Sarda è la grande sfilata di Sassari: gruppi in costume da tutta l’isola, cavalli e musiche tradizionali lungo il centro. Chi cerca “Cavalcata Sarda 2026” vuole in pratica il giorno esatto (di solito una domenica di maggio), l’ora di partenza e dove stare senza perdere il corteo.",
+      "Non è una sagra di paese: è un appuntamento identitario, con migliaia di persone in piazza e transenne in corso. Conviene arrivare presto, lasciare l’auto fuori dal centro e seguire il percorso a piedi. Nel pomeriggio e in serata ci sono spesso spettacoli e concerti collegati.",
+      "Su EVERAS trovi la scheda della sfilata e gli eventi intorno quando sono pubblicati. Per la viabilità resta decisivo il Comune di Sassari. Se la data dell’anno in corso non è ancora in calendario, torna tra qualche giorno: la aggiorniamo appena arriva la conferma.",
+    ],
+    faqs: [
+      {
+        question: "Quando è la Cavalcata Sarda?",
+        answer:
+          "Di solito a maggio, a Sassari, in una domenica indicata dal Comune. La data precisa cambia ogni anno: controlla la scheda su Everas.",
+      },
+      {
+        question: "La sfilata è gratuita?",
+        answer:
+          "Vedere il corteo dalle strade è in genere libero. Tribune o postazioni riservate, se previste, sono indicate sulla scheda o dal Comune.",
+      },
+    ],
+  },
+  {
+    slug: "ardia-sedilo",
+    path: "/eventi-sardegna/ardia-sedilo",
+    title: "Ardia di Sedilo: date, corsa a cavallo e come arrivarci",
+    h1: "Ardia di Sedilo",
+    description:
+      "S’Ardia a Sedilo: quando si corre intorno al santuario di San Costantino, orari e consigli per vederla da vicino.",
+    titleIncludes: ["ardia di sedilo", "s'ardia", "s’ardia"],
+    paragraphs: [
+      "L’Ardia di Sedilo è una corsa a cavallo votiva, non uno spettacolo da palio. I cavalieri partono dal santuario di San Costantino e si lanciano in una discesa stretta, tra polvere e folla. Chi cerca “Ardia Sedilo” vuole il giorno (intorno al 6 e 7 luglio), l’ora della corsa e come arrivare al santuario senza restare bloccato in macchina.",
+      "Si corre in due giornate: la sera del 6 e il mattino del 7, legate alla festa di San Costantino. Non è un evento da tribuna comoda. Meglio lasciare l’auto a distanza, arrivare con largo anticipo e seguire le indicazioni del Comune e dei volontari. I bambini vanno tenuti lontani dal tracciato.",
+      "Su EVERAS teniamo la scheda con data e luogo quando l’edizione è pubblicata, più eventuali sagre e veglie intorno. Per il programma religioso e le chiusure stradali resta utile il Comune di Sedilo. Se a luglio la scheda non c’è ancora, manca solo la conferma dell’anno in corso.",
+    ],
+    faqs: [
+      {
+        question: "Quando si corre l’Ardia a Sedilo?",
+        answer:
+          "Tradizionalmente il 6 luglio al tramonto e il 7 luglio al mattino, per San Costantino. Controlla sempre l’orario sulla scheda dell’anno in corso.",
+      },
+      {
+        question: "Si può vedere gratis?",
+        answer:
+          "Sì, dal santuario e dalle aree segnalate. Non ci sono biglietti per la corsa: è una festa religiosa, con regole strette di sicurezza.",
+      },
+    ],
+  },
+  {
+    slug: "corsa-degli-scalzi",
+    path: "/eventi-sardegna/corsa-degli-scalzi",
+    title: "Corsa degli Scalzi a Cabras: date, percorso e programma",
+    h1: "Corsa degli Scalzi a Cabras",
+    description:
+      "La Corsa degli Scalzi da Cabras a San Salvatore di Sinis: quando si fa, il voto a San Salvatore e come seguire i running.",
+    titleIncludes: ["corsa degli scalzi"],
+    paragraphs: [
+      "La Corsa degli Scalzi è il voto di Cabras a San Salvatore: centinaia di uomini in saio bianco corrono scalzi dalla basilica fino al santuario di San Salvatore di Sinis, e poi fanno il rientro. Chi cerca “Corsa degli Scalzi 2026” vuole i giorni (fine agosto–inizio settembre), l’ora della partenza e se in paese ci sono sagre e concerti.",
+      "Non è una maratona sportiva. È una corsa religiosa, polverosa, affollata. Il tratto tra Cabras e San Salvatore si segue meglio dai bordi della strada, arrivando all’alba. A San Salvatore, nei giorni intorno, il villaggio si anima con stand, musica e la festa del santo. Il centro di Cabras si chiude al traffico.",
+      "Su EVERAS trovi la scheda principale e gli appuntamenti collaterali quando sono pubblicati. Per il minuto per minuto della processione resta il programma della parrocchia e del Comune. Apri la scheda per data, orario e come arrivare al Sinis.",
+    ],
+    faqs: [
+      {
+        question: "Quando è la Corsa degli Scalzi a Cabras?",
+        answer:
+          "Di solito a cavallo tra fine agosto e i primi di settembre, con andata e rientro in giorni distinti. La data esatta è sulla scheda Everas.",
+      },
+      {
+        question: "Dove si vede meglio?",
+        answer:
+          "Alla partenza a Cabras e all’arrivo a San Salvatore di Sinis. Lungo la strada i running passano veloci: scegli un punto e resta sul ciglio, fuori dal tracciato.",
+      },
+    ],
+  },
+  {
+    slug: "sagra-degli-agrumi",
+    path: "/eventi-sardegna/sagra-degli-agrumi",
+    title: "Sagra degli Agrumi a Muravera: date, stand e programma",
+    h1: "Sagra degli Agrumi a Muravera",
+    description:
+      "La Sagra degli Agrumi nel Sarrabus: quando si fa a Muravera, sfilate, stand e cosa vedere nel weekend.",
+    titleIncludes: ["sagra degli agrumi", "agrumi a muravera"],
+    paragraphs: [
+      "La Sagra degli Agrumi è la festa di Muravera e del Sarrabus: arance, sfilate in costume, carri e stand in paese. Chi cerca “Sagra degli Agrumi 2026” vuole il weekend esatto (di solito a febbraio o inizio primavera), se c’è la sfilata della domenica e dove parcheggiare.",
+      "Non è solo gastronomia. C’è un corteo, musica, bancarelle e un centro che si riempie per due o tre giorni. Conviene arrivare la mattina, lasciare l’auto fuori dal nucleo e muoversi a piedi. Se vieni da Cagliari, calcola la Statale Orientale Sarda e il traffico della domenica.",
+      "Su EVERAS raccogliamo la sagra e gli eventi collegati (concerti, InVaso, iniziative in piazza) quando sono pubblicati. Se a febbraio la scheda non è ancora online, manca la locandina dell’edizione: la aggiungiamo appena il Comune e la Pro Loco la confermano.",
+    ],
+    faqs: [
+      {
+        question: "Quando è la Sagra degli Agrumi a Muravera?",
+        answer:
+          "In genere a febbraio, in un weekend indicato dal Comune. Le date si spostano di anno in anno: guarda il calendario Everas.",
+      },
+      {
+        question: "L’ingresso è a pagamento?",
+        answer:
+          "Entrare in paese è di solito libero. Qualche degustazione o spettacolo può avere un prezzo: è scritto sulla scheda.",
+      },
+    ],
+  },
+  {
+    slug: "isole-che-parlano",
+    path: "/eventi-sardegna/isole-che-parlano",
+    title: "Isole che Parlano a Palau: date, programma e isole",
+    h1: "Isole che Parlano a Palau",
+    description:
+      "Il festival Isole che Parlano: concerti, incontri e traversate da Palau verso le isole, con calendario su EVERAS.",
+    titleIncludes: ["isole che parlano"],
+    paragraphs: [
+      "Isole che Parlano è il festival di Palau che mescola musica, parole e traversate verso Spargi e le altre isole. Non è una sagra: è una rassegna di settembre, con concerti all’aperto, incontri e qualche appuntamento che si raggiunge in barca. Chi cerca il programma vuole sapere quale giorno si va sull’isola e cosa resta a terra, a Palau.",
+      "Il formato premia chi si organizza: orari di imbarco, posti limitati, serate in piazza. Meglio leggere la scheda prima di partire da Olbia o Santa Teresa. Il vento può spostare un concerto dalla spiaggia al paese: per questo teniamo date e luogo aggiornati, non un volantino fisso.",
+      "Su EVERAS trovi l’edizione principale e gli appuntamenti distinti quando hanno senso da soli (laboratori per bambini, tappe in altri paesi). Evitiamo di ripetere ogni singola sessione del programma. Apri la scheda per orari, ingresso e come arrivare a Palau.",
+    ],
+    faqs: [
+      {
+        question: "Quando è Isole che Parlano?",
+        answer:
+          "Di solito a settembre, su più giorni. Il calendario preciso cambia ogni edizione: è sulle schede Everas.",
+      },
+      {
+        question: "Serve il biglietto?",
+        answer:
+          "Alcuni concerti sono gratuiti, altri a pagamento o con prenotazione per le traversate. Il dettaglio è sulla scheda dell’appuntamento.",
+      },
+    ],
+  },
+  {
+    slug: "sposalizio-selargino",
+    path: "/eventi-sardegna/sposalizio-selargino",
+    title: "Antico Sposalizio Selargino: date, rito e programma",
+    h1: "Antico Sposalizio Selargino",
+    description:
+      "Lo Sposalizio Selargino a Selargius: il rito nuziale in costume, le date di settembre e come vedere il corteo.",
+    titleIncludes: ["sposalizio selargino", "antico sposalizio"],
+    paragraphs: [
+      "L’Antico Sposalizio Selargino è il rito del matrimonio tradizionale campidanese, a Selargius. Per più giorni a settembre il paese mette in scena fidanzamento, cortei e la cerimonia in costume. Chi cerca “Sposalizio Selargino 2026” vuole il weekend della sfilata, l’ora del corteo nuziale e se ci sono sagre in piazza.",
+      "Non è un matrimonio vero aperto al pubblico come uno spettacolo da teatro: è una festa di comunità, con gruppi in abito, traccas e strade chiuse. Conviene arrivare da Cagliari con l’autobus o lasciare l’auto fuori dal centro. La domenica è il giorno più affollato.",
+      "Su EVERAS trovi la scheda dell’edizione con le date complete e gli eventi intorno. Per i dettagli del rito (sa coia, i gruppi folkloristici, la chiesa) resta utile anche il Comune di Selargius. Noi teniamo il calendario: quando, dove, se l’ingresso è libero.",
+    ],
+    faqs: [
+      {
+        question: "Quando si svolge lo Sposalizio Selargino?",
+        answer:
+          "A settembre, su più giorni, con il cuore nel weekend della sfilata. Le date esatte sono sulla scheda Everas.",
+      },
+      {
+        question: "Si può assistere gratis?",
+        answer:
+          "Il corteo in paese è in genere libero. Alcuni momenti in chiesa o cene collegate possono richiedere prenotazione: è indicato sulla scheda.",
+      },
+    ],
+  },
 ];
 
 export function findFestivalHub(slug: string) {

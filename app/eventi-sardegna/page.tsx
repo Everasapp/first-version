@@ -33,7 +33,7 @@ const HUB_FAQS_BASE = [
   {
     question: "Quali sono le feste e le sagre in Sardegna?",
     answer:
-      "Oltre al calendario mese per mese trovi le guide a Autunno in Barbagia, Candelieri, Sartiglia, Carnevale, Monumenti Aperti e Sant’Efisio.",
+      "Oltre al calendario mese per mese trovi le guide alle feste più cercate: Autunno in Barbagia, Candelieri, Sartiglia, Cavalcata Sarda, Ardia, Corsa degli Scalzi, Sposalizio Selargino e Sant’Efisio.",
   },
 ];
 
