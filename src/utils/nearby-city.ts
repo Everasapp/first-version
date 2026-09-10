@@ -107,6 +107,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Belvì: { lat: 39.9608, lng: 9.1856 },
   Bitti: { lat: 40.4794, lng: 9.3819 },
   Barumini: { lat: 39.7025, lng: 8.9994 },
+  Baressa: { lat: 39.7164, lng: 8.8753 },
   Bosa: { lat: 40.2992, lng: 8.4983 },
   Cabras: { lat: 39.9306, lng: 8.5314 },
   Desulo: { lat: 40.0136, lng: 9.2264 },
