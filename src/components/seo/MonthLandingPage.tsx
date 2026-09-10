@@ -9,6 +9,7 @@ import {
 } from "@/src/lib/seo/schema";
 import { sagreExploreLinks, type CalendarMonth } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
+import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl, defaultOgImages, landingRobots } from "@/src/lib/seo/site";
 
 export function buildMonthLandingMetadata(
@@ -71,9 +72,11 @@ export default async function MonthLandingPage({
         { name: `${month.name} ${month.year}` },
       ]}
       faqs={faqs}
-      relatedLinks={[...sagreExploreLinks(), ...festivalHubLinks()].filter(
-        (link) => link.href !== month.path,
-      )}
+      relatedLinks={[
+        ...sagreExploreLinks(),
+        ...weekendExploreLinks(),
+        ...festivalHubLinks(),
+      ].filter((link) => link.href !== month.path)}
       jsonLd={[
         collectionPageSchema({
           name: month.h1,

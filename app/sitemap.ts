@@ -8,6 +8,7 @@ import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
 import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
+import { upcomingWeekends } from "@/src/lib/seo/weekends";
 
 const SITE_URL = "https://www.everas.it";
 
@@ -82,6 +83,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${SITE_URL}${hub.path}`,
       changeFrequency: "weekly" as const,
       priority: 0.75,
+    })),
+    ...upcomingWeekends(10).map((weekend) => ({
+      url: `${SITE_URL}${weekend.path}`,
+      changeFrequency: "daily" as const,
+      priority: 0.82,
     })),
     {
       url: `${SITE_URL}/categorie`,

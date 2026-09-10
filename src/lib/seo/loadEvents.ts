@@ -80,6 +80,7 @@ export type EventListFilters = {
   date?: string;
   areaLabel?: string;
   month?: { year: number; monthIndex: number };
+  range?: { start: Date; end: Date };
   titleIncludes?: string[];
 };
 
@@ -158,6 +159,11 @@ export async function loadFilteredPublishedEvents(
         !monthRange ||
         (eventStartDate < monthRange.end && eventEndDate >= monthRange.start);
 
+      const matchesRange =
+        !filters.range ||
+        (eventStartDate < filters.range.end &&
+          eventEndDate >= filters.range.start);
+
       const needles = (filters.titleIncludes ?? []).map((value) =>
         value.toLocaleLowerCase("it"),
       );
@@ -175,6 +181,7 @@ export async function loadFilteredPublishedEvents(
         matchesCategory &&
         matchesDate &&
         matchesMonth &&
+        matchesRange &&
         matchesTitle
       );
     })

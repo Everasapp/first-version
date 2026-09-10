@@ -13,6 +13,7 @@ import {
 } from "@/src/lib/seo/dateRange";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { categories } from "@/src/data/categories";
+import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 
 type DateLandingPageProps = {
   dateKey: Exclude<DateLandingKey, "settimana">;
@@ -68,6 +69,7 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
     { href: "/eventi-domani", label: "Eventi domani" },
     { href: "/eventi-weekend", label: "Eventi weekend" },
     { href: "/eventi/sagre-tradizioni", label: "Sagre e tradizioni" },
+    ...weekendExploreLinks(),
     ...categories.slice(0, 4).map((category) => ({
       href: `/eventi/${category.slug}`,
       label: category.name,

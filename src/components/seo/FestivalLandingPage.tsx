@@ -12,6 +12,7 @@ import {
   festivalHubLinks,
   type FestivalHub,
 } from "@/src/lib/seo/festival-hubs";
+import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 
 export function buildFestivalLandingMetadata(hub: FestivalHub): Metadata {
@@ -54,9 +55,11 @@ export default async function FestivalLandingPage({ hub }: { hub: FestivalHub })
         { name: hub.h1 },
       ]}
       faqs={hub.faqs}
-      relatedLinks={[...sagreExploreLinks(), ...festivalHubLinks()].filter(
-        (link) => link.href !== hub.path,
-      )}
+      relatedLinks={[
+        ...sagreExploreLinks(),
+        ...weekendExploreLinks(),
+        ...festivalHubLinks(),
+      ].filter((link) => link.href !== hub.path)}
       jsonLd={[
         collectionPageSchema({
           name: hub.h1,

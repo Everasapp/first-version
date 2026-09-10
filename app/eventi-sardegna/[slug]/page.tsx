@@ -6,12 +6,16 @@ import FestivalLandingPage, {
 import MonthLandingPage, {
   buildMonthLandingMetadata,
 } from "@/src/components/seo/MonthLandingPage";
+import WeekendLandingPage, {
+  buildWeekendLandingMetadata,
+} from "@/src/components/seo/WeekendLandingPage";
 import {
   findCalendarMonth,
   upcomingCalendarMonths,
 } from "@/src/lib/seo/calendar";
 import { FESTIVAL_HUBS, findFestivalHub } from "@/src/lib/seo/festival-hubs";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
+import { findWeekend, upcomingWeekends } from "@/src/lib/seo/weekends";
 
 type EventiSardegnaSlugPageProps = {
   params: Promise<{ slug: string }>;
@@ -20,7 +24,10 @@ type EventiSardegnaSlugPageProps = {
 export function generateStaticParams() {
   const months = upcomingCalendarMonths(8).map((month) => ({ slug: month.slug }));
   const festivals = FESTIVAL_HUBS.map((hub) => ({ slug: hub.slug }));
-  return [...months, ...festivals];
+  const weekends = upcomingWeekends(10).map((weekend) => ({
+    slug: weekend.slug,
+  }));
+  return [...months, ...festivals, ...weekends];
 }
 
 export async function generateMetadata({ params }: EventiSardegnaSlugPageProps) {
@@ -28,6 +35,14 @@ export async function generateMetadata({ params }: EventiSardegnaSlugPageProps) 
   const festival = findFestivalHub(slug);
   if (festival) {
     return buildFestivalLandingMetadata(festival);
+  }
+
+  const weekend = findWeekend(slug);
+  if (weekend) {
+    const { events } = await loadFilteredPublishedEvents({
+      range: { start: weekend.start, end: weekend.end },
+    });
+    return buildWeekendLandingMetadata(weekend, events.length);
   }
 
   const month = findCalendarMonth(slug);
@@ -48,6 +63,11 @@ export default async function EventiSardegnaSlugPage({
   const festival = findFestivalHub(slug);
   if (festival) {
     return <FestivalLandingPage hub={festival} />;
+  }
+
+  const weekend = findWeekend(slug);
+  if (weekend) {
+    return <WeekendLandingPage weekend={weekend} />;
   }
 
   const month = findCalendarMonth(slug);
