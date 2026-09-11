@@ -795,4 +795,436 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     ],
     publishedAt: "2026-09-11",
   },
+  {
+    slug: "palau",
+    path: "/cultura-sarda/nord-sardegna/palau",
+    town: "Palau",
+    province: "Sassari",
+    area: "Gallura",
+    title: "Palau: porto per La Maddalena e Capo d’Orso",
+    h1: "Palau",
+    description:
+      "Palau in Sardegna: porto per l’arcipelago di La Maddalena, Capo d’Orso, Punta Sardegna e cosa visitare oltre i traghetti.",
+    hero: {
+      src: "/images/cultura/palau-panorama.webp",
+      alt: "Panorama di Palau sul golfo, tra case e mare della Gallura",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Palau,_panorama_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/palau-capo-orso.webp",
+      alt: "La roccia dell’Orso a Capo d’Orso, sopra Palau",
+      credit: {
+        author: "Discanto",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Palau,_capo_d'Orso_(02).jpg",
+      },
+    },
+    intro:
+      "Palau è il molo della Gallura verso La Maddalena: traghetti, porto turistico, Punta Sardegna. Chi cerca solo lo scalo perde Capo d’Orso e il paese granitico sul golfo. Questa scheda tiene porto, roccia e costa, senza ridurla a coda al biglietto.",
+    history: [
+      "Il nome parla di un riparo: Palau (in gallurese) è abitato stabile soprattutto dal Settecento–Ottocento, quando il porto serve l’arcipelago e la costa di fronte a Caprera. Prima ci sono torri, forti e la memoria militare che guarda lo Stretto. Comune autonomo dal 1959, staccato da Tempio: cresce col turismo e coi collegamenti marittimi.",
+      "Il granito governa tutto: scogliere, cave, ville a Porto Rafael, il profilo di Capo d’Orso. La ferrovia Tempio–Palau (oggi legata al Trenino Verde in tratti e stagioni) ha tenuto il paese agganciato all’interno gallurese. Oggi l’identità resta quella di snodo: chi va all’arcipelago passa da qui; chi resta cammina il lungomare e sale alla roccia.",
+    ],
+    traditions: [
+      {
+        title: "Porto e arcipelago",
+        body: "I traghetti per La Maddalena partono dal porto commerciale; il turismo estivo riempie banchine e parcheggi. Fuori stagione Palau torna paese: chiese, mercato, bar sul molo. Se cerchi «traghetto Palau Maddalena», arriva con margine in alta stagione: code e vento spostano gli orari.",
+      },
+      {
+        title: "Feste e costa gallurese",
+        body: "Patronali, processioni a mare, serate in piazza. La lingua è il gallurese, vicino al corso. In tavola contano pesce, porceddu e i formaggi dell’interno: Palau è costa, ma la Gallura dietro è pastorizia e sughero.",
+      },
+    ],
+    visit: [
+      {
+        name: "Capo d’Orso",
+        body: "A ovest del paese, la roccia a forma di orso seduto è il simbolo più fotografato. Si raggiunge in auto e breve cammino; il granito è scivoloso col vento. Da lassù il golfo e, con aria limpida, Caprera. Non è un parco giochi: resta sul sentiero segnato.",
+      },
+      {
+        name: "Porto, Punta Sardegna, arcipelago",
+        body: "Il centro è il porto e la stazione marittima. Punta Sardegna, a nord, ha faro e spiagge verso Porto Rafael. Per La Maddalena e Caprera parti dal molo: biglietti in biglietteria o online, veicolo o solo passeggeri. In paese restano chiese e il tessuto basso tipico della costa gallurese.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Da Palau si va a La Maddalena?",
+        answer:
+          "Sì: i traghetti partono dal porto di Palau. In estate prenota o arriva presto; il vento può ritardare le corse.",
+      },
+      {
+        question: "Cosa vedere a Palau oltre il porto?",
+        answer:
+          "Capo d’Orso e Punta Sardegna. Poi il paese e, se hai tempo, una corsa all’arcipelago o verso Santa Teresa e Arzachena.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "santa-teresa-gallura",
+    path: "/cultura-sarda/nord-sardegna/santa-teresa-gallura",
+    town: "Santa Teresa Gallura",
+    province: "Sassari",
+    area: "Gallura",
+    title: "Santa Teresa Gallura: torre Longonsardo e Capo Testa",
+    h1: "Santa Teresa Gallura",
+    description:
+      "Santa Teresa Gallura in Sardegna: Torre di Longonsardo, Capo Testa, Rena Bianca e cosa visitare sullo Stretto di Bonifacio.",
+    hero: {
+      src: "/images/cultura/santa-teresa-panorama.webp",
+      alt: "Panorama di Santa Teresa Gallura sulla costa dello Stretto",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Santa_Teresa_Gallura_-_Panorama_(01).JPG",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/santa-teresa-torre.webp",
+      alt: "La Torre di Longonsardo a Santa Teresa Gallura",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Santa_Teresa_Gallura_-_Torre_di_Longonsardo_(03).JPG",
+      },
+    },
+    intro:
+      "Santa Teresa è il punto più a nord della Sardegna: Stretto di Bonifacio, Corsica a vista, granito di Capo Testa. Chi arriva per Rena Bianca trova anche la Torre di Longonsardo e un paese disegnato a scacchiera. Questa scheda tiene torre, capo e porto, non solo la spiaggia sotto piazza.",
+    history: [
+      "Il forte e la torre aragonese di Longonsardo controllano lo Stretto da secoli. Il paese moderno nasce nell’Ottocento voluto da Vittorio Emanuele I: pianta regolare, piazza centrale, nome alla moglie Maria Teresa. Prima c’erano torri, pastori e il porto naturale. Il comune è gallurese, lingua e tutto: di fronte c’è Bonifacio, non Olbia.",
+      "Capo Testa, a ovest, è un altro mondo di granito: cave romane, faro, calette. Il turismo ha riempito agosto; fuori stagione restano vento, sentieri e il traghetto per la Corsica quando gira. Santa Teresa non è un sobborgo di Palau: è testa di ponte nord.",
+    ],
+    traditions: [
+      {
+        title: "Torre e Stretto",
+        body: "La Torre di Longonsardo (o aragonese) domina il porto vecchio: si visita in estate e nei weekend secondo orari comunali. Da lassù Capo Testa da un lato, Corsica dall’altro. È il pezzo di storia che tiene insieme spiaggia e dogana.",
+      },
+      {
+        title: "Gallura di confine",
+        body: "Festa patronale, musica in piazza, collegamenti con Bonifacio. Si parla gallurese. In tavola aragosta quando c’è, ma anche i piatti dell’interno: qui il mare è vicino, l’isola dietro è sughero e granito.",
+      },
+    ],
+    visit: [
+      {
+        name: "Torre di Longonsardo e centro",
+        body: "La torre sul promontorio, poi piazza Vittorio Emanuele e le vie a scacchiera fino a Rena Bianca. In alta stagione la spiaggia sotto il paese è piena entro metà mattina: arriva presto o scegli Capo Testa. Orari torre e biglietti: chiedi in Informazioni turistiche in piazza.",
+      },
+      {
+        name: "Capo Testa",
+        body: "A pochi minuti in auto o bici: faro, calette, cave di granito usate fin dall’antichità. Sentieri sul granito: scarpe chiuse, vento forte. Non è un parcheggio illimitato in agosto: usa gli stalli segnalati e non lasciare rifiuti sulle rocce.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa vedere a Santa Teresa Gallura in un giorno?",
+        answer:
+          "Mattina alla torre e in centro verso Rena Bianca. Pomeriggio a Capo Testa. Con più tempo, traghetto per Bonifacio o giro verso Palau.",
+      },
+      {
+        question: "La torre si può visitare?",
+        answer:
+          "Sì, in stagione con orario del Comune. Fuori estate può essere chiusa infrasettimanale: conferma in loco prima di salire.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "sorso",
+    path: "/cultura-sarda/nord-sardegna/sorso",
+    town: "Sorso",
+    province: "Sassari",
+    area: "Romangia",
+    title: "Sorso: Romangia, Noli Me Tollere e costa di Platamona",
+    h1: "Sorso",
+    description:
+      "Sorso in Sardegna: storia della Romangia, chiesa Noli Me Tollere, vino, Carnevale e spiagge di Arboriamar e Platamona.",
+    hero: {
+      src: "/images/cultura/sorso-panorama.webp",
+      alt: "Panorama di Sorso sulla piana della Romangia",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Sorso_-_Panorama_(01).JPG",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/sorso-arboriamar.webp",
+      alt: "La pineta e la costa di Arboriamar a Sorso",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Sorso_-_Arboriamar_(01).JPG",
+      },
+    },
+    intro:
+      "Sorso è il grande comune della Romangia, a nord di Sassari: vigneti, centro vivo, mare a Platamona e Arboriamar. Chi la tratta solo come spiaggia perde la chiesa Noli Me Tollere e un Carnevale che riempie le vie. Questa scheda tiene paese e costa insieme.",
+    history: [
+      "Territorio abitato da sempre: nuraghi, tombe, poi villaggi della Romangia legati a Sassari. Sorso cresce come centro agricolo e vinicolo; il sassarese e il sardo si mescolano nelle case. Nel Novecento la costa di Platamona diventa balneare, mentre il nucleo resta sull’entroterra fertile, a pochi chilometri dal mare.",
+      "Oggi è uno dei comuni più popolosi del Nord dopo Sassari e Olbia. Il centro ha municipio, chiese, mercato; la pineta e le spiagge sono l’altra metà del comune. Non è un borgo-cartolina: è una città-paese che lavora e va al mare la sera.",
+    ],
+    traditions: [
+      {
+        title: "Noli Me Tollere e feste",
+        body: "La chiesa di Noli Me Tollere è il segno religioso più citato: dedicata al Cristo, con culto e festa che tirano gente dalla provincia. A febbraio il Carnevale di Sorso è tra i più seguiti del Nord: maschere, carri, rogo. In estate sagre e serate in piazza; il vino della Romangia (Cannonau, Vermentino e uvaggi locali) resta il filo agricolo.",
+      },
+      {
+        title: "Romangia a tavola",
+        body: "Pane, formaggi, verdure dell’orto, vino. Sorso e Sennori si guardano dai colli: stessa campagna, due comuni. Se cerchi «vino Romangia» o «Cantina di Sorso», parti dalle aziende e dalle enoteche in paese, non solo dallo scaffale turistico in costa.",
+      },
+    ],
+    visit: [
+      {
+        name: "Centro e Noli Me Tollere",
+        body: "Cammina il centro: municipio, chiese, vie commerciali. La chiesa di Noli Me Tollere si visita secondo orari parrocchiali; in festa il paese si chiude e si riempie. Chiedi in Comune o in pro loco il calendario di Carnevale e delle patronali.",
+      },
+      {
+        name: "Arboriamar e Platamona",
+        body: "La costa comunale è pineta e spiaggia lunga: Arboriamar, Platamona verso Porto Torres. D’estate parcheggi e lidi; fuori stagione è passeggiata al vento. Non lasciare l’auto sulla sabbia e rispetta le zone dunali segnalate.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Sorso è sul mare?",
+        answer:
+          "Il centro è nell’entroterra della Romangia; le spiagge di Platamona e Arboriamar sono nel territorio comunale, a pochi minuti in auto.",
+      },
+      {
+        question: "Cosa non perdere a Sorso?",
+        answer:
+          "Il centro con Noli Me Tollere, una cantina o un bicchiere di vino della Romangia, e la pineta in costa. A febbraio, il Carnevale.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "ittiri",
+    path: "/cultura-sarda/nord-sardegna/ittiri",
+    town: "Ittiri",
+    province: "Sassari",
+    area: "Logudoro",
+    title: "Ittiri: costumi, Logudoro e paese alto",
+    h1: "Ittiri",
+    description:
+      "Ittiri in Sardegna: storia del Logudoro, costume tradizionale, chiese e cosa visitare tra paese e campagne.",
+    hero: {
+      src: "/images/cultura/ittiri-panorama.webp",
+      alt: "Panorama di Ittiri sul colle del Logudoro",
+      credit: {
+        author: "Giovanniittiri",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Panorama_di_Ittiri.jpg",
+      },
+    },
+    traditionPhoto: {
+      src: "/images/cultura/ittiri-costume.webp",
+      alt: "Costume tradizionale di Ittiri",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Ittiri_-_Costume_tradizionale_(03).JPG",
+      },
+    },
+    intro:
+      "Ittiri è paese alto del Logudoro, tra Sassari e l’interno: noto per il costume femminile tra i più ricchi dell’isola e per una comunità che lo porta ancora in Cavalcata e feste. Questa scheda parte da lì, non da un elenco di spiagge che non ci sono.",
+    history: [
+      "Il territorio è pieno di segni prenuragici e nuragici; il paese medievale sta nella rete del giudicato di Torres e poi nei feudi. Ittiri cresce come centro agricolo e pastorale: grano, vigna, ovini. Il nome resta legato al sardo logudorese e a una dignità del vestito che non è folklore da vetrina.",
+      "Nel Novecento emigrazione e ritorno, come in molti paesi del Nord interno. Oggi Ittiri è comune vivo, non museo: scuole, piazza, associazioni che tengono vivo il costume e le feste. Monte Torru e le campagne intorno spiegano perché il paese sta sul colle.",
+    ],
+    traditions: [
+      {
+        title: "Il costume di Ittiri",
+        body: "Il vestito tradizionale femminile — colori, gioielli, veli — è tra i più fotografati alle sfilate: Cavalcata Sarda, feste patronali, mostre. Non è un costume da noleggio per un giorno: famiglie e sarte lo custodiscono. Se lo vedi in piazza, stai a bordo campo: è rito, non set.",
+      },
+      {
+        title: "Feste e Logudoro",
+        body: "Patronali, processioni, canto. Si parla sardo logudorese. In tavola pane, formaggi, malloreddus, porceddu nelle grandi occasioni. Ittiri manda gruppi a cavallo e in costume quando Sassari chiama la Cavalcata: è parte della rete dei paesi del Nord interno.",
+      },
+    ],
+    visit: [
+      {
+        name: "Centro e chiese",
+        body: "Il centro sul colle: parrocchiale, vie alte, vista sulla campagna. Chiedi in Comune o in pro loco se ci sono mostre o depositi del costume visitabili: non sempre aperti al pubblico, ma in festa il paese si spiega da solo.",
+      },
+      {
+        name: "Campagna e Monte Torru",
+        body: "Nei dintorni: colline, nuraghi, strade verso Thiesi, Banari, Florinas. Monte Torru è il belvedere tipico. Auto necessaria; in estate il caldo in piana è forte: acqua e orari mattutini.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Perché Ittiri è famosa?",
+        answer:
+          "Per il costume tradizionale, tra i più elaborati della Sardegna, e per il ruolo nelle sfilate e feste del Nord.",
+      },
+      {
+        question: "Cosa vedere a Ittiri in mezza giornata?",
+        answer:
+          "Il centro e le chiese; se c’è una festa o una mostra del costume, resta per quella. Poi un giro sulle colline verso Monte Torru.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "calangianus",
+    path: "/cultura-sarda/nord-sardegna/calangianus",
+    town: "Calangianus",
+    province: "Sassari",
+    area: "Gallura",
+    title: "Calangianus: Museo del Sughero e Gallura interna",
+    h1: "Calangianus",
+    description:
+      "Calangianus in Sardegna: Museo del Sughero, storia della filiera del sughero in Gallura, convento e cosa visitare.",
+    hero: {
+      src: "/images/cultura/calangianus-panorama.webp",
+      alt: "Panorama di Calangianus tra sugherete e granito della Gallura",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Calangianus_-_Panorama_(01).JPG",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/calangianus-museo-sughero.webp",
+      alt: "Interno del Museo del Sughero a Calangianus",
+      credit: {
+        author: "Calangianese nel cuore",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Museo_del_Sughero_-_Calangianus_-_2.jpg",
+      },
+    },
+    intro:
+      "Calangianus è la capitale del sughero in Gallura: non uno slogan, una filiera di boschi, fabbriche e un museo. Chi scende da Tempio verso la costa passa di qui. Questa scheda parte dal Museo del Sughero e dal paese granitico, non dalle spiagge lontane.",
+    history: [
+      "Paese gallurese di entroterra, tra sugherete e granito. Nel Novecento la lavorazione del sughero — tappi, pannelli, agglomerati — fa di Calangianus un centro industriale di nicchia conosciuto in Europa. Prima c’erano pastorizia, carbone, piccole attività: il sughero cambia scala e tiene lavoro quando altri paesi si svuotano.",
+      "Il tessuto urbano è quello tipico della Gallura interna: case in pietra, chiese, l’ex convento dei cappuccini. Tempio è vicina; il mare (Olbia, Palau) è un’altra mezz’ora. Calangianus non è una frazione-spiaggia: è fabbrica e museo di un mestiere ancora vivo.",
+    ],
+    traditions: [
+      {
+        title: "Il sughero",
+        body: "La decortica estiva, i piazzali, le aziende: il ciclo del sughero si vede ancora. Il museo racconta attrezzi, macchine, storia sociale. Non è un’attrazione per bambini annoiati: è la ragione per cui il paese compare nelle mappe economiche dell’isola.",
+      },
+      {
+        title: "Gallura interna",
+        body: "Feste patronali, lingua gallurese, cucina di entroterra (puligioni, mazza frissa, porceddu). A settembre e ottobre, quando si lavora il bosco, il paese ha un altro ritmo rispetto ad agosto in costa.",
+      },
+    ],
+    visit: [
+      {
+        name: "Museo del Sughero",
+        body: "In paese, dedicato alla filiera: dall’albero al tappo. Verifica orari e visite sul Comune o sui canali del museo: in paesi piccoli i giorni cambiano. Se puoi, abbina una ditta che apre al pubblico o un piazzale di stoccaggio visto dalla strada — senza entrare dove non sei invitato.",
+      },
+      {
+        name: "Centro ed ex convento",
+        body: "Cammina il centro granitico e l’ex convento dei cappuccini, spesso usato per mostre e cultura. Da Calangianus parti per Tempio, per le sugherete e per i sentieri del Limbara se hai gambe e mappa.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Perché Calangianus è legata al sughero?",
+        answer:
+          "Perché qui si è concentrata lavorazione e commercio del sughero gallurese. Il Museo del Sughero lo spiega meglio di qualsiasi brochure.",
+      },
+      {
+        question: "Il museo è aperto tutto l’anno?",
+        answer:
+          "Orari variabili: conferma con il Comune prima di partire, soprattutto fuori estate e il lunedì.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "valledoria",
+    path: "/cultura-sarda/nord-sardegna/valledoria",
+    town: "Valledoria",
+    province: "Sassari",
+    area: "Anglona",
+    title: "Valledoria: foce del Coghinas e San Pietro a Mare",
+    h1: "Valledoria",
+    description:
+      "Valledoria in Sardegna: foce del Coghinas, spiaggia di San Pietro a Mare, Anglona costiera e cosa visitare.",
+    hero: {
+      src: "/images/cultura/valledoria-panorama.webp",
+      alt: "Panorama di Valledoria sulla piana verso il mare",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Valledoria_-_Panorama_(01).JPG",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/valledoria-san-pietro.webp",
+      alt: "San Pietro a Mare a Valledoria, sulla costa dell’Anglona",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Valledoria_-_San_Pietro_a_Mare_(01).JPG",
+      },
+    },
+    intro:
+      "Valledoria sta dove il Coghinas arriva al mare: piana fertile, spiaggia lunga, Anglona costiera tra Castelsardo e la Gallura. Chi cerca solo il lido perde la foce e il paese agricolo dietro le dune. Questa scheda tiene fiume, mare e centro insieme.",
+    history: [
+      "La piana del Coghinas è coltivata da secoli: orti, vigneti, pastorizia. Valledoria come comune moderno nasce nel Novecento (autonomia da Sedini e altri assetti); prima il territorio era sparso tra frazioni e chiese. San Pietro a Mare è il fronte balneare; il nome del comune parla della valle, non solo della battigia.",
+      "Il turismo estivo ha allargato campeggi e seconde case. Fuori stagione restano vento di maestrale, foce e un paese che lavora la terra. Badesi è di fronte sulla foce: stesso paesaggio, due comuni.",
+    ],
+    traditions: [
+      {
+        title: "Foce e pesca",
+        body: "Il Coghinas marca il confine naturale: pesca, birdwatching, tramonti sulla foce. Non è una riserva da cartolina sempre accessibile allo stesso modo: rispetta le zone umide e i divieti stagionali.",
+      },
+      {
+        title: "Anglona a tavola",
+        body: "Verdure della piana, pesce quando c’è, pani e dolci da festa. Patronali e sagre estive riempiono San Pietro; in paese le feste restano più sobrie. Si parla sardo e italiano; l’Anglona guarda Castelsardo più che Olbia.",
+      },
+    ],
+    visit: [
+      {
+        name: "San Pietro a Mare",
+        body: "Spiaggia ampia, stabilimenti in estate, passeggiata fuori stagione. Parcheggia negli stalli; la sabbia e le dune non sono strade. In paese dietro la costa: chiese, piazza, servizi — utili se viaggi con bambini.",
+      },
+      {
+        name: "Foce del Coghinas",
+        body: "Verso Badesi: foce, canali, luce bassa la sera. Ideale a piedi o in bici. Porta binocolo se ti interessa l’avifauna; non entrare con mezzi dove è vietato. Da Valledoria puoi salire a Castelsardo o continuare verso Santa Teresa e la Gallura.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Valledoria e San Pietro a Mare sono la stessa cosa?",
+        answer:
+          "San Pietro a Mare è la frazione-spiaggia; Valledoria è il comune, con il centro nella piana dietro la costa.",
+      },
+      {
+        question: "Cosa vedere oltre la spiaggia?",
+        answer:
+          "La foce del Coghinas e un giro in paese. Con più tempo, Castelsardo a ovest o la Gallura a est.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
 ];

@@ -58,7 +58,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede più ampie — musei, mestieri, cosa visitare — ci sono già su dodici comuni, dalle città (Sassari, Alghero, Olbia, Porto Torres, La Maddalena, Arzachena) ai paesi pubblicati prima (Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri, Stintino). Gli altri comuni hanno una pagina con eventi e collegamenti all’area.",
+          "Le schede più ampie — musei, mestieri, cosa visitare — ci sono già su diciotto comuni del Nord, comprese Palau, Santa Teresa Gallura, Sorso, Ittiri, Calangianus e Valledoria. Gli altri comuni hanno una pagina con eventi e collegamenti all’area.",
       },
     ],
   },

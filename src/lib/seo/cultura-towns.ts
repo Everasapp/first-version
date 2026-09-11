@@ -49,7 +49,7 @@ export const CULTURE_HUB = {
   paragraphs: [
     "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
-    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord le guide lunghe coprono già dodici comuni — Sassari, Alghero, Olbia, Porto Torres, La Maddalena, Arzachena, Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri e Stintino. Negli altri, il calendario e i collegamenti all’area.",
+    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord le guide lunghe coprono già diciotto comuni — dalle città (Sassari, Alghero, Olbia…) ai paesi di Gallura, Romangia, Logudoro e Anglona. Negli altri, il calendario e i collegamenti all’area.",
   ],
   faqs: [
     {
