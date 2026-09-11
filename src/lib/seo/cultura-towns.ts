@@ -1,4 +1,5 @@
 import { NORD_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-towns";
+import { NORD_REMAINING_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-remaining";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-areas";
 
 export { CULTURE_HUB_PATH };
@@ -49,7 +50,7 @@ export const CULTURE_HUB = {
   paragraphs: [
     "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
-    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord le guide lunghe coprono già diciotto comuni — dalle città (Sassari, Alghero, Olbia…) ai paesi di Gallura, Romangia, Logudoro e Anglona. Negli altri, il calendario e i collegamenti all’area.",
+    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord le guide lunghe coprono tutti i 93 comuni: città, Gallura, Logudoro, Anglona, Meilogu e Goceano. Centro e Sud crescono paese per paese; dove la scheda lunga non c’è ancora restano calendario e collegamenti all’area.",
   ],
   faqs: [
     {
@@ -60,7 +61,7 @@ export const CULTURE_HUB = {
     {
       question: "Da dove si inizia?",
       answer:
-        "Scegli Nord, Centro o Sud, poi apri il comune. Nel Nord le schede lunghe crescono città per città; negli altri paesi trovi il calendario eventi e i collegamenti all’area.",
+        "Scegli Nord, Centro o Sud, poi apri il comune. Nel Nord ogni paese ha già una scheda con storia, tradizioni, visite e gli eventi collegati; nelle altre aree le guide lunghe crescono nel tempo.",
     },
   ],
 } as const;
@@ -164,6 +165,7 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
     publishedAt: "2026-09-10",
   },
   ...NORD_CULTURE_TOWNS,
+  ...NORD_REMAINING_CULTURE_TOWNS,
 ];
 
 export function findCultureTown(slug: string) {

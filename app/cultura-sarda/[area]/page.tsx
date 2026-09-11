@@ -9,6 +9,7 @@ import {
   findCultureArea,
 } from "@/src/lib/seo/cultura-areas";
 import { CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
+import { NORD_REMAINING_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-remaining";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
@@ -19,6 +20,10 @@ import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 type CulturaAreaPageProps = {
   params: Promise<{ area: string }>;
 };
+
+const REMAINING_NORD_SLUGS = new Set(
+  NORD_REMAINING_CULTURE_TOWNS.map((article) => article.slug),
+);
 
 export function generateStaticParams() {
   return CULTURE_AREAS.map((area) => ({ area: area.slug }));
@@ -66,13 +71,15 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
   }
 
   const cities = citiesForCultureArea(area);
-  const featured = CULTURE_TOWNS.filter((article) =>
-    cities.some(
+  // Schede “in evidenza”: guide editoriali lunghe (non il lotto directory del Nord).
+  const featured = CULTURE_TOWNS.filter((article) => {
+    if (REMAINING_NORD_SLUGS.has(article.slug)) return false;
+    return cities.some(
       (city) =>
         city.city.toLocaleLowerCase("it") ===
         article.town.toLocaleLowerCase("it"),
-    ),
-  );
+    );
+  });
 
   return (
     <CultureAreaView

@@ -45,8 +45,8 @@ export const CULTURE_AREAS: CultureArea[] = [
     description:
       "Directory dei comuni del Nord Sardegna: guide culturali, musei, tradizioni e cosa visitare da Sassari alla Gallura.",
     paragraphs: [
-      "Il Nord è organizzato come il filtro eventi: tutti i comuni della provincia di Sassari storica, Gallura compresa. In evidenza le schede già scritte; sotto, l’elenco completo in ordine alfabetico.",
-      "Ogni paese ha una pagina. Dove la guida è pronta trovi storia, tradizioni e visite; negli altri comuni trovi il calendario eventi e il posto del paese in questa directory.",
+      "Il Nord è organizzato come il filtro eventi: tutti i comuni della provincia di Sassari storica, Gallura compresa. In evidenza le schede editoriali più ampie; sotto, l’elenco completo A–Z: ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
+      "Apri il paese che ti interessa: trovi il testo della guida e, in fondo, il calendario degli appuntamenti pubblicati in quel comune su EVERAS.",
     ],
     townPagesLive: true,
     faqs: [
@@ -58,7 +58,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede più ampie — musei, mestieri, cosa visitare — ci sono già su diciotto comuni del Nord, comprese Palau, Santa Teresa Gallura, Sorso, Ittiri, Calangianus e Valledoria. Gli altri comuni hanno una pagina con eventi e collegamenti all’area.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord. Centro e Sud crescono nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
       },
     ],
   },

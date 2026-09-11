@@ -6,6 +6,8 @@ import type { Category } from "@/src/data/categories";
 import type { City } from "@/src/data/cities";
 import { categories } from "@/src/data/categories";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
+import { cultureTownPathForCity } from "@/src/lib/seo/cultura-areas";
+import { findCultureTown } from "@/src/lib/seo/cultura-towns";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
@@ -16,6 +18,7 @@ import {
   categoryEventsPath,
   cityCategoryEventsPath,
   cityEventsPath,
+  cityToSlug,
 } from "@/src/lib/seo/paths";
 import {
   absoluteUrl,
@@ -118,6 +121,8 @@ export async function CityLandingPage({ city }: { city: City }) {
   const path = cityEventsPath(city.city);
   const h1 = `Eventi a ${city.city}`;
   const intro = `Il calendario aggiornato di ${city.city}: concerti, sagre, cultura e appuntamenti in ${city.area}.`;
+  const cultureArticle = findCultureTown(cityToSlug(city.city));
+  const cultureHref = cultureArticle?.path ?? cultureTownPathForCity(city);
 
   return (
     <EventLandingView
@@ -142,6 +147,7 @@ export async function CityLandingPage({ city }: { city: City }) {
         },
       ]}
       relatedLinks={[
+        { href: cultureHref, label: `Guida Cultura di ${city.city}` },
         { href: "/eventi-sardegna", label: "Eventi e sagre" },
         { href: "/eventi-oggi", label: "Eventi oggi" },
         { href: "/eventi-weekend", label: "Questo weekend" },
