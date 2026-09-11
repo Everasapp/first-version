@@ -55,6 +55,36 @@ const nextConfig: NextConfig = {
           "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
         permanent: true,
       },
+      {
+        source: "/cultura-sarda/pattada",
+        destination: "/cultura-sarda/nord-sardegna/pattada",
+        permanent: true,
+      },
+      {
+        source: "/cultura-sarda/castelsardo",
+        destination: "/cultura-sarda/nord-sardegna/castelsardo",
+        permanent: true,
+      },
+      {
+        source: "/cultura-sarda/aggius",
+        destination: "/cultura-sarda/nord-sardegna/aggius",
+        permanent: true,
+      },
+      {
+        source: "/cultura-sarda/tempio-pausania",
+        destination: "/cultura-sarda/nord-sardegna/tempio-pausania",
+        permanent: true,
+      },
+      {
+        source: "/cultura-sarda/ozieri",
+        destination: "/cultura-sarda/nord-sardegna/ozieri",
+        permanent: true,
+      },
+      {
+        source: "/cultura-sarda/stintino",
+        destination: "/cultura-sarda/nord-sardegna/stintino",
+        permanent: true,
+      },
     ];
   },
 };

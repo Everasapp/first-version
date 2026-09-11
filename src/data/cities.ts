@@ -298,3 +298,10 @@ export function partitionCitiesForSelect(list: City[]) {
   const rest = list.filter((city) => !isSulcisCity(city.city)).sort(byName);
   return { sulcis, rest };
 }
+
+export function citiesInArea(area: City["area"]) {
+  return cities
+    .filter((city) => city.area === area)
+    .slice()
+    .sort((a, b) => a.city.localeCompare(b.city, "it"));
+}

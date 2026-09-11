@@ -8,6 +8,12 @@ import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
 import { CULTURE_HUB_PATH, CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
+import {
+  CULTURE_AREAS,
+  citiesForCultureArea,
+  cultureTownPathForCity,
+  findCultureArea,
+} from "@/src/lib/seo/cultura-areas";
 import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
 import { upcomingWeekends } from "@/src/lib/seo/weekends";
 
@@ -95,12 +101,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...CULTURE_TOWNS.map((article) => ({
-      url: `${SITE_URL}${article.path}`,
-      lastModified: new Date(article.publishedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.75,
+    ...CULTURE_AREAS.map((area) => ({
+      url: `${SITE_URL}${area.path}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.78,
     })),
+    ...(() => {
+      const nord = findCultureArea("nord-sardegna");
+      if (!nord) return [];
+      return citiesForCultureArea(nord).map((city) => {
+        const article = CULTURE_TOWNS.find(
+          (item) =>
+            item.town.toLocaleLowerCase("it") ===
+            city.city.toLocaleLowerCase("it"),
+        );
+        return {
+          url: `${SITE_URL}${cultureTownPathForCity(city)}`,
+          lastModified: article ? new Date(article.publishedAt) : undefined,
+          changeFrequency: "monthly" as const,
+          priority: article ? 0.75 : 0.65,
+        };
+      });
+    })(),
     {
       url: `${SITE_URL}/categorie`,
       changeFrequency: "weekly",

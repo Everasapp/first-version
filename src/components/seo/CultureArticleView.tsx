@@ -7,6 +7,8 @@ import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import JsonLd from "@/src/components/seo/JsonLd";
 import PhotoCredit from "@/src/components/seo/PhotoCredit";
+import { cities } from "@/src/data/cities";
+import { findCultureAreaByName } from "@/src/lib/seo/cultura-areas";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
@@ -24,6 +26,12 @@ export default function CultureArticleView({
 }: CultureArticleViewProps) {
   const eventsHref = cityEventsPath(article.town);
   const townPrep = /^[aeiouàèéìòù]/i.test(article.town) ? "ad" : "a";
+  const city = cities.find(
+    (item) =>
+      item.city.toLocaleLowerCase("it") ===
+      article.town.toLocaleLowerCase("it"),
+  );
+  const cultureArea = city ? findCultureAreaByName(city.area) : undefined;
 
   return (
     <>
@@ -41,6 +49,9 @@ export default function CultureArticleView({
                 items={[
                   { name: "Home", href: "/" },
                   { name: "Cultura sarda", href: CULTURE_HUB_PATH },
+                  ...(cultureArea
+                    ? [{ name: cultureArea.h1, href: cultureArea.path }]
+                    : []),
                   { name: article.town },
                 ]}
               />
@@ -206,10 +217,12 @@ export default function CultureArticleView({
 
             <div className="mt-10">
               <Link
-                href={CULTURE_HUB_PATH}
+                href={cultureArea?.path ?? CULTURE_HUB_PATH}
                 className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
               >
-                ← Tutti i paesi
+                {cultureArea
+                  ? `← Paesi del ${cultureArea.h1}`
+                  : "← Tutti i paesi"}
               </Link>
             </div>
           </div>

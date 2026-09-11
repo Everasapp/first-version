@@ -1,4 +1,7 @@
 import { NORD_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-towns";
+import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-areas";
+
+export { CULTURE_HUB_PATH };
 
 export type PhotoCredit = {
   author: string;
@@ -37,8 +40,6 @@ const GIANNI_CAREEDDU = {
   author: "Gianni Careddu",
 } as const;
 
-export const CULTURE_HUB_PATH = "/cultura-sarda";
-
 export const CULTURE_HUB = {
   path: CULTURE_HUB_PATH,
   title: "Cultura sarda: paesi, musei e tradizioni",
@@ -47,18 +48,19 @@ export const CULTURE_HUB = {
     "Guide ai paesi della Sardegna partendo da musei e botteghe: storia, tradizioni e cosa visitare, un comune alla volta.",
   paragraphs: [
     "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
-    "Questa guida raccoglie articoli per comune. Ogni scheda parte da ciò che il paese ha messo in mostra — un museo, un mestiere, una festa — e racconta la storia, le tradizioni vive e cosa vale una visita. Nel Nord Sardegna trovi Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri e Stintino.",
+    "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
+    "Ogni scheda parte da ciò che il comune ha messo in mostra — un museo, un mestiere, una festa — e racconta storia, tradizioni e cosa vale una visita. Si comincia dal Nord, con Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri, Stintino e tutti gli altri comuni dell’area.",
   ],
   faqs: [
     {
       question: "Cos’è la guida Cultura sarda?",
       answer:
-        "Una serie di articoli sui comuni dell’isola: musei, tradizioni e luoghi da visitare. Non sostituisce il calendario eventi: lo affianca, per chi arriva su EVERAS anche fuori stagione.",
+        "Una directory dei comuni dell’isola, divisa in Nord, Centro e Sud come i filtri eventi. Non sostituisce il calendario: lo affianca, per chi arriva su EVERAS anche fuori stagione.",
     },
     {
-      question: "Come scegliete i paesi?",
+      question: "Da dove si inizia?",
       answer:
-        "Partiamo da musei e tradizioni ancora visibili sul territorio. Nel Nord trovi Pattada (resolza), Castelsardo (intreccio), Aggius (tappeti e banditismo), Tempio (sughero e carnevale), Ozieri (archeologia) e Stintino (tonnara).",
+        "Dal Nord Sardegna: lì trovi l’elenco completo dei comuni e le schede già scritte. Centro e Sud hanno già la lista dei paesi; le guide arrivano dopo.",
     },
   ],
 } as const;
@@ -66,7 +68,7 @@ export const CULTURE_HUB = {
 export const CULTURE_TOWNS: CultureTownArticle[] = [
   {
     slug: "pattada",
-    path: "/cultura-sarda/pattada",
+    path: "/cultura-sarda/nord-sardegna/pattada",
     town: "Pattada",
     province: "Sassari",
     area: "Monteacuto",

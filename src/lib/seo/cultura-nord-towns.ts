@@ -5,7 +5,7 @@ const GIANNI = { author: "Gianni Careddu" } as const;
 export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   {
     slug: "castelsardo",
-    path: "/cultura-sarda/castelsardo",
+    path: "/cultura-sarda/nord-sardegna/castelsardo",
     town: "Castelsardo",
     province: "Sassari",
     area: "Anglona",
@@ -77,7 +77,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   },
   {
     slug: "aggius",
-    path: "/cultura-sarda/aggius",
+    path: "/cultura-sarda/nord-sardegna/aggius",
     town: "Aggius",
     province: "Sassari",
     area: "Gallura",
@@ -149,7 +149,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   },
   {
     slug: "tempio-pausania",
-    path: "/cultura-sarda/tempio-pausania",
+    path: "/cultura-sarda/nord-sardegna/tempio-pausania",
     town: "Tempio Pausania",
     province: "Sassari",
     area: "Gallura",
@@ -221,7 +221,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   },
   {
     slug: "ozieri",
-    path: "/cultura-sarda/ozieri",
+    path: "/cultura-sarda/nord-sardegna/ozieri",
     town: "Ozieri",
     province: "Sassari",
     area: "Logudoro",
@@ -293,7 +293,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   },
   {
     slug: "stintino",
-    path: "/cultura-sarda/stintino",
+    path: "/cultura-sarda/nord-sardegna/stintino",
     town: "Stintino",
     province: "Sassari",
     area: "Nurra",

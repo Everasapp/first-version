@@ -2,12 +2,13 @@ import Link from "next/link";
 
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
-import CultureTownCard from "@/src/components/seo/CultureTownCard";
+import CultureAreaCard from "@/src/components/seo/CultureAreaCard";
 import JsonLd from "@/src/components/seo/JsonLd";
 import {
-  CULTURE_HUB,
-  CULTURE_TOWNS,
-} from "@/src/lib/seo/cultura-towns";
+  CULTURE_AREAS,
+  citiesForCultureArea,
+} from "@/src/lib/seo/cultura-areas";
+import { CULTURE_HUB } from "@/src/lib/seo/cultura-towns";
 
 type CultureHubViewProps = {
   jsonLd: Array<Record<string, unknown>>;
@@ -54,17 +55,20 @@ export default function CultureHubView({ jsonLd }: CultureHubViewProps) {
         <section className="py-10 sm:py-14">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <p className="text-sm font-semibold text-slate-500">
-              {CULTURE_TOWNS.length}{" "}
-              {CULTURE_TOWNS.length === 1 ? "paese" : "paesi"}
+              Nord, Centro e Sud
             </p>
             <h2 className="mt-2 text-2xl font-bold text-slate-900">
-              Articoli
+              Scegli l’area
             </h2>
 
             <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {CULTURE_TOWNS.map((article) => (
-                <li key={article.slug}>
-                  <CultureTownCard article={article} priority />
+              {CULTURE_AREAS.map((area) => (
+                <li key={area.slug}>
+                  <CultureAreaCard
+                    area={area}
+                    townCount={citiesForCultureArea(area).length}
+                    priority
+                  />
                 </li>
               ))}
             </ul>
