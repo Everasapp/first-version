@@ -33,6 +33,10 @@ const LISTING_SOURCES: Array<{ url: string; label: string }> = [
     url: "https://saludetrigu.it/",
     label: "Salude & Trigu",
   },
+  {
+    url: "https://turismosassari.it/calendario-eventi",
+    label: "Turismo Sassari",
+  },
 ];
 
 function sleep(ms: number) {
@@ -148,6 +152,106 @@ async function loadExistingSourceUrls(supabase: SupabaseClient) {
   }
 
   return urls;
+}
+
+type ExistingEventRow = {
+  title: string;
+  municipality: string;
+  start_at: string;
+  end_at: string | null;
+};
+
+function titleTokens(title: string) {
+  const stop = new Set([
+    "sassari",
+    "evento",
+    "eventi",
+    "mostra",
+    "festival",
+    "edizione",
+    "concerto",
+    "spettacolo",
+    "della",
+    "delle",
+    "nella",
+  ]);
+  return createSlug(title)
+    .split("-")
+    .filter((token) => token.length > 3 && !stop.has(token));
+}
+
+function titleCoreSlug(title: string) {
+  return createSlug(title)
+    .replace(/-\d{4}$/, "")
+    .replace(/-festival-.*$/, "")
+    .replace(/-\d+-edizione.*$/, "")
+    .replace(/-edizione-.*$/, "");
+}
+
+function titlesLookAlike(left: string, right: string) {
+  const a = titleCoreSlug(left);
+  const b = titleCoreSlug(right);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if ((a.includes(b) || b.includes(a)) && Math.min(a.length, b.length) >= 12) {
+    return true;
+  }
+  const ta = titleTokens(left);
+  const tb = titleTokens(right);
+  if (ta.length === 0 || tb.length === 0) return false;
+  const smaller = Math.min(ta.length, tb.length);
+  const inter = ta.filter((token) => tb.includes(token)).length;
+  const dice = (2 * inter) / (ta.length + tb.length);
+  return dice >= 0.5 && inter >= Math.min(2, smaller);
+}
+
+function datesOverlap(
+  startA: string,
+  endA: string | null,
+  startB: string,
+  endB: string | null,
+) {
+  const a0 = new Date(startA).getTime();
+  const a1 = new Date(endA || startA).getTime();
+  const b0 = new Date(startB).getTime();
+  const b1 = new Date(endB || startB).getTime();
+  if (![a0, a1, b0, b1].every(Number.isFinite)) return false;
+  return a0 <= b1 && b0 <= a1;
+}
+
+async function loadExistingUpcomingEvents(supabase: SupabaseClient) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const fromDate = new Date(today);
+  fromDate.setDate(fromDate.getDate() - 40);
+  const { data, error } = await supabase
+    .from("events")
+    .select("title, municipality, start_at, end_at")
+    .in("status", ["published", "pending"])
+    .or(
+      `end_at.gte.${today.toISOString()},start_at.gte.${fromDate.toISOString()}`,
+    )
+    .limit(3000);
+
+  if (error) throw new Error(error.message);
+  return (data || []) as ExistingEventRow[];
+}
+
+function isDuplicateOfExisting(
+  existing: ExistingEventRow[],
+  title: string,
+  municipality: string,
+  startDate: string,
+  endDate: string,
+) {
+  const city = municipality.trim().toLocaleLowerCase("it");
+  const startIso = `${startDate}T00:00:00`;
+  const endIso = endDate ? `${endDate}T23:59:59` : startIso;
+  return existing.some((row) => {
+    if (row.municipality.trim().toLocaleLowerCase("it") !== city) return false;
+    if (!titlesLookAlike(title, row.title)) return false;
+    return datesOverlap(startIso, endIso, row.start_at, row.end_at);
+  });
 }
 
 async function findOrganizerDirectoryId(
@@ -297,11 +401,14 @@ async function importDraft(
   return data;
 }
 
-async function collectCandidates(existingUrls: Set<string>) {
+async function collectCandidates(
+  existingUrls: Set<string>,
+  sources = LISTING_SOURCES,
+) {
   const seen = new Set<string>();
   const candidates: Array<ListingEventCandidate & { listingLabel: string }> = [];
 
-  for (const source of LISTING_SOURCES) {
+  for (const source of sources) {
     const result = await extractEventFromUrl(source.url);
     if (!result.listing?.candidates.length) continue;
 
@@ -329,14 +436,22 @@ export async function discoverAndImportEventDrafts({
   adminUserId,
   limit = 20,
   publish = false,
+  onlyHost,
 }: {
   supabase: SupabaseClient;
   adminUserId: string;
   limit?: number;
   publish?: boolean;
+  onlyHost?: string;
 }) {
+  const sources = onlyHost
+    ? LISTING_SOURCES.filter((source) =>
+        source.url.toLowerCase().includes(onlyHost.toLowerCase()),
+      )
+    : LISTING_SOURCES;
   const existingUrls = await loadExistingSourceUrls(supabase);
-  const candidates = await collectCandidates(existingUrls);
+  const existingEvents = await loadExistingUpcomingEvents(supabase);
+  const candidates = await collectCandidates(existingUrls, sources);
   const batch = candidates.slice(0, Math.max(1, limit));
 
   const imported: Array<{
@@ -366,6 +481,15 @@ export async function discoverAndImportEventDrafts({
       if (!editable.startDate.trim() && candidate.startAt) {
         editable.startDate = candidate.startAt.slice(0, 10);
       }
+      if (candidate.endAt) {
+        const listingEnd = candidate.endAt.slice(0, 10);
+        if (!editable.endDate.trim() || listingEnd > editable.endDate.trim()) {
+          editable.endDate = listingEnd;
+        }
+      }
+      if (!editable.sourceName.trim()) {
+        editable.sourceName = candidate.listingLabel;
+      }
 
       if (
         !editable.title.trim() ||
@@ -386,6 +510,23 @@ export async function discoverAndImportEventDrafts({
           title: candidate.title,
           url: candidate.url,
           reason: mediaReason,
+        });
+        continue;
+      }
+
+      if (
+        isDuplicateOfExisting(
+          existingEvents,
+          editable.title,
+          editable.municipality,
+          editable.startDate,
+          editable.endDate,
+        )
+      ) {
+        skipped.push({
+          title: candidate.title,
+          url: candidate.url,
+          reason: "già presente su Everas",
         });
         continue;
       }

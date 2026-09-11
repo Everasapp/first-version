@@ -4,7 +4,7 @@
  * Uso:
  *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --dry-run
  *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --limit=20
- *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --publish
+ *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --publish --only=turismosassari.it
  */
 import { discoverAndImportEventDrafts } from "../src/lib/admin/discover-event-drafts";
 import { createAdminClient } from "../src/lib/supabase/admin";
@@ -49,6 +49,7 @@ async function main() {
       "https://www.sardegnaturismo.it/it/eventi",
       "https://sardegnaeventi24.it/eventi-in-sardegna/",
       "https://saludetrigu.it/",
+      "https://turismosassari.it/calendario-eventi",
     ];
     const { data: existing } = await supabase
       .from("events")
@@ -81,6 +82,7 @@ async function main() {
     adminUserId: adminProfile.id as string,
     limit,
     publish: hasFlag("publish"),
+    onlyHost: parseArg("only", "") || undefined,
   });
   console.log(JSON.stringify(result, null, 2));
 }

@@ -17,6 +17,19 @@ const LISTING_SOURCES = [
     url: "https://www.comune.santateresagallura.ss.it/it/eventi",
     label: "Comune di Santa Teresa Gallura",
   },
+  {
+    url: "https://www.sardegnaturismo.it/it/eventi",
+    label: "SardegnaTurismo",
+  },
+  {
+    url: "https://sardegnaeventi24.it/eventi-in-sardegna/",
+    label: "SardegnaEventi24",
+  },
+  { url: "https://saludetrigu.it/", label: "Salude & Trigu" },
+  {
+    url: "https://turismosassari.it/calendario-eventi",
+    label: "Turismo Sassari",
+  },
 ];
 
 function parseArg(name: string, fallback: string) {

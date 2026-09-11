@@ -236,6 +236,7 @@ const HAMLET_TO_CITY: Record<string, { city: string; province: string }> = {
   "foce del coghinas": { city: "Valledoria", province: "SS" },
   "porto cervo": { city: "Arzachena", province: "SS" },
   "santa maria navarrese": { city: "Baunei", province: "NU" },
+  biancareddu: { city: "Sassari", province: "SS" },
 };
 
 const VENUE_HINT =
@@ -901,7 +902,205 @@ function municipiumSectionText($: cheerio.CheerioAPI, anchorId: string) {
 }
 
 function isEventIndexPath(pathname: string) {
-  return /\/(?:eventi|events|eventi-in-sardegna)\/?$/i.test(pathname);
+  return /\/(?:eventi|events|eventi-in-sardegna|calendario-eventi)\/?$/i.test(
+    pathname,
+  );
+}
+
+function isTurismoSassariHost(url: string) {
+  try {
+    return (
+      new URL(url).hostname.replace(/^www\./, "").toLowerCase() ===
+      "turismosassari.it"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function isTurismoSassariListingPath(pathname: string) {
+  return /^\/calendario-eventi\/?$/i.test(pathname);
+}
+
+function isTurismoSassariDetailPath(pathname: string) {
+  return (
+    /^\/calendario-eventi\//i.test(pathname) &&
+    !isTurismoSassariListingPath(pathname) &&
+    !/view-map/i.test(pathname)
+  );
+}
+
+function parseItalianDayMonthYear(
+  day: string,
+  monthName: string,
+  year: number,
+) {
+  const month = ITALIAN_MONTHS[monthName.toLowerCase()];
+  if (!month) return null;
+  return `${year}-${month}-${day.padStart(2, "0")}`;
+}
+
+function parseEbDateTime(raw: string | undefined) {
+  if (!raw) return { date: null as string | null, time: null as string | null };
+  const match = raw.match(
+    /(\d{2})-(\d{2})-(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/,
+  );
+  if (!match) return { date: null, time: null };
+  return {
+    date: `${match[3]}-${match[2]}-${match[1]}`,
+    time: match[4]
+      ? `${match[4].padStart(2, "0")}:${match[5]}`
+      : null,
+  };
+}
+
+/**
+ * Calendario Joomla Events Booking di Turismo Sassari.
+ * La vista mensile elenca ogni occorrenza; raggruppiamo per slug canonico.
+ */
+async function fetchTurismoSassariListing(
+  pageUrl: string,
+): Promise<EventListingResult | null> {
+  if (!isTurismoSassariHost(pageUrl)) return null;
+
+  const origin = new URL(pageUrl).origin;
+  const now = new Date();
+  const grouped = new Map<
+    string,
+    {
+      title: string;
+      url: string;
+      dates: string[];
+      time: string | null;
+    }
+  >();
+
+  for (let offset = 0; offset < 3; offset += 1) {
+    const cursor = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+    const month = String(cursor.getMonth() + 1).padStart(2, "0");
+    const year = cursor.getFullYear();
+    const monthUrl = `${origin}/calendario-eventi?layout=default&month=${month}&year=${year}`;
+    let html: string;
+    try {
+      html = (await fetchHtml(monthUrl)).html;
+    } catch {
+      continue;
+    }
+    const $ = cheerio.load(html);
+    $("li.eb-calendarDay").each((_, li) => {
+      const cell = $(li);
+      const monthLabel = cleanText(cell.find("span.month").first().text());
+      const dayMatch = cleanText(cell.find("div.date.day_cell").first().text()).match(
+        /(\d{1,2})\s*$/,
+      );
+      if (!monthLabel || !dayMatch) return;
+      const cellMonth = Number.parseInt(
+        ITALIAN_MONTHS[monthLabel.toLowerCase()] || "",
+        10,
+      );
+      let cellYear = year;
+      if (Number(month) === 1 && cellMonth === 12) cellYear = year - 1;
+      if (Number(month) === 12 && cellMonth === 1) cellYear = year + 1;
+      const date = parseItalianDayMonthYear(dayMatch[1], monthLabel, cellYear);
+      if (!date) return;
+
+      cell.find("a.eb_event_link[href]").each((__, el) => {
+        const link = $(el);
+        const href = link.attr("href") || "";
+        if (/view-map|print=1/i.test(href)) return;
+        const abs = absolutize(monthUrl, href.split("?")[0]);
+        if (!abs) return;
+        let pathname = "";
+        try {
+          pathname = new URL(abs).pathname;
+        } catch {
+          return;
+        }
+        if (!isTurismoSassariDetailPath(pathname)) return;
+        const title = cleanText(
+          link.attr("title") ||
+            link.clone().children("span, img").remove().end().text() ||
+            "",
+        );
+        if (!title || title.length < 4) return;
+        const key = title
+          .toLocaleLowerCase("it")
+          .replace(/\s+/g, " ")
+          .trim();
+        const time = cleanText(link.find(".eb-calendar-event-time").first().text())
+          .replace(".", ":")
+          .match(/^([01]?\d|2[0-3]):([0-5]\d)$/)?.[0] || null;
+        const current = grouped.get(key);
+        if (!current) {
+          grouped.set(key, { title, url: abs, dates: [date], time });
+          return;
+        }
+        if (!current.dates.includes(date)) current.dates.push(date);
+        const earliest = [...current.dates].sort()[0];
+        if (date === earliest) {
+          current.url = abs;
+          current.title = title;
+          if (time) current.time = time;
+        }
+      });
+    });
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const candidates: ListingEventCandidate[] = [];
+  for (const item of grouped.values()) {
+    item.dates.sort();
+    const upcoming = item.dates.filter((d) => new Date(`${d}T12:00:00`) >= today);
+    if (upcoming.length === 0) continue;
+    const start = upcoming[0];
+    const end = item.dates[item.dates.length - 1];
+    const time = item.time && /^\d{2}:\d{2}$/.test(item.time) ? item.time : "12:00";
+    const monthNum = Number(start.slice(5, 7));
+    const offset = monthNum >= 4 && monthNum <= 10 ? "+02:00" : "+01:00";
+    candidates.push({
+      title: item.title,
+      url: item.url,
+      startAt: `${start}T${time}:00${offset}`,
+      endAt: end && end !== start ? `${end}T23:59:00${offset}` : null,
+      description: null,
+    });
+  }
+
+  candidates.sort((a, b) => {
+    const aTime = a.startAt ? new Date(a.startAt).getTime() : 9e15;
+    const bTime = b.startAt ? new Date(b.startAt).getTime() : 9e15;
+    return aTime - bTime;
+  });
+
+  if (candidates.length < 1) return null;
+  return {
+    sourceUrl: `${origin}/calendario-eventi`,
+    sourceName: "Turismo Sassari",
+    total: candidates.length,
+    candidates: candidates.slice(0, 60),
+  };
+}
+
+function parseTurismoSassariEventFacts($: cheerio.CheerioAPI) {
+  const title = cleanText($("h1.eb-page-heading-title").first().text());
+  const meta: Record<string, string> = {};
+  $(".eb-event-meta-top .eb-meta-row").each((_, row) => {
+    const label = cleanText($(row).find("strong").first().text())
+      .replace(/:$/, "")
+      .toLowerCase();
+    const value = cleanText($(row).find("span").first().text());
+    if (label && value) meta[label] = value;
+  });
+  const start = parseEbDateTime(meta["inizio evento"]);
+  const end = parseEbDateTime(meta["fine evento"]);
+  const venue = meta["luogo"] || null;
+  const cost = (meta["costo"] || "").toLowerCase();
+  const isFree =
+    cost.includes("gratuito") || cost.includes("ingresso libero")
+      ? true
+      : null;
+  return { title, start, end, venue, isFree };
 }
 
 function isMunicipiumDetailPath(pathname: string) {
@@ -1091,6 +1290,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   source: string;
 } | null {
   const selectors: Array<{ sel: string; label: string }> = [
+    { sel: ".eb-description-content", label: "Descrizione Turismo Sassari" },
     { sel: ".ovaev-event-content", label: "Descrizione OVA Events" },
     { sel: ".field--name-body", label: "Corpo Drupal" },
     { sel: ".field--name-field-descrizione", label: "Descrizione bando" },
@@ -2034,6 +2234,16 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     }
   }
 
+  if (
+    isTurismoSassariHost(pageUrl) &&
+    isTurismoSassariListingPath(new URL(pageUrl).pathname)
+  ) {
+    const listing = await fetchTurismoSassariListing(pageUrl);
+    if (listing?.candidates.length) {
+      return { ok: true, listing };
+    }
+  }
+
   let html: string;
   let finalUrl: string;
   try {
@@ -2096,12 +2306,16 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   const isSaludeTriguDetail =
     isSaludeTriguHost(finalUrl) && isSaludeTriguDetailPath(pathname);
 
+  const isTurismoSassariDetail =
+    isTurismoSassariHost(finalUrl) && isTurismoSassariDetailPath(pathname);
+
   const isLikelyDetailPage =
     /\.html(?:[?#]|$)/i.test(pathname) ||
     isEventDetailPage ||
     isSardegnaTurismoDetail ||
     isSardegnaEventi24Detail ||
-    isSaludeTriguDetail;
+    isSaludeTriguDetail ||
+    isTurismoSassariDetail;
   const isLikelyListingPath =
     isEventIndexPath(pathname) ||
     isSaludeTriguListingPath(pathname) ||
@@ -2178,6 +2392,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   const fullPageTitle = cleanText($("title").first().text());
   const docTitle = fullPageTitle.replace(/\s*[|].*$/, "");
   const h1 =
+    $("h1.eb-page-heading-title").first().text() ||
     $(".ovaev-event-title").first().text() ||
     $(".tribe-events-single-event-title").first().text() ||
     $("[data-element='event-title']").first().text() ||
@@ -2428,6 +2643,49 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     isFree = true;
   }
 
+  const turismoFacts = isTurismoSassariHost(finalUrl)
+    ? parseTurismoSassariEventFacts($)
+    : null;
+  if (turismoFacts?.title && (!title || isJunkHeading(title))) {
+    title = turismoFacts.title;
+    conf.title = "high";
+    sources.title = "Scheda Turismo Sassari";
+  }
+  if (turismoFacts?.start.date) {
+    startDate = turismoFacts.start.date;
+    if (turismoFacts.start.time) startTime = turismoFacts.start.time;
+    if (turismoFacts.end.date) endDate = turismoFacts.end.date;
+    if (turismoFacts.end.time) endTime = turismoFacts.end.time;
+    conf.dates = "high";
+    sources.dates = "Scheda Turismo Sassari";
+  }
+  if (turismoFacts?.venue) {
+    locationName = locationName || turismoFacts.venue;
+    const venuePlace = matchPlace(turismoFacts.venue);
+    if (venuePlace) {
+      municipality = municipality || venuePlace.city;
+      province = province || venuePlace.province;
+    }
+    conf.place = "high";
+    sources.place = sources.place || "Scheda Turismo Sassari";
+  }
+  if (isFree === null && turismoFacts?.isFree) {
+    isFree = true;
+  }
+  if (isTurismoSassariHost(finalUrl) && !municipality) {
+    municipality = "Sassari";
+    province = province || "SS";
+    conf.place = conf.place || "medium";
+    sources.place = sources.place || "Turismo Sassari";
+  }
+  if (isTurismoSassariHost(finalUrl) && !category) {
+    category = guessCategory(`${pathname} ${title} ${description}`);
+    if (category) {
+      conf.category = "medium";
+      sources.category = "Categoria Turismo Sassari";
+    }
+  }
+
   if (!startDate) {
     const calDate = parseItalianCalendarDate($);
     if (calDate) {
@@ -2646,7 +2904,9 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
   }
 
   let sourceName = cleanText(ogSiteName);
-  if (!sourceName) {
+  if (isTurismoSassariHost(finalUrl)) {
+    sourceName = "Turismo Sassari";
+  } else if (!sourceName) {
     try {
       sourceName = new URL(finalUrl).hostname.replace(/^www\./, "");
     } catch {

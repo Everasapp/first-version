@@ -12,6 +12,7 @@ const TRACKING_PARAMS = [
 
 const HOST_LABELS: Record<string, string> = {
   "saludetrigu.it": "Salude & Trigu",
+  "turismosassari.it": "Turismo Sassari",
   "sardegnaturismo.it": "SardegnaTurismo",
   "sardegnaeventi24.it": "SardegnaEventi24",
   "sassaritoday.it": "SassariToday",

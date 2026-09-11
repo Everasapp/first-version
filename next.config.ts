@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         hostname: "pxybrwkbbcghegcezxbn.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "turismosassari.it",
+        pathname: "/images/**",
+      },
     ],
   },
   async redirects() {
