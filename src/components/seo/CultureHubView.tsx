@@ -62,12 +62,12 @@ export default function CultureHubView({ jsonLd }: CultureHubViewProps) {
             </h2>
 
             <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {CULTURE_AREAS.map((area) => (
+              {CULTURE_AREAS.map((area, index) => (
                 <li key={area.slug}>
                   <CultureAreaCard
                     area={area}
                     townCount={citiesForCultureArea(area).length}
-                    priority
+                    priority={index === 0}
                   />
                 </li>
               ))}

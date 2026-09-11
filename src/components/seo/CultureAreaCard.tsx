@@ -32,6 +32,8 @@ export default function CultureAreaCard({
             fill
             priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            // Local WebP in /public: skip optimizer to avoid flaky _next/image misses.
+            unoptimized
             className="object-cover transition duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-5 pb-5 pt-16">
