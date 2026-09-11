@@ -4,6 +4,438 @@ const GIANNI = { author: "Gianni Careddu" } as const;
 
 export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   {
+    slug: "sassari",
+    path: "/cultura-sarda/nord-sardegna/sassari",
+    town: "Sassari",
+    province: "Sassari",
+    area: "Sassarese",
+    title: "Sassari: Candelieri, Museo Sanna e Cavalcata",
+    h1: "Sassari",
+    description:
+      "Sassari in Sardegna: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e cosa visitare in centro.",
+    hero: {
+      src: "/images/cultura/sassari-panorama.webp",
+      alt: "Panorama di Sassari sul colle, tra il centro storico e i quartieri nuovi",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Sassari,_panorama_(01).jpg",
+      },
+    },
+    traditionPhoto: {
+      src: "/images/cultura/sassari-candelieri.webp",
+      alt: "La Discesa dei Candelieri lungo il corso di Sassari",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Sassari_-_La_Discesa_dei_candelieri_2012_(01).jpg",
+      },
+    },
+    intro:
+      "Sassari è la città del Nord: non un borgo da cartolina, una piazza che tiene gremi, museo e corso. Chi la cerca per i Candelieri o per la Cavalcata trova anche il Museo Sanna e un centro da camminare, senza trattarla solo come scalo verso il mare.",
+    history: [
+      "Nel Medioevo Sassari è comune libero nel giudicato di Torres, poi entra nell’orbita aragonese e spagnola. Resta città di corporazioni: i gremi, le confraternite di mestiere, sono ancora quelli che portano i candelieri. Il sassarese — lingua, non dialetto da souvenir — si parla in centro e nei quartieri, accanto all’italiano e al sardo.",
+      "Piazza d’Italia, il Palazzo Ducale, il corso Vittorio Emanuele che scende verso Santa Maria di Betlem: il tessuto che vedi è Ottocento e Novecento sopra un nucleo più vecchio. Via Roma tiene il Museo Sanna, la più grande istituzione museale del Nord Sardegna. Fuori porta, Monte d’Accoddi è un altare prenuragico a terrazze: non è un nuraghe, è un’altra cosa, e vale il giro in auto.",
+    ],
+    traditions: [
+      {
+        title: "Faradda di li Candareri",
+        body: "La sera del 14 agosto i gremi scendono i candelieri lignei da piazza Castello a Santa Maria di Betlem, voto all’Assunta. Tamburi, flauti, otto portatori per cero, ballo lungo il corso. Dal 2013 è patrimonio Unesco con la Rete delle grandi macchine a spalla italiane, insieme a Nola, Palmi e Viterbo. Non è una sfilata turistica: è il rito della città. Arriva presto, il centro si chiude.",
+      },
+      {
+        title: "Cavalcata Sarda",
+        body: "A metà maggio Sassari tiene la Cavalcata: gruppi in costume da tutta l’isola, a piedi e a cavallo, poi le pariglie all’ippodromo Pinna. Nata a fine Ottocento per una visita reale, è diventata la grande festa laica dei vestiti. Date sul sito del Comune: ogni anno il programma si allarga ai giorni prima della domenica.",
+      },
+    ],
+    visit: [
+      {
+        name: "Museo nazionale Giovanni Antonio Sanna",
+        body: "Via Roma 64, a pochi minuti da piazza d’Italia. Archeologia dal Neolitico all’età romana, pinacoteca, sezione etnografica. Chiuso il lunedì; di solito aperto la prima domenica del mese. Orari su musei.sardegna.beniculturali.it: cambiano, controlla prima. Non è un museo da mezz’ora: se ti interessa il Nord, parti da qui.",
+      },
+      {
+        name: "Centro, cattedrale, Candelieri",
+        body: "San Nicola in piazza Duomo, corso Vittorio Emanuele, piazza Tola, Santa Maria di Betlem in fondo alla discesa. Il Museo dei Candelieri, accanto a Santa Maria, tiene i ceri e la storia dei gremi: utile se non sei in città il 14 agosto. Monte d’Accoddi sta fuori, verso Porto Torres: auto o bus, non a piedi dal centro.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa vedere a Sassari in un giorno?",
+        answer:
+          "Mattina al Museo Sanna. Poi il corso, la cattedrale e Santa Maria di Betlem. Se hai l’auto, nel pomeriggio Monte d’Accoddi.",
+      },
+      {
+        question: "Quando sono i Candelieri?",
+        answer:
+          "La Faradda è la sera del 14 agosto. La Cavalcata Sarda è a metà maggio: la data esatta la pubblica il Comune ogni anno.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "alghero",
+    path: "/cultura-sarda/nord-sardegna/alghero",
+    town: "Alghero",
+    province: "Sassari",
+    area: "Nurra",
+    title: "Alghero: città catalana, corallo e Museo MACOR",
+    h1: "Alghero",
+    description:
+      "Alghero in Sardegna: storia catalana, Museo del Corallo a Villa Costantino, Focs de Sant Joan, bastioni e cosa visitare.",
+    hero: {
+      src: "/images/cultura/alghero-panorama.webp",
+      alt: "Alghero vista dal mare, con le mura e il porto sul golfo",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Alghero_-_Panorama_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/alghero-visit.webp",
+      alt: "Alghero dai bastioni, con le case del centro sul golfo",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Alghero_-_Panorama_(02).jpg",
+      },
+    },
+    intro:
+      "Alghero è L’Alguer: città catalana in Nurra, mura sul mare, corallo rosso. Chi arriva per i bastioni trova anche il MACOR a Villa Costantino. Questa scheda tiene lingua, mestiere e visite, senza ridurla a tramonto sui merli.",
+    history: [
+      "Nel 1354 Pietro IV d’Aragona prende Alghero e la ripopola con catalani. La lingua resta: l’alguerès si parla ancora, con scuola, insegne e un ufficio della Generalitat. Non è folklore da menu: è una minoranza riconosciuta. Le mura, i bastioni, Porta Terra e la cattedrale di Santa Maria raccontano quella piazzaforte.",
+      "Il corallo — Corallium rubrum — ha tenuto pesca e oreficeria per secoli. Oggi il mestiere è regolamentato e più magro; il museo in Villa Costantino, liberty del 1927, lo mette in fila con biologia, economia e pezzi lavorati. Fuori le mura, verso piazza Sulis, restano le ville di inizio Novecento. Nettuno e Porto Conte sono un altro giro: auto o battello, non il centro.",
+    ],
+    traditions: [
+      {
+        title: "Lingua e città catalana",
+        body: "In centro senti l’alguerès accanto all’italiano. Feste, toponimi, sardana: il legame con la Catalogna non è uno slogan turistico, è amministrazione e scuola. Se cerchi «Alghero catalano» o «L’Alguer», parti dalle mura e dalle insegne, non dal gadget.",
+      },
+      {
+        title: "Focs de Sant Joan",
+        body: "Intorno al 23 giugno, San Giovanni, Alghero tiene falò, flama del Canigó, rito del comparatico e salto del fuoco sulla spiaggia di San Giovanni. Bianco, processione, fuoco. Date e iscrizioni le pubblica la Pro Loco ogni anno: non è uno show fisso, è una festa di città.",
+      },
+    ],
+    visit: [
+      {
+        name: "MACOR Museo del Corallo",
+        body: "Villa Costantino, via XX Settembre 8, fuori le mura. Unica villa liberty visitabile in città, sede del Museo del Corallo. Storia, biologia ed economia del Corallium rubrum, pezzi degli orafi algheresi. Biglietti e orari su museialghero.it; spesso c’è l’Alghero Ticket cumulativo con gli altri musei comunali. Prenota in alta stagione.",
+      },
+      {
+        name: "Bastioni, cattedrale, centro",
+        body: "Cammina i bastioni al mattino, prima dei pullman. Santa Maria, San Francesco, via Carlo Alberto. Il Museo archeologico e Casa Manno stanno nel sistema Musei Alghero: stesso sito del corallo. Grotta di Nettuno e Capo Caccia sono fuori: traghetto dal porto o scalinata del Escala del Cabirol, con regole di accesso che cambiano.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa vedere ad Alghero oltre ai bastioni?",
+        answer:
+          "Il Museo del Corallo a Villa Costantino, poi cattedrale e centro. Se hai mezza giornata in più, Nettuno o Porto Conte: non sono il paese, sono il territorio.",
+      },
+      {
+        question: "Si parla ancora catalano ad Alghero?",
+        answer:
+          "Sì, l’alguerès è lingua viva, anche se non tutti la usano. Lo senti in centro, nelle feste di Sant Joan e nelle insegne. Non è un costume da indossare per un pomeriggio.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "olbia",
+    path: "/cultura-sarda/nord-sardegna/olbia",
+    town: "Olbia",
+    province: "Sassari",
+    area: "Gallura",
+    title: "Olbia: museo di Isola Peddone e San Simplicio",
+    h1: "Olbia",
+    description:
+      "Olbia in Gallura: Museo Archeologico Isola Peddone, basilica di San Simplicio, festa di Mesu Maju e cosa visitare in città.",
+    hero: {
+      src: "/images/cultura/olbia-marina.webp",
+      alt: "La marina di Olbia sul golfo, con barche e lungomare",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Olbia,_marina_di_Olbia_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/olbia-san-simplicio.webp",
+      alt: "La basilica romanica di San Simplicio ad Olbia",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Olbia_-_Basilica_di_San_Simplicio_(02).JPG",
+      },
+    },
+    intro:
+      "Olbia è porto, aeroporto e città di Gallura, non solo lo scalo per la Costa Smeralda. Isola Peddone tiene il museo del porto; San Simplicio è la basilica. Questa scheda parte da lì, senza trattarla come un parcheggio verso le spiagge.",
+    history: [
+      "Olbia, «felice» in greco, è porto fenicio, focese, punico, romano. Negli scavi del tunnel sotto il lungomare, negli anni Novanta, sono uscite navi romane e un’imbarcazione medievale: tre relitti stanno in museo, con timoni e alberi che in Italia non trovi altrove. I Vandali affondano la flotta nel V secolo; la città si riduce, poi rinasce.",
+      "Nel Medioevo è Terranova, capitale del giudicato di Gallura. Il nome Olbia torna nel 1939. Corso Umberto, il molo Brin, San Simplicio un po’ in disparte rispetto al traffico: il centro che cammini è Novecento sopra un golfo che ha sempre lavorato. L’aeroporto e i traghetti pesano; la basilica e il museo tengono il resto.",
+    ],
+    traditions: [
+      {
+        title: "San Simplicio, Mesu Maju",
+        body: "A metà maggio Olbia fa sa festa manna de Mesu Maju: patrono, processione, gruppi folk, sagra delle cozze, palio. Il 15 maggio è il giorno del santo. Date e percorso li pubblica il Comitato ogni anno. Non è una sagra di paese piccolo: è la festa della città di Gallura.",
+      },
+      {
+        title: "Città di porto",
+        body: "Olbia vive di scalo, cantiere, commercio. Il museo sull’isolotto Peddone, a forma di nave ormeggiata, racconta proprio quello: città e porto insieme, dal relitto al Corso. Se la usi solo per noleggiare l’auto, ti perdi la ragione per cui il golfo esiste.",
+      },
+    ],
+    visit: [
+      {
+        name: "Museo Archeologico, Isola Peddone",
+        body: "Piazzale Benedetto Brin, sull’isolotto Peddone, molo del porto vecchio. Relitti, testa di Ercole, sale da fenici e romani fino a Terranova. Ingresso di solito gratuito; orari sul sito del Comune (comune.olbia.ot.it), spesso martedì-domenica con pausa pomeridiana. Chiudi il telefono e guarda i timoni: sono il pezzo.",
+      },
+      {
+        name: "Basilica di San Simplicio e necropoli",
+        body: "Romanico di granito, XI-XII secolo, un po’ fuori dal Corso. Accanto, l’area Tempio-Necropoli ha restituito centinaia di tombe romane: ingresso da via D’Annunzio e piazza San Simplicio, orari comunali. In un pomeriggio ci stai museo più basilica a piedi. Il resto — Pittulongu, Porto Rotondo — è un altro giro.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Olbia merita una sosta o si scende solo dall’aereo?",
+        answer:
+          "Merita almeno Isola Peddone e San Simplicio. In tre ore le fai a piedi dal centro. Il mare è un altro programma.",
+      },
+      {
+        question: "Quando è la festa di San Simplicio?",
+        answer:
+          "A metà maggio, con il culmine il 15. Il programma esatto — processione, sagra, palio — lo pubblica ogni anno il Comitato della festa.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "porto-torres",
+    path: "/cultura-sarda/nord-sardegna/porto-torres",
+    town: "Porto Torres",
+    province: "Sassari",
+    area: "Nurra",
+    title: "Porto Torres: San Gavino e Turris Libisonis",
+    h1: "Porto Torres",
+    description:
+      "Porto Torres in Sardegna: basilica di San Gavino, Antiquarium Turritano, area di Turris Libisonis, Festha Manna e ponte romano.",
+    hero: {
+      src: "/images/cultura/porto-torres-panorama.webp",
+      alt: "Porto Torres vista dal mare, con il porto e il golfo dell’Asinara",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Porto_Torres,_panorama_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/porto-torres-san-gavino.webp",
+      alt: "La basilica romanica di San Gavino a Porto Torres",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 3.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Porto_Torres_-_Basilica_di_San_Gavino_(02).JPG",
+      },
+    },
+    intro:
+      "Porto Torres è colonia romana e porto industriale, non un borgo ricostruito. San Gavino è la basilica più grande del romanico sardo; sotto e accanto resta Turris Libisonis. Si viene per i martiri, l’Antiquarium e il ponte sul Riu Mannu.",
+    history: [
+      "Turris Libisonis è colonia romana, l’unico porto del nord-ovest con rapporti diretti su Ostia. Terme, mosaici, ponte di inizio I secolo sul Riu Mannu: la città moderna sta sopra quella. L’area detta Palazzo di Re Barbaro è il quartiere che si visita; l’Antiquarium, in via Ponte Romano, tiene statue, iscrizioni, corredi.",
+      "Gavino, Proto e Gianuario, martiri di inizio IV secolo, danno il nome alla basilica su Monte Agellu: due absidi, navata lunghissima, cripta con le tombe ritrovate nel 1614. È chiesa di giudici e pellegrini, non di vetrina. Il Novecento aggiunge cantiere, petrolchimico, traghetti. Il golfo resta quello dell’Asinara.",
+    ],
+    traditions: [
+      {
+        title: "Festha Manna e martiri turritani",
+        body: "Tra maggio e Pentecoste Porto Torres fa la Festha Manna: simulacri di Gavino, Proto e Gianuario, processione, pellegrinaggio notturno da San Nicola di Sassari, scambio delle chiavi tra i due sindaci. Non è la Corsa degli Scalzi di Cabras: è il rito turritano. Date sul sito del Comune, ogni anno diverse con la Pasqua.",
+      },
+      {
+        title: "Porto e basilica",
+        body: "La città vive di banchina e di San Gavino. Balai, le chiesette sul mare, il ponte romano: si cammina il lungomare e si sale alla basilica. In agosto il resto è spiaggia; se vuoi i martiri, maggio è il mese.",
+      },
+    ],
+    visit: [
+      {
+        name: "Basilica di San Gavino",
+        body: "In centro, su Monte Agellu. Entra, scendi in cripta, guarda le due absidi: non c’è facciata da cartolina, c’è una nave di pietra. Orari e visite guidate li comunica la parrocchia e il Comune. Accanto, Balai Vicino e Balai Lontano sul mare.",
+      },
+      {
+        name: "Antiquarium Turritano e area archeologica",
+        body: "Via Ponte Romano 99, accanto alla stazione marittima. Museo e scavi di Turris Libisonis; l’area si visita spesso con accompagnamento a orari fissi. Da dicembre 2025 il museo ha avuto chiusure per nuovo allestimento: verifica su antiquariumportotorres.cultura.gov.it prima di partire. Il ponte romano sul Riu Mannu si vede dal sito.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa vedere a Porto Torres in un giorno?",
+        answer:
+          "Mattina a San Gavino e cripta. Poi Antiquarium e scavi, se aperti. Nel pomeriggio il ponte romano e Balai, oppure il traghetto per l’Asinara.",
+      },
+      {
+        question: "Quando è la Festha Manna?",
+        answer:
+          "Intorno a Pentecoste, di solito tra fine maggio e giugno, con processione e pellegrinaggio da Sassari. Il Comune pubblica il programma ogni primavera.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "la-maddalena",
+    path: "/cultura-sarda/nord-sardegna/la-maddalena",
+    town: "La Maddalena",
+    province: "Sassari",
+    area: "Gallura",
+    title: "La Maddalena: Caprera, Garibaldi e l’arcipelago",
+    h1: "La Maddalena",
+    description:
+      "La Maddalena in Sardegna: Compendio Garibaldino di Caprera, Memoriale di Forte Arbuticci, porto e parco dell’arcipelago.",
+    hero: {
+      src: "/images/cultura/la-maddalena-panorama.webp",
+      alt: "La Maddalena vista dal mare, con il paese sull’isola",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:La_Maddalena,_panorama_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/la-maddalena-caprera.webp",
+      alt: "Il Compendio Garibaldino a Caprera, la Casa Bianca di Giuseppe Garibaldi",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:La_Maddalena,_compendio_garibaldino_di_Caprera_(23).jpg",
+      },
+    },
+    intro:
+      "La Maddalena è comune di isole, marina militare e parco. Caprera, unita da un ponte, tiene la casa di Garibaldi. Chi arriva per le spiagge dell’arcipelago può entrare in Compendio e Memoriale: è un’altra visita, non un optional.",
+    history: [
+      "L’arcipelago — Maddalena, Caprera, Santo Stefano, Spargi, Budelli, Razzoli, Santa Maria — è stato scalo, presidio, frontiera. Nel 1793 i francesi attaccano e vengono respinti; Nelson ci passa; nell’Ottocento e nel Novecento la Marina fa della Maddalena una piazzaforte. Il paese sul porto è quello: calata, arsenale, case di granito.",
+      "Garibaldi compra terra a Caprera nel 1855 e ci vive, con interruzioni, fino al 1882. La Casa Bianca, gli edifici agricoli, la tomba: oggi è museo statale. A quattro chilometri, Forte Arbuticci (anni 1890) è dal 2012 il Memoriale Giuseppe Garibaldi. Il Parco nazionale regola spiagge e approdi: non è un mare libero da cartina.",
+    ],
+    traditions: [
+      {
+        title: "Isole e Marina",
+        body: "La Maddalena è paese di militari, pescatori, traghettatori. Il centro sul porto, Cala Gavetta, tiene botteghe e passeggiata. Le processioni e le feste di mare ci sono; l’identità visibile, però, è l’arcipelago e la base. In inverno si svuota, in agosto si riempie di barche.",
+      },
+      {
+        title: "Caprera, casa e memoria",
+        body: "Due musei per lo stesso uomo: il Compendio racconta la vita quotidiana, il Memoriale le campagne. Prenota il Compendio: ingressi contingentati, venti persone ogni quarto d’ora. Il Memoriale si raggiunge in auto, moto o bici, non col bus di linea.",
+      },
+    ],
+    visit: [
+      {
+        name: "Compendio Garibaldino, Caprera",
+        body: "Casa Bianca, giardino, area cimiteriale. Circa 50 minuti, martedì-domenica, ultimo ingresso nel pomeriggio. Biglietti e fasce su museigaribaldini.cultura.gov.it. Caprera è collegata da un ponte: a piedi, in bici o in auto dal porto della Maddalena. In estate c’è anche il bus urbano fino alla casa-museo.",
+      },
+      {
+        name: "Memoriale di Forte Arbuticci e paese",
+        body: "Stessa isola, quattro chilometri, orari diversi dal Compendio: spesso solo pomeriggio. Tredici sezioni nel forte. Poi torna in paese: calata, Museo diocesano se aperto, traghetto da Palau (un quarto d’ora). Le spiagge del parco hanno regole e, in alta stagione, limiti: controlla il sito del Parco prima di salire su un gommone.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Come si arriva a Caprera e alla casa di Garibaldi?",
+        answer:
+          "Traghetto Palau–La Maddalena, poi ponte per Caprera. Il Compendio è raggiungibile in auto, bici o bus urbano. Prenota il biglietto: gli ingressi sono a fasce.",
+      },
+      {
+        question: "Si visitano Compendio e Memoriale nello stesso giorno?",
+        answer:
+          "Sì, se calcoli il trasferimento e gli orari diversi. Il Memoriale apre più tardi e non ha mezzo pubblico. Verifica su museigaribaldini.cultura.gov.it.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
+    slug: "arzachena",
+    path: "/cultura-sarda/nord-sardegna/arzachena",
+    town: "Arzachena",
+    province: "Sassari",
+    area: "Gallura",
+    title: "Arzachena: Li Muri, Albucciu e Museo Ruzittu",
+    h1: "Arzachena",
+    description:
+      "Arzachena in Gallura: Museo civico Michele Ruzittu, necropoli di Li Muri, nuraghe Albucciu e siti archeologici oltre la Costa Smeralda.",
+    hero: {
+      src: "/images/cultura/arzachena-panorama.webp",
+      alt: "Panorama di Arzachena tra i graniti della Gallura",
+      credit: {
+        ...GIANNI,
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Arzachena,_panorama_(01).jpg",
+      },
+    },
+    visitPhoto: {
+      src: "/images/cultura/arzachena-li-muri.webp",
+      alt: "I circoli funerari della necropoli di Li Muri, nel territorio di Arzachena",
+      credit: {
+        author: "Mboesch",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Arzachena-necropoli-li-muri.jpg",
+      },
+    },
+    intro:
+      "Arzachena è un paese di Gallura interna con un parco archeologico sparso nel granito. La Costa Smeralda sta nel comune, ma non è il paese. Si viene per Li Muri, Albucciu, La Prisgiona e il Museo Ruzittu.",
+    history: [
+      "Prima delle ville a mare c’è una cultura preistorica che gli archeologi chiamano di Arzachena: circoli funerari a Li Muri, IV millennio a.C., piccoli, precisi, diversi dalle tombe del resto dell’isola. Poi nuraghi a corridoio come Albucciu, villaggi come La Prisgiona, tombe di giganti (Coddu Ecchju, Li Lolghi, Moru). Il territorio è questo, non solo il golfo.",
+      "Il comune autonomo nasce nel 1921. Negli anni Sessanta l’Aga Khan lancia la Costa Smeralda: Porto Cervo, Cala di Volpe, un altro mondo nello stesso municipio. Cannigione resta il borgo di mare del paese. In centro, via Mozart, il Museo civico Michele Ruzittu — intitolato a chi spinse l’autonomia — ha riaperto nel 2022 dopo anni di chiusura.",
+    ],
+    traditions: [
+      {
+        title: "Paese e Costa Smeralda",
+        body: "Due geografie. Il paese sta nell’entroterra, granito e piazza; la Costa è un progetto turistico degli anni Sessanta. Se cerchi «Arzachena cosa vedere» e ti escono solo yacht, sei sulla metà sbagliata della scheda. Il Fungo, il masso in centro, è il segno visibile del granito, non un monumento inventato.",
+      },
+      {
+        title: "Siti aperti, mestiere di guide",
+        body: "Ge.se.co., società comunale, gestisce museo e aree. Guide, audioguide, info point a Cannigione e Malchittu. Orari e prezzi su arzachenaturismo.com: d’estate i siti stanno aperti tutto il giorno, il museo chiude il lunedì. Non entrare nei recinti fuori orario: è scavo, non pascolo.",
+      },
+    ],
+    visit: [
+      {
+        name: "Museo civico Michele Ruzittu",
+        body: "Via Mozart, centro paese. Tre sale, reperti da Li Muri ad Albucciu e La Prisgiona, sezione minerali. Martedì-domenica, di solito 10–13 e 16–19. Telefono 0789 840106, museo@gesecoarzachena.it. Il biglietto cumulativo con i siti archeologici conviene se fai più di un recinto.",
+      },
+      {
+        name: "Li Muri, Albucciu, La Prisgiona",
+        body: "Li Muri: circoli funerari, mezz’ora, auto. Albucciu e il tempietto di Malchittu stanno sulla strada per Cannigione. La Prisgiona e Coddu Ecchju verso Capichera. In un giorno ne fai due o tre, non tutti. Scarpe, acqua, orari su arzachenaturismo.com. Porto Cervo è un altro pomeriggio, se ti serve.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa vedere ad Arzachena oltre alla Costa Smeralda?",
+        answer:
+          "Il Museo Ruzittu in centro, Li Muri, il nuraghe Albucciu. Se resta tempo, La Prisgiona o una tomba di giganti. La Costa è la costa, non il paese.",
+      },
+      {
+        question: "I siti archeologici sono aperti in inverno?",
+        answer:
+          "Sì, con orari più corti. Il museo chiude il lunedì tutto l’anno. Controlla arzachenaturismo.com: in bassa stagione qualche recinto può chiudere un giorno.",
+      },
+    ],
+    publishedAt: "2026-09-11",
+  },
+  {
     slug: "castelsardo",
     path: "/cultura-sarda/nord-sardegna/castelsardo",
     town: "Castelsardo",
