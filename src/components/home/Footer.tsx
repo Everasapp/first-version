@@ -80,6 +80,12 @@ export default function Footer() {
                 Eventi e sagre
               </Link>
               <Link
+                href="/cultura-sarda"
+                className="text-[#075EAE] transition hover:text-[#064E91]"
+              >
+                Cultura sarda
+              </Link>
+              <Link
                 href="/eventi-oggi"
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >

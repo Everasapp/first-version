@@ -120,6 +120,47 @@ export function eventSchema(input: {
   };
 }
 
+export function articleSchema(input: {
+  headline: string;
+  description: string;
+  url: string;
+  imageUrl: string;
+  datePublished: string;
+  dateModified?: string;
+  aboutName?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.headline,
+    description: input.description,
+    url: input.url,
+    image: [absoluteUrl(input.imageUrl)],
+    datePublished: input.datePublished,
+    dateModified: input.dateModified || input.datePublished,
+    inLanguage: "it-IT",
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/images/everas-logo-v2.webp"),
+      },
+    },
+    about: input.aboutName
+      ? {
+          "@type": "Place",
+          name: input.aboutName,
+        }
+      : undefined,
+  };
+}
+
 export function collectionPageSchema(input: {
   name: string;
   description: string;
