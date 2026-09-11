@@ -12,7 +12,6 @@ import {
   CULTURE_AREAS,
   citiesForCultureArea,
   cultureTownPathForCity,
-  findCultureArea,
 } from "@/src/lib/seo/cultura-areas";
 import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
 import { upcomingWeekends } from "@/src/lib/seo/weekends";
@@ -106,10 +105,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.78,
     })),
-    ...(() => {
-      const nord = findCultureArea("nord-sardegna");
-      if (!nord) return [];
-      return citiesForCultureArea(nord).map((city) => {
+    ...CULTURE_AREAS.filter((area) => area.townPagesLive).flatMap((area) =>
+      citiesForCultureArea(area).map((city) => {
         const article = CULTURE_TOWNS.find(
           (item) =>
             item.town.toLocaleLowerCase("it") ===
@@ -121,8 +118,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency: "monthly" as const,
           priority: article ? 0.75 : 0.65,
         };
-      });
-    })(),
+      }),
+    ),
     {
       url: `${SITE_URL}/categorie`,
       changeFrequency: "weekly",

@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 
 import CultureArticleView from "@/src/components/seo/CultureArticleView";
 import CultureTownStubView from "@/src/components/seo/CultureTownStubView";
-import { citiesInArea } from "@/src/data/cities";
 import {
+  allCultureTownParams,
   citiesForCultureArea,
   CULTURE_HUB_PATH,
   cultureTownPath,
@@ -17,7 +17,7 @@ import {
   findCultureTown,
 } from "@/src/lib/seo/cultura-towns";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
-import { cityToSlug, findCityBySlug } from "@/src/lib/seo/paths";
+import { findCityBySlug } from "@/src/lib/seo/paths";
 import {
   articleSchema,
   breadcrumbListSchema,
@@ -31,10 +31,7 @@ type CulturaTownPageProps = {
 };
 
 export function generateStaticParams() {
-  return citiesInArea("Nord Sardegna").map((city) => ({
-    area: "nord-sardegna",
-    slug: cityToSlug(city.city),
-  }));
+  return allCultureTownParams();
 }
 
 export async function generateMetadata({

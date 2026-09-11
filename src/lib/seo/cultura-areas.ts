@@ -71,17 +71,22 @@ export const CULTURE_AREAS: CultureArea[] = [
     title: "Cultura sarda nel Centro: comuni di Nuoro e Oristano",
     h1: "Centro Sardegna",
     description:
-      "Elenco dei comuni del Centro Sardegna per la guida Cultura sarda. Le schede dei paesi arrivano dopo il Nord.",
+      "Directory dei comuni del Centro Sardegna: Nuoro, Oristano e i paesi dell’interno, con una pagina per ciascun comune.",
     paragraphs: [
-      "Il Centro usa lo stesso perimetro dei filtri eventi: Nuoro, Oristano e i paesi dell’interno. Qui trovi già la lista dei comuni.",
-      "Le pagine di ogni paese — storia, tradizioni e cosa visitare — arrivano dopo il Nord Sardegna. Gli eventi restano sul calendario.",
+      "Il Centro usa lo stesso perimetro dei filtri eventi: Nuoro, Oristano e i paesi dell’interno. Ogni comune ha una pagina.",
+      "Dove la guida lunga non c’è ancora, trovi il calendario eventi e i collegamenti agli altri paesi dell’area.",
     ],
-    townPagesLive: false,
+    townPagesLive: true,
     faqs: [
       {
-        question: "Quando arrivano le schede dei paesi del Centro?",
+        question: "Quali comuni del Centro sono in questa guida?",
         answer:
-          "Dopo il Nord. Questa pagina è la directory: i nomi dei comuni sono già qui, le guide si aggiungono comune per comune.",
+          "Tutti i comuni del Centro Sardegna usati anche nei filtri eventi, da Nuoro a Oristano. Cerca il nome nell’elenco A–Z.",
+      },
+      {
+        question: "Ogni paese ha una guida completa?",
+        answer:
+          "Ogni comune ha una pagina con eventi e collegamenti. Le schede più ampie — musei, mestieri, cosa visitare — si aggiungono comune per comune, come già accade nel Nord.",
       },
     ],
   },
@@ -94,17 +99,22 @@ export const CULTURE_AREAS: CultureArea[] = [
     title: "Cultura sarda nel Sud: comuni di Cagliari e Sulcis",
     h1: "Sud Sardegna",
     description:
-      "Elenco dei comuni del Sud Sardegna per la guida Cultura sarda. Le schede dei paesi arrivano dopo il Nord.",
+      "Directory dei comuni del Sud Sardegna: Cagliari, il Campidano e una selezione del Sulcis, con una pagina per ciascun comune.",
     paragraphs: [
-      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari e una selezione del Sulcis. Qui trovi già la lista dei comuni.",
-      "Le pagine di ogni paese arrivano dopo il Nord e il Centro. Per sagre e concerti resta il calendario EVERAS.",
+      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari e una selezione del Sulcis. Ogni comune ha una pagina.",
+      "Dove la guida lunga non c’è ancora, trovi il calendario eventi e i collegamenti agli altri paesi dell’area.",
     ],
-    townPagesLive: false,
+    townPagesLive: true,
     faqs: [
       {
-        question: "Quando arrivano le schede dei paesi del Sud?",
+        question: "Quali comuni del Sud sono in questa guida?",
         answer:
-          "Dopo Nord e Centro. Questa directory raccoglie già i comuni; le guide culturali si aggiungono in un secondo momento.",
+          "Tutti i comuni del Sud Sardegna usati anche nei filtri eventi, da Cagliari al Sulcis. Cerca il nome nell’elenco A–Z.",
+      },
+      {
+        question: "Ogni paese ha una guida completa?",
+        answer:
+          "Ogni comune ha una pagina con eventi e collegamenti. Le schede più ampie — musei, mestieri, cosa visitare — si aggiungono comune per comune, come già accade nel Nord.",
       },
     ],
   },
@@ -162,6 +172,15 @@ export function groupCitiesByLetter(list: City[]) {
 
 export function citiesForCultureArea(area: CultureArea) {
   return citiesInArea(area.name);
+}
+
+export function allCultureTownParams() {
+  return CULTURE_AREAS.filter((area) => area.townPagesLive).flatMap((area) =>
+    citiesForCultureArea(area).map((city) => ({
+      area: area.slug,
+      slug: cityToSlug(city.city),
+    })),
+  );
 }
 
 export function nearbyCities(list: City[], current: City, count = 8) {

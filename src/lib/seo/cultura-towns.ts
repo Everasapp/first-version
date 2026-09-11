@@ -49,7 +49,7 @@ export const CULTURE_HUB = {
   paragraphs: [
     "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
-    "Ogni scheda parte da ciò che il comune ha messo in mostra — un museo, un mestiere, una festa — e racconta storia, tradizioni e cosa vale una visita. Si comincia dal Nord, con Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri, Stintino e tutti gli altri comuni dell’area.",
+    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord trovi già le guide più ampie su Pattada, Castelsardo, Aggius, Tempio Pausania, Ozieri e Stintino; negli altri comuni, il calendario e i collegamenti all’area.",
   ],
   faqs: [
     {
@@ -60,7 +60,7 @@ export const CULTURE_HUB = {
     {
       question: "Da dove si inizia?",
       answer:
-        "Dal Nord Sardegna: lì trovi l’elenco completo dei comuni e le schede già scritte. Centro e Sud hanno già la lista dei paesi; le guide arrivano dopo.",
+        "Scegli Nord, Centro o Sud, poi apri il comune. Nel Nord ci sono già le schede più lunghe; negli altri paesi trovi il calendario eventi e i collegamenti all’area.",
     },
   ],
 } as const;

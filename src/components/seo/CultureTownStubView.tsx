@@ -79,7 +79,9 @@ export default function CultureTownStubView({
                 Nella guida
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-600">
-                {`Le schede più ampie — musei, mestieri, cosa visitare — partono dai comuni già pubblicati nel ${area.name}. ${city.city} resta in directory per chi cerca il nome esatto, con gli appuntamenti in programma e i collegamenti ai paesi vicini.`}
+                {featured.length > 0
+                  ? `Le schede più ampie — musei, mestieri, cosa visitare — partono dai comuni già pubblicati nel ${area.name}. ${city.city} resta in directory per chi cerca il nome esatto, con gli appuntamenti in programma e i collegamenti ai paesi vicini.`
+                  : `${city.city} è in directory con gli eventi in programma e i collegamenti agli altri comuni del ${area.name}. Le schede più ampie — musei, mestieri, cosa visitare — si aggiungono comune per comune.`}
               </p>
             </section>
 
