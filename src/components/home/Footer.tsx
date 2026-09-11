@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
+import { upcomingWeekends } from "@/src/lib/seo/weekends";
+
 const legalLinks = [
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/cookie", label: "Cookie Policy" },
@@ -50,8 +53,13 @@ function FacebookIcon({ className }: { className?: string }) {
   );
 }
 
+const footerLinkClassName =
+  "text-[#075EAE] transition hover:text-[#064E91]";
+
 export default function Footer() {
   const year = new Date().getFullYear();
+  const currentMonth = upcomingCalendarMonths(1)[0];
+  const datedWeekends = upcomingWeekends(2);
 
   return (
     <footer className="mt-auto border-t border-[#c5d8ec] bg-[#e8f1fa]">
@@ -73,58 +81,45 @@ export default function Footer() {
               aria-label="Pagine eventi"
               className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold"
             >
-              <Link
-                href="/eventi-sardegna"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi-sardegna" className={footerLinkClassName}>
                 Eventi e sagre
               </Link>
-              <Link
-                href="/cultura-sarda"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/cultura-sarda" className={footerLinkClassName}>
                 Cultura sarda
               </Link>
-              <Link
-                href="/eventi-oggi"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi-oggi" className={footerLinkClassName}>
                 Eventi oggi
               </Link>
-              <Link
-                href="/eventi-weekend"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi-weekend" className={footerLinkClassName}>
                 Weekend
               </Link>
-              <Link
-                href="/eventi/sassari"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              {currentMonth ? (
+                <Link href={currentMonth.path} className={footerLinkClassName}>
+                  {currentMonth.name} {currentMonth.year}
+                </Link>
+              ) : null}
+              {datedWeekends.map((weekend) => (
+                <Link
+                  key={weekend.slug}
+                  href={weekend.path}
+                  className={footerLinkClassName}
+                >
+                  {weekend.shortLabel}
+                </Link>
+              ))}
+              <Link href="/eventi/sassari" className={footerLinkClassName}>
                 Sassari
               </Link>
-              <Link
-                href="/eventi/olbia"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi/olbia" className={footerLinkClassName}>
                 Olbia
               </Link>
-              <Link
-                href="/eventi/alghero"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi/alghero" className={footerLinkClassName}>
                 Alghero
               </Link>
-              <Link
-                href="/eventi/cagliari"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi/cagliari" className={footerLinkClassName}>
                 Cagliari
               </Link>
-              <Link
-                href="/eventi/nuoro"
-                className="text-[#075EAE] transition hover:text-[#064E91]"
-              >
+              <Link href="/eventi/nuoro" className={footerLinkClassName}>
                 Nuoro
               </Link>
             </nav>

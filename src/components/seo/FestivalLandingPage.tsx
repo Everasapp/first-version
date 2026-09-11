@@ -5,6 +5,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { sagreExploreLinks } from "@/src/lib/seo/calendar";
@@ -66,6 +67,11 @@ export default async function FestivalLandingPage({ hub }: { hub: FestivalHub })
           name: hub.h1,
           description: hub.description,
           url: absoluteUrl(hub.path),
+        }),
+        eventsItemListSchema({
+          name: hub.h1,
+          path: hub.path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

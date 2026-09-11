@@ -5,6 +5,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { sagreExploreLinks } from "@/src/lib/seo/calendar";
@@ -123,6 +124,11 @@ export default async function WeekendLandingPage({
           name: weekend.h1,
           description: weekend.description,
           url: absoluteUrl(weekend.path),
+        }),
+        eventsItemListSchema({
+          name: weekend.h1,
+          path: weekend.path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

@@ -9,6 +9,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import {
@@ -155,6 +156,11 @@ export async function CityLandingPage({ city }: { city: City }) {
           description: intro,
           url: absoluteUrl(path),
         }),
+        eventsItemListSchema({
+          name: h1,
+          path,
+          events,
+        }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
           { name: "Eventi", path: "/eventi" },
@@ -218,6 +224,11 @@ export async function CategoryLandingPage({
           name: h1,
           description: intro,
           url: absoluteUrl(path),
+        }),
+        eventsItemListSchema({
+          name: h1,
+          path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
@@ -286,6 +297,11 @@ export async function CityCategoryLandingPage({
           name: h1,
           description: intro,
           url: absoluteUrl(path),
+        }),
+        eventsItemListSchema({
+          name: h1,
+          path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

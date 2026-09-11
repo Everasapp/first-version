@@ -5,6 +5,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import {
@@ -94,6 +95,11 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
           name: meta.h1,
           description: meta.description,
           url: absoluteUrl(meta.path),
+        }),
+        eventsItemListSchema({
+          name: meta.h1,
+          path: meta.path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

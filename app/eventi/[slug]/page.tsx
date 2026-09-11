@@ -70,11 +70,14 @@ import {
   getEventCommunitySummary,
 } from "@/src/lib/community-data";
 import { createClient } from "@/src/lib/supabase/server";
+import { isPublicEventActive } from "@/src/lib/eventActive";
+import { findCultureTown } from "@/src/lib/seo/cultura-towns";
 import {
   findCategoryBySlug,
   findCityBySlug,
   categoryEventsPath,
   cityEventsPath,
+  cityToSlug,
 } from "@/src/lib/seo/paths";
 import {
   breadcrumbListSchema,
@@ -287,8 +290,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
     displayedViews = 1;
   }
 
+  const eventCardSelect =
+    "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count";
+
   const [
     { data: similarData, error: similarError },
+    { data: cityEventsData, error: cityEventsError },
     favoriteIds,
     calendarIds,
     followedIds,
@@ -300,14 +307,20 @@ async function EventDetailPage({ slug }: { slug: string }) {
   ] = await Promise.all([
     supabase
       .from("events")
-      .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count",
-      )
+      .select(eventCardSelect)
       .eq("status", "published")
       .eq("category", event.category)
       .neq("id", event.id)
       .order("start_at", { ascending: true })
       .limit(3),
+    supabase
+      .from("events")
+      .select(eventCardSelect)
+      .eq("status", "published")
+      .eq("municipality", event.municipality)
+      .neq("id", event.id)
+      .order("start_at", { ascending: true })
+      .limit(24),
     getCurrentUserFavoriteIds(),
     getCurrentUserCalendarEventIds(),
     getCurrentUserFollowedOrganizerIds(),
@@ -332,6 +345,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   if (similarError) {
     console.error("Impossibile caricare gli eventi simili:", similarError);
+  }
+  if (cityEventsError) {
+    console.error(
+      "Impossibile caricare gli eventi della città:",
+      cityEventsError,
+    );
   }
 
   const organizer = (organizerData as Profile | null) ?? null;
@@ -368,9 +387,17 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? followedIds.has(followOrganizerId)
     : false;
 
-  const similarEvents = ((similarData ?? []) as EventRow[]).map((item) =>
-    mapEventForCard(item, favoriteIds.has(item.id)),
-  );
+  const similarEvents = ((similarData ?? []) as EventRow[])
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at))
+    .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
+
+  const cityEvents = ((cityEventsData ?? []) as EventRow[])
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at))
+    .slice(0, 6)
+    .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
+
+  const cultureHref =
+    findCultureTown(cityToSlug(event.municipality))?.path ?? null;
 
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const formattedPrice =
@@ -526,6 +553,14 @@ async function EventDetailPage({ slug }: { slug: string }) {
               <Link href={cityPath} className="hover:underline">
                 {event.municipality}
               </Link>
+              {cultureHref ? (
+                <>
+                  {" · "}
+                  <Link href={cultureHref} className="hover:underline">
+                    Guida {event.municipality}
+                  </Link>
+                </>
+              ) : null}
             </p>
             <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               {event.title}
@@ -624,6 +659,29 @@ async function EventDetailPage({ slug }: { slug: string }) {
                   </a>
                 </div>
               </div>
+
+              <p className="mt-5 text-sm leading-relaxed text-slate-600">
+                Altri eventi a{" "}
+                <Link
+                  href={cityPath}
+                  className="font-semibold text-[#075EAE] hover:underline"
+                >
+                  {event.municipality}
+                </Link>
+                {cultureHref ? (
+                  <>
+                    {" "}
+                    · guida culturale di{" "}
+                    <Link
+                      href={cultureHref}
+                      className="font-semibold text-[#075EAE] hover:underline"
+                    >
+                      {event.municipality}
+                    </Link>
+                  </>
+                ) : null}
+                .
+              </p>
             </div>
 
             {organizer || directory ? (
@@ -766,6 +824,34 @@ async function EventDetailPage({ slug }: { slug: string }) {
           </aside>
         </section>
 
+        {cityEvents.length > 0 && (
+          <section className="border-t border-slate-200 py-16">
+            <div className="mx-auto max-w-7xl px-5 sm:px-8">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
+                Stessa città
+              </p>
+
+              <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <h2 className="text-3xl font-bold text-slate-900">
+                  Altri eventi a {event.municipality}
+                </h2>
+                <Link
+                  href={cityPath}
+                  className="text-sm font-bold text-[#075EAE] hover:underline"
+                >
+                  Tutti gli eventi a {event.municipality}
+                </Link>
+              </div>
+
+              <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {cityEvents.map((cityEvent) => (
+                  <EventCard key={cityEvent.eventId} event={cityEvent} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {similarEvents.length > 0 && (
           <section className="border-t border-slate-200 py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -779,7 +865,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
               <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {similarEvents.map((similarEvent) => (
-                  <EventCard key={similarEvent.id} event={similarEvent} />
+                  <EventCard key={similarEvent.eventId} event={similarEvent} />
                 ))}
               </div>
             </div>

@@ -105,21 +105,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.78,
     })),
-    ...CULTURE_AREAS.filter((area) => area.townPagesLive).flatMap((area) =>
-      citiesForCultureArea(area).map((city) => {
-        const article = CULTURE_TOWNS.find(
-          (item) =>
-            item.town.toLocaleLowerCase("it") ===
-            city.city.toLocaleLowerCase("it"),
-        );
-        return {
-          url: `${SITE_URL}${cultureTownPathForCity(city)}`,
-          lastModified: article ? new Date(article.publishedAt) : undefined,
-          changeFrequency: "monthly" as const,
-          priority: article ? 0.75 : 0.65,
-        };
-      }),
-    ),
+    ...CULTURE_TOWNS.map((article) => ({
+      url: `${SITE_URL}${article.path}`,
+      lastModified: new Date(article.publishedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    })),
     {
       url: `${SITE_URL}/categorie`,
       changeFrequency: "weekly",
@@ -290,6 +281,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
     );
 
+    const cultureArticleTownSlugs = new Set(
+      CULTURE_TOWNS.map((article) => cityToSlug(article.town)),
+    );
+    const cultureStubRoutes: MetadataRoute.Sitemap = CULTURE_AREAS.filter(
+      (area) => area.townPagesLive,
+    ).flatMap((area) =>
+      citiesForCultureArea(area)
+        .filter((city) => {
+          const slug = cityToSlug(city.city);
+          return (
+            citiesWithUpcoming.has(slug) && !cultureArticleTownSlugs.has(slug)
+          );
+        })
+        .map((city) => ({
+          url: `${SITE_URL}${cultureTownPathForCity(city)}`,
+          changeFrequency: "monthly" as const,
+          priority: 0.65,
+        })),
+    );
+
     const organizerRoutes: MetadataRoute.Sitemap = (organizers ?? [])
       .filter((organizer) => !claimedProfileIds.has(organizer.id))
       .map((organizer) => ({
@@ -312,6 +323,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...cityRoutes,
       ...eventRoutes,
       ...cityCategoryRoutes,
+      ...cultureStubRoutes,
       ...organizerRoutes,
       ...directoryRoutes,
     ];

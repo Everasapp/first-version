@@ -180,6 +180,51 @@ export function collectionPageSchema(input: {
   };
 }
 
+/** ItemList of absolute URLs — helps Google discover listing pages. */
+export function itemListSchema(input: {
+  name: string;
+  url: string;
+  items: Array<{ name: string; url: string }>;
+}): Record<string, unknown> | undefined {
+  if (!input.items.length) {
+    return undefined;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: input.name,
+    url: input.url,
+    numberOfItems: input.items.length,
+    itemListElement: input.items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
+
+/**
+ * ItemList from event cards (`id` = public slug under `/eventi/...`).
+ */
+export function eventsItemListSchema(input: {
+  name: string;
+  path: string;
+  events: Array<{ title: string; id: string }>;
+  limit?: number;
+}): Record<string, unknown> | undefined {
+  const limit = input.limit ?? 20;
+  return itemListSchema({
+    name: input.name,
+    url: absoluteUrl(input.path),
+    items: input.events.slice(0, limit).map((event) => ({
+      name: event.title,
+      url: absoluteUrl(`/eventi/${event.id}`),
+    })),
+  });
+}
+
 export function faqPageSchema(
   faqs: Array<{ question: string; answer: string }>,
 ): Record<string, unknown> | undefined {

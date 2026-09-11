@@ -5,6 +5,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { sagreExploreLinks } from "@/src/lib/seo/calendar";
@@ -94,6 +95,11 @@ export default async function EventiSardegnaHubPage() {
           name: HUB_TITLE,
           description: HUB_DESCRIPTION,
           url: absoluteUrl(HUB_PATH),
+        }),
+        eventsItemListSchema({
+          name: HUB_TITLE,
+          path: HUB_PATH,
+          events: upcoming,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

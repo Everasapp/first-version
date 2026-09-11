@@ -5,6 +5,7 @@ import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
+  eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { sagreExploreLinks, type CalendarMonth } from "@/src/lib/seo/calendar";
@@ -82,6 +83,11 @@ export default async function MonthLandingPage({
           name: month.h1,
           description: month.description,
           url: absoluteUrl(month.path),
+        }),
+        eventsItemListSchema({
+          name: month.h1,
+          path: month.path,
+          events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
