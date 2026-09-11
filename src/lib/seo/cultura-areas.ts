@@ -67,7 +67,7 @@ export const CULTURE_AREAS: CultureArea[] = [
     name: "Centro Sardegna",
     path: `${CULTURE_HUB_PATH}/centro-sardegna`,
     image: "/images/centro-sardegna.webp",
-    imageAlt: "Paesaggio del Centro Sardegna",
+    imageAlt: "Montagne del Supramonte nel Centro Sardegna",
     title: "Cultura sarda nel Centro: comuni di Nuoro e Oristano",
     h1: "Centro Sardegna",
     description:
