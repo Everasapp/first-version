@@ -68,15 +68,15 @@ export default function CultureArticleView({
             </div>
           </header>
 
-          <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
+          <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
             <figure>
-              <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+              <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
                 <Image
                   src={article.hero.src}
                   alt={article.hero.alt}
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, 768px"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
                   className="object-cover"
                 />
               </div>
@@ -90,7 +90,7 @@ export default function CultureArticleView({
               {article.history.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 48)}
-                  className="mt-4 text-base leading-relaxed text-slate-600"
+                  className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600"
                 >
                   {paragraph}
                 </p>
@@ -101,12 +101,12 @@ export default function CultureArticleView({
               <h2 className="text-2xl font-bold text-slate-900">Tradizioni</h2>
               {article.traditionPhoto ? (
                 <figure className="mt-6">
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[3/2]">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
                     <Image
                       src={article.traditionPhoto.src}
                       alt={article.traditionPhoto.alt}
                       fill
-                      sizes="(max-width: 768px) 100vw, 768px"
+                      sizes="(max-width: 1280px) 100vw, 1280px"
                       className="object-cover object-top"
                     />
                   </div>
@@ -115,7 +115,7 @@ export default function CultureArticleView({
                   </figcaption>
                 </figure>
               ) : null}
-              <div className="mt-6 space-y-8">
+              <div className="mt-6 max-w-3xl space-y-8">
                 {article.traditions.map((item) => (
                   <div key={item.title}>
                     <h3 className="text-lg font-bold text-slate-900">
@@ -135,12 +135,12 @@ export default function CultureArticleView({
               </h2>
               {article.visitPhoto ? (
                 <figure className="mt-6">
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
                     <Image
                       src={article.visitPhoto.src}
                       alt={article.visitPhoto.alt}
                       fill
-                      sizes="(max-width: 768px) 100vw, 768px"
+                      sizes="(max-width: 1280px) 100vw, 1280px"
                       className="object-cover"
                     />
                   </div>
@@ -149,7 +149,7 @@ export default function CultureArticleView({
                   </figcaption>
                 </figure>
               ) : null}
-              <div className="mt-8 space-y-8">
+              <div className="mt-8 max-w-3xl space-y-8">
                 {article.visit.map((place) => (
                   <div key={place.name}>
                     <h3 className="text-lg font-bold text-slate-900">
@@ -163,7 +163,7 @@ export default function CultureArticleView({
               </div>
             </section>
 
-            <section className="mt-12 border-t border-slate-200 pt-10">
+            <section className="mt-12 max-w-3xl border-t border-slate-200 pt-10">
               <h2 className="text-2xl font-bold text-slate-900">
                 Domande frequenti
               </h2>
