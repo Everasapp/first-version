@@ -66,10 +66,17 @@ export default function Header() {
             Home
           </Link>
           <Link
-            href="/eventi"
+            href="/#ricerca"
             className="touch-manipulation hover:text-blue-700"
+            onClick={(event) => {
+              if (window.location.pathname !== "/") return;
+              event.preventDefault();
+              document
+                .getElementById("ricerca")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
           >
-            Esplora
+            Ricerca
           </Link>
           <Link
             href="/categorie"
