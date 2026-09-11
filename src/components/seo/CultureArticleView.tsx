@@ -62,7 +62,7 @@ export default function CultureArticleView({
               <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 {article.h1}
               </h1>
-              <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
+              <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
                 {article.intro}
               </p>
             </div>
@@ -90,7 +90,7 @@ export default function CultureArticleView({
               {article.history.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 48)}
-                  className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600"
+                  className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg"
                 >
                   {paragraph}
                 </p>
@@ -115,13 +115,13 @@ export default function CultureArticleView({
                   </figcaption>
                 </figure>
               ) : null}
-              <div className="mt-6 max-w-3xl space-y-8">
+              <div className="mt-6 space-y-8">
                 {article.traditions.map((item) => (
                   <div key={item.title}>
-                    <h3 className="text-lg font-bold text-slate-900">
+                    <h3 className="text-lg font-bold text-slate-900 sm:text-xl">
                       {item.title}
                     </h3>
-                    <p className="mt-2 text-base leading-relaxed text-slate-600">
+                    <p className="mt-2 text-base leading-relaxed text-slate-600 sm:text-lg">
                       {item.body}
                     </p>
                   </div>
@@ -149,13 +149,13 @@ export default function CultureArticleView({
                   </figcaption>
                 </figure>
               ) : null}
-              <div className="mt-8 max-w-3xl space-y-8">
+              <div className="mt-8 space-y-8">
                 {article.visit.map((place) => (
                   <div key={place.name}>
-                    <h3 className="text-lg font-bold text-slate-900">
+                    <h3 className="text-lg font-bold text-slate-900 sm:text-xl">
                       {place.name}
                     </h3>
-                    <p className="mt-2 text-base leading-relaxed text-slate-600">
+                    <p className="mt-2 text-base leading-relaxed text-slate-600 sm:text-lg">
                       {place.body}
                     </p>
                   </div>
@@ -163,7 +163,7 @@ export default function CultureArticleView({
               </div>
             </section>
 
-            <section className="mt-12 max-w-3xl border-t border-slate-200 pt-10">
+            <section className="mt-12 border-t border-slate-200 pt-10">
               <h2 className="text-2xl font-bold text-slate-900">
                 Domande frequenti
               </h2>
@@ -176,7 +176,7 @@ export default function CultureArticleView({
                     <summary className="cursor-pointer list-none font-bold text-slate-900">
                       {faq.question}
                     </summary>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                    <p className="mt-3 text-base leading-relaxed text-slate-600">
                       {faq.answer}
                     </p>
                   </details>
