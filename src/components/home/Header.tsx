@@ -61,8 +61,11 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="mb-1.5 ml-auto hidden items-center gap-7 text-sm font-semibold md:flex">
-          <Link href="/" className="touch-manipulation text-blue-700">
+        <nav className="mb-1.5 ml-auto flex items-center gap-3 text-sm font-semibold sm:gap-5 md:gap-7">
+          <Link
+            href="/"
+            className="hidden touch-manipulation text-blue-700 md:inline"
+          >
             Home
           </Link>
           <Link
@@ -80,13 +83,13 @@ export default function Header() {
           </Link>
           <Link
             href="/categorie"
-            className="touch-manipulation hover:text-blue-700"
+            className="hidden touch-manipulation hover:text-blue-700 md:inline"
           >
             Categorie
           </Link>
         </nav>
 
-        <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2 md:ml-8">
+        <div className="relative z-10 flex min-w-0 shrink items-end gap-1 sm:gap-2 md:ml-8">
           <Link
             href="/cultura-sarda"
             className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5"
