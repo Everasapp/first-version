@@ -89,7 +89,7 @@ export default function Header() {
         <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2 md:ml-8">
           <Link
             href="/#ricerca"
-            className="inline-flex h-9 shrink-0 touch-manipulation items-center justify-center px-1.5 text-xs font-bold text-[#075EAE] transition [@media(hover:hover)]:hover:text-[#054a8a] active:text-[#054a8a] sm:px-2 md:hidden"
+            className={`${authButtonClassName} shrink-0 md:hidden`}
             onClick={(event) => {
               if (window.location.pathname !== "/") return;
               event.preventDefault();
