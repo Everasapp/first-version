@@ -1,23 +1,17 @@
 import { NextResponse } from "next/server";
 
 import { discoverAndImportEventDrafts } from "@/src/lib/admin/discover-event-drafts";
-import { createAdminClient } from "@/src/lib/supabase/admin";
+import { isCronAuthorized } from "@/src/lib/cron/auth";
+import { logCronRun } from "@/src/lib/cron/run-log";
+import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
+const JOB_NAME = "discover-events";
+
 // vercel.json schedule "0 6 * * *" = 08:00 Europe/Rome during CEST.
-
-function isAuthorized(request: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return false;
-  }
-
-  const header = request.headers.get("authorization");
-  return header === `Bearer ${cronSecret}`;
-}
 
 async function runDiscovery() {
   const supabase = createAdminClient();
@@ -39,12 +33,12 @@ async function runDiscovery() {
   }
 
   const limitRaw = Number.parseInt(
-    process.env.EVENT_DISCOVERY_DAILY_LIMIT || "20",
+    process.env.EVENT_DISCOVERY_DAILY_LIMIT || "30",
     10,
   );
   const limit = Number.isFinite(limitRaw)
-    ? Math.min(40, Math.max(1, limitRaw))
-    : 20;
+    ? Math.min(50, Math.max(1, limitRaw))
+    : 30;
 
   return discoverAndImportEventDrafts({
     supabase,
@@ -55,16 +49,58 @@ async function runDiscovery() {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  const startedAt = new Date();
+
+  if (!isCronAuthorized(request)) {
+    await logCronRun({
+      jobName: JOB_NAME,
+      status: "unauthorized",
+      startedAt,
+      summary: {
+        hasCronSecret: Boolean(process.env.CRON_SECRET?.trim()),
+        hasVercelCronHeader:
+          request.headers.get("x-vercel-cron") === "1",
+        hasAuthorization: Boolean(request.headers.get("authorization")),
+      },
+      errorMessage: "Unauthorized",
+    });
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const result = await runDiscovery();
+    await logCronRun({
+      supabase: tryCreateAdminClient(),
+      jobName: JOB_NAME,
+      status: "success",
+      startedAt,
+      summary: {
+        published: true,
+        discoveredNew: result.discoveredNew,
+        processed: result.processed,
+        importedCount: result.importedCount,
+        skippedCount: result.skippedCount,
+        errorCount: result.errorCount,
+        importedTitles: result.imported.map((row) => row.title),
+        skippedSample: result.skipped.slice(0, 10),
+      },
+    });
     return NextResponse.json({ ok: true, published: true, ...result });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Errore sconosciuto";
+    await logCronRun({
+      jobName: JOB_NAME,
+      status: "error",
+      startedAt,
+      summary: {
+        hasServiceRole: Boolean(
+          process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+            process.env.SUPABASE_SECRET_KEY?.trim(),
+        ),
+      },
+      errorMessage: message,
+    });
     return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }
