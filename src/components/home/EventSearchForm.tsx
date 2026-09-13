@@ -134,10 +134,16 @@ export default function EventSearchForm() {
 
   const dateSummary =
     formatSearchDateLabel(selectedDate) || "Tutte le date";
-  const presetDateValue = DATE_PRESETS.has(selectedDate) ? selectedDate : "";
+  const presetDateValue = DATE_PRESETS.has(selectedDate)
+    ? selectedDate
+    : isPreciseDateFilter(selectedDate)
+      ? "__specifica__"
+      : "";
   const preciseDateValue = isPreciseDateFilter(selectedDate)
     ? selectedDate
     : "";
+  const showPrecisePicker =
+    presetDateValue === "__specifica__" || Boolean(preciseDateValue);
   const minDate = todayIsoDate();
 
   function togglePanel(key: Exclude<AccordionKey, null>) {
@@ -145,6 +151,10 @@ export default function EventSearchForm() {
   }
 
   function handlePresetDateChange(value: string) {
+    if (value === "__specifica__") {
+      setSelectedDate(preciseDateValue || minDate);
+      return;
+    }
     setSelectedDate(value);
   }
 
@@ -345,7 +355,12 @@ export default function EventSearchForm() {
               value={presetDateValue}
               onChange={(event) => {
                 handlePresetDateChange(event.target.value);
-                if (event.target.value) setOpenPanel("text");
+                if (
+                  event.target.value &&
+                  event.target.value !== "__specifica__"
+                ) {
+                  setOpenPanel("text");
+                }
               }}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
             >
@@ -354,22 +369,25 @@ export default function EventSearchForm() {
               <option value="domani">Domani</option>
               <option value="weekend">Questo weekend</option>
               <option value="settimana">Questa settimana</option>
+              <option value="__specifica__">Scegli una data…</option>
             </select>
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold text-slate-500">
-                Oppure scegli una data
-              </span>
-              <input
-                type="date"
-                value={preciseDateValue}
-                min={minDate}
-                onChange={(event) => {
-                  handlePreciseDateChange(event.target.value);
-                  if (event.target.value) setOpenPanel("text");
-                }}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
-              />
-            </label>
+            {showPrecisePicker ? (
+              <label className="block">
+                <span className="mb-1.5 block text-xs font-semibold text-slate-500">
+                  Data precisa
+                </span>
+                <input
+                  type="date"
+                  value={preciseDateValue || minDate}
+                  min={minDate}
+                  onChange={(event) => {
+                    handlePreciseDateChange(event.target.value);
+                    if (event.target.value) setOpenPanel("text");
+                  }}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+                />
+              </label>
+            ) : null}
           </div>
         </AccordionRow>
 
@@ -489,15 +507,18 @@ export default function EventSearchForm() {
             <option value="domani">Domani</option>
             <option value="weekend">Questo weekend</option>
             <option value="settimana">Questa settimana</option>
+            <option value="__specifica__">Scegli una data…</option>
           </select>
-          <input
-            type="date"
-            value={preciseDateValue}
-            min={minDate}
-            onChange={(event) => handlePreciseDateChange(event.target.value)}
-            aria-label="Scegli una data precisa"
-            className="mt-2 w-full min-w-0 bg-transparent text-sm font-medium text-slate-700 outline-none"
-          />
+          {showPrecisePicker ? (
+            <input
+              type="date"
+              value={preciseDateValue || minDate}
+              min={minDate}
+              onChange={(event) => handlePreciseDateChange(event.target.value)}
+              aria-label="Data precisa"
+              className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+            />
+          ) : null}
         </label>
 
         <label className={fieldClass}>
