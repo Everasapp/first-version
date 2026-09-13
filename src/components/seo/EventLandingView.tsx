@@ -11,6 +11,13 @@ import JsonLd from "@/src/components/seo/JsonLd";
 
 type FaqItem = { question: string; answer: string };
 
+type EventLandingSection = {
+  id: string;
+  title: string;
+  events: EventCardData[];
+  emptyHint?: string;
+};
+
 type EventLandingViewProps = {
   eyebrow?: string;
   h1: string;
@@ -18,6 +25,7 @@ type EventLandingViewProps = {
   intro: string;
   paragraphs?: string[];
   events: EventCardData[];
+  sections?: EventLandingSection[];
   errorMessage?: string | null;
   breadcrumbs: BreadcrumbItem[];
   jsonLd: Array<Record<string, unknown>>;
@@ -34,6 +42,7 @@ export default function EventLandingView({
   intro,
   paragraphs = [],
   events,
+  sections,
   errorMessage,
   breadcrumbs,
   jsonLd,
@@ -42,6 +51,8 @@ export default function EventLandingView({
   relatedLinks = [],
   cover,
 }: EventLandingViewProps) {
+  const hasSections = Boolean(sections && sections.length > 0);
+
   return (
     <>
       {jsonLd.map((data, index) => (
@@ -139,8 +150,26 @@ export default function EventLandingView({
               </a>
             ) : null}
 
-            <div id="elenco-eventi" className="scroll-mt-24">
-              {events.length > 0 ? (
+            <div id="elenco-eventi" className="scroll-mt-24 space-y-12">
+              {hasSections ? (
+                sections!.map((section) => (
+                  <section key={section.id} id={section.id} className="scroll-mt-24">
+                    <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                      {section.title}
+                    </h2>
+                    {section.events.length > 0 ? (
+                      <div className="mt-5">
+                        <EventsExploreGrid events={section.events} />
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-sm text-slate-600">
+                        {section.emptyHint ??
+                          "Nessun evento in questa sezione al momento."}
+                      </p>
+                    )}
+                  </section>
+                ))
+              ) : events.length > 0 ? (
                 <EventsExploreGrid events={events} />
               ) : (
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">

@@ -157,8 +157,17 @@ export async function generateMetadata({
 
   const city = findCityBySlug(slug);
   if (city) {
-    const { events } = await loadFilteredPublishedEvents({ city: city.city });
-    return buildCityLandingMetadata(city, events.length);
+    const { events } = await loadFilteredPublishedEvents({
+      city: city.city,
+      includeExpired: true,
+    });
+    const upcoming = events.filter((event) =>
+      isPublicEventActive(event.startDate, event.endDate),
+    );
+    return buildCityLandingMetadata(city, {
+      upcoming: upcoming.length,
+      total: events.length,
+    });
   }
 
   const category = findCategoryBySlug(slug);

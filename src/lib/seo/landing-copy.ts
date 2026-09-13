@@ -248,3 +248,118 @@ export function buildDateLandingLinks(
 
   return { quickLinks, relatedLinks };
 }
+
+export function eventOverlapsRange(
+  event: Pick<EventCardData, "startDate" | "endDate">,
+  range: { start: Date; end: Date },
+) {
+  const start = new Date(event.startDate);
+  const end = event.endDate ? new Date(event.endDate) : start;
+  return start < range.end && end >= range.start;
+}
+
+export function splitCityLandingEvents(
+  upcoming: EventCardData[],
+  ranges: { today: { start: Date; end: Date }; weekend: { start: Date; end: Date } },
+) {
+  const today = upcoming.filter((event) =>
+    eventOverlapsRange(event, ranges.today),
+  );
+  const todayIds = new Set(today.map((event) => event.eventId));
+  const weekend = upcoming.filter(
+    (event) =>
+      eventOverlapsRange(event, ranges.weekend) && !todayIds.has(event.eventId),
+  );
+  const listedIds = new Set([
+    ...todayIds,
+    ...weekend.map((event) => event.eventId),
+  ]);
+  const upcomingRest = upcoming.filter(
+    (event) => !listedIds.has(event.eventId),
+  );
+
+  return { today, weekend, upcomingRest };
+}
+
+export function buildCityLandingEditorial(input: {
+  cityName: string;
+  area: string;
+  upcomingCount: number;
+  todayCount: number;
+  weekendCount: number;
+  freeCount: number;
+  topCategories: LandingStats["topCategories"];
+}) {
+  const {
+    cityName,
+    area,
+    upcomingCount,
+    todayCount,
+    weekendCount,
+    freeCount,
+    topCategories,
+  } = input;
+
+  const subtitleParts: string[] = [];
+  if (todayCount > 0) {
+    subtitleParts.push(
+      `${todayCount} ${todayCount === 1 ? "evento oggi" : "eventi oggi"}`,
+    );
+  }
+  if (weekendCount > 0) {
+    subtitleParts.push(
+      `${weekendCount} nel weekend`,
+    );
+  }
+  if (upcomingCount > 0) {
+    subtitleParts.push(
+      `${upcomingCount} ${upcomingCount === 1 ? "prossimo" : "prossimi"} in calendario`,
+    );
+  }
+  const subtitle =
+    subtitleParts.length > 0
+      ? `A ${cityName}: ${subtitleParts.join(" · ")}.`
+      : `Calendario eventi a ${cityName}.`;
+
+  const intro =
+    upcomingCount === 0
+      ? `Al momento non ci sono eventi futuri pubblicati a ${cityName}. Quando Comuni, Pro Loco e organizzatori caricano nuove date, le trovi qui con orario, luogo e locandina.`
+      : `Scopri gli eventi in programma a ${cityName}, in ${area}. In questa pagina trovi concerti, sagre, spettacoli e appuntamenti per il tempo libero${
+          todayCount > 0
+            ? `: oggi ${todayCount === 1 ? "c’è 1 evento" : `ci sono ${todayCount} eventi`}`
+            : ""
+        }${
+          weekendCount > 0
+            ? `${todayCount > 0 ? "," : ":"} nel prossimo weekend ${weekendCount}`
+            : ""
+        }.`;
+
+  const paragraphs: string[] = [];
+  if (upcomingCount > 0) {
+    if (topCategories.length > 0) {
+      paragraphs.push(
+        `Le tipologie più presenti a ${cityName} in questo periodo sono ${joinIt(
+          topCategories
+            .slice(0, 3)
+            .map((category) => category.name.toLocaleLowerCase("it")),
+        )}. Apri la scheda per conferma di orario e ingresso.`,
+      );
+    }
+    if (freeCount > 0) {
+      paragraphs.push(
+        freeCount === upcomingCount
+          ? `Gli appuntamenti in elenco risultano gratuiti o a ingresso libero, dove indicato sulla scheda.`
+          : `Tra i prossimi eventi, ${freeCount} ${freeCount === 1 ? "è segnalato" : "sono segnalati"} come gratuiti o a ingresso libero.`,
+      );
+    }
+    paragraphs.push(
+      `Usa i collegamenti a oggi, weekend e categorie per restringere la ricerca, oppure apri la guida Cultura di ${cityName} per contesto su musei e tradizioni del paese.`,
+    );
+  } else {
+    paragraphs.push(
+      `Nel frattempo esplora gli eventi in Sardegna oggi e nel weekend, oppure la guida Cultura di ${cityName} per musei, tradizioni e cosa visitare.`,
+    );
+  }
+
+  return { subtitle, intro, paragraphs };
+}

@@ -15,6 +15,7 @@ import {
 } from "@/src/lib/seo/cultura-areas";
 import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
 import { upcomingWeekends } from "@/src/lib/seo/weekends";
+import { shouldIndexCityLanding } from "@/src/lib/seo/site";
 
 const SITE_URL = "https://www.everas.it";
 
@@ -243,7 +244,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
 
     const citiesWithUpcoming = new Set<string>();
+    const cityUpcomingCount = new Map<string, number>();
+    const cityTotalCount = new Map<string, number>();
     const cityCategoryPaths = new Set<string>();
+
+    for (const event of events ?? []) {
+      const municipality =
+        typeof event.municipality === "string" ? event.municipality.trim() : "";
+      if (!municipality) continue;
+      const citySlug = cityToSlug(municipality);
+      if (!citySlug || !knownCitySlugs.has(citySlug)) continue;
+
+      cityTotalCount.set(citySlug, (cityTotalCount.get(citySlug) ?? 0) + 1);
+      if (
+        typeof event.start_at === "string" &&
+        isPublicEventActive(event.start_at, event.end_at)
+      ) {
+        cityUpcomingCount.set(
+          citySlug,
+          (cityUpcomingCount.get(citySlug) ?? 0) + 1,
+        );
+        citiesWithUpcoming.add(citySlug);
+      }
+    }
+
     for (const event of upcomingEvents) {
       const municipality =
         typeof event.municipality === "string" ? event.municipality.trim() : "";
@@ -251,7 +275,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       const citySlug = cityToSlug(municipality);
       if (!citySlug || !knownCitySlugs.has(citySlug)) continue;
-      citiesWithUpcoming.add(citySlug);
 
       for (const categorySlug of eventCategorySlugs(event)) {
         if (
@@ -265,13 +288,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    const cityRoutes: MetadataRoute.Sitemap = [...citiesWithUpcoming].map(
-      (slug) => ({
+    const cityRoutes: MetadataRoute.Sitemap = [...knownCitySlugs]
+      .filter((slug) =>
+        shouldIndexCityLanding(
+          cityUpcomingCount.get(slug) ?? 0,
+          cityTotalCount.get(slug) ?? 0,
+        ),
+      )
+      .map((slug) => ({
         url: `${SITE_URL}/eventi/${slug}`,
         changeFrequency: "daily" as const,
         priority: 0.8,
-      }),
-    );
+      }));
 
     const cityCategoryRoutes: MetadataRoute.Sitemap = [...cityCategoryPaths].map(
       (path) => ({

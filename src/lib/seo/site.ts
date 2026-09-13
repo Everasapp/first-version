@@ -28,6 +28,26 @@ export function landingRobots(eventCount: number): Metadata["robots"] {
   return eventCount > 0 ? undefined : { index: false, follow: true };
 }
 
+/**
+ * City SEO landings: index only if there is enough signal
+ * (≥3 upcoming or ≥10 published including past).
+ */
+export function cityLandingRobots(
+  upcomingCount: number,
+  totalPublishedCount: number,
+): Metadata["robots"] {
+  return shouldIndexCityLanding(upcomingCount, totalPublishedCount)
+    ? undefined
+    : { index: false, follow: true };
+}
+
+export function shouldIndexCityLanding(
+  upcomingCount: number,
+  totalPublishedCount: number,
+) {
+  return upcomingCount >= 3 || totalPublishedCount >= 10;
+}
+
 export function filteredListingRobots(): Metadata["robots"] {
   return { index: false, follow: true };
 }
