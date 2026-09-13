@@ -58,7 +58,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord. Centro e Sud crescono nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord e sui 46 del Centro. Il Sud cresce nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
       },
     ],
   },
@@ -68,25 +68,25 @@ export const CULTURE_AREAS: CultureArea[] = [
     path: `${CULTURE_HUB_PATH}/centro-sardegna`,
     image: "/images/centro-sardegna.webp",
     imageAlt: "Paesaggio del Centro Sardegna",
-    title: "Cultura sarda nel Centro: comuni di Nuoro e Oristano",
+    title: "Cultura sarda nel Centro: comuni, musei e tradizioni",
     h1: "Centro Sardegna",
     description:
-      "Directory dei comuni del Centro Sardegna: Nuoro, Oristano e i paesi dell’interno, con una pagina per ciascun comune.",
+      "Directory dei comuni del Centro Sardegna: guide culturali, musei, tradizioni e cosa visitare da Nuoro all’Ogliastra e al Sinis.",
     paragraphs: [
-      "Il Centro usa lo stesso perimetro dei filtri eventi: Nuoro, Oristano e i paesi dell’interno. Ogni comune ha una pagina.",
-      "Dove la guida lunga non c’è ancora, trovi il calendario eventi e i collegamenti agli altri paesi dell’area.",
+      "Il Centro segue i filtri eventi: Nuoro, Oristano e i paesi dell’interno — Barbagia, Mandrolisai, Ogliastra, Baronia e Sinis. Ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
+      "Apri il paese che ti interessa: trovi il testo della guida e, in fondo, il calendario degli appuntamenti pubblicati in quel comune su EVERAS.",
     ],
     townPagesLive: true,
     faqs: [
       {
         question: "Quali comuni del Centro sono in questa guida?",
         answer:
-          "Tutti i comuni del Centro Sardegna usati anche nei filtri eventi, da Nuoro a Oristano. Cerca il nome nell’elenco A–Z.",
+          "Tutti i comuni del Centro Sardegna usati anche nei filtri eventi, da Nuoro a Oristano, Ogliastra e Sinis. Cerca il nome nell’elenco A–Z.",
       },
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Ogni comune ha una pagina con eventi e collegamenti. Le schede più ampie — musei, mestieri, cosa visitare — si aggiungono comune per comune, come già accade nel Nord.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 46 comuni del Centro. Il Sud cresce nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
       },
     ],
   },

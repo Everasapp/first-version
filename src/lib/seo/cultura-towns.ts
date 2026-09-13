@@ -1,5 +1,6 @@
 import { NORD_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-towns";
 import { NORD_REMAINING_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-remaining";
+import { CENTRO_CULTURE_TOWNS } from "@/src/lib/seo/cultura-centro-towns";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-areas";
 
 export { CULTURE_HUB_PATH };
@@ -50,7 +51,7 @@ export const CULTURE_HUB = {
   paragraphs: [
     "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
-    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nel Nord le guide lunghe coprono tutti i 93 comuni: città, Gallura, Logudoro, Anglona, Meilogu e Goceano. Centro e Sud crescono paese per paese; dove la scheda lunga non c’è ancora restano calendario e collegamenti all’area.",
+    "Ogni area ha l’elenco dei comuni e una pagina per paese. Nord (93) e Centro (46) hanno già le guide lunghe su tutti i comuni: storia, tradizioni, visite e eventi collegati. Il Sud cresce paese per paese; dove la scheda lunga non c’è ancora restano calendario e collegamenti all’area.",
   ],
   faqs: [
     {
@@ -61,7 +62,7 @@ export const CULTURE_HUB = {
     {
       question: "Da dove si inizia?",
       answer:
-        "Scegli Nord, Centro o Sud, poi apri il comune. Nel Nord ogni paese ha già una scheda con storia, tradizioni, visite e gli eventi collegati; nelle altre aree le guide lunghe crescono nel tempo.",
+        "Scegli Nord, Centro o Sud, poi apri il comune. Nel Nord e nel Centro ogni paese ha già una scheda con storia, tradizioni, visite e gli eventi collegati; nel Sud le guide lunghe crescono nel tempo.",
     },
   ],
 } as const;
@@ -166,6 +167,7 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
   },
   ...NORD_CULTURE_TOWNS,
   ...NORD_REMAINING_CULTURE_TOWNS,
+  ...CENTRO_CULTURE_TOWNS,
 ];
 
 export function findCultureTown(slug: string) {
