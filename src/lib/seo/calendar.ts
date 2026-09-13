@@ -71,6 +71,18 @@ export function upcomingCalendarMonths(count = 6, from = new Date()) {
   return months;
 }
 
+/** Current calendar month in Europe/Rome. */
+export function currentMonthLanding(from = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(from);
+  const year = Number(parts.find((part) => part.type === "year")?.value);
+  const month = Number(parts.find((part) => part.type === "month")?.value);
+  return monthLanding(year, month - 1);
+}
+
 export function findCalendarMonth(slug: string) {
   return upcomingCalendarMonths(14).find((month) => month.slug === slug);
 }

@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { cities } from "@/src/data/cities";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import {
@@ -86,9 +88,8 @@ export type EventListFilters = {
   includeExpired?: boolean;
 };
 
-export async function loadFilteredPublishedEvents(
-  filters: EventListFilters = {},
-) {
+export const loadFilteredPublishedEvents = cache(
+  async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
   const supabase = await createClient();
   const [{ data, error }, favoriteIds] = await Promise.all([
     supabase
@@ -200,4 +201,5 @@ export async function loadFilteredPublishedEvents(
     );
 
   return { events, error };
-}
+  },
+);

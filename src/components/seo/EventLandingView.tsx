@@ -14,6 +14,7 @@ type FaqItem = { question: string; answer: string };
 type EventLandingViewProps = {
   eyebrow?: string;
   h1: string;
+  subtitle?: string;
   intro: string;
   paragraphs?: string[];
   events: EventCardData[];
@@ -21,6 +22,7 @@ type EventLandingViewProps = {
   breadcrumbs: BreadcrumbItem[];
   jsonLd: Array<Record<string, unknown>>;
   faqs?: FaqItem[];
+  quickLinks?: Array<{ href: string; label: string }>;
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
 };
@@ -28,6 +30,7 @@ type EventLandingViewProps = {
 export default function EventLandingView({
   eyebrow = "Eventi in Sardegna",
   h1,
+  subtitle,
   intro,
   paragraphs = [],
   events,
@@ -35,6 +38,7 @@ export default function EventLandingView({
   breadcrumbs,
   jsonLd,
   faqs = [],
+  quickLinks = [],
   relatedLinks = [],
   cover,
 }: EventLandingViewProps) {
@@ -59,6 +63,11 @@ export default function EventLandingView({
                 <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
                   {h1}
                 </h1>
+                {subtitle ? (
+                  <p className="mt-3 text-lg font-medium leading-snug text-slate-800">
+                    {subtitle}
+                  </p>
+                ) : null}
                 <p className="mt-3 text-base leading-relaxed text-slate-600">
                   {intro}
                 </p>
@@ -93,6 +102,23 @@ export default function EventLandingView({
               <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-800">
                 Non è stato possibile caricare gli eventi: {errorMessage}
               </div>
+            ) : null}
+
+            {quickLinks.length > 0 ? (
+              <nav
+                aria-label="Collegamenti rapidi"
+                className="mb-8 flex flex-wrap gap-2"
+              >
+                {quickLinks.map((link) => (
+                  <Link
+                    key={`${link.href}-${link.label}`}
+                    href={link.href}
+                    className="inline-flex rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
             ) : null}
 
             {cover ? (

@@ -8,10 +8,16 @@ import {
   eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
-import { sagreExploreLinks, type CalendarMonth } from "@/src/lib/seo/calendar";
+import { sagreExploreLinks, type CalendarMonth, monthLanding } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
+import { buildLandingStats } from "@/src/lib/seo/landing-copy";
 import { absoluteUrl, defaultOgImages, landingRobots } from "@/src/lib/seo/site";
+
+function adjacentMonthLanding(month: CalendarMonth, offset: number) {
+  const cursor = new Date(month.year, month.monthIndex + offset, 1);
+  return monthLanding(cursor.getFullYear(), cursor.getMonth());
+}
 
 export function buildMonthLandingMetadata(
   month: CalendarMonth,
@@ -46,11 +52,29 @@ export default async function MonthLandingPage({
   const { events, error } = await loadFilteredPublishedEvents({
     month: { year: month.year, monthIndex: month.monthIndex },
   });
+  const stats = buildLandingStats(events);
+  const prev = adjacentMonthLanding(month, -1);
+  const next = adjacentMonthLanding(month, 1);
+
+  const dynamicIntro =
+    stats.total === 0
+      ? `Per ${month.name.toLocaleLowerCase("it")} ${month.year} non ci sono ancora eventi pubblicati su EVERAS. Torna tra poco oppure esplora il weekend e le guide alle feste.`
+      : `A ${month.name.toLocaleLowerCase("it")} ${month.year} trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} pubblicati in Sardegna${
+          stats.topCities.length > 0
+            ? `, con più presenza a ${stats.topCities
+                .slice(0, 3)
+                .map((city) => city.name)
+                .join(", ")}`
+            : ""
+        }.`;
 
   const faqs = [
     {
       question: `Cosa fare in Sardegna a ${month.name.toLocaleLowerCase("it")}?`,
-      answer: `Su EVERAS trovi sagre, concerti e feste paese in programma a ${month.name} ${month.year}, da Nord a Sud.`,
+      answer:
+        stats.total > 0
+          ? `In questa pagina: ${stats.total} appuntamenti a ${month.name} ${month.year}. Apri la scheda per orario, comune e ingresso.`
+          : `Quando sono pubblicati compaiono qui. Intanto guarda weekend, oggi e le categorie su EVERAS.`,
     },
     {
       question: "Come è organizzato il calendario?",
@@ -59,11 +83,22 @@ export default async function MonthLandingPage({
     },
   ];
 
+  const quickLinks = [
+    ...stats.topCities.slice(0, 4).map((city) => ({
+      href: city.href,
+      label: city.name,
+    })),
+    ...stats.topCategories.slice(0, 4).map((category) => ({
+      href: category.href,
+      label: category.name,
+    })),
+  ];
+
   return (
     <EventLandingView
       eyebrow="Calendario eventi"
       h1={month.h1}
-      intro={month.description}
+      intro={dynamicIntro}
       paragraphs={month.paragraphs}
       events={events}
       errorMessage={error?.message}
@@ -73,11 +108,20 @@ export default async function MonthLandingPage({
         { name: `${month.name} ${month.year}` },
       ]}
       faqs={faqs}
+      quickLinks={quickLinks}
       relatedLinks={[
+        { href: "/eventi-oggi", label: "Eventi oggi" },
+        { href: "/eventi-weekend", label: "Eventi weekend" },
+        { href: prev.path, label: `${prev.name} ${prev.year}` },
+        { href: next.path, label: `${next.name} ${next.year}` },
         ...sagreExploreLinks(),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),
-      ].filter((link) => link.href !== month.path)}
+      ].filter(
+        (link, index, list) =>
+          link.href !== month.path &&
+          list.findIndex((item) => item.href === link.href) === index,
+      )}
       jsonLd={[
         collectionPageSchema({
           name: month.h1,

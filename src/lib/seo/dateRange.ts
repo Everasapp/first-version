@@ -1,3 +1,14 @@
+import {
+  addDaysYmd,
+  formatRomeLongDay,
+  romeDayRange,
+  romeYmd,
+} from "@/src/lib/seo/rome-time";
+import {
+  rollingWeekendRange,
+  weekendLongDatePhrase,
+} from "@/src/lib/seo/weekends";
+
 export type DateLandingKey = "oggi" | "domani" | "weekend" | "settimana";
 
 export const DATE_LANDING_META: Record<
@@ -6,43 +17,32 @@ export const DATE_LANDING_META: Record<
 > = {
   oggi: {
     path: "/eventi-oggi",
-    title: "Eventi oggi in Sardegna",
-    h1: "Eventi oggi in Sardegna",
+    title: "Cosa fare oggi in Sardegna",
+    h1: "Cosa fare oggi in Sardegna",
     description:
       "Scopri cosa fare oggi in Sardegna: concerti, sagre, mostre e appuntamenti in corso sull’isola.",
   },
   domani: {
     path: "/eventi-domani",
-    title: "Eventi domani in Sardegna",
-    h1: "Eventi domani in Sardegna",
+    title: "Eventi in Sardegna domani",
+    h1: "Eventi in Sardegna domani",
     description:
       "Programma di domani in Sardegna: eventi, spettacoli e appuntamenti da non perdere.",
   },
   weekend: {
     path: "/eventi-weekend",
-    title: "Eventi questo weekend in Sardegna",
-    h1: "Eventi questo weekend in Sardegna",
+    title: "Eventi in Sardegna questo weekend",
+    h1: "Eventi in Sardegna questo weekend",
     description:
-      "Cosa fare nel weekend in Sardegna: festival, concerti, sagre e attività per tutta la famiglia.",
+      "Cosa fare nel weekend in Sardegna: festival, concerti, sagre e attività da venerdì a domenica.",
   },
   settimana: {
     path: "/eventi?date=settimana",
     title: "Eventi questa settimana in Sardegna",
     h1: "Eventi questa settimana",
-    description:
-      "Gli eventi della settimana in Sardegna su EVERAS.",
+    description: "Gli eventi della settimana in Sardegna su EVERAS.",
   },
 };
-
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date: Date, days: number) {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
 
 const ISO_DAY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
@@ -86,43 +86,68 @@ export function formatSearchDateLabel(filter: string) {
   }).format(date);
 }
 
+export function getDateLandingContext(
+  dateKey: Exclude<DateLandingKey, "settimana">,
+  from = new Date(),
+) {
+  if (dateKey === "weekend") {
+    const weekend = rollingWeekendRange(from);
+    return {
+      range: { start: weekend.start, end: weekend.end },
+      datePhrase: weekendLongDatePhrase(weekend.fridayYmd, weekend.sundayYmd),
+      metaDescription: `Cosa fare in Sardegna da ${weekendLongDatePhrase(weekend.fridayYmd, weekend.sundayYmd)}: sagre, concerti e appuntamenti su EVERAS.`,
+    };
+  }
+
+  const todayYmd = romeYmd(from);
+  const targetYmd =
+    dateKey === "oggi" ? todayYmd : addDaysYmd(todayYmd, 1);
+  const range = romeDayRange(targetYmd);
+  const datePhrase = formatRomeLongDay(targetYmd);
+  return {
+    range,
+    datePhrase,
+    metaDescription:
+      dateKey === "oggi"
+        ? `Cosa fare in Sardegna ${datePhrase}: eventi, sagre e concerti aggiornati su EVERAS.`
+        : `Eventi in Sardegna ${datePhrase}: programma, città e dettagli su EVERAS.`,
+  };
+}
+
 export function getDateRange(filter: string) {
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
-  const dayAfterTomorrow = addDays(today, 2);
-
-  const dayOfWeek = today.getDay();
-  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7;
-  const weekendStart = addDays(today, daysUntilSaturday);
-  const weekendEnd = addDays(weekendStart, 2);
-
-  const weekEnd = addDays(today, 7);
-
   const precise = ISO_DAY_RE.exec(filter.trim());
   if (precise) {
+    const ymd = `${precise[1]}-${precise[2]}-${precise[3]}`;
     const year = Number(precise[1]);
     const month = Number(precise[2]);
     const day = Number(precise[3]);
-    const start = new Date(year, month - 1, day);
+    const probe = new Date(Date.UTC(year, month - 1, day));
     if (
-      start.getFullYear() === year &&
-      start.getMonth() === month - 1 &&
-      start.getDate() === day
+      probe.getUTCFullYear() === year &&
+      probe.getUTCMonth() === month - 1 &&
+      probe.getUTCDate() === day
     ) {
-      return { start, end: addDays(start, 1) };
+      return romeDayRange(ymd);
     }
     return null;
   }
 
+  const todayYmd = romeYmd(new Date());
+
   switch (filter) {
     case "oggi":
-      return { start: today, end: tomorrow };
+      return romeDayRange(todayYmd);
     case "domani":
-      return { start: tomorrow, end: dayAfterTomorrow };
-    case "weekend":
-      return { start: weekendStart, end: weekendEnd };
-    case "settimana":
-      return { start: today, end: weekEnd };
+      return romeDayRange(addDaysYmd(todayYmd, 1));
+    case "weekend": {
+      const weekend = rollingWeekendRange();
+      return { start: weekend.start, end: weekend.end };
+    }
+    case "settimana": {
+      const start = romeDayRange(todayYmd).start;
+      const end = romeDayRange(addDaysYmd(todayYmd, 7)).start;
+      return { start, end };
+    }
     default:
       return null;
   }
