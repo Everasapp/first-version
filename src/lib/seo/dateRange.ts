@@ -44,6 +44,48 @@ function addDays(date: Date, days: number) {
   return result;
 }
 
+const ISO_DAY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/** True se il filtro è una data civile YYYY-MM-DD. */
+export function isPreciseDateFilter(filter: string) {
+  return ISO_DAY_RE.test(filter.trim());
+}
+
+/** Etichetta italiana per preset o data precisa (es. «20 settembre 2026»). */
+export function formatSearchDateLabel(filter: string) {
+  const trimmed = filter.trim();
+  if (!trimmed) return undefined;
+
+  const presets: Record<string, string> = {
+    oggi: "Oggi",
+    domani: "Domani",
+    weekend: "Questo weekend",
+    settimana: "Questa settimana",
+  };
+  if (presets[trimmed]) return presets[trimmed];
+
+  const match = ISO_DAY_RE.exec(trimmed);
+  if (!match) return trimmed;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return trimmed;
+  }
+
+  return new Intl.DateTimeFormat("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
 export function getDateRange(filter: string) {
   const today = startOfDay(new Date());
   const tomorrow = addDays(today, 1);
@@ -55,6 +97,22 @@ export function getDateRange(filter: string) {
   const weekendEnd = addDays(weekendStart, 2);
 
   const weekEnd = addDays(today, 7);
+
+  const precise = ISO_DAY_RE.exec(filter.trim());
+  if (precise) {
+    const year = Number(precise[1]);
+    const month = Number(precise[2]);
+    const day = Number(precise[3]);
+    const start = new Date(year, month - 1, day);
+    if (
+      start.getFullYear() === year &&
+      start.getMonth() === month - 1 &&
+      start.getDate() === day
+    ) {
+      return { start, end: addDays(start, 1) };
+    }
+    return null;
+  }
 
   switch (filter) {
     case "oggi":

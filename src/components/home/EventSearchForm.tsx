@@ -18,6 +18,10 @@ import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import CitySelect from "@/src/components/events/CitySelect";
 import { saveGeoCoords, markGeoDenied } from "@/src/lib/geo-preference";
+import {
+  formatSearchDateLabel,
+  isPreciseDateFilter,
+} from "@/src/lib/seo/dateRange";
 import { areaToSlug, findNearestCity } from "@/src/utils/nearby-city";
 
 const areaLabels: Record<string, string> = {
@@ -26,12 +30,15 @@ const areaLabels: Record<string, string> = {
   "sud-sardegna": "Sud Sardegna",
 };
 
-const dateLabels: Record<string, string> = {
-  oggi: "Oggi",
-  domani: "Domani",
-  weekend: "Questo weekend",
-  settimana: "Questa settimana",
-};
+const DATE_PRESETS = new Set(["oggi", "domani", "weekend", "settimana"]);
+
+function todayIsoDate() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
 type AccordionKey = "area" | "city" | "category" | "date" | "text" | null;
 
@@ -125,8 +132,24 @@ export default function EventSearchForm() {
     categories.find((category) => category.slug === selectedCategory)?.name ??
     "";
 
+  const dateSummary =
+    formatSearchDateLabel(selectedDate) || "Tutte le date";
+  const presetDateValue = DATE_PRESETS.has(selectedDate) ? selectedDate : "";
+  const preciseDateValue = isPreciseDateFilter(selectedDate)
+    ? selectedDate
+    : "";
+  const minDate = todayIsoDate();
+
   function togglePanel(key: Exclude<AccordionKey, null>) {
     setOpenPanel((current) => (current === key ? null : key));
+  }
+
+  function handlePresetDateChange(value: string) {
+    setSelectedDate(value);
+  }
+
+  function handlePreciseDateChange(value: string) {
+    setSelectedDate(value);
   }
 
   function buildSearchParams(overrides?: { city?: string; area?: string }) {
@@ -312,27 +335,42 @@ export default function EventSearchForm() {
         <AccordionRow
           id="date"
           title="Data"
-          summary={
-            selectedDate ? dateLabels[selectedDate] || selectedDate : "Tutte le date"
-          }
+          summary={dateSummary}
           icon={<CalendarDays aria-hidden="true" className="h-4 w-4" />}
           isOpen={openPanel === "date"}
           onToggle={togglePanel}
         >
-          <select
-            value={selectedDate}
-            onChange={(event) => {
-              setSelectedDate(event.target.value);
-              setOpenPanel("text");
-            }}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
-          >
-            <option value="">Tutte le date</option>
-            <option value="oggi">Oggi</option>
-            <option value="domani">Domani</option>
-            <option value="weekend">Questo weekend</option>
-            <option value="settimana">Questa settimana</option>
-          </select>
+          <div className="space-y-2">
+            <select
+              value={presetDateValue}
+              onChange={(event) => {
+                handlePresetDateChange(event.target.value);
+                if (event.target.value) setOpenPanel("text");
+              }}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+            >
+              <option value="">Tutte le date</option>
+              <option value="oggi">Oggi</option>
+              <option value="domani">Domani</option>
+              <option value="weekend">Questo weekend</option>
+              <option value="settimana">Questa settimana</option>
+            </select>
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-semibold text-slate-500">
+                Oppure scegli una data
+              </span>
+              <input
+                type="date"
+                value={preciseDateValue}
+                min={minDate}
+                onChange={(event) => {
+                  handlePreciseDateChange(event.target.value);
+                  if (event.target.value) setOpenPanel("text");
+                }}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+              />
+            </label>
+          </div>
         </AccordionRow>
 
         <AccordionRow
@@ -440,10 +478,10 @@ export default function EventSearchForm() {
             />
             Quando?
           </span>
+          <input type="hidden" name="date" value={selectedDate} />
           <select
-            name="date"
-            value={selectedDate}
-            onChange={(event) => setSelectedDate(event.target.value)}
+            value={presetDateValue}
+            onChange={(event) => handlePresetDateChange(event.target.value)}
             className={inputClass}
           >
             <option value="">Tutte le date</option>
@@ -452,6 +490,14 @@ export default function EventSearchForm() {
             <option value="weekend">Questo weekend</option>
             <option value="settimana">Questa settimana</option>
           </select>
+          <input
+            type="date"
+            value={preciseDateValue}
+            min={minDate}
+            onChange={(event) => handlePreciseDateChange(event.target.value)}
+            aria-label="Scegli una data precisa"
+            className="mt-2 w-full min-w-0 bg-transparent text-sm font-medium text-slate-700 outline-none"
+          />
         </label>
 
         <label className={fieldClass}>

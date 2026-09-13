@@ -150,9 +150,12 @@ export async function loadFilteredPublishedEvents(
         eventMatchesCategoryFilter(event, filters.categorySlug);
 
       const eventStartDate = new Date(event.start_at);
+      const eventEndDate = event.end_at
+        ? new Date(event.end_at)
+        : eventStartDate;
       const matchesDate =
         !dateRange ||
-        (eventStartDate >= dateRange.start && eventStartDate < dateRange.end);
+        (eventStartDate < dateRange.end && eventEndDate >= dateRange.start);
 
       const monthRange = filters.month
         ? getMonthRange(filters.month.year, filters.month.monthIndex)

@@ -21,7 +21,7 @@ import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-import { getDateRange } from "@/src/lib/seo/dateRange";
+import { getDateRange, formatSearchDateLabel } from "@/src/lib/seo/dateRange";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
 import {
   absoluteUrl,
@@ -113,13 +113,6 @@ const areaLabels: Record<string, string> = {
   "sud-sardegna": "Sud Sardegna",
 };
 
-const dateLabels: Record<string, string> = {
-  oggi: "Oggi",
-  domani: "Domani",
-  weekend: "Questo weekend",
-  settimana: "Questa settimana",
-};
-
 function getEventArea(municipality: string | null) {
   if (!municipality) {
     return undefined;
@@ -188,7 +181,9 @@ export default async function EventsPage({
     (category) => category.slug === selectedCategory,
   )?.name;
 
-  const selectedDateLabel = selectedDate ? dateLabels[selectedDate] : undefined;
+  const selectedDateLabel = selectedDate
+    ? formatSearchDateLabel(selectedDate)
+    : undefined;
 
   const filterChips = [
     searchQuery ? `“${searchQuery}”` : null,
@@ -255,6 +250,7 @@ export default async function EventsPage({
   const filteredEvents = databaseEvents
     .filter((event) => {
       const eventStartDate = new Date(event.start_at);
+      const eventEndDate = new Date(event.end_at || event.start_at);
 
       // Mai mostrare eventi scaduti (anche con filtro data)
       if (!isPublicEventActive(event.start_at, event.end_at, now)) {
@@ -279,8 +275,7 @@ export default async function EventsPage({
 
       const matchesDate =
         !dateRange ||
-        (eventStartDate >= dateRange.start &&
-          eventStartDate < dateRange.end);
+        (eventStartDate < dateRange.end && eventEndDate >= dateRange.start);
 
       const matchesText = eventMatchesQuery(
         event,
