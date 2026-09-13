@@ -1,5 +1,34 @@
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
 
+/**
+ * 18 guide “in evidenza” sul Centro (stesso ruolo delle schede editoriali del Nord).
+ * Ordine curato: capoluoghi, Barbagia, costa e centri di ricerca più frequenti.
+ */
+export const CENTRO_FEATURED_CULTURE_SLUGS = [
+  "nuoro",
+  "oristano",
+  "bosa",
+  "cabras",
+  "orgosolo",
+  "mamoiada",
+  "oliena",
+  "dorgali",
+  "orosei",
+  "baunei",
+  "fonni",
+  "tortoli",
+  "lanusei",
+  "siniscola",
+  "macomer",
+  "gavoi",
+  "tonara",
+  "aritzo",
+] as const;
+
+export const CENTRO_FEATURED_SLUG_SET = new Set<string>(
+  CENTRO_FEATURED_CULTURE_SLUGS,
+);
+
 /** Guide Cultura generate per i 46 comuni del Centro Sardegna. */
 export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
   {

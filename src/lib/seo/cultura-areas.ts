@@ -73,7 +73,7 @@ export const CULTURE_AREAS: CultureArea[] = [
     description:
       "Directory dei comuni del Centro Sardegna: guide culturali, musei, tradizioni e cosa visitare da Nuoro all’Ogliastra e al Sinis.",
     paragraphs: [
-      "Il Centro segue i filtri eventi: Nuoro, Oristano e i paesi dell’interno — Barbagia, Mandrolisai, Ogliastra, Baronia e Sinis. Ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
+      "Il Centro segue i filtri eventi: Nuoro, Oristano e i paesi dell’interno — Barbagia, Mandrolisai, Ogliastra, Baronia e Sinis. In evidenza le schede dei paesi più cercati; sotto, l’elenco completo A–Z: ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
       "Apri il paese che ti interessa: trovi il testo della guida e, in fondo, il calendario degli appuntamenti pubblicati in quel comune su EVERAS.",
     ],
     townPagesLive: true,
@@ -81,12 +81,12 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Quali comuni del Centro sono in questa guida?",
         answer:
-          "Tutti i comuni del Centro Sardegna usati anche nei filtri eventi, da Nuoro a Oristano, Ogliastra e Sinis. Cerca il nome nell’elenco A–Z.",
+          "Tutti i comuni del Centro Sardegna usati anche nei filtri eventi, da Nuoro a Oristano, Ogliastra e Sinis. Parti dalle schede in evidenza o cerca il nome nell’elenco A–Z.",
       },
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 46 comuni del Centro. Il Sud cresce nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 46 comuni del Centro. In evidenza trovi 18 paesi tra Barbagia, costa e capoluoghi; gli altri restano nell’elenco A–Z.",
       },
     ],
   },

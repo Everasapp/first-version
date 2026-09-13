@@ -10,7 +10,11 @@ import {
 } from "@/src/lib/seo/cultura-areas";
 import { CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
 import { NORD_REMAINING_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-remaining";
-import { CENTRO_CULTURE_TOWNS } from "@/src/lib/seo/cultura-centro-towns";
+import {
+  CENTRO_CULTURE_TOWNS,
+  CENTRO_FEATURED_CULTURE_SLUGS,
+  CENTRO_FEATURED_SLUG_SET,
+} from "@/src/lib/seo/cultura-centro-towns";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
@@ -24,8 +28,14 @@ type CulturaAreaPageProps = {
 
 const DIRECTORY_TOWN_SLUGS = new Set([
   ...NORD_REMAINING_CULTURE_TOWNS.map((article) => article.slug),
-  ...CENTRO_CULTURE_TOWNS.map((article) => article.slug),
+  ...CENTRO_CULTURE_TOWNS.filter(
+    (article) => !CENTRO_FEATURED_SLUG_SET.has(article.slug),
+  ).map((article) => article.slug),
 ]);
+
+const CENTRO_FEATURED_ORDER = new Map<string, number>(
+  CENTRO_FEATURED_CULTURE_SLUGS.map((slug, index) => [slug, index]),
+);
 
 export function generateStaticParams() {
   return CULTURE_AREAS.map((area) => ({ area: area.slug }));
@@ -73,7 +83,7 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
   }
 
   const cities = citiesForCultureArea(area);
-  // Schede “in evidenza”: guide editoriali lunghe (non i lotti directory).
+  // Schede “in evidenza”: guide editoriali (Nord) + 18 curate del Centro.
   const featured = CULTURE_TOWNS.filter((article) => {
     if (DIRECTORY_TOWN_SLUGS.has(article.slug)) return false;
     return cities.some(
@@ -81,6 +91,11 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
         city.city.toLocaleLowerCase("it") ===
         article.town.toLocaleLowerCase("it"),
     );
+  }).sort((a, b) => {
+    if (area.slug !== "centro-sardegna") return 0;
+    const ai = CENTRO_FEATURED_ORDER.get(a.slug) ?? 999;
+    const bi = CENTRO_FEATURED_ORDER.get(b.slug) ?? 999;
+    return ai - bi;
   });
 
   return (
