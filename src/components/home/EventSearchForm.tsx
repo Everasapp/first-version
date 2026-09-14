@@ -239,21 +239,45 @@ export default function EventSearchForm() {
 
   return (
     <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
-      <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-8">
-        <button
-          type="button"
-          onClick={handleNearMe}
-          disabled={isLocating}
-          className="inline-flex items-center gap-2 rounded-full bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60 sm:gap-2.5 sm:px-5 sm:py-3 sm:text-base"
-        >
-          <LocateFixed aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
-          {isLocating ? "Rilevo posizione…" : "Vicino a me"}
-        </button>
+      <div className="mt-5 min-w-0 max-w-7xl sm:mt-8">
+        <div className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto pb-1 touch-pan-x">
+          <button
+            type="button"
+            onClick={handleNearMe}
+            disabled={isLocating}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#E67E22] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
+          >
+            <LocateFixed aria-hidden="true" className="h-4 w-4" />
+            {isLocating ? "Rilevo posizione…" : "Vicino a me"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=nord-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <Compass aria-hidden="true" className="h-4 w-4" />
+            Nord Sardegna
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=centro-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <MapPin aria-hidden="true" className="h-4 w-4" />
+            Centro Sardegna
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/eventi?area=sud-sardegna")}
+            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <Sun aria-hidden="true" className="h-4 w-4" />
+            Sud Sardegna
+          </button>
+        </div>
 
         {geoMessage ? (
-          <p className="w-full text-sm font-medium text-orange-100">
-            {geoMessage}
-          </p>
+          <p className="mt-2 text-sm font-medium text-orange-100">{geoMessage}</p>
         ) : null}
       </div>
 
@@ -545,35 +569,6 @@ export default function EventSearchForm() {
           Cerca
         </button>
       </form>
-
-      <div className="mt-3 hidden min-w-0 max-w-7xl sm:mt-5 md:block">
-        <div className="flex min-w-0 flex-nowrap gap-2 overflow-x-auto pb-1 touch-pan-x">
-          <button
-            type="button"
-            onClick={() => router.push("/eventi?area=nord-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-          >
-            <Compass aria-hidden="true" className="h-4 w-4" />
-            Nord Sardegna
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/eventi?area=centro-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-          >
-            <MapPin aria-hidden="true" className="h-4 w-4" />
-            Centro Sardegna
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/eventi?area=sud-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-          >
-            <Sun aria-hidden="true" className="h-4 w-4" />
-            Sud Sardegna
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
