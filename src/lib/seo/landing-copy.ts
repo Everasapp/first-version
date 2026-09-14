@@ -238,6 +238,7 @@ export function buildDateLandingLinks(
 
   const relatedLinks: LandingLink[] = [
     ...dateLinks,
+    { href: "/eventi-gratuiti", label: "Eventi gratuiti" },
     { href: month.path, label: `Eventi ${month.name} ${month.year}` },
     { href: "/eventi-sardegna", label: "Calendario eventi Sardegna" },
     { href: "/eventi", label: "Tutti gli eventi" },
@@ -358,6 +359,182 @@ export function buildCityLandingEditorial(input: {
   } else {
     paragraphs.push(
       `Nel frattempo esplora gli eventi in Sardegna oggi e nel weekend, oppure la guida Cultura di ${cityName} per musei, tradizioni e cosa visitare.`,
+    );
+  }
+
+  return { subtitle, intro, paragraphs };
+}
+
+const CATEGORY_HOOKS: Record<string, string> = {
+  "musica-concerti":
+    "Dal live in piazza ai festival e agli spettacoli teatrali, questa categoria raccoglie la programmazione musicale e di scena sull’isola.",
+  "sagre-tradizioni":
+    "Sagre di paese, feste patronali e appuntamenti legati alle tradizioni: cibo, corti aperte e rituali che cambiano di borgo in borgo.",
+  "locali-ballo":
+    "Serate in locale, DJ set e ballo: per chi cerca l’atmosfera notturna oltre al grande evento all’aperto.",
+  "sport-competizioni":
+    "Gare, tornei e appuntamenti sportivi aperti al pubblico, dalla corsa alla vela fino agli eventi amatoriali.",
+  "fiere-mercatini":
+    "Fiere, mercatini e mercati tematici: bancarelle, artigianato e prodotti locali in città e nei paesi.",
+  "arte-cultura":
+    "Mostre, visite, rassegne e appuntamenti culturali in musei, gallerie e spazi pubblici.",
+  "workshop-corsi":
+    "Laboratori, corsi e incontri formativi aperti a chi vuole imparare o approfondire un mestiere o una pratica.",
+  celebrazioni:
+    "Ricorrenze civiche e celebrazioni collettive quando sono aperte al calendario EVERAS.",
+  "food-drink":
+    "Degustazioni, food festival, aperitivi e appuntamenti enogastronomici oltre le sagre classiche.",
+  "famiglie-bambini":
+    "Laboratori, spettacoli e uscite pensate anche per famiglie e bambini, con orari e luoghi sulla scheda.",
+  benessere:
+    "Yoga, wellness e momenti di cura del corpo aperti al pubblico quando pubblicati dagli organizzatori.",
+  "business-networking":
+    "Incontri professionali, networking e appuntamenti per chi lavora o fa impresa in Sardegna.",
+};
+
+export function buildCategoryLandingEditorial(input: {
+  categoryName: string;
+  categorySlug: string;
+  upcomingCount: number;
+  todayCount: number;
+  weekendCount: number;
+  freeCount: number;
+  topCities: LandingStats["topCities"];
+}) {
+  const {
+    categoryName,
+    categorySlug,
+    upcomingCount,
+    todayCount,
+    weekendCount,
+    freeCount,
+    topCities,
+  } = input;
+
+  const label = categoryName.toLocaleLowerCase("it");
+  const hook = CATEGORY_HOOKS[categorySlug];
+
+  const subtitleParts: string[] = [];
+  if (todayCount > 0) {
+    subtitleParts.push(
+      `${todayCount} ${todayCount === 1 ? "oggi" : "oggi"}`,
+    );
+  }
+  if (weekendCount > 0) {
+    subtitleParts.push(`${weekendCount} nel weekend`);
+  }
+  if (upcomingCount > 0) {
+    subtitleParts.push(
+      `${upcomingCount} ${upcomingCount === 1 ? "in programma" : "in programma"}`,
+    );
+  }
+  const subtitle =
+    subtitleParts.length > 0
+      ? `${categoryName} in Sardegna: ${subtitleParts.join(" · ")}.`
+      : `${categoryName} in Sardegna su EVERAS.`;
+
+  let intro: string;
+  if (upcomingCount === 0) {
+    intro = `Al momento non ci sono ${label} futuri pubblicati su EVERAS. Quando arrivano nuove date le trovi qui, con comune, orario e locandina.`;
+  } else {
+    const timing: string[] = [];
+    if (todayCount > 0) timing.push(`oggi ${todayCount}`);
+    if (weekendCount > 0) timing.push(`nel weekend ${weekendCount}`);
+    intro = `In Sardegna trovi ${upcomingCount} ${upcomingCount === 1 ? "appuntamento" : "appuntamenti"} di ${label} già in calendario${
+      timing.length > 0 ? ` (${timing.join(", ")})` : ""
+    }.`;
+  }
+
+  const paragraphs: string[] = [];
+  if (hook) paragraphs.push(hook);
+
+  if (upcomingCount > 0) {
+    if (topCities.length > 0) {
+      paragraphs.push(
+        topCities.length === 1
+          ? `In questo periodo la località con più ${label} è ${topCities[0].name}.`
+          : `Tra le località con più ${label} in questo periodo ci sono ${joinIt(
+              topCities.slice(0, 3).map((city) => city.name),
+            )}.`,
+      );
+    }
+    if (freeCount > 0) {
+      paragraphs.push(
+        freeCount === upcomingCount
+          ? `Gli eventi in elenco risultano gratuiti o a ingresso libero, dove indicato sulla scheda.`
+          : `Di questi, ${freeCount} ${freeCount === 1 ? "è segnalato" : "sono segnalati"} come gratuiti o a ingresso libero.`,
+      );
+    }
+    paragraphs.push(
+      `Apri la scheda per dettagli pratici, oppure restringi per città dai collegamenti rapidi. Puoi anche confrontare con oggi, weekend e il mese in corso.`,
+    );
+  } else {
+    paragraphs.push(
+      `Nel frattempo esplora gli eventi di oggi e del weekend in tutta la Sardegna, o passa al calendario mensile.`,
+    );
+  }
+
+  return { subtitle, intro, paragraphs };
+}
+
+export function buildCityCategoryLandingEditorial(input: {
+  cityName: string;
+  categoryName: string;
+  upcomingCount: number;
+  todayCount: number;
+  weekendCount: number;
+  freeCount: number;
+}) {
+  const {
+    cityName,
+    categoryName,
+    upcomingCount,
+    todayCount,
+    weekendCount,
+    freeCount,
+  } = input;
+  const label = categoryName.toLocaleLowerCase("it");
+
+  const subtitleParts: string[] = [];
+  if (todayCount > 0) subtitleParts.push(`${todayCount} oggi`);
+  if (weekendCount > 0) subtitleParts.push(`${weekendCount} nel weekend`);
+  if (upcomingCount > 0) {
+    subtitleParts.push(`${upcomingCount} in calendario`);
+  }
+  const subtitle =
+    subtitleParts.length > 0
+      ? `${categoryName} a ${cityName}: ${subtitleParts.join(" · ")}.`
+      : `${categoryName} a ${cityName} su EVERAS.`;
+
+  const intro =
+    upcomingCount === 0
+      ? `Al momento non ci sono ${label} futuri pubblicati a ${cityName}. Controlla tutti gli eventi della città o la categoria in Sardegna.`
+      : `Calendario di ${label} a ${cityName}: ${upcomingCount} ${upcomingCount === 1 ? "appuntamento" : "appuntamenti"} in programma${
+          todayCount > 0 || weekendCount > 0
+            ? ` (${[
+                todayCount > 0 ? `${todayCount} oggi` : null,
+                weekendCount > 0 ? `${weekendCount} nel weekend` : null,
+              ]
+                .filter(Boolean)
+                .join(", ")})`
+            : ""
+        }.`;
+
+  const paragraphs: string[] = [];
+  if (upcomingCount > 0) {
+    if (freeCount > 0) {
+      paragraphs.push(
+        freeCount === upcomingCount
+          ? `In elenco risultano gratuiti o a ingresso libero, dove indicato sulla scheda.`
+          : `${freeCount} ${freeCount === 1 ? "evento è gratuito" : "eventi sono gratuiti"} o a ingresso libero, dove segnalato.`,
+      );
+    }
+    paragraphs.push(
+      `Apri la scheda per orario e luogo. Da qui puoi passare a tutti gli eventi a ${cityName}, a ${label} in Sardegna, oppure a oggi e al weekend.`,
+    );
+  } else {
+    paragraphs.push(
+      `Torna presto, oppure esplora gli eventi a ${cityName} e ${label} in tutta l’isola.`,
     );
   }
 

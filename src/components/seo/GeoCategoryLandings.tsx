@@ -9,10 +9,16 @@ import { isPublicEventActive } from "@/src/lib/eventActive";
 import { currentMonthLanding } from "@/src/lib/seo/calendar";
 import { getDateRange } from "@/src/lib/seo/dateRange";
 import {
+  buildCategoryLandingEditorial,
+  buildCityCategoryLandingEditorial,
   buildCityLandingEditorial,
   buildLandingStats,
   splitCityLandingEvents,
 } from "@/src/lib/seo/landing-copy";
+import {
+  coreDateLinks,
+  dedupeLinks,
+} from "@/src/lib/seo/internal-links";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import { cultureTownPathForCity } from "@/src/lib/seo/cultura-areas";
 import { findCultureTown } from "@/src/lib/seo/cultura-towns";
@@ -78,8 +84,9 @@ export function buildCategoryLandingMetadata(
   category: Category,
   eventCount?: number,
 ): Metadata {
-  const title = `${category.name} in Sardegna`;
-  const description = `Eventi di ${category.name.toLocaleLowerCase("it")} in tutta la Sardegna. Trova date, luoghi e biglietti su EVERAS.`;
+  const year = romeYear();
+  const title = `${category.name} in Sardegna ${year}`;
+  const description = `${category.name} in Sardegna: calendario aggiornato di date, città e dettagli. Cosa fare oggi e nel weekend su EVERAS.`;
   const path = categoryEventsPath(category.slug);
   return {
     title,
@@ -240,21 +247,15 @@ export async function CityLandingPage({ city }: { city: City }) {
         { href: month.path, label: `${month.name} ${month.year}` },
         ...categoryLinks.slice(0, 5),
       ]}
-      relatedLinks={[
+      relatedLinks={dedupeLinks([
         { href: cultureHref, label: `Guida Cultura di ${city.city}` },
-        { href: "/eventi-sardegna", label: "Eventi e sagre" },
-        { href: "/eventi-oggi", label: "Eventi oggi" },
-        { href: "/eventi-domani", label: "Eventi domani" },
-        { href: "/eventi-weekend", label: "Questo weekend" },
+        ...coreDateLinks(),
         { href: month.path, label: `Eventi ${month.name} ${month.year}` },
         ...categories.slice(0, 6).map((category) => ({
           href: cityCategoryEventsPath(city.city, category.slug),
           label: `${category.name} a ${city.city}`,
         })),
-      ].filter(
-        (link, index, list) =>
-          list.findIndex((item) => item.href === link.href) === index,
-      )}
+      ])}
       jsonLd={[
         collectionPageSchema({
           name: h1,
@@ -285,40 +286,121 @@ export async function CategoryLandingPage({
   const { events, error } = await loadFilteredPublishedEvents({
     categorySlug: category.slug,
   });
+  const month = currentMonthLanding();
+  const todayRange = getDateRange("oggi");
+  const weekendRange = getDateRange("weekend");
+  const { today, weekend, upcomingRest } = splitCityLandingEvents(events, {
+    today: todayRange ?? { start: new Date(0), end: new Date(0) },
+    weekend: weekendRange ?? { start: new Date(0), end: new Date(0) },
+  });
+
+  const stats = buildLandingStats(events);
+  const editorial = buildCategoryLandingEditorial({
+    categoryName: category.name,
+    categorySlug: category.slug,
+    upcomingCount: events.length,
+    todayCount: today.length,
+    weekendCount: weekend.length,
+    freeCount: stats.freeCount,
+    topCities: stats.topCities,
+  });
+
   const path = categoryEventsPath(category.slug);
   const h1 = `${category.name} in Sardegna`;
-  const intro = `Tutti gli eventi di ${category.name.toLocaleLowerCase("it")} in Sardegna: date, città e dettagli su EVERAS.`;
+  const label = category.name.toLocaleLowerCase("it");
+
+  const faqs = [
+    {
+      question: `Dove trovo ${label} in Sardegna?`,
+      answer:
+        events.length > 0
+          ? `In questa pagina: ${events.length} ${events.length === 1 ? "evento" : "eventi"} in programma, con sezioni per oggi, weekend e prossimi appuntamenti.`
+          : `Quando sono pubblicati compaiono qui. Intanto guarda oggi, weekend e il calendario mensile su EVERAS.`,
+    },
+    {
+      question: `Come trovo ${label} vicino a me?`,
+      answer:
+        stats.topCities.length > 0
+          ? `Parti dalle città in evidenza in questa pagina, oppure apri la landing di un comune e filtra per categoria.`
+          : `Apri una città da Esplora o dalla home, oppure combina città e categoria dalle pagine locali.`,
+    },
+  ];
+
+  const sections = [];
+  if (today.length > 0) {
+    sections.push({
+      id: "oggi",
+      title: `${category.name} oggi`,
+      events: today,
+    });
+  }
+  if (weekend.length > 0) {
+    sections.push({
+      id: "weekend",
+      title: `${category.name} questo weekend`,
+      events: weekend,
+    });
+  }
+  if (upcomingRest.length > 0) {
+    sections.push({
+      id: "prossimi",
+      title: `Prossimi: ${category.name}`,
+      events: upcomingRest,
+    });
+  } else if (sections.length === 0) {
+    sections.push({
+      id: "prossimi",
+      title: `Prossimi: ${category.name}`,
+      events,
+      emptyHint: `Non ci sono ${label} futuri pubblicati al momento.`,
+    });
+  }
+
+  const otherCategories = categories
+    .filter((item) => item.slug !== category.slug)
+    .slice(0, 4)
+    .map((item) => ({
+      href: categoryEventsPath(item.slug),
+      label: item.name,
+    }));
 
   return (
     <EventLandingView
       h1={h1}
-      intro={intro}
+      subtitle={editorial.subtitle}
+      intro={editorial.intro}
+      paragraphs={editorial.paragraphs}
       events={events}
+      sections={sections}
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi", href: "/eventi" },
         { name: category.name },
       ]}
-      faqs={[
-        {
-          question: `Come trovo ${category.name.toLocaleLowerCase("it")} vicino a me?`,
-          answer:
-            "Apri una città dal menu Esplora o dalla home, oppure combina città e categoria dalle pagine locali.",
-        },
+      faqs={faqs}
+      quickLinks={[
+        { href: "/eventi-oggi", label: "Oggi" },
+        { href: "/eventi-weekend", label: "Weekend" },
+        { href: month.path, label: `${month.name} ${month.year}` },
+        ...stats.topCities.slice(0, 5).map((city) => ({
+          href: cityCategoryEventsPath(city.name, category.slug),
+          label: city.name,
+        })),
       ]}
-      relatedLinks={[
-        { href: "/eventi-sardegna", label: "Eventi e sagre" },
-        { href: "/categorie", label: "Tutte le categorie" },
-        { href: "/eventi-oggi", label: "Eventi oggi" },
-        { href: cityEventsPath("Sassari"), label: "Eventi a Sassari" },
-        { href: cityEventsPath("Cagliari"), label: "Eventi a Cagliari" },
-        { href: cityEventsPath("Alghero"), label: "Eventi ad Alghero" },
-      ]}
+      relatedLinks={dedupeLinks([
+        ...coreDateLinks(path),
+        { href: month.path, label: `Eventi ${month.name} ${month.year}` },
+        ...stats.topCities.slice(0, 4).map((city) => ({
+          href: cityEventsPath(city.name),
+          label: `Eventi a ${city.name}`,
+        })),
+        ...otherCategories,
+      ])}
       jsonLd={[
         collectionPageSchema({
           name: h1,
-          description: intro,
+          description: editorial.intro,
           url: absoluteUrl(path),
         }),
         eventsItemListSchema({
@@ -331,13 +413,7 @@ export async function CategoryLandingPage({
           { name: "Eventi", path: "/eventi" },
           { name: category.name, path },
         ]),
-        faqPageSchema([
-          {
-            question: `Come trovo ${category.name.toLocaleLowerCase("it")} vicino a me?`,
-            answer:
-              "Apri una città dal menu Esplora o dalla home, oppure combina città e categoria dalle pagine locali.",
-          },
-        ]),
+        faqPageSchema(faqs),
       ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );
@@ -356,16 +432,80 @@ export async function CityCategoryLandingPage({
     city: city.city,
     categorySlug: category.slug,
   });
+  const month = currentMonthLanding();
+  const todayRange = getDateRange("oggi");
+  const weekendRange = getDateRange("weekend");
+  const { today, weekend, upcomingRest } = splitCityLandingEvents(events, {
+    today: todayRange ?? { start: new Date(0), end: new Date(0) },
+    weekend: weekendRange ?? { start: new Date(0), end: new Date(0) },
+  });
+  const stats = buildLandingStats(events);
+  const editorial = buildCityCategoryLandingEditorial({
+    cityName: city.city,
+    categoryName: category.name,
+    upcomingCount: events.length,
+    todayCount: today.length,
+    weekendCount: weekend.length,
+    freeCount: stats.freeCount,
+  });
+
   const path = cityCategoryEventsPath(city.city, category.slug);
   const h1 = `${category.name} a ${city.city}`;
-  const intro = `Calendario di ${category.name.toLocaleLowerCase("it")} a ${city.city}: trova date, luoghi e informazioni pratiche.`;
+  const label = category.name.toLocaleLowerCase("it");
+
+  const faqs = [
+    {
+      question: `Ci sono ${label} a ${city.city} questo mese?`,
+      answer:
+        events.length > 0
+          ? `Sì: in questa pagina trovi ${events.length} ${events.length === 1 ? "appuntamento" : "appuntamenti"} di ${label} a ${city.city}.`
+          : `Al momento no. Esplora tutti gli eventi a ${city.city} o ${label} in Sardegna.`,
+    },
+    {
+      question: "Come continuo a esplorare?",
+      answer: `Passa alla città, alla categoria in tutta l’isola, a oggi o al weekend dalle scorciatoie in pagina.`,
+    },
+  ];
+
+  const sections = [];
+  if (today.length > 0) {
+    sections.push({
+      id: "oggi",
+      title: `${category.name} oggi a ${city.city}`,
+      events: today,
+    });
+  }
+  if (weekend.length > 0) {
+    sections.push({
+      id: "weekend",
+      title: `${category.name} questo weekend a ${city.city}`,
+      events: weekend,
+    });
+  }
+  if (upcomingRest.length > 0) {
+    sections.push({
+      id: "prossimi",
+      title: `Prossimi: ${category.name} a ${city.city}`,
+      events: upcomingRest,
+    });
+  } else if (sections.length === 0) {
+    sections.push({
+      id: "prossimi",
+      title: `Prossimi: ${category.name} a ${city.city}`,
+      events,
+      emptyHint: `Non ci sono ${label} futuri a ${city.city} al momento.`,
+    });
+  }
 
   return (
     <EventLandingView
       eyebrow={city.area}
       h1={h1}
-      intro={intro}
+      subtitle={editorial.subtitle}
+      intro={editorial.intro}
+      paragraphs={editorial.paragraphs}
       events={events}
+      sections={sections}
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
@@ -373,14 +513,14 @@ export async function CityCategoryLandingPage({
         { name: city.city, href: cityEventsPath(city.city) },
         { name: category.name },
       ]}
-      faqs={[
-        {
-          question: `Ci sono ${category.name.toLocaleLowerCase("it")} a ${city.city} questo mese?`,
-          answer: `Controlla l’elenco aggiornato qui sopra. Se non trovi risultati, esplora tutti gli eventi a ${city.city} o la categoria in tutta la Sardegna.`,
-        },
+      faqs={faqs}
+      quickLinks={[
+        { href: "/eventi-oggi", label: "Oggi" },
+        { href: "/eventi-weekend", label: "Weekend" },
+        { href: "/eventi-gratuiti", label: "Gratuiti" },
+        { href: month.path, label: `${month.name} ${month.year}` },
       ]}
-      relatedLinks={[
-        { href: "/eventi-sardegna", label: "Eventi e sagre" },
+      relatedLinks={dedupeLinks([
         {
           href: cityEventsPath(city.city),
           label: `Tutti gli eventi a ${city.city}`,
@@ -389,12 +529,12 @@ export async function CityCategoryLandingPage({
           href: categoryEventsPath(category.slug),
           label: `${category.name} in Sardegna`,
         },
-        { href: "/eventi-weekend", label: "Questo weekend" },
-      ]}
+        ...coreDateLinks(path),
+      ])}
       jsonLd={[
         collectionPageSchema({
           name: h1,
-          description: intro,
+          description: editorial.intro,
           url: absoluteUrl(path),
         }),
         eventsItemListSchema({
@@ -408,12 +548,7 @@ export async function CityCategoryLandingPage({
           { name: city.city, path: cityEventsPath(city.city) },
           { name: category.name, path },
         ]),
-        faqPageSchema([
-          {
-            question: `Ci sono ${category.name.toLocaleLowerCase("it")} a ${city.city} questo mese?`,
-            answer: `Controlla l’elenco aggiornato qui sopra. Se non trovi risultati, esplora tutti gli eventi a ${city.city} o la categoria in tutta la Sardegna.`,
-          },
-        ]),
+        faqPageSchema(faqs),
       ].filter((item): item is Record<string, unknown> => item != null)}
     />
   );

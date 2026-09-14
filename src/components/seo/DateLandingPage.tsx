@@ -25,6 +25,7 @@ import {
   landingRobots,
 } from "@/src/lib/seo/site";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
+import { dedupeLinks } from "@/src/lib/seo/internal-links";
 
 type DateLandingPageProps = {
   dateKey: Exclude<DateLandingKey, "settimana">;
@@ -88,13 +89,10 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
       ]}
       faqs={faqs}
       quickLinks={quickLinks}
-      relatedLinks={[
+      relatedLinks={dedupeLinks([
         ...relatedLinks,
         ...weekendExploreLinks(3),
-      ].filter(
-        (link, index, list) =>
-          list.findIndex((item) => item.href === link.href) === index,
-      )}
+      ])}
       jsonLd={[
         collectionPageSchema({
           name: meta.h1,

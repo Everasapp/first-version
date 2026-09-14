@@ -84,6 +84,8 @@ export type EventListFilters = {
   month?: { year: number; monthIndex: number };
   range?: { start: Date; end: Date };
   titleIncludes?: string[];
+  /** Solo eventi gratuiti / ingresso libero. */
+  freeOnly?: boolean;
   /** Guide festa: tieni l’ultima edizione visibile anche dopo la chiusura. */
   includeExpired?: boolean;
 };
@@ -150,6 +152,10 @@ export const loadFilteredPublishedEvents = cache(
         !filters.categorySlug ||
         eventMatchesCategoryFilter(event, filters.categorySlug);
 
+      const matchesFree =
+        !filters.freeOnly ||
+        resolveEventPricing(event.is_free, event.price_from).isFree;
+
       const eventStartDate = new Date(event.start_at);
       const eventEndDate = event.end_at
         ? new Date(event.end_at)
@@ -185,6 +191,7 @@ export const loadFilteredPublishedEvents = cache(
         matchesArea &&
         matchesCity &&
         matchesCategory &&
+        matchesFree &&
         matchesDate &&
         matchesMonth &&
         matchesRange &&

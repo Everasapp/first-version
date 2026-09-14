@@ -12,6 +12,7 @@ import { sagreExploreLinks, type CalendarMonth, monthLanding } from "@/src/lib/s
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { buildLandingStats } from "@/src/lib/seo/landing-copy";
+import { coreDateLinks, dedupeLinks } from "@/src/lib/seo/internal-links";
 import { absoluteUrl, defaultOgImages, landingRobots } from "@/src/lib/seo/site";
 
 function adjacentMonthLanding(month: CalendarMonth, offset: number) {
@@ -109,19 +110,14 @@ export default async function MonthLandingPage({
       ]}
       faqs={faqs}
       quickLinks={quickLinks}
-      relatedLinks={[
-        { href: "/eventi-oggi", label: "Eventi oggi" },
-        { href: "/eventi-weekend", label: "Eventi weekend" },
+      relatedLinks={dedupeLinks([
+        ...coreDateLinks(month.path),
         { href: prev.path, label: `${prev.name} ${prev.year}` },
         { href: next.path, label: `${next.name} ${next.year}` },
         ...sagreExploreLinks(),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),
-      ].filter(
-        (link, index, list) =>
-          link.href !== month.path &&
-          list.findIndex((item) => item.href === link.href) === index,
-      )}
+      ]).filter((link) => link.href !== month.path)}
       jsonLd={[
         collectionPageSchema({
           name: month.h1,
