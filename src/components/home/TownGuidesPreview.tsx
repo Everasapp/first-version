@@ -4,6 +4,21 @@ import Link from "next/link";
 import type { WeeklyTownGuideCard } from "@/src/lib/home/weekly-town-guides";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 
+const TOWN_FUMETTI = [
+  {
+    src: "/images/home/comune-fumetto-costa.webp",
+    alt: "Illustrazione di un comune costiero della Sardegna",
+  },
+  {
+    src: "/images/home/comune-fumetto-interno.webp",
+    alt: "Illustrazione di un paese dell’interno della Sardegna",
+  },
+  {
+    src: "/images/home/comune-fumetto-piazza.webp",
+    alt: "Illustrazione di una piazza di paese in Sardegna",
+  },
+] as const;
+
 type TownGuidesPreviewProps = {
   towns: WeeklyTownGuideCard[];
 };
@@ -62,49 +77,50 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
           </Link>
         </div>
 
-        <ul className="mt-8 grid gap-5 sm:mt-10 sm:grid-cols-3 sm:gap-6">
-          {towns.map((town, index) => (
-            <li
-              key={town.href}
-              className="group animate-[fadeUp_0.55s_ease-out_both]"
-              style={{ animationDelay: `${index * 90}ms` }}
-            >
-              <Link
-                href={town.href}
-                className="block overflow-hidden rounded-[1.5rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+        <ul className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5">
+          {towns.map((town, index) => {
+            const fumetto = TOWN_FUMETTI[index % TOWN_FUMETTI.length];
+
+            return (
+              <li
+                key={town.href}
+                className="group animate-[fadeUp_0.55s_ease-out_both]"
+                style={{ animationDelay: `${index * 90}ms` }}
               >
-                <div className="relative aspect-[4/5] overflow-hidden bg-slate-200 sm:aspect-[3/4]">
-                  <Image
-                    src={town.imageSrc}
-                    alt={town.imageAlt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
-                  />
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
-                    aria-hidden="true"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/75">
+                <Link
+                  href={town.href}
+                  className="block overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white transition hover:border-[#075EAE]/35 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+                >
+                  {/* ~60% dell’altezza precedente (aspect 3/4 → 5/4) */}
+                  <div className="relative aspect-[5/4] overflow-hidden bg-[#F7F9FC]">
+                    <Image
+                      src={fumetto.src}
+                      alt={fumetto.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-contain p-3 transition duration-500 ease-out group-hover:scale-[1.03] sm:p-4"
+                    />
+                  </div>
+                  <div className="border-t border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#075EAE]">
                       {town.areaLabel}
                     </p>
-                    <h3 className="mt-1 text-2xl font-black tracking-tight text-white">
+                    <h3 className="mt-1 text-xl font-black tracking-tight text-slate-900">
                       {town.town}
                     </h3>
-                    <p className="mt-1.5 text-sm font-semibold text-white/85">
+                    <p className="mt-1 text-sm font-semibold text-slate-500">
                       {town.eventCount === 1
                         ? "1 evento questa settimana"
                         : `${town.eventCount} eventi questa settimana`}
                     </p>
-                    <span className="mt-3 inline-flex text-sm font-bold text-white transition group-hover:translate-x-0.5">
+                    <span className="mt-2.5 inline-flex text-sm font-bold text-[#075EAE] transition group-hover:translate-x-0.5">
                       Apri la guida →
                     </span>
                   </div>
-                </div>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
