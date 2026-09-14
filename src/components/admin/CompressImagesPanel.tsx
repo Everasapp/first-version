@@ -142,9 +142,14 @@ export default function CompressImagesPanel() {
           </div>
 
           <p className="mt-3 text-xs text-slate-500">
-            I lotti partono dagli eventi del tuo account admin; gli altri
-            organizzatori richiedono permessi admin sul database (già
-            configurati) o la service role su Vercel.
+            Serve{" "}
+            <code className="rounded bg-slate-100 px-1">SUPABASE_SERVICE_ROLE_KEY</code>{" "}
+            su Vercel (Production).{" "}
+            {stats?.hasServiceRole === false
+              ? "Attualmente non risulta configurata."
+              : stats?.hasServiceRole
+                ? "Service role OK."
+                : null}
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">

@@ -189,12 +189,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Serve la service role: upload + update bypassano RLS (altrimenti
+    // "new row violates row-level security policy" su storage/events).
     const adminClient = tryCreateAdminClient();
+    if (!adminClient) {
+      return NextResponse.json(
+        {
+          error:
+            "Manca SUPABASE_SERVICE_ROLE_KEY su Vercel. Aggiungila in Project → Settings → Environment Variables e rideploya.",
+          hasServiceRole: false,
+        },
+        { status: 500 },
+      );
+    }
 
     const candidates = ((data ?? []) as EventImageRow[])
       .filter((row) => row.image_url?.trim() && !isAlreadyWebpUrl(row.image_url))
       .sort((a, b) => {
-        // Prima gli eventi dell’admin loggato (sempre aggiornabili via RLS)
+        // Prima gli eventi dell’admin loggato
         const aOwn = a.organizer_id === auth.user.id ? 0 : 1;
         const bOwn = b.organizer_id === auth.user.id ? 0 : 1;
         return aOwn - bOwn;
@@ -216,7 +228,7 @@ export async function POST(request: Request) {
     }> = [];
 
     // Continua a scorrere i candidati finché non hai `limit` successi
-    // (o finiscono), così un 403 non blocca per sempre lo stesso lotto.
+    // (o finiscono), così un 403 esterno non blocca per sempre lo stesso lotto.
     const maxAttempts = Math.min(candidates.length, Math.max(limit * 4, 8));
 
     for (let i = 0; i < maxAttempts && batch.length < limit; i += 1) {
@@ -225,8 +237,6 @@ export async function POST(request: Request) {
 
       const previousUrl = event.image_url;
       const previousPath = getEventImageStoragePath(previousUrl);
-      const db = auth.supabase;
-      const storage = adminClient ?? auth.supabase;
 
       try {
         const path = `${auth.user.id}/optimized-${event.id}.webp`;
@@ -234,7 +244,7 @@ export async function POST(request: Request) {
         const input = await downloadImageBuffer(previousUrl);
         const webp = await optimizeImageToWebp(input);
 
-        const { error: uploadError } = await storage.storage
+        const { error: uploadError } = await adminClient.storage
           .from("event-images")
           .upload(path, webp, {
             cacheControl: "31536000",
@@ -246,13 +256,13 @@ export async function POST(request: Request) {
           throw new Error(uploadError.message);
         }
 
-        const { data: publicUrlData } = storage.storage
+        const { data: publicUrlData } = adminClient.storage
           .from("event-images")
           .getPublicUrl(path);
 
         const publicUrl = publicUrlData.publicUrl;
 
-        const { data: updated, error: updateError } = await db
+        const { data: updated, error: updateError } = await adminClient
           .from("events")
           .update({ image_url: publicUrl })
           .eq("id", event.id)
@@ -260,30 +270,24 @@ export async function POST(request: Request) {
           .maybeSingle();
 
         if (updateError) {
-          await storage.storage.from("event-images").remove([path]);
+          await adminClient.storage.from("event-images").remove([path]);
           throw new Error(updateError.message);
         }
 
         if (!updated) {
-          await storage.storage.from("event-images").remove([path]);
-          throw new Error(
-            "Aggiornamento non consentito (evento di un altro organizzatore).",
-          );
+          await adminClient.storage.from("event-images").remove([path]);
+          throw new Error("Evento non trovato dopo l’aggiornamento.");
         }
 
-        if (
-          previousPath &&
-          previousPath !== path &&
-          previousPath.startsWith(`${auth.user.id}/`)
-        ) {
-          const { count } = await db
+        if (previousPath && previousPath !== path) {
+          const { count } = await adminClient
             .from("events")
             .select("id", { count: "exact", head: true })
             .eq("image_url", previousUrl)
             .neq("id", event.id);
 
           if ((count ?? 0) === 0) {
-            await storage.storage.from("event-images").remove([previousPath]);
+            await adminClient.storage.from("event-images").remove([previousPath]);
           }
         }
 
