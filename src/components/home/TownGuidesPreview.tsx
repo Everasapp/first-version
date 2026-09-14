@@ -7,15 +7,15 @@ import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 const TOWN_FUMETTI = [
   {
     src: "/images/home/comune-fumetto-costa.webp",
-    alt: "Illustrazione di un comune costiero della Sardegna",
+    alt: "Simbolo grafico di un nuraghe e motivi sardi",
   },
   {
     src: "/images/home/comune-fumetto-interno.webp",
-    alt: "Illustrazione di un paese dell’interno della Sardegna",
+    alt: "Simbolo grafico di un paese sardo e motivo tessuto",
   },
   {
     src: "/images/home/comune-fumetto-piazza.webp",
-    alt: "Illustrazione di una piazza di paese in Sardegna",
+    alt: "Simbolo grafico della Sardegna e motivi tradizionali",
   },
 ] as const;
 
