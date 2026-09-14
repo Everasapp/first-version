@@ -1,7 +1,7 @@
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
-import CommunityInvite from "@/src/components/home/CommunityInvite";
+import TownGuidesPreview from "@/src/components/home/TownGuidesPreview";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -12,6 +12,10 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { isPublicEventActive } from "@/src/lib/eventActive";
+import {
+  eventOverlapsRomeWeek,
+  pickWeeklyTownGuides,
+} from "@/src/lib/home/weekly-town-guides";
 import { createClient } from "@/src/lib/supabase/server";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 
@@ -34,39 +38,6 @@ type EventRow = {
   favorites_count?: number | null;
   shares_count?: number | null;
 };
-
-function formatRomeDayKey(value: Date) {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Rome",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(value);
-}
-
-function addDayKeys(dayKey: string, days: number) {
-  const [year, month, day] = dayKey.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day + days));
-  return date.toISOString().slice(0, 10);
-}
-
-/** Lunedì–domenica della settimana corrente (Europe/Rome). */
-function getRomeMondaySundayKeys(now: Date) {
-  const todayKey = formatRomeDayKey(now);
-  const [year, month, day] = todayKey.split("-").map(Number);
-  const weekday = new Date(Date.UTC(year, month - 1, day, 12)).getUTCDay();
-  const offsetFromMonday = weekday === 0 ? 6 : weekday - 1;
-  const mondayKey = addDayKeys(todayKey, -offsetFromMonday);
-  const sundayKey = addDayKeys(mondayKey, 6);
-  return { mondayKey, sundayKey };
-}
-
-/** Eventi con inizio nella settimana corrente lun–dom. */
-function startsInRomeCalendarWeek(event: EventRow, now: Date) {
-  const startKey = formatRomeDayKey(new Date(event.start_at));
-  const { mondayKey, sundayKey } = getRomeMondaySundayKeys(now);
-  return startKey >= mondayKey && startKey <= sundayKey;
-}
 
 function formatEventDate(startAt: string, endAt?: string | null) {
   return formatEventDateRange(startAt, endAt);
@@ -167,7 +138,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
 export default async function Home() {
   const supabase = await createClient();
 
-  const [{ data, error }, favoriteIds, auth] = await Promise.all([
+  const [{ data, error }, favoriteIds] = await Promise.all([
     supabase
       .from("events")
       .select(
@@ -176,7 +147,6 @@ export default async function Home() {
       .eq("status", "published")
       .order("start_at", { ascending: true }),
     getCurrentUserFavoriteIds(),
-    supabase.auth.getUser(),
   ]);
 
   if (error) {
@@ -195,14 +165,15 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekCandidates = rows
-    .filter((event) => {
-      if (!startsInRomeCalendarWeek(event, now)) {
-        return false;
-      }
+  const weekRows = rows.filter((event) => {
+    if (!eventOverlapsRomeWeek(event, now)) {
+      return false;
+    }
 
-      return isPublicEventActive(event.start_at, event.end_at, now);
-    })
+    return isPublicEventActive(event.start_at, event.end_at, now);
+  });
+
+  const weekCandidates = weekRows
     .sort((a, b) => {
       const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
       const bStatus = resolveEventStatusBadge(b.start_at, b.end_at, now);
@@ -220,6 +191,7 @@ export default async function Home() {
     }));
 
   const weekEvents = interleaveByArea(weekCandidates);
+  const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
   return (
     <>
@@ -230,7 +202,7 @@ export default async function Home() {
 
         <Hero />
 
-        <CommunityInvite isAuthenticated={Boolean(auth.data.user)} />
+        <TownGuidesPreview towns={weeklyTownGuides} />
 
         <AreaSection
           title="Nord Sardegna"
