@@ -317,10 +317,10 @@ Come funziona
 
 Non è una chat di incontri: è partecipazione reale agli eventi, sempre con rispetto.
 
-Per iniziare, configura come compari nella community:
-https://www.everas.it/dashboard/comunita
+Per iniziare, apri la tua area personale:
+https://www.everas.it/dashboard
 
-Oppure esplora gli eventi e marca quelli a cui andrai:
+Oppure esplora gli eventi:
 https://www.everas.it/eventi
 
 Se hai dubbi o idee, rispondi pure a questa email: le leggo io.

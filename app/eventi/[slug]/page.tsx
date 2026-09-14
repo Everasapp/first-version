@@ -18,8 +18,6 @@ import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import AdminEventViewOnce from "@/src/components/events/AdminEventViewOnce";
-import EventCommunityPreview from "@/src/components/events/EventCommunityPreview";
-import EventRsvpCard from "@/src/components/events/EventRsvpCard";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import EventYouTubePlayer from "@/src/components/events/EventYouTubePlayer";
 import EventSourceLink from "@/src/components/events/EventSourceLink";
@@ -53,7 +51,6 @@ import {
   getOrganizerPublicHref,
 } from "@/src/lib/organizer-page";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
-import { buildAuthHref } from "@/src/lib/auth-urls";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { formatHowToArrive } from "@/src/lib/event-practical";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
@@ -64,11 +61,6 @@ import {
   eventSeoTitle,
 } from "@/src/lib/seo/event-meta";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-import {
-  getCurrentUserRsvp,
-  getEventCommunityPreview,
-  getEventCommunitySummary,
-} from "@/src/lib/community-data";
 import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { findCultureTown } from "@/src/lib/seo/cultura-towns";
@@ -271,19 +263,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
   } = await supabase.auth.getUser();
 
   let isAdmin = false;
-  let viewerInterests: string[] = [];
-  let viewerOpenToMeeting = false;
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role, interests, open_to_meeting")
+      .select("role")
       .eq("id", user.id)
       .maybeSingle();
     isAdmin = profile?.role === "admin";
-    viewerInterests = Array.isArray(profile?.interests)
-      ? (profile.interests as string[])
-      : [];
-    viewerOpenToMeeting = Boolean(profile?.open_to_meeting);
   }
 
   // Visitatori: conta ogni vista e mostrala subito.
@@ -310,9 +296,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
     followedIds,
     { data: organizerData },
     { data: directoryData },
-    communitySummary,
-    communityPreview,
-    currentRsvp,
   ] = await Promise.all([
     supabase
       .from("events")
@@ -347,9 +330,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
           .eq("id", event.organizer_directory_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
-    user ? getEventCommunitySummary(event.id) : Promise.resolve({ goingCount: 0, meetCount: 0 }),
-    getEventCommunityPreview(event.id),
-    getCurrentUserRsvp(event.id),
   ]);
 
   if (similarError) {
@@ -746,16 +726,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
               </div>
             ) : null}
 
-            <EventCommunityPreview
-              summary={communitySummary}
-              people={communityPreview}
-              isAuthenticated={Boolean(user)}
-              currentUserInterests={viewerInterests}
-              loginHref={buildAuthHref("/accedi", {
-                redirect: `/eventi/${event.slug}`,
-              })}
-            />
-
             <EventSourceLink
               sourceUrl={event.source_url}
               sourceName={event.source_name}
@@ -797,15 +767,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   </a>
                 )}
-
-                <EventRsvpCard
-                  eventId={event.id}
-                  eventTitle={event.title}
-                  isAuthenticated={Boolean(user)}
-                  initialGoing={Boolean(currentRsvp)}
-                  initialIntent={currentRsvp?.socialIntent ?? null}
-                  defaultOpenToMeeting={viewerOpenToMeeting}
-                />
 
                 <CalendarButton
                   eventId={event.id}
