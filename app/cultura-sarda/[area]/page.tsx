@@ -16,6 +16,11 @@ import {
   CENTRO_FEATURED_SLUG_SET,
 } from "@/src/lib/seo/cultura-centro-towns";
 import {
+  SUD_CULTURE_TOWNS,
+  SUD_FEATURED_CULTURE_SLUGS,
+  SUD_FEATURED_SLUG_SET,
+} from "@/src/lib/seo/cultura-sud-towns";
+import {
   breadcrumbListSchema,
   collectionPageSchema,
   faqPageSchema,
@@ -31,10 +36,17 @@ const DIRECTORY_TOWN_SLUGS = new Set([
   ...CENTRO_CULTURE_TOWNS.filter(
     (article) => !CENTRO_FEATURED_SLUG_SET.has(article.slug),
   ).map((article) => article.slug),
+  ...SUD_CULTURE_TOWNS.filter(
+    (article) => !SUD_FEATURED_SLUG_SET.has(article.slug),
+  ).map((article) => article.slug),
 ]);
 
 const CENTRO_FEATURED_ORDER = new Map<string, number>(
   CENTRO_FEATURED_CULTURE_SLUGS.map((slug, index) => [slug, index]),
+);
+
+const SUD_FEATURED_ORDER = new Map<string, number>(
+  SUD_FEATURED_CULTURE_SLUGS.map((slug, index) => [slug, index]),
 );
 
 export function generateStaticParams() {
@@ -83,7 +95,7 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
   }
 
   const cities = citiesForCultureArea(area);
-  // Schede “in evidenza”: guide editoriali (Nord) + 18 curate del Centro.
+  // Schede “in evidenza”: guide editoriali (Nord) + 18 curate Centro/Sud.
   const featured = CULTURE_TOWNS.filter((article) => {
     if (DIRECTORY_TOWN_SLUGS.has(article.slug)) return false;
     return cities.some(
@@ -92,10 +104,17 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
         article.town.toLocaleLowerCase("it"),
     );
   }).sort((a, b) => {
-    if (area.slug !== "centro-sardegna") return 0;
-    const ai = CENTRO_FEATURED_ORDER.get(a.slug) ?? 999;
-    const bi = CENTRO_FEATURED_ORDER.get(b.slug) ?? 999;
-    return ai - bi;
+    if (area.slug === "centro-sardegna") {
+      const ai = CENTRO_FEATURED_ORDER.get(a.slug) ?? 999;
+      const bi = CENTRO_FEATURED_ORDER.get(b.slug) ?? 999;
+      return ai - bi;
+    }
+    if (area.slug === "sud-sardegna") {
+      const ai = SUD_FEATURED_ORDER.get(a.slug) ?? 999;
+      const bi = SUD_FEATURED_ORDER.get(b.slug) ?? 999;
+      return ai - bi;
+    }
+    return 0;
   });
 
   return (

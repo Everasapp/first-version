@@ -58,7 +58,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord e sui 46 del Centro. Il Sud cresce nel tempo: dove la guida non c’è ancora restano eventi e collegamenti all’area.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord, sui 46 del Centro e sugli 84 del Sud.",
       },
     ],
   },
@@ -101,20 +101,20 @@ export const CULTURE_AREAS: CultureArea[] = [
     description:
       "Directory dei comuni del Sud Sardegna: Cagliari, il Campidano e una selezione del Sulcis, con una pagina per ciascun comune.",
     paragraphs: [
-      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari e una selezione del Sulcis. Ogni comune ha una pagina.",
-      "Dove la guida lunga non c’è ancora, trovi il calendario eventi e i collegamenti agli altri paesi dell’area.",
+      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari e una selezione del Sulcis. In evidenza le schede dei paesi più cercati; sotto, l’elenco completo A–Z: ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
+      "Apri il paese che ti interessa: trovi il testo della guida e, in fondo, il calendario degli appuntamenti pubblicati in quel comune su EVERAS.",
     ],
     townPagesLive: true,
     faqs: [
       {
         question: "Quali comuni del Sud sono in questa guida?",
         answer:
-          "Tutti i comuni del Sud Sardegna usati anche nei filtri eventi, da Cagliari al Sulcis. Cerca il nome nell’elenco A–Z.",
+          "Tutti i comuni del Sud Sardegna usati anche nei filtri eventi, da Cagliari al Sulcis. Parti dalle schede in evidenza o cerca il nome nell’elenco A–Z.",
       },
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Ogni comune ha una pagina con eventi e collegamenti. Le schede più ampie — musei, mestieri, cosa visitare — si aggiungono comune per comune, come già accade nel Nord.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti gli 84 comuni del Sud. In evidenza trovi 18 paesi tra Cagliari, costa, Sulcis e centri più cercati; gli altri restano nell’elenco A–Z.",
       },
     ],
   },
