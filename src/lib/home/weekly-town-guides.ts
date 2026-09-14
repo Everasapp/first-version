@@ -87,7 +87,7 @@ type TownCandidate = {
 };
 
 /**
- * Tre comuni con eventi nella settimana corrente, ruotati ogni lunedì.
+ * Tre comuni con almeno 2 eventi nella settimana corrente, ruotati ogni lunedì.
  * Preferisce comuni con guida Cultura (hero), altrimenti immagine dell’area.
  */
 export function pickWeeklyTownGuides(
@@ -118,13 +118,15 @@ export function pickWeeklyTownGuides(
     });
   }
 
-  const candidates = [...byTown.values()].sort((a, b) => {
-    const aGuide = findGuide(a.town) ? 1 : 0;
-    const bGuide = findGuide(b.town) ? 1 : 0;
-    if (bGuide !== aGuide) return bGuide - aGuide;
-    if (b.eventCount !== a.eventCount) return b.eventCount - a.eventCount;
-    return a.town.localeCompare(b.town, "it");
-  });
+  const candidates = [...byTown.values()]
+    .filter((candidate) => candidate.eventCount >= 2)
+    .sort((a, b) => {
+      const aGuide = findGuide(a.town) ? 1 : 0;
+      const bGuide = findGuide(b.town) ? 1 : 0;
+      if (bGuide !== aGuide) return bGuide - aGuide;
+      if (b.eventCount !== a.eventCount) return b.eventCount - a.eventCount;
+      return a.town.localeCompare(b.town, "it");
+    });
 
   if (candidates.length === 0) return [];
 

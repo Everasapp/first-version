@@ -64,8 +64,9 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
               Dove succede qualcosa questa settimana
             </h2>
             <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
-              Tre comuni con eventi in programma: apri la guida per storia,
-              tradizioni e cosa visitare. La selezione cambia ogni lunedì.
+              Tre comuni con almeno due eventi in programma: apri la guida per
+              storia, tradizioni e cosa visitare. La selezione cambia ogni
+              lunedì.
             </p>
           </div>
 
