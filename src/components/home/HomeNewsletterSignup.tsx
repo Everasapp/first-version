@@ -59,12 +59,12 @@ export default function HomeNewsletterSignup() {
     "h-11 w-full rounded-xl border border-white/25 bg-white/95 px-3 text-sm text-slate-900 outline-none transition focus:border-white focus:ring-2 focus:ring-white/40";
 
   return (
-    <div className="mt-6 max-w-2xl rounded-2xl border border-white/20 bg-black/25 p-4 backdrop-blur-sm sm:mt-8 sm:p-5">
+    <div className="mt-6 w-full rounded-2xl border border-white/20 bg-black/25 p-4 backdrop-blur-sm sm:mt-8 sm:p-5">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E67E22] text-white">
           <Mail aria-hidden="true" className="h-4 w-4" />
         </span>
-        <div>
+        <div className="min-w-0">
           <h2 className="text-base font-bold text-white sm:text-lg">
             Iscriviti alla newsletter
           </h2>
@@ -76,8 +76,8 @@ export default function HomeNewsletterSignup() {
       </div>
 
       <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="sm:col-span-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
+          <label className="sm:col-span-2 lg:col-span-1">
             <span className="sr-only">Email</span>
             <input
               type="email"
@@ -123,6 +123,24 @@ export default function HomeNewsletterSignup() {
               ))}
             </select>
           </label>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 lg:col-span-1 lg:w-auto lg:min-w-[8.5rem]"
+          >
+            {isLoading ? (
+              <>
+                <LoaderCircle
+                  aria-hidden="true"
+                  className="h-4 w-4 animate-spin"
+                />
+                Iscrizione...
+              </>
+            ) : (
+              "Iscriviti"
+            )}
+          </button>
         </div>
 
         {errorMessage ? (
@@ -136,24 +154,6 @@ export default function HomeNewsletterSignup() {
             {successMessage}
           </p>
         ) : null}
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-        >
-          {isLoading ? (
-            <>
-              <LoaderCircle
-                aria-hidden="true"
-                className="h-4 w-4 animate-spin"
-              />
-              Iscrizione...
-            </>
-          ) : (
-            "Iscriviti"
-          )}
-        </button>
       </form>
     </div>
   );
