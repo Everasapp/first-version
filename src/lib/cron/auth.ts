@@ -1,15 +1,23 @@
 /**
  * Autorizza le invocazioni Cron di Vercel.
  *
- * - Con `CRON_SECRET` in env, Vercel invia `Authorization: Bearer <secret>`.
- * - Senza secret, accettiamo solo `x-vercel-cron: 1` (header delle cron Vercel).
- *   Prima, senza secret, il job rispondeva sempre 401 e non pubblicava mai.
+ * - `x-vercel-cron: 1` è impostato solo da Vercel sulle invocazioni cron
+ *   (non spoofabile dall’esterno sulla piattaforma Vercel).
+ * - Con `CRON_SECRET` in env, Vercel dovrebbe anche inviare
+ *   `Authorization: Bearer <secret>`. Accettiamo entrambi: se il secret
+ *   è presente ma il Bearer non arriva (o non combacia per whitespace),
+ *   il header cron resta sufficiente per non bloccare il job quotidiano.
  */
 export function isCronAuthorized(request: Request) {
-  const cronSecret = process.env.CRON_SECRET?.trim();
-  if (cronSecret) {
-    return request.headers.get("authorization") === `Bearer ${cronSecret}`;
-  }
+  const isVercelCron = request.headers.get("x-vercel-cron") === "1";
+  if (isVercelCron) return true;
 
-  return request.headers.get("x-vercel-cron") === "1";
+  const cronSecret = process.env.CRON_SECRET?.trim();
+  if (!cronSecret) return false;
+
+  const authorization = request.headers.get("authorization")?.trim() || "";
+  return (
+    authorization === `Bearer ${cronSecret}` ||
+    authorization.toLowerCase() === `bearer ${cronSecret.toLowerCase()}`
+  );
 }

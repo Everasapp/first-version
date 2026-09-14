@@ -50,14 +50,17 @@ async function runDiscovery() {
 
 export async function GET(request: Request) {
   const startedAt = new Date();
+  const adminClient = tryCreateAdminClient();
 
   if (!isCronAuthorized(request)) {
     await logCronRun({
+      supabase: adminClient,
       jobName: JOB_NAME,
       status: "unauthorized",
       startedAt,
       summary: {
         hasCronSecret: Boolean(process.env.CRON_SECRET?.trim()),
+        hasServiceRole: Boolean(adminClient),
         hasVercelCronHeader:
           request.headers.get("x-vercel-cron") === "1",
         hasAuthorization: Boolean(request.headers.get("authorization")),
@@ -67,10 +70,24 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  await logCronRun({
+    supabase: adminClient,
+    jobName: JOB_NAME,
+    status: "started",
+    startedAt,
+    summary: {
+      hasServiceRole: Boolean(adminClient),
+      hasCronSecret: Boolean(process.env.CRON_SECRET?.trim()),
+      hasAdminUserId: Boolean(
+        process.env.EVENT_DISCOVERY_ADMIN_USER_ID?.trim(),
+      ),
+    },
+  });
+
   try {
     const result = await runDiscovery();
     await logCronRun({
-      supabase: tryCreateAdminClient(),
+      supabase: adminClient ?? tryCreateAdminClient(),
       jobName: JOB_NAME,
       status: "success",
       startedAt,
@@ -90,6 +107,7 @@ export async function GET(request: Request) {
     const message =
       error instanceof Error ? error.message : "Errore sconosciuto";
     await logCronRun({
+      supabase: adminClient ?? tryCreateAdminClient(),
       jobName: JOB_NAME,
       status: "error",
       startedAt,

@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
-export type CronRunStatus = "success" | "error" | "unauthorized";
+export type CronRunStatus = "started" | "success" | "error" | "unauthorized";
 
 export async function logCronRun({
   supabase,
@@ -35,8 +35,12 @@ export async function logCronRun({
     job_name: jobName,
     status,
     started_at: startedAt.toISOString(),
-    finished_at: finishedAt.toISOString(),
-    duration_ms: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
+    finished_at:
+      status === "started" ? null : finishedAt.toISOString(),
+    duration_ms:
+      status === "started"
+        ? null
+        : Math.max(0, finishedAt.getTime() - startedAt.getTime()),
     summary,
     error_message: errorMessage || null,
   });
