@@ -41,14 +41,6 @@ const DIRECTORY_TOWN_SLUGS = new Set([
   ).map((article) => article.slug),
 ]);
 
-const CENTRO_FEATURED_ORDER = new Map<string, number>(
-  CENTRO_FEATURED_CULTURE_SLUGS.map((slug, index) => [slug, index]),
-);
-
-const SUD_FEATURED_ORDER = new Map<string, number>(
-  SUD_FEATURED_CULTURE_SLUGS.map((slug, index) => [slug, index]),
-);
-
 export function generateStaticParams() {
   return CULTURE_AREAS.map((area) => ({ area: area.slug }));
 }
@@ -95,27 +87,25 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
   }
 
   const cities = citiesForCultureArea(area);
-  // Schede “in evidenza”: guide editoriali (Nord) + 18 curate Centro/Sud.
-  const featured = CULTURE_TOWNS.filter((article) => {
-    if (DIRECTORY_TOWN_SLUGS.has(article.slug)) return false;
-    return cities.some(
-      (city) =>
-        city.city.toLocaleLowerCase("it") ===
-        article.town.toLocaleLowerCase("it"),
-    );
-  }).sort((a, b) => {
-    if (area.slug === "centro-sardegna") {
-      const ai = CENTRO_FEATURED_ORDER.get(a.slug) ?? 999;
-      const bi = CENTRO_FEATURED_ORDER.get(b.slug) ?? 999;
-      return ai - bi;
-    }
-    if (area.slug === "sud-sardegna") {
-      const ai = SUD_FEATURED_ORDER.get(a.slug) ?? 999;
-      const bi = SUD_FEATURED_ORDER.get(b.slug) ?? 999;
-      return ai - bi;
-    }
-    return 0;
-  });
+  // Schede “in evidenza”: Nord editoriali; Centro/Sud = liste curate da 18.
+  const featured = (
+    area.slug === "centro-sardegna"
+      ? CENTRO_FEATURED_CULTURE_SLUGS.map(
+          (slug) => CULTURE_TOWNS.find((article) => article.slug === slug),
+        )
+      : area.slug === "sud-sardegna"
+        ? SUD_FEATURED_CULTURE_SLUGS.map(
+            (slug) => CULTURE_TOWNS.find((article) => article.slug === slug),
+          )
+        : CULTURE_TOWNS.filter((article) => {
+            if (DIRECTORY_TOWN_SLUGS.has(article.slug)) return false;
+            return cities.some(
+              (city) =>
+                city.city.toLocaleLowerCase("it") ===
+                article.town.toLocaleLowerCase("it"),
+            );
+          })
+  ).filter((article): article is NonNullable<typeof article> => Boolean(article));
 
   return (
     <CultureAreaView
