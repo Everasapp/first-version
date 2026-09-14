@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Building2 } from "lucide-react";
@@ -13,8 +14,14 @@ import {
 } from "@/src/lib/organizer-claim";
 import { isOrganizer } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/server";
+import { privatePageRobots } from "@/src/lib/seo/site";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Rivendica organizzatore",
+  robots: privatePageRobots,
+};
 
 type ClaimOrganizerPageProps = {
   params: Promise<{

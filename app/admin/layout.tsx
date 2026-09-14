@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { requireAdmin } from "@/src/lib/auth";
+import { privatePageRobots } from "@/src/lib/seo/site";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: privatePageRobots,
+};
 
 export default async function AdminLayout({
   children,

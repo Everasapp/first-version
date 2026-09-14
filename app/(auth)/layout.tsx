@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 
+import { privatePageRobots } from "@/src/lib/seo/site";
+
 export const metadata: Metadata = {
   title: "Account",
   description: "Accedi o crea il tuo account EVERAS.",
-  robots: {
-    index: false,
-    follow: false,
-  },
+  robots: privatePageRobots,
 };
 
 export default function AuthLayout({

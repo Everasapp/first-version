@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
+
 import { createClient } from "@/src/lib/supabase/server";
+import { privatePageRobots } from "@/src/lib/seo/site";
+
+export const metadata: Metadata = {
+  title: "Test Supabase",
+  robots: privatePageRobots,
+};
 
 type TestResult =
   | { ok: true; count: number }

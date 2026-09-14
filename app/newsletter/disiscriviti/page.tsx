@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, MailX } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
 import { createClient } from "@/src/lib/supabase/server";
+import { privatePageRobots } from "@/src/lib/seo/site";
+
+export const metadata: Metadata = {
+  title: "Disiscrizione newsletter",
+  robots: privatePageRobots,
+};
 
 type UnsubscribePageProps = {
   searchParams: Promise<{

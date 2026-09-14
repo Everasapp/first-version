@@ -51,3 +51,9 @@ export function shouldIndexCityLanding(
 export function filteredListingRobots(): Metadata["robots"] {
   return { index: false, follow: true };
 }
+
+/** Private/account HTML: crawlable so Google can read noindex, never indexed. */
+export const privatePageRobots: Metadata["robots"] = {
+  index: false,
+  follow: false,
+};
