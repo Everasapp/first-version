@@ -1,22 +1,16 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Building2 } from "lucide-react";
 
 import OrganizerPublicPageForm from "@/src/components/dashboard/OrganizerPublicPageForm";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 import { parseOrganizerDirectoryPublic } from "@/src/lib/organizer-claim";
 import { ORGANIZER_DIRECTORY_PUBLIC_SELECT } from "@/src/lib/organizer-page";
-import { isOrganizer } from "@/src/lib/profile";
 
 export const dynamic = "force-dynamic";
 
 export default async function OrganizerPublicPageSettings() {
-  const { user, profile, supabase } = await requireProfile("/dashboard/pagina");
-
-  if (!isOrganizer(profile)) {
-    redirect("/diventa-organizzatore?next=/dashboard/pagina");
-  }
+  const { user, supabase } = await requireOrganizer("/dashboard/pagina");
 
   const { data, error } = await supabase
     .from("organizer_directory_public")

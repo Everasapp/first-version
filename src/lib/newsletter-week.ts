@@ -266,6 +266,27 @@ export async function loadNewsletterSubscribers(supabase?: SupabaseClient) {
   return (data ?? []) as NewsletterSubscriber[];
 }
 
+type EmailOnlySubscriberRow = {
+  id: string;
+  email: string;
+  city: string;
+  category: string;
+  unsub_token: string;
+};
+
+async function loadEmailOnlySubscribers(supabase: SupabaseClient) {
+  const { data, error } = await supabase
+    .from("newsletter_subscribers")
+    .select("id, email, city, category, unsub_token")
+    .eq("opt_in", true);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data ?? []) as EmailOnlySubscriberRow[];
+}
+
 function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
   return {
     id: row.id,
@@ -278,6 +299,22 @@ function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
     email: row.email?.trim() || null,
     emailConfirmed: Boolean(row.email_confirmed),
   };
+}
+
+function dedupeRecipientsByEmail(recipients: NewsletterRecipient[]) {
+  const seen = new Set<string>();
+  const result: NewsletterRecipient[] = [];
+
+  for (const recipient of recipients) {
+    const email = recipient.email?.trim().toLowerCase();
+    if (email) {
+      if (seen.has(email)) continue;
+      seen.add(email);
+    }
+    result.push(recipient);
+  }
+
+  return result;
 }
 
 async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
@@ -305,10 +342,15 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
     );
   }
 
-  const subscribers = await loadNewsletterSubscribers(admin);
-  const recipients: NewsletterRecipient[] = [];
+  const [profileSubscribers, emailSubscribers] = await Promise.all([
+    loadNewsletterSubscribers(admin),
+    loadEmailOnlySubscribers(admin),
+  ]);
 
-  for (const subscriber of subscribers) {
+  const recipients: NewsletterRecipient[] = [];
+  const profileEmails = new Set<string>();
+
+  for (const subscriber of profileSubscribers) {
     const { data: userData, error: userError } =
       await admin.auth.admin.getUserById(subscriber.id);
 
@@ -321,6 +363,9 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
       continue;
     }
 
+    const email = userData.user?.email?.trim().toLowerCase() || null;
+    if (email) profileEmails.add(email);
+
     recipients.push({
       ...subscriber,
       email: userData.user?.email ?? null,
@@ -328,8 +373,25 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
     });
   }
 
+  for (const subscriber of emailSubscribers) {
+    const email = subscriber.email.trim().toLowerCase();
+    if (profileEmails.has(email)) continue;
+
+    recipients.push({
+      id: subscriber.id,
+      full_name: null,
+      municipality: subscriber.city,
+      province: null,
+      newsletter_city: subscriber.city,
+      newsletter_category: subscriber.category,
+      newsletter_unsub_token: subscriber.unsub_token,
+      email: subscriber.email,
+      emailConfirmed: true,
+    });
+  }
+
   return {
-    recipients,
+    recipients: dedupeRecipientsByEmail(recipients),
     writeMode: "admin",
     writeClient: admin,
   };
@@ -358,8 +420,40 @@ async function recordNewsletterSend(
     return;
   }
 
+  const { data: profileRow } = await client
+    .from("profiles")
+    .select("id")
+    .eq("id", payload.userId)
+    .maybeSingle();
+
+  if (profileRow) {
+    const { error: insertError } = await client.from("newsletter_sends").insert({
+      user_id: payload.userId,
+      events_count: payload.eventsCount,
+      status: payload.status,
+      error_message: payload.errorMessage ?? null,
+    });
+    if (insertError) {
+      throw new Error(insertError.message);
+    }
+
+    if (payload.status === "sent") {
+      const { error: updateError } = await client
+        .from("profiles")
+        .update({
+          newsletter_last_sent_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", payload.userId);
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+    }
+    return;
+  }
+
   const { error: insertError } = await client.from("newsletter_sends").insert({
-    user_id: payload.userId,
+    subscriber_id: payload.userId,
     events_count: payload.eventsCount,
     status: payload.status,
     error_message: payload.errorMessage ?? null,
@@ -370,9 +464,9 @@ async function recordNewsletterSend(
 
   if (payload.status === "sent") {
     const { error: updateError } = await client
-      .from("profiles")
+      .from("newsletter_subscribers")
       .update({
-        newsletter_last_sent_at: new Date().toISOString(),
+        last_sent_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq("id", payload.userId);

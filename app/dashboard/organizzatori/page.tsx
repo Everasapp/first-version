@@ -3,15 +3,14 @@ import { Building2, Users } from "lucide-react";
 
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 import {
   getFollowedOrganizers,
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
-import { isOrganizer } from "@/src/lib/profile";
 
 export default async function OrganizzatoriSeguitiPage() {
-  const { user, profile } = await requireProfile("/dashboard/organizzatori");
+  const { user } = await requireOrganizer("/dashboard/organizzatori");
   const organizers = await getFollowedOrganizers(user.id);
 
   return (
@@ -23,7 +22,7 @@ export default async function OrganizzatoriSeguitiPage() {
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                {isOrganizer(profile) ? "Area account" : "Area personale"}
+                Area account
               </p>
               <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 Organizzatori seguiti

@@ -3,11 +3,11 @@ import { Mail } from "lucide-react";
 
 import NewsletterPreferencesForm from "@/src/components/dashboard/NewsletterPreferencesForm";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 import { getCategoryLabel } from "@/src/lib/newsletter";
 
 export default async function NewsletterPreferencesPage() {
-  const { profile } = await requireProfile("/dashboard/newsletter");
+  const { profile } = await requireOrganizer("/dashboard/newsletter");
 
   return (
     <>
@@ -18,7 +18,7 @@ export default async function NewsletterPreferencesPage() {
           <div className="mx-auto flex max-w-3xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 sm:flex-row sm:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Area personale
+                Area account
               </p>
               <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">
                 Newsletter

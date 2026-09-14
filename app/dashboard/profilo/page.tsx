@@ -1,18 +1,12 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Building2 } from "lucide-react";
 
 import OrganizerProfileForm from "@/src/components/dashboard/OrganizerProfileForm";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
-import { isOrganizer } from "@/src/lib/profile";
+import { requireOrganizer } from "@/src/lib/auth";
 
 export default async function OrganizerProfilePage() {
-  const { profile } = await requireProfile("/dashboard/profilo");
-
-  if (!isOrganizer(profile)) {
-    redirect("/diventa-organizzatore?next=/dashboard/profilo");
-  }
+  const { profile } = await requireOrganizer("/dashboard/profilo");
 
   return (
     <>

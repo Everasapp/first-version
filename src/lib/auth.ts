@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { buildAuthHref } from "@/src/lib/auth-urls";
 import {
+  isOrganizer,
   PROFILE_SELECT,
   type Profile,
 } from "@/src/lib/profile";
@@ -71,6 +72,16 @@ export async function requireProfile(redirectTo: string) {
   }
 
   return { supabase, user, profile };
+}
+
+export async function requireOrganizer(redirectTo: string) {
+  const result = await requireProfile(redirectTo);
+
+  if (!isOrganizer(result.profile)) {
+    redirect("/");
+  }
+
+  return result;
 }
 
 export async function requireAdmin(redirectTo = "/admin") {

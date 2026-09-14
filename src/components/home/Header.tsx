@@ -8,6 +8,7 @@ import {
   markEverasAccountKnown,
   readHasEverasAccount,
 } from "@/src/lib/auth-preference";
+import { isOrganizerRole, type UserRole } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/client";
 
 const authButtonClassName =
@@ -16,6 +17,7 @@ const authButtonClassName =
 export default function Header() {
   // Default: nuovo visitatore → Registrati (evita layout shift su mobile).
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isOrganizerAccount, setIsOrganizerAccount] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
 
   useEffect(() => {
@@ -23,24 +25,41 @@ export default function Header() {
 
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data }) => {
-      const loggedIn = Boolean(data.user);
+    async function syncAuth(userId?: string | null) {
+      const loggedIn = Boolean(userId);
       setIsAuthenticated(loggedIn);
-      if (loggedIn) {
-        markEverasAccountKnown();
-        setHasAccount(true);
+
+      if (!loggedIn) {
+        setIsOrganizerAccount(false);
+        return;
       }
+
+      markEverasAccountKnown();
+      setHasAccount(true);
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId!)
+        .maybeSingle();
+
+      setIsOrganizerAccount(
+        isOrganizerRole((profile?.role as UserRole | null | undefined) ?? null),
+      );
+    }
+
+    supabase.auth.getUser().then(({ data }) => {
+      void syncAuth(data.user?.id);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      const loggedIn = Boolean(session?.user);
-      setIsAuthenticated(loggedIn);
-      if (loggedIn || event === "SIGNED_IN") {
+      if (event === "SIGNED_IN" || session?.user) {
         markEverasAccountKnown();
         setHasAccount(true);
       }
+      void syncAuth(session?.user?.id);
     });
 
     return () => subscription.unsubscribe();
@@ -108,9 +127,17 @@ export default function Header() {
             <span className="hidden sm:inline">Cultura sarda</span>
           </Link>
 
-          {isAuthenticated ? (
+          {isAuthenticated && isOrganizerAccount ? (
             <Link href="/dashboard" className={authButtonClassName}>
               Dashboard
+            </Link>
+          ) : isAuthenticated ? (
+            <Link
+              href="/diventa-organizzatore"
+              className={authButtonClassName}
+            >
+              <span className="sm:hidden">Organizzatore</span>
+              <span className="hidden sm:inline">Diventa organizzatore</span>
             </Link>
           ) : hasAccount ? (
             <Link href="/accedi" className={authButtonClassName}>

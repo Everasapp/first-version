@@ -17,9 +17,6 @@ import {
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
-import EventCard, {
-  type EventCardData,
-} from "@/src/components/home/EventCard";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
@@ -27,9 +24,7 @@ import DashboardEventSearch from "@/src/components/dashboard/DashboardEventSearc
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
 import PublishEventButton from "@/src/components/dashboard/PublishEventButton";
-import { requireProfile } from "@/src/lib/auth";
-import { getCalendarEvents } from "@/src/lib/calendar";
-import { resolveCategoryLabels } from "@/src/lib/event-categories";
+import { requireOrganizer } from "@/src/lib/auth";
 import {
   buildDashboardHref,
   eventMatchesDashboardSearch,
@@ -41,8 +36,6 @@ import {
   type DashboardEventStatus,
   type DashboardFilter,
 } from "@/src/lib/dashboardEvents";
-import { getFavoriteEvents } from "@/src/lib/favorites";
-import { getFollowedOrganizers } from "@/src/lib/follows";
 import {
   PLAN_SELECT,
   canPromoteEvents,
@@ -52,7 +45,7 @@ import {
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-import { isOrganizer, type Profile } from "@/src/lib/profile";
+import { type Profile } from "@/src/lib/profile";
 
 export const dynamic = "force-dynamic";
 
@@ -156,244 +149,6 @@ function formatPrice(event: DashboardEvent) {
   return resolveEventPricing(event.is_free, event.price_from).label;
 }
 
-function formatFavoriteDate(startAt: string) {
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Rome",
-  }).format(new Date(startAt));
-}
-
-function toFavoriteCards(
-  favorites: Awaited<ReturnType<typeof getFavoriteEvents>>,
-): EventCardData[] {
-  return favorites.map((event) => {
-    const pricing = resolveEventPricing(event.is_free, event.price_from);
-    const categoryLabels = resolveCategoryLabels(event);
-
-    return {
-      id: event.slug,
-      eventId: event.id,
-      title: event.title,
-      category: categoryLabels[0] ?? event.category,
-      categories: categoryLabels,
-      date: formatFavoriteDate(event.start_at),
-      startDate: event.start_at,
-      endDate: event.end_at ?? undefined,
-      location: event.location_name || event.municipality,
-      municipality: event.municipality ?? undefined,
-      imageUrl: event.image_url ?? "/images/concert.webp",
-      isFree: pricing.isFree,
-      priceFrom: pricing.priceFrom,
-      isFavorite: true,
-      ...engagementFromRow(event),
-    };
-  });
-}
-
-function UserDashboard({
-  profile,
-  favoriteCards,
-  calendarCount,
-  followingCount,
-}: {
-  profile: Profile;
-  favoriteCards: EventCardData[];
-  calendarCount: number;
-  followingCount: number;
-}) {
-  const firstName =
-    profile.full_name?.trim().split(/\s+/)[0] || "benvenuto/a";
-
-  return (
-    <>
-      <Header />
-
-      <main className="min-h-screen bg-slate-50">
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Area personale
-              </p>
-              <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-                Ciao, {firstName}
-              </h1>
-              <p className="mt-3 max-w-2xl text-lg text-slate-600">
-                Preferiti, calendario e organizzatori seguiti: tutto sul tuo
-                stesso account Everas.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              {profile.role === "admin" ? (
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#075EAE] bg-[#075EAE] px-5 py-3.5 font-bold text-white transition hover:bg-[#064a8a]"
-                >
-                  Admin
-                </Link>
-              ) : null}
-              <LogoutButton />
-              <Link
-                href="/dashboard/newsletter"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
-              >
-                <Mail aria-hidden="true" className="h-5 w-5" />
-                Newsletter
-              </Link>
-              <Link
-                href="/dashboard/preferiti"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
-              >
-                <Heart aria-hidden="true" className="h-5 w-5" />
-                Preferiti
-              </Link>
-              <Link
-                href="/dashboard/calendario"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3.5 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
-              >
-                <CalendarDays aria-hidden="true" className="h-5 w-5" />
-                Calendario
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
-              <div className="flex items-start gap-3">
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-orange-50 text-[#E67E22]">
-                  <Building2 aria-hidden="true" className="h-5 w-5" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">
-                    Vuoi pubblicare un evento?
-                  </h2>
-                  <p className="mt-2 text-slate-600">
-                    Diventa organizzatore con lo stesso account e pubblica in
-                    pochi passaggi.
-                  </p>
-                </div>
-              </div>
-
-              <Link
-                href="/diventa-organizzatore?next=/pubblica"
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-5 py-3.5 font-bold text-white transition hover:bg-[#C96A1A]"
-              >
-                <Building2 aria-hidden="true" className="h-5 w-5" />
-                Diventa organizzatore
-              </Link>
-            </article>
-
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <Mail aria-hidden="true" className="h-6 w-6 text-[#E67E22]" />
-              <h2 className="mt-4 text-lg font-bold text-slate-900">
-                Newsletter
-              </h2>
-              <p className="mt-2 text-sm text-slate-600">
-                {profile.newsletter_opt_in
-                  ? `Attiva · ${profile.newsletter_city ?? "città"}`
-                  : "Ricevi eventi ogni settimana."}
-              </p>
-              <Link
-                href="/dashboard/newsletter"
-                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
-              >
-                Gestisci
-              </Link>
-            </article>
-
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <Heart aria-hidden="true" className="h-6 w-6 text-[#E67E22]" />
-              <h2 className="mt-4 text-lg font-bold text-slate-900">Preferiti</h2>
-              <p className="mt-2 text-sm text-slate-600">
-                {favoriteCards.length === 0
-                  ? "Nessun evento salvato."
-                  : `${favoriteCards.length} salvati`}
-              </p>
-              <Link
-                href="/dashboard/preferiti"
-                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
-              >
-                Apri
-              </Link>
-            </article>
-
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <CalendarDays
-                aria-hidden="true"
-                className="h-6 w-6 text-[#075EAE]"
-              />
-              <h2 className="mt-4 text-lg font-bold text-slate-900">
-                Calendario
-              </h2>
-              <p className="mt-2 text-sm text-slate-600">
-                {calendarCount === 0
-                  ? "Nessun evento in agenda."
-                  : `${calendarCount} in agenda`}
-              </p>
-              <Link
-                href="/dashboard/calendario"
-                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
-              >
-                Apri
-              </Link>
-            </article>
-
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2 xl:col-span-4">
-              <Users aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
-              <h2 className="mt-4 text-lg font-bold text-slate-900">
-                Organizzatori seguiti
-              </h2>
-              <p className="mt-2 text-sm text-slate-600">
-                {followingCount === 0
-                  ? "Non segui ancora nessun organizzatore. Trovi «Segui» nella pagina evento."
-                  : `Segui ${followingCount} organizzator${
-                      followingCount === 1 ? "e" : "i"
-                    }.`}
-              </p>
-              <Link
-                href={
-                  followingCount > 0 ? "/dashboard/organizzatori" : "/eventi"
-                }
-                className="mt-5 inline-flex text-sm font-bold text-[#075EAE] hover:underline"
-              >
-                {followingCount > 0 ? "Vedi lista" : "Esplora eventi"}
-              </Link>
-            </article>
-          </div>
-
-          {favoriteCards.length > 0 ? (
-            <div className="mt-10">
-              <div className="flex items-end justify-between gap-4">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Salvati di recente
-                </h2>
-                <Link
-                  href="/dashboard/preferiti"
-                  className="text-sm font-bold text-[#075EAE] hover:underline"
-                >
-                  Vedi tutti
-                </Link>
-              </div>
-              <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {favoriteCards.slice(0, 3).map((event) => (
-                  <EventCard key={event.eventId} event={event} />
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </section>
-      </main>
-    </>
-  );
-}
-
 async function OrganizerDashboard({
   profile,
   searchParams,
@@ -402,7 +157,7 @@ async function OrganizerDashboard({
 }: {
   profile: Profile;
   searchParams: DashboardPageProps["searchParams"];
-  supabase: Awaited<ReturnType<typeof requireProfile>>["supabase"];
+  supabase: Awaited<ReturnType<typeof requireOrganizer>>["supabase"];
   userId: string;
 }) {
   const params = await searchParams;
@@ -824,23 +579,7 @@ async function OrganizerDashboard({
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  const { supabase, user, profile } = await requireProfile("/dashboard");
-  const [favoriteCards, calendarEvents, followedOrganizers] = await Promise.all([
-    getFavoriteEvents(user.id).then(toFavoriteCards),
-    getCalendarEvents(user.id),
-    getFollowedOrganizers(user.id),
-  ]);
-
-  if (!isOrganizer(profile)) {
-    return (
-      <UserDashboard
-        profile={profile}
-        favoriteCards={favoriteCards}
-        calendarCount={calendarEvents.length}
-        followingCount={followedOrganizers.length}
-      />
-    );
-  }
+  const { supabase, user, profile } = await requireOrganizer("/dashboard");
 
   return (
     <OrganizerDashboard

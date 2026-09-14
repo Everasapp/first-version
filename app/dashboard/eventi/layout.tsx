@@ -1,18 +1,11 @@
-import { redirect } from "next/navigation";
-
-import { requireProfile } from "@/src/lib/auth";
-import { isOrganizer } from "@/src/lib/profile";
+import { requireOrganizer } from "@/src/lib/auth";
 
 export default async function DashboardEventsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { profile } = await requireProfile("/dashboard");
-
-  if (!isOrganizer(profile)) {
-    redirect("/diventa-organizzatore?next=/dashboard");
-  }
+  await requireOrganizer("/dashboard");
 
   return children;
 }

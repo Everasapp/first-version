@@ -151,12 +151,12 @@ export default function RegisterView({
               />
             </Link>
             <h1 className="mt-7 text-3xl font-bold text-slate-900">
-              Crea il tuo account
+              Area organizzatori
             </h1>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               {isClaimSignup
                 ? "Crea un account per rivendicare il profilo organizzatore. Dopo la registrazione tornerai alla pagina di rivendicazione."
-                : "Registrati come utente. Se un giorno vorrai pubblicare eventi, potrai diventare organizzatore con lo stesso account."}
+                : "Registrati per pubblicare eventi su Everas. Se cerchi solo gli eventi, iscriviti alla newsletter dalla homepage — senza account."}
             </p>
           </div>
 

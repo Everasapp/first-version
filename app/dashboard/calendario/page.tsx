@@ -3,10 +3,9 @@ import { CalendarDays } from "lucide-react";
 
 import CalendarButton from "@/src/components/events/CalendarButton";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 import { getCalendarEvents } from "@/src/lib/calendar";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
-import { isOrganizer } from "@/src/lib/profile";
 
 function formatDayHeading(startAt: string) {
   return new Intl.DateTimeFormat("it-IT", {
@@ -39,7 +38,7 @@ function formatPastDate(startAt: string) {
 }
 
 export default async function CalendarioPage() {
-  const { user, profile } = await requireProfile("/dashboard/calendario");
+  const { user } = await requireOrganizer("/dashboard/calendario");
   const events = await getCalendarEvents(user.id);
   const now = Date.now();
 
@@ -69,7 +68,7 @@ export default async function CalendarioPage() {
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                {isOrganizer(profile) ? "Area account" : "Area personale"}
+                Area account
               </p>
               <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 Il mio calendario

@@ -19,7 +19,7 @@ export default async function NewsletterUnsubscribePage({
 
   let success = false;
   let message =
-    "Link non valido. Se vuoi gestire la newsletter, accedi alla dashboard.";
+    "Link non valido. Se vuoi iscriverti di nuovo, usa il form newsletter in homepage.";
 
   if (token) {
     const supabase = await createClient();
@@ -68,12 +68,6 @@ export default async function NewsletterUnsubscribePage({
               className="inline-flex rounded-2xl bg-[#E67E22] px-5 py-3 font-bold text-white transition hover:bg-[#C96A1A]"
             >
               Torna alla home
-            </Link>
-            <Link
-              href="/dashboard/newsletter"
-              className="inline-flex rounded-2xl border border-slate-300 px-5 py-3 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
-            >
-              Gestisci preferenze
             </Link>
           </div>
         </section>

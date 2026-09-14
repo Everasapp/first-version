@@ -1,4 +1,5 @@
 import EventSearchForm from "@/src/components/home/EventSearchForm";
+import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 
 export default function Hero() {
   return (
@@ -30,6 +31,8 @@ export default function Hero() {
         <p className="mt-4 max-w-2xl text-base leading-7 text-blue-50 sm:mt-6 sm:text-xl sm:leading-8">
           Sagre, concerti, spettacoli, serate e attività vicino a te.
         </p>
+
+        <HomeNewsletterSignup />
 
         <EventSearchForm />
       </div>

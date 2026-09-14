@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Check, Sparkles } from "lucide-react";
 
 import RequestPlanButton from "@/src/components/dashboard/RequestPlanButton";
 import Header from "@/src/components/home/Header";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 import {
   PLAN_SELECT,
   formatPlanPrice,
@@ -12,8 +11,6 @@ import {
   type Plan,
   type PlanSlug,
 } from "@/src/lib/plans";
-import { isOrganizer } from "@/src/lib/profile";
-import { createClient } from "@/src/lib/supabase/server";
 
 type PianoPageProps = {
   searchParams: Promise<{
@@ -43,11 +40,7 @@ const planBenefits: Record<PlanSlug, string[]> = {
 export default async function PianoPage({ searchParams }: PianoPageProps) {
   const params = await searchParams;
   const motivo = Array.isArray(params.motivo) ? params.motivo[0] : params.motivo;
-  const { supabase, profile } = await requireProfile("/dashboard/piano");
-
-  if (!isOrganizer(profile)) {
-    redirect("/diventa-organizzatore?next=/dashboard/piano");
-  }
+  const { supabase, profile } = await requireOrganizer("/dashboard/piano");
 
   const { data: plansData } = await supabase
     .from("plans")

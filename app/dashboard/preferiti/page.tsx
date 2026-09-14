@@ -10,15 +10,14 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { getFavoriteEvents } from "@/src/lib/favorites";
-import { isOrganizer } from "@/src/lib/profile";
-import { requireProfile } from "@/src/lib/auth";
+import { requireOrganizer } from "@/src/lib/auth";
 
 function formatEventDate(startAt: string, endAt: string | null) {
   return formatEventDateRange(startAt, endAt);
 }
 
 export default async function PreferitiPage() {
-  const { user, profile } = await requireProfile("/dashboard/preferiti");
+  const { user } = await requireOrganizer("/dashboard/preferiti");
   const favorites = await getFavoriteEvents(user.id);
 
   const cards: EventCardData[] = favorites.map((event) => {
@@ -53,7 +52,7 @@ export default async function PreferitiPage() {
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                {isOrganizer(profile) ? "Area account" : "Area personale"}
+                Area account
               </p>
               <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 I miei preferiti
