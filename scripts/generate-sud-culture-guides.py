@@ -631,7 +631,7 @@ FEATURED_SLUGS = [
     "sant-antioco",
     "barumini",
     "muravera",
-    "villacidro",
+    "decimomannu",
     "guspini",
     "selargius",
     "assemini",

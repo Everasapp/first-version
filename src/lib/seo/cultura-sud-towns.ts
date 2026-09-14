@@ -16,7 +16,7 @@ export const SUD_FEATURED_CULTURE_SLUGS = [
   "sant-antioco",
   "barumini",
   "muravera",
-  "villacidro",
+  "decimomannu",
   "guspini",
   "selargius",
   "assemini",
