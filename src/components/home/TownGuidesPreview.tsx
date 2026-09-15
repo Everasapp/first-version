@@ -94,9 +94,9 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
                   href={town.href}
                   className="block overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white transition hover:border-[#075EAE]/35 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
                 >
-                  <div className="relative aspect-[5/4] overflow-hidden bg-[#F7F9FC]">
+                  <div className="relative aspect-square overflow-hidden bg-[#F7F9FC]">
                     <video
-                      className="absolute inset-0 h-full w-full object-contain p-3 transition duration-500 ease-out group-hover:scale-[1.03] sm:p-4"
+                      className="absolute inset-0 h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
                       src={fumetto.src}
                       poster={fumetto.poster}
                       autoPlay
