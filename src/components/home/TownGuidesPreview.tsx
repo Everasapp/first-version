@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import type { WeeklyTownGuideCard } from "@/src/lib/home/weekly-town-guides";
@@ -6,15 +5,18 @@ import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 
 const TOWN_FUMETTI = [
   {
-    src: "/images/home/comune-fumetto-costa.webp",
+    src: "/images/home/comune-fumetto-costa.mp4",
+    poster: "/images/home/comune-fumetto-costa.webp",
     alt: "Simbolo grafico di un nuraghe e motivi sardi",
   },
   {
-    src: "/images/home/comune-fumetto-interno.webp",
+    src: "/images/home/comune-fumetto-interno.mp4",
+    poster: "/images/home/comune-fumetto-interno.webp",
     alt: "Simbolo grafico di un paese sardo e motivo tessuto",
   },
   {
-    src: "/images/home/comune-fumetto-piazza.webp",
+    src: "/images/home/comune-fumetto-piazza.mp4",
+    poster: "/images/home/comune-fumetto-piazza.webp",
     alt: "Simbolo grafico della Sardegna e motivi tradizionali",
   },
 ] as const;
@@ -92,14 +94,17 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
                   href={town.href}
                   className="block overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white transition hover:border-[#075EAE]/35 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
                 >
-                  {/* ~60% dell’altezza precedente (aspect 3/4 → 5/4) */}
                   <div className="relative aspect-[5/4] overflow-hidden bg-[#F7F9FC]">
-                    <Image
+                    <video
+                      className="absolute inset-0 h-full w-full object-contain p-3 transition duration-500 ease-out group-hover:scale-[1.03] sm:p-4"
                       src={fumetto.src}
-                      alt={fumetto.alt}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                      className="object-contain p-3 transition duration-500 ease-out group-hover:scale-[1.03] sm:p-4"
+                      poster={fumetto.poster}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={fumetto.alt}
                     />
                   </div>
                   <div className="border-t border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4">
