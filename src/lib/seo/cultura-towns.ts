@@ -11,6 +11,10 @@ export type PhotoCredit = {
   license: string;
   licenseUrl: string;
   sourceUrl: string;
+  /** Defaults to "Wikimedia Commons". */
+  sourceLabel?: string;
+  /** Defaults to "Foto di". */
+  creditPrefix?: string;
 };
 
 export type CulturePhoto = {

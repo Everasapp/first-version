@@ -5,9 +5,12 @@ type PhotoCreditProps = {
 };
 
 export default function PhotoCredit({ credit }: PhotoCreditProps) {
+  const prefix = credit.creditPrefix ?? "Foto di";
+  const sourceLabel = credit.sourceLabel ?? "Wikimedia Commons";
+
   return (
     <p className="mt-2 text-xs text-slate-500">
-      Foto di {credit.author} ·{" "}
+      {prefix} {credit.author} ·{" "}
       <a
         href={credit.licenseUrl}
         target="_blank"
@@ -23,7 +26,7 @@ export default function PhotoCredit({ credit }: PhotoCreditProps) {
         rel="noopener noreferrer"
         className="font-semibold text-[#075EAE] hover:underline"
       >
-        Wikimedia Commons
+        {sourceLabel}
       </a>
       {". Ridimensionata per il web."}
     </p>

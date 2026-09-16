@@ -30,10 +30,10 @@ export const CULTURA_ARTICLES_HUB = {
   title: "Cultura Sarda: storie, longevità e territorio",
   h1: "Cultura Sarda",
   description:
-    "Approfondimenti sulla Sardegna: zona blu e longevità, tradizioni vive, territori e legami con il calendario eventi di EVERAS.",
+    "Approfondimenti sulla Sardegna: zona blu, matriarcato, Ichnusa e nomi antichi, territori e legami con il calendario eventi di EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema — longevità, feste, paesaggi interni — e poi tornare al calendario.",
-    "Partiamo da ciò che il mondo cerca sulla Sardegna oltre le spiagge: perché tanti sardi vivono a lungo, come si muovono i paesi dell’interno, e dove il territorio si incontra con sagre e rassegne.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - longevità, ruolo delle donne, nomi antichi, feste, paesaggi interni - e poi tornare al calendario.",
+    "Partiamo da ciò che il mondo cerca sulla Sardegna oltre le spiagge: perché tanti sardi vivono a lungo, perché si parla di isola matriarcale, come si chiamava Ichnusa, e dove il territorio si incontra con sagre e rassegne.",
   ],
 } as const;
 
@@ -44,7 +44,7 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
     title: "La Sardegna zona blu: longevità dei sardi e paesi dell’interno",
     h1: "La Sardegna zona blu",
     description:
-      "Perché la Sardegna è una Blue Zone: longevità dei sardi, Ogliastra e Barbagia, stile di vita, cibo e comunità — e come viverla tra eventi e paesi su EVERAS.",
+      "Perché la Sardegna è una Blue Zone: longevità dei sardi, Ogliastra e Barbagia, stile di vita, cibo e comunità, e come viverla tra eventi e paesi su EVERAS.",
     intro:
       "Da anni la Sardegna compare nelle mappe delle Blue Zone: aree del mondo dove le persone vivono più a lungo e in salute. Non è un mito da cartolina: è un intreccio di territorio, comunità, movimento quotidiano e cibo semplice. Questa guida spiega cos’è la zona blu sarda e dove andare per capirla davvero.",
     excerpt:
@@ -64,7 +64,7 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
       {
         title: "Cos’è una Blue Zone",
         paragraphs: [
-          "Le Blue Zone sono regioni studiate per la concentrazione insolita di centenari e di persone che restano attive fino a tarda età. Accanto a Okinawa, Nicoya, Ikaria e Loma Linda, la Sardegna — in particolare l’entroterra orientale e centrale — è entrata in queste mappe per dati demografici e stile di vita osservati sul campo.",
+          "Le Blue Zone sono regioni studiate per la concentrazione insolita di centenari e di persone che restano attive fino a tarda età. Accanto a Okinawa, Nicoya, Ikaria e Loma Linda, la Sardegna, in particolare l’entroterra orientale e centrale, è entrata in queste mappe per dati demografici e stile di vita osservati sul campo.",
           "Non significa che ogni paese dell’isola sia uguale. La ricerca punta soprattutto su comuni dell’Ogliastra e della Barbagia, dove pastorizia, cammino quotidiano, rete familiare e alimentazione mediterranea “di casa” si sono mantenuti più a lungo che nelle coste turistiche.",
         ],
       },
@@ -72,20 +72,20 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
         title: "Dove si concentra la longevità in Sardegna",
         paragraphs: [
           "Il cuore della narrazione zona blu tocca l’Ogliastra (Villagrande Strisaili, Baunei e dintorni) e i paesi della Barbagia e del Mandrolisai. Sono luoghi di alture, strade strette, piazze piccole e ritmi legati alle stagioni più che agli orari da ufficio.",
-          "Se vuoi avvicinarti a questo territorio, non bastano le spiagge: servono i paesi interni. Su EVERAS li trovi nelle guide di Scopri la Sardegna (Centro) e nel calendario quando aprono corti, sagre e feste — da Autunno in Barbagia alle sagre di paese.",
+          "Se vuoi avvicinarti a questo territorio, non bastano le spiagge: servono i paesi interni. Su EVERAS li trovi nelle guide di Scopri la Sardegna (Centro) e nel calendario quando aprono corti, sagre e feste, da Autunno in Barbagia alle sagre di paese.",
         ],
       },
       {
         title: "Cosa conta davvero: movimento, cibo, comunità",
         paragraphs: [
-          "Nella lettura più sobria della zona blu sarda, i fattori ricorrenti sono tre. Primo: movimento naturale — salite, lavoro all’aperto, non “palestra” ma vita. Secondo: tavola semplice — pane, legumi, formaggi, verdure dell’orto, vino con moderazione, poca carne ma di qualità. Terzo: appartenenza — famiglia allargata, vicinato, feste di paese che tengono insieme le generazioni.",
+          "Nella lettura più sobria della zona blu sarda, i fattori ricorrenti sono tre. Primo: movimento naturale - salite, lavoro all’aperto, non “palestra” ma vita. Secondo: tavola semplice - pane, legumi, formaggi, verdure dell’orto, vino con moderazione, poca carne ma di qualità. Terzo: appartenenza - famiglia allargata, vicinato, feste di paese che tengono insieme le generazioni.",
           "Le sagre e le Cortes Apertas non sono solo turismo: sono il modo in cui i paesi ancora si incontrano. Per questo un calendario eventi aggiornato aiuta chi vuole capire la Sardegna viva, non solo fotografarla.",
         ],
       },
       {
         title: "Come viverla con EVERAS",
         paragraphs: [
-          "Apri Scopri la Sardegna e scegli i comuni del Centro: da lì entri nelle schede paese. Poi guarda il calendario — weekend, sagre, Autunno in Barbagia — per essere lì quando le corti e le piazze si aprono.",
+          "Apri Scopri la Sardegna e scegli i comuni del Centro: da lì entri nelle schede paese. Poi guarda il calendario - weekend, sagre, Autunno in Barbagia - per essere lì quando le corti e le piazze si aprono.",
           "Cultura Sarda continuerà con altri approfondimenti; questo pezzo è il punto di partenza per chi cerca “Sardegna zona blu” e vuole uscire dallo slogan e arrivare ai luoghi.",
         ],
       },
@@ -105,6 +105,150 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
         question: "C’entra solo il cibo?",
         answer:
           "No. Cibo, movimento quotidiano e comunità contano insieme. Le feste di paese e le sagre sono parte di quella rete sociale, non un dettaglio folkloristico.",
+      },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "sardegna-matriarcale",
+    path: "/cultura/sardegna-matriarcale",
+    title:
+      "La Sardegna matriarcale: origini, donna sarda e ruolo nella società",
+    h1: "La Sardegna matriarcale",
+    description:
+      "Cosa significa Sardegna matriarcale: origini del mito e della realtà, ruolo della donna nei paesi, famiglia, eredità e feste, e dove leggerla oggi tra guide e eventi EVERAS.",
+    intro:
+      "Si dice spesso che la Sardegna sia un’isola matriarcale. Non è uno slogan da brochure: è un modo per raccontare il peso storico della donna nella casa, nella terra, nella trasmissione della lingua e nelle decisioni di famiglia, soprattutto nell’interno. Questa guida distingue mito, memoria e ciò che ancora si vede nei paesi.",
+    excerpt:
+      "Origini del matriarcato sardo, ruolo della donna nei paesi e perché ancora conta oggi.",
+    hero: {
+      src: "/images/cultura/ittiri-costume.webp",
+      alt: "Costume tradizionale femminile di Ittiri, simbolo del ruolo pubblico della donna sarda",
+      credit: {
+        author: "Gianni Careddu",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Ittiri_-_Costume_tradizionale_(03).JPG",
+      },
+    },
+    sections: [
+      {
+        title: "Cosa si intende per Sardegna matriarcale",
+        paragraphs: [
+          "In antropologia e nel discorso pubblico “matriarcale” non significa che le donne governassero lo Stato. In Sardegna indica piuttosto una società in cui la donna è centro della casa, gestisce beni e relazioni, educa, tiene i conti della vita quotidiana e spesso decide mentre gli uomini sono al pascolo, in miniera o emigrati.",
+          "Il contrasto tipico è con una lettura “maschile” della pastorizia: fuori il mondo degli uomini e delle mandrie; dentro, autorità femminile su famiglia e patrimonio. Non è uguale in ogni villaggio né in ogni epoca, ma è un filo ricorrente nelle storie dell’interno.",
+        ],
+      },
+      {
+        title: "Origini: casa, terra e assenza maschile",
+        paragraphs: [
+          "Le radici si intrecciano. Nella Sardegna agro-pastorale l’uomo poteva passare mesi lontano: ovini, lavoro stagionale, poi emigrazione. Chi restava - mogli, madri, nonne - teneva viva la casa, i campi vicini, i rapporti con il paese. In molte famiglie la donna era chi “sapeva”, chi negoziava, chi custodiva la memoria.",
+          "Si parla anche di pratiche ereditarie e di centralità del lignaggio materno nella vita quotidiana, senza trasformarlo in un matriarcato giuridico formale. Il punto utile per chi visita o legge oggi: capire perché in tanti paesi la figura della matriarca - la massaia, la nonna, la zia - resta il nodo della comunità.",
+        ],
+      },
+      {
+        title: "Lingua, costume e feste: dove si vede ancora",
+        paragraphs: [
+          "La trasmissione del sardo, del pane, dei riti di passaggio e del vestito tradizionale passa spesso dalle donne. Il costume femminile in Cavalcata, feste patronali e sagre non è solo bellezza: è dichiarazione pubblica di appartenenza e di ruolo.",
+          "Nelle Cortes Apertas e nelle case aperte d’autunno trovi laboratori, cucine e cortili dove le donne raccontano mestieri e ricette. È lo stesso mondo che su EVERAS colleghi al calendario: non folklore da museo, ma paese che si apre quando c’è festa.",
+        ],
+      },
+      {
+        title: "Come approfondire su EVERAS",
+        paragraphs: [
+          "Apri Scopri la Sardegna e leggi le schede dei paesi dell’interno - Logudoro, Barbagia, Ogliastra - dove storia e tradizioni locali danno contesto a questa lettura. Poi usa il calendario: Cavalcata, sagre, Autunno in Barbagia sono i momenti in cui il ruolo pubblico della donna e della famiglia diventa visibile.",
+          "Cultura Sarda affianca pezzi come la zona blu e questo sul matriarcato: due chiavi diverse per lo stesso territorio. Dalla pagina articolo torni alle guide paese e agli eventi senza perdere il filo.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "La Sardegna è davvero matriarcale?",
+        answer:
+          "È una definizione usata per sottolineare il ruolo centrale della donna in casa, famiglia e comunità, soprattutto nell’interno agro-pastorale. Non significa un governo politico femminile formale, ma una memoria sociale ancora riconoscibile.",
+      },
+      {
+        question: "Dove si percepisce di più?",
+        answer:
+          "Nei paesi dell’interno e nelle feste - costumi, sagre, case aperte - più che nelle sole località balneari. Le guide di Scopri la Sardegna e il calendario eventi aiutano a scegliere luoghi e date.",
+      },
+      {
+        question: "Cosa c’entra con gli eventi?",
+        answer:
+          "Feste patronali, Cavalcata e Cortes Apertas sono spazi pubblici dove famiglie e donne portano costume, cibo e mestieri. Il calendario EVERAS ti dice quando quei momenti sono in programma.",
+      },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "ichnusa-nome-antico-sardegna",
+    path: "/cultura/ichnusa-nome-antico-sardegna",
+    title: "Ichnusa: il nome antico della Sardegna e le sue origini",
+    h1: "Ichnusa, il nome antico della Sardegna",
+    description:
+      "Cosa significa Ichnusa (Icnusa): quando nasce il nome greco della Sardegna, perché richiama l’impronta del piede, Sandaliotis e altre denominazioni antiche.",
+    intro:
+      "Prima di “Sardegna” i greci chiamavano l’isola Ichnusa (Ἰχνοῦσα), spesso resa in italiano come Icnusa. Il nome non è un marchio moderno: arriva dai geografi e mitografi antichi, e allude alla forma dell’isola vista dall’alto, simile a un’impronta. Questa guida ricostruisce quando compare, cosa significa e come si collega agli altri nomi della storia.",
+    excerpt:
+      "Dal greco Ichnousa all’isola a forma di piede: origini e storia del nome antico.",
+    hero: {
+      src: "/images/cultura/ichnusa-cartina.webp",
+      alt: "Cartina antica dell’isola etichettata Ichnusa, forma a impronta della Sardegna",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/ichnusa-nome-antico-sardegna",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cosa significa Ichnusa",
+        paragraphs: [
+          "Ichnusa deriva dal greco Ichnousa (Ἰχνοῦσα), legato a íchnos, “impronta” o “traccia del piede”. Secondo la tradizione riportata da Pausania e ripresa da autori latini, i greci avrebbero scelto quel nome perché il profilo dell’isola ricordava la pianta di un piede umano.",
+          "In latino si trova anche Ichnusa. Accanto compare Sandaliotis (da sándalo, sandalo), sempre per la forma. Non erano i nomi usati ogni giorno dagli abitanti: erano etichette del mondo greco-romano per descrivere l’isola sulle rotte del Mediterraneo.",
+        ],
+      },
+      {
+        title: "A quando risale",
+        paragraphs: [
+          "Il nome greco circola nella letteratura e nella geografia antiche almeno dall’età classica ed ellenistica, e arriva fino agli autori romani. Pausania, nel X libro della Periegesi, racconta le tradizioni sull’isola e ricorda Ichnusa come denominazione precedente rispetto a quella legata a Sardus. Plinio e Silio Italico citano Ichnusa tra i nomi antichi della Sardegna.",
+          "Non esiste una “data di battesimo” precisa come per una città fondata in un anno: Ichnusa è un esonimo, un nome dato da fuori. Arriva quando i greci scrivono e navigano il Tirreno, secoli prima dell’era cristiana, e resta nella memoria erudita mentre sul posto si consolidano altre storie e altri nomi.",
+        ],
+      },
+      {
+        title: "Da Ichnusa a Sardegna",
+        paragraphs: [
+          "Accanto a Ichnusa e Sandaliotis, le fonti collegano il nome Sardegna / Sardo a tradizioni mitiche su Sardus, figlio di un Eracle libico secondo Pausania, e a popoli e contatti con il Nord Africa e il Mediterraneo occidentale. Con Roma l’isola entra come provincia; il nome latino Sardinia diventa quello dominante nelle mappe e nei documenti.",
+          "Ichnusa non sparisce del tutto: resta nelle citazioni antiche e, molto più tardi, torna come eco culturale (anche nel nome di una birra nota), ma sul piano storico ufficiale l’isola è Sardegna. Capire Ichnusa serve a ricordare che l’identità dell’isola è stata raccontata anche da chi la vedeva dalla nave, non solo da chi ci viveva.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Dalla cartina al territorio: apri Scopri la Sardegna e leggi le guide dei paesi, dai nuraghi dell’interno alle coste. Poi usa il calendario eventi per feste, sagre e rassegne che tengono viva la cultura dell’isola oggi.",
+          "In Cultura Sarda trovi anche la zona blu e la lettura sulla Sardegna matriarcale: tre chiavi diverse - nome antico, longevità, ruolo delle donne - sullo stesso territorio.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Ichnusa e Icnusa sono la stessa cosa?",
+        answer:
+          "Sì. Ichnusa è la forma più vicina al greco e al latino; Icnusa è una resa italiana frequente. Entrambe indicano il nome antico dell’isola legato all’impronta.",
+      },
+      {
+        question: "Quando si è smesso di chiamarla Ichnusa?",
+        answer:
+          "Non c’è un anno preciso. Ichnusa resta un nome erudito greco-latino; con Roma e poi nel Medioevo prevale Sardegna / Sardinia. Ichnusa sopravvive soprattutto nei testi antichi e nella memoria culturale.",
+      },
+      {
+        question: "Perché la forma a piede?",
+        answer:
+          "I greci associavano il profilo dell’isola, allungato e “plantare”, a un’impronta (íchnos). Da lì Ichnousa e, in parallelo, Sandaliotis, “isola a forma di sandalo”.",
       },
     ],
     publishedAt: "2026-09-16",
