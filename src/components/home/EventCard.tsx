@@ -71,9 +71,16 @@ export default function EventCard({ event }: EventCardProps) {
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
   const categoryLabels =
     event.categories?.length ? event.categories : [event.category];
+  const eventHref = `/eventi/${event.id}`;
 
   return (
-    <article className="group flex h-full min-w-0 w-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="group relative flex h-full min-w-0 w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <Link
+        href={eventHref}
+        className="absolute inset-0 z-0"
+        aria-label={`Apri ${event.title}`}
+      />
+
       <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
         <Image
           src={event.imageUrl}
@@ -81,7 +88,7 @@ export default function EventCard({ event }: EventCardProps) {
           title={event.title}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 352px"
-          className="object-cover transition duration-500 group-hover:scale-105"
+          className="pointer-events-none object-cover transition duration-500 group-hover:scale-105"
           unoptimized={
             !(
               event.imageUrl.startsWith("/") ||
@@ -91,7 +98,7 @@ export default function EventCard({ event }: EventCardProps) {
           }
         />
 
-        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+        <div className="pointer-events-none absolute left-4 top-4 z-[1] flex flex-wrap gap-2">
           {event.happeningNow && (
             <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               <span className="relative flex h-2 w-2">
@@ -128,7 +135,7 @@ export default function EventCard({ event }: EventCardProps) {
           )}
         </div>
 
-        <div className="absolute right-4 top-4 flex gap-2">
+        <div className="absolute right-4 top-4 z-10 flex gap-2">
           <FavoriteButton
             eventId={event.eventId}
             eventTitle={event.title}
@@ -147,7 +154,7 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="relative flex flex-1 flex-col p-5">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
           {categoryLabels.map((label) => (
             <p
@@ -197,12 +204,9 @@ export default function EventCard({ event }: EventCardProps) {
             {pricing.label}
           </span>
 
-          <Link
-            href={`/eventi/${event.id}`}
-            className="font-bold text-[#075EAE] transition hover:underline"
-          >
+          <span className="font-bold text-[#075EAE] transition group-hover:underline">
             Scopri →
-          </Link>
+          </span>
         </div>
       </div>
     </article>
