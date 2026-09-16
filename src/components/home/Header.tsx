@@ -120,6 +120,19 @@ export default function Header() {
 
         <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2">
           <Link
+            href="/cultura-sarda"
+            className="hidden h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A]"
+          >
+            Scopri la Sardegna
+          </Link>
+          <Link
+            href="/cultura"
+            className="hidden h-9 shrink-0 touch-manipulation items-center justify-center rounded-lg bg-[#075EAE] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#E67E22] active:bg-[#C96A1A]"
+          >
+            Cultura Sarda
+          </Link>
+
+          <Link
             href="/#ricerca"
             className={`${authButtonClassName} shrink-0`}
             onClick={scrollToRicerca}
