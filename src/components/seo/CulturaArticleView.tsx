@@ -93,6 +93,30 @@ export default function CulturaArticleView({
               </section>
             ))}
 
+            {article.relatedLinks && article.relatedLinks.length > 0 ? (
+              <section className="mt-12 border-t border-slate-200 pt-10">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Luoghi su EVERAS
+                </h2>
+                <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                  Apri le guide dei comuni e le pagine collegate a questo
+                  approfondimento.
+                </p>
+                <ul className="mt-6 flex flex-wrap gap-3">
+                  {article.relatedLinks.map((link) => (
+                    <li key={`${link.href}-${link.label}`}>
+                      <Link
+                        href={link.href}
+                        className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
             {article.faqs.length > 0 ? (
               <section className="mt-12 border-t border-slate-200 pt-10">
                 <h2 className="text-2xl font-bold text-slate-900">
@@ -131,28 +155,22 @@ export default function CulturaArticleView({
               calendario delle feste.
             </p>
             <ul className="mt-6 flex flex-wrap gap-3">
+              {(article.relatedLinks ?? []).map((link) => (
+                <li key={`footer-${link.href}-${link.label}`}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <Link
                   href={CULTURE_HUB_PATH}
                   className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
                 >
                   Scopri la Sardegna
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cultura-sarda/centro-sardegna"
-                  className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
-                >
-                  Guide Centro Sardegna
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/eventi-sardegna/autunno-in-barbagia"
-                  className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
-                >
-                  Autunno in Barbagia
                 </Link>
               </li>
               <li>

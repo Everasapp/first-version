@@ -1,4 +1,5 @@
 import type { PhotoCredit } from "@/src/lib/seo/cultura-towns";
+import { CULTURA_PEOPLE_ARTICLES } from "@/src/lib/seo/cultura-articles-people";
 
 export const CULTURA_ARTICLES_HUB_PATH = "/cultura";
 
@@ -22,22 +23,24 @@ export type CulturaArticle = {
   };
   sections: CulturaArticleSection[];
   faqs: Array<{ question: string; answer: string }>;
+  /** Guide paese / hub collegati (link cliccabili in pagina). */
+  relatedLinks?: Array<{ href: string; label: string }>;
   publishedAt: string;
 };
 
 export const CULTURA_ARTICLES_HUB = {
   path: CULTURA_ARTICLES_HUB_PATH,
-  title: "Cultura Sarda: storie, longevità e territorio",
+  title: "Cultura Sarda: storie, personaggi e territorio",
   h1: "Cultura Sarda",
   description:
-    "Approfondimenti sulla Sardegna: zona blu, matriarcato, Ichnusa, Grazia Deledda e territori legati al calendario eventi di EVERAS.",
+    "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - longevità, ruolo delle donne, nomi antichi, letteratura, feste, paesaggi interni - e poi tornare al calendario.",
-    "Partiamo da ciò che il mondo cerca sulla Sardegna oltre le spiagge: zona blu, isola matriarcale, Ichnusa, Grazia Deledda e il Nobel, e dove il territorio si incontra con sagre e rassegne.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi - e poi aprire le schede dei comuni collegati.",
+    "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Paolo Fresu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
 
-export const CULTURA_ARTICLES: CulturaArticle[] = [
+export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
   {
     slug: "sardegna-zona-blu",
     path: "/cultura/sardegna-zona-blu",
@@ -323,8 +326,24 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
           "Tra i più noti: Canne al vento, Elias Portolu, Cenere e Cosima. Da lì puoi collegare i luoghi alle guide paese su Scopri la Sardegna.",
       },
     ],
+    relatedLinks: [
+      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
+      {
+        href: "/cultura-sarda/centro-sardegna",
+        label: "Guide Centro Sardegna",
+      },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Autunno in Barbagia",
+      },
+    ],
     publishedAt: "2026-09-16",
   },
+];
+
+export const CULTURA_ARTICLES: CulturaArticle[] = [
+  ...CULTURA_THEME_ARTICLES,
+  ...CULTURA_PEOPLE_ARTICLES,
 ];
 
 export function findCulturaArticle(slug: string) {
