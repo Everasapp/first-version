@@ -14,7 +14,7 @@ import {
 } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
-import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
+import { absoluteUrl } from "@/src/lib/seo/site";
 import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
 
@@ -58,6 +58,11 @@ const SAGRE_FAQS = [
   },
 ];
 
+const SAGRE_COVER = {
+  src: "/images/seo/sagre-sardegna-cover.webp",
+  alt: "Sagra di paese in Sardegna: stand gastronomici in piazza al tramonto",
+};
+
 export const metadata: Metadata = {
   title: SAGRE_TITLE,
   description: SAGRE_DESCRIPTION,
@@ -67,13 +72,13 @@ export const metadata: Metadata = {
     description: SAGRE_DESCRIPTION,
     url: SAGRE_PATH,
     type: "website",
-    images: defaultOgImages(),
+    images: [{ url: SAGRE_COVER.src, width: 1200, height: 630, alt: SAGRE_COVER.alt }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SAGRE_TITLE} | EVERAS`,
     description: SAGRE_DESCRIPTION,
-    images: defaultOgImages().map((image) => image.url),
+    images: [SAGRE_COVER.src],
   },
 };
 
@@ -132,6 +137,7 @@ export default async function SagreHubPage() {
       paragraphs={SAGRE_PARAGRAPHS}
       events={events.slice(0, 36)}
       errorMessage={error?.message}
+      cover={SAGRE_COVER}
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi in Sardegna", href: "/eventi-sardegna" },

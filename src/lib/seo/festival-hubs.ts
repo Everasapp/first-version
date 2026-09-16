@@ -7,6 +7,7 @@ export type FestivalHub = {
   titleIncludes: string[];
   paragraphs: string[];
   faqs: Array<{ question: string; answer: string }>;
+  cover?: { src: string; alt: string };
 };
 
 export const FESTIVAL_HUBS: FestivalHub[] = [
@@ -335,6 +336,10 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     description:
       "JazzAlguer: il festival jazz di Alghero con date, location e concerti aggiornati su EVERAS.",
     titleIncludes: ["jazzalguer", "jazz alguer"],
+    cover: {
+      src: "/images/seo/jazzalguer-cover.webp",
+      alt: "Concerto jazz al tramonto sul lungomare di Alghero",
+    },
     paragraphs: [
       "JazzAlguer è il festival jazz di Alghero: concerti in centro storico, lungomare e location suggestive, spesso a settembre. Chi cerca “JazzAlguer 2026” vuole il giorno del concerto, se serve biglietto e come arrivare in città senza stress di parcheggio.",
       "Il formato mescola headliner e artisti emergenti, con serate all’aperto quando il clima lo permette. Conviene arrivare da Sassari o Olbia con un po’ di anticipo: il centro si riempie e alcuni posti sono a numero chiuso.",
@@ -366,6 +371,10 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     description:
       "Santa Greca a Decimomannu: calendario della festa, sagra e come arrivare dal Campidano e da Cagliari.",
     titleIncludes: ["santa greca"],
+    cover: {
+      src: "/images/seo/santa-greca-cover.webp",
+      alt: "Processione e festa di paese al santuario di Santa Greca",
+    },
     paragraphs: [
       "La festa di Santa Greca a Decimomannu è una delle sagre più cercate del Sud Sardegna: giorni di processioni, stand gastronomici e serate in piazza. Chi digita “Santa Greca 2026” vuole le date ufficiali, se c’è il lunedì di festa e come muoversi da Cagliari senza perdere parcheggio.",
       "Il santuario e il paese si riempiono soprattutto nei weekend: conviene arrivare presto, usare i mezzi o i parcheggi segnalati. Oltre alla parte religiosa trovi bancarelle, musica e specialità locali.",
@@ -397,6 +406,10 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     description:
       "Festival della Bottarga in Sardegna: date, degustazioni e appuntamenti gastronomici aggiornati su EVERAS.",
     titleIncludes: ["bottarga", "festival della bottarga"],
+    cover: {
+      src: "/images/seo/festival-bottarga-cover.webp",
+      alt: "Bottarga, pane e vino con la laguna in sfondo",
+    },
     paragraphs: [
       "Il Festival della Bottarga celebra uno dei prodotti più iconici della Sardegna: degustazioni, stand, talk e serate dedicate al pesce e alle lagune. Chi cerca l’edizione vuole sapere in quale comune si svolge, quali giorni aprire e se serve prenotazione.",
       "Spesso l’appuntamento si concentra intorno a Cabras e all’area oristanese, ma le location possono cambiare: per questo teniamo date e luogo sulla scheda, non su un volantino fisso.",

@@ -19,6 +19,10 @@ import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
 
 export function buildFestivalLandingMetadata(hub: FestivalHub): Metadata {
+  const ogImages = hub.cover
+    ? [{ url: hub.cover.src, width: 1200, height: 630, alt: hub.cover.alt }]
+    : defaultOgImages();
+
   return {
     title: hub.title,
     description: hub.description,
@@ -28,13 +32,13 @@ export function buildFestivalLandingMetadata(hub: FestivalHub): Metadata {
       description: hub.description,
       url: hub.path,
       type: "website",
-      images: defaultOgImages(),
+      images: ogImages,
     },
     twitter: {
       card: "summary_large_image",
       title: `${hub.title} | EVERAS`,
       description: hub.description,
-      images: defaultOgImages().map((image) => image.url),
+      images: ogImages.map((image) => image.url),
     },
   };
 }
@@ -134,6 +138,7 @@ export default async function FestivalLandingPage({ hub }: { hub: FestivalHub })
       paragraphs={hub.paragraphs}
       events={events}
       errorMessage={error?.message}
+      cover={hub.cover}
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi in Sardegna", href: "/eventi-sardegna" },

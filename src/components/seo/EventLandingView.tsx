@@ -96,26 +96,6 @@ export default function EventLandingView({
                 <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
                   {h1}
                 </h1>
-                {subtitle ? (
-                  <p className="mt-3 text-lg font-medium leading-snug text-slate-800">
-                    {subtitle}
-                  </p>
-                ) : null}
-                <p className="mt-3 text-base leading-relaxed text-slate-600">
-                  {intro}
-                </p>
-                {paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph.slice(0, 40)}
-                    className="mt-3 text-base leading-relaxed text-slate-600"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-                <p className="mt-3 text-sm font-semibold text-slate-500">
-                  {events.length}{" "}
-                  {events.length === 1 ? "evento trovato" : "eventi trovati"}
-                </p>
               </div>
 
               <Link
@@ -125,6 +105,45 @@ export default function EventLandingView({
                 <Search aria-hidden="true" className="h-4 w-4" />
                 Nuova ricerca
               </Link>
+            </div>
+
+            {cover ? (
+              <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+                {/* Same-origin generated asset; skip next/image optimization. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={cover.src}
+                  alt={cover.alt}
+                  width={1200}
+                  height={630}
+                  className="h-auto w-full bg-white"
+                />
+              </div>
+            ) : null}
+
+            <div className="mt-6 max-w-3xl">
+              {subtitle ? (
+                <p className="text-lg font-medium leading-snug text-slate-800">
+                  {subtitle}
+                </p>
+              ) : null}
+              <p
+                className={`${subtitle ? "mt-3" : ""} text-base leading-relaxed text-slate-600`}
+              >
+                {intro}
+              </p>
+              {paragraphs.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 40)}
+                  className="mt-3 text-base leading-relaxed text-slate-600"
+                >
+                  {paragraph}
+                </p>
+              ))}
+              <p className="mt-3 text-sm font-semibold text-slate-500">
+                {events.length}{" "}
+                {events.length === 1 ? "evento trovato" : "eventi trovati"}
+              </p>
             </div>
           </div>
         </section>
@@ -237,24 +256,6 @@ export default function EventLandingView({
                   </table>
                 </div>
               </section>
-            ) : null}
-
-            {cover ? (
-              <a
-                href="#elenco-eventi"
-                aria-label="Vai all’elenco degli eventi"
-                className="mb-10 block overflow-hidden rounded-3xl border border-slate-200 shadow-sm outline-none ring-[#075EAE] transition hover:shadow-md focus-visible:ring-2"
-              >
-                {/* Same-origin generated PNG; skip next/image optimization. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cover.src}
-                  alt={cover.alt}
-                  width={1200}
-                  height={630}
-                  className="h-auto w-full bg-white"
-                />
-              </a>
             ) : null}
 
             <div id="elenco-eventi" className="scroll-mt-24 space-y-12">
