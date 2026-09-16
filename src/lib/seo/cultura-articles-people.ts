@@ -72,7 +72,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
       { href: "/eventi/sassari", label: "Eventi a Sassari" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-25",
   },
   {
     slug: "antonio-gramsci",
@@ -147,7 +147,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
         label: "Guide Centro Sardegna",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-28",
   },
   {
     slug: "paolo-fresu-jazz",
@@ -213,7 +213,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
       { href: "/eventi/berchidda", label: "Eventi a Berchidda" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-31",
   },
   {
     slug: "costantino-nivola",
@@ -280,7 +280,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
         label: "Guide Centro Sardegna",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-02",
   },
   {
     slug: "gianfranco-zola",
@@ -347,7 +347,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       },
       { href: "/eventi/oliena", label: "Eventi a Oliena" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-04",
   },
   {
     slug: "eleonora-darborea",
@@ -418,7 +418,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       },
       { href: "/eventi/oristano", label: "Eventi a Oristano" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-07",
   },
   {
     slug: "emilio-lussu-armungia",
@@ -490,7 +490,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       { href: "/cultura-sarda/sud-sardegna", label: "Guide Sud Sardegna" },
       { href: "/eventi/armungia", label: "Eventi a Armungia" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-09",
   },
   {
     slug: "maria-carta-siligo",
@@ -559,7 +559,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
       { href: "/eventi/siligo", label: "Eventi a Siligo" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-11",
   },
   {
     slug: "giuseppe-garibaldi-caprera",
@@ -631,7 +631,7 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
       { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
       { href: "/eventi/la-maddalena", label: "Eventi a La Maddalena" },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-09-14",
   },
   {
     slug: "peppino-mereu-tonara",

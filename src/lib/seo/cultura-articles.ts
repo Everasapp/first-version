@@ -111,7 +111,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
           "No. Cibo, movimento quotidiano e comunità contano insieme. Le feste di paese e le sagre sono parte di quella rete sociale, non un dettaglio folkloristico.",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-14",
   },
   {
     slug: "sardegna-matriarcale",
@@ -184,7 +184,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
           "Feste patronali, Cavalcata e Cortes Apertas sono spazi pubblici dove famiglie e donne portano costume, cibo e mestieri. Il calendario EVERAS ti dice quando quei momenti sono in programma.",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-17",
   },
   {
     slug: "ichnusa-nome-antico-sardegna",
@@ -256,7 +256,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
           "I greci associavano il profilo dell’isola, allungato e “plantare”, a un’impronta (íchnos). Da lì Ichnousa e, in parallelo, Sandaliotis, “isola a forma di sandalo”.",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-19",
   },
   {
     slug: "grazia-deledda-premio-nobel",
@@ -340,7 +340,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
         label: "Autunno in Barbagia",
       },
     ],
-    publishedAt: "2026-09-16",
+    publishedAt: "2026-08-22",
   },
 ];
 

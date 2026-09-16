@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
-import CultureTownCard from "@/src/components/seo/CultureTownCard";
+import CultureFeaturedGuidesGrid from "@/src/components/seo/CultureFeaturedGuidesGrid";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
 import type { City } from "@/src/data/cities";
@@ -86,13 +86,7 @@ export default function CultureAreaView({
                 <h2 className="mt-2 text-2xl font-bold text-slate-900">
                   In evidenza
                 </h2>
-                <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {featured.map((article, index) => (
-                    <li key={article.slug}>
-                      <CultureTownCard article={article} priority={index < 3} />
-                    </li>
-                  ))}
-                </ul>
+                <CultureFeaturedGuidesGrid articles={featured} />
               </section>
             ) : null}
 
