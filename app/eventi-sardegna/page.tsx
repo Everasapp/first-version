@@ -8,21 +8,21 @@ import {
   eventsItemListSchema,
   faqPageSchema,
 } from "@/src/lib/seo/schema";
-import { sagreExploreLinks } from "@/src/lib/seo/calendar";
+import { currentMonthLanding, sagreExploreLinks } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 
 const HUB_PATH = "/eventi-sardegna";
 
-const HUB_TITLE = "Eventi e sagre in Sardegna oggi e questo weekend";
+const HUB_TITLE = "Eventi in Sardegna: sagre, concerti e festival";
 const HUB_DESCRIPTION =
-  "Cosa fare in Sardegna oggi, domani e nel weekend: sagre, concerti, feste paese e festival da Nord a Sud, aggiornati ogni giorno.";
+  "Calendario eventi in Sardegna aggiornato: cosa fare oggi, nel weekend e mese per mese. Sagre, concerti, feste di paese e festival da Nord a Sud.";
 
 const HUB_PARAGRAPHS = [
-  "Se cerchi eventi in Sardegna, di solito vuoi il programma di oggi, cosa c’è nel weekend e dove si fa sagra. Questa pagina è la guida: un calendario vivo, non un elenco statico. Trovi concerti, fiere, spettacoli e le feste che muovono i paesi, con data, comune e locandina.",
-  "Partiamo dalle ricerche vere. “Eventi oggi in Sardegna”, “cosa fare questo weekend”, “sagre a settembre”, “Autunno in Barbagia”: sono domande diverse, e per ognuna c’è una pagina. Da qui arrivi al giorno, al weekend con data, al mese o alla festa grande senza passare da filtri nascosti.",
-  "Il calendario si aggiorna con fonti locali, Comuni, Pro Loco e rassegne come Salude & Trigu. Pubblichiamo solo eventi con informazioni utili. Se organizzi una sagra o un concerto, puoi segnalarla: entra in guida e resta visibile a chi cerca cosa fare sull’isola.",
+  "Se cerchi eventi in Sardegna, di solito vuoi tre risposte rapide: cosa c’è oggi, cosa fare nel weekend e dove si fa sagra. Questa è la guida principale di EVERAS: un calendario vivo con data, comune e locandina, non un elenco statico.",
+  "Da qui arrivi alle pagine dedicate — Eventi oggi, weekend, mesi e feste grandi come Autunno in Barbagia, Santa Greca o JazzAlguer — senza filtri nascosti. Pubblichiamo appuntamenti da Comuni, Pro Loco e fonti locali, e aggiorniamo ogni giorno.",
+  "Organizzi una sagra o un concerto? Pubblicala su EVERAS: entra in guida e resta visibile a chi cerca cosa fare sull’isola.",
 ];
 
 const HUB_FAQS_BASE = [
@@ -36,6 +36,15 @@ const HUB_FAQS_BASE = [
     answer:
       "Oltre al calendario mese per mese trovi le guide alle feste più cercate: Autunno in Barbagia, Candelieri, Sartiglia, Cavalcata Sarda, Ardia, Corsa degli Scalzi, Sposalizio Selargino e Sant’Efisio.",
   },
+];
+
+const HIGHLIGHT_MATCHERS: Array<{ label: string; match: RegExp }> = [
+  { label: "Autunno in Barbagia", match: /autunno in barbagia/i },
+  { label: "Santa Greca", match: /santa greca/i },
+  { label: "Festival della Bottarga", match: /bottarga/i },
+  { label: "JazzAlguer", match: /jazzalguer|jazz alguer/i },
+  { label: "Monumenti Aperti", match: /monumenti aperti/i },
+  { label: "Isole che Parlano", match: /isole che parlano/i },
 ];
 
 export const metadata: Metadata = {
@@ -57,9 +66,22 @@ export const metadata: Metadata = {
   },
 };
 
+function formatHighlightMeta(startDate: string, municipality?: string) {
+  const date = new Date(startDate);
+  const dateLabel = Number.isNaN(date.getTime())
+    ? ""
+    : date.toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+  return [dateLabel, municipality?.trim()].filter(Boolean).join(" · ");
+}
+
 export default async function EventiSardegnaHubPage() {
   const { events, error } = await loadFilteredPublishedEvents();
   const upcoming = events.slice(0, 24);
+  const month = currentMonthLanding();
   const datedWeekends = weekendExploreLinks(2)
     .map((link) => link.label)
     .join(" e ");
@@ -71,19 +93,71 @@ export default async function EventiSardegnaHubPage() {
     ...HUB_FAQS_BASE,
   ];
 
+  const highlights = HIGHLIGHT_MATCHERS.map((item) => {
+    const event = events.find((row) => item.match.test(row.title));
+    if (!event) return null;
+    return {
+      href: `/eventi/${event.id}`,
+      label: item.label,
+      meta: formatHighlightMeta(event.startDate, event.municipality),
+    };
+  }).filter((row): row is NonNullable<typeof row> => row != null);
+
+  // Always surface festival hubs even if a matching event card is missing.
+  const hubHighlights = [
+    {
+      href: "/eventi-sardegna/autunno-in-barbagia",
+      label: "Autunno in Barbagia 2026",
+      meta: "Calendario tappe e Cortes Apertas",
+    },
+    {
+      href: "/eventi-sardegna/monumenti-aperti",
+      label: "Monumenti Aperti",
+      meta: "Visite guidate in tutta l’isola",
+    },
+    {
+      href: month.path,
+      label: `Eventi di ${month.name}`,
+      meta: "Sagre e rassegne del mese in corso",
+    },
+  ];
+
+  const mergedHighlights = [
+    ...hubHighlights,
+    ...highlights.filter(
+      (item) =>
+        !hubHighlights.some(
+          (hub) =>
+            hub.label.toLowerCase().includes(item.label.toLowerCase()) ||
+            item.label.toLowerCase().includes("autunno"),
+        ),
+    ),
+  ].slice(0, 8);
+
   return (
     <EventLandingView
       eyebrow="Guida eventi"
       h1={HUB_TITLE}
+      subtitle="Cosa fare oggi, nel weekend e per tutto l’anno"
       intro={HUB_DESCRIPTION}
       paragraphs={HUB_PARAGRAPHS}
       events={upcoming}
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
-        { name: "Eventi e sagre" },
+        { name: "Eventi in Sardegna" },
       ]}
       faqs={faqs}
+      quickLinks={[
+        { href: "/eventi-oggi", label: "Oggi" },
+        { href: "/eventi-domani", label: "Domani" },
+        { href: "/eventi-weekend", label: "Weekend" },
+        { href: "/eventi-gratuiti", label: "Gratuiti" },
+        { href: month.path, label: "Questo mese" },
+        { href: "/eventi", label: "Tutti gli eventi" },
+      ]}
+      highlights={mergedHighlights}
+      highlightsTitle="Da non perdere"
       relatedLinks={[
         ...sagreExploreLinks().filter((link) => link.href !== HUB_PATH),
         ...weekendExploreLinks(),
@@ -103,7 +177,7 @@ export default async function EventiSardegnaHubPage() {
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Eventi e sagre", path: HUB_PATH },
+          { name: "Eventi in Sardegna", path: HUB_PATH },
         ]),
         faqPageSchema(faqs),
       ].filter((item): item is Record<string, unknown> => item != null)}

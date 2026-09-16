@@ -18,6 +18,19 @@ type EventLandingSection = {
   emptyHint?: string;
 };
 
+type HighlightItem = {
+  href: string;
+  label: string;
+  meta?: string;
+};
+
+type ScheduleRow = {
+  datesLabel: string;
+  place: string;
+  href?: string;
+  note?: string;
+};
+
 type EventLandingViewProps = {
   eyebrow?: string;
   h1: string;
@@ -31,6 +44,10 @@ type EventLandingViewProps = {
   jsonLd: Array<Record<string, unknown>>;
   faqs?: FaqItem[];
   quickLinks?: Array<{ href: string; label: string }>;
+  highlights?: HighlightItem[];
+  highlightsTitle?: string;
+  scheduleRows?: ScheduleRow[];
+  scheduleTitle?: string;
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
 };
@@ -48,6 +65,10 @@ export default function EventLandingView({
   jsonLd,
   faqs = [],
   quickLinks = [],
+  highlights = [],
+  highlightsTitle = "Da non perdere",
+  scheduleRows = [],
+  scheduleTitle = "Calendario tappe",
   relatedLinks = [],
   cover,
 }: EventLandingViewProps) {
@@ -130,6 +151,91 @@ export default function EventLandingView({
                   </Link>
                 ))}
               </nav>
+            ) : null}
+
+            {highlights.length > 0 ? (
+              <section className="mb-10" aria-labelledby="landing-highlights">
+                <h2
+                  id="landing-highlights"
+                  className="text-xl font-bold text-slate-900 sm:text-2xl"
+                >
+                  {highlightsTitle}
+                </h2>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {highlights.map((item) => (
+                    <li key={`${item.href}-${item.label}`}>
+                      <Link
+                        href={item.href}
+                        className="flex flex-col rounded-2xl border border-slate-200 bg-white px-4 py-3 transition hover:border-[#075EAE]/40 hover:shadow-sm"
+                      >
+                        <span className="font-bold text-slate-900">
+                          {item.label}
+                        </span>
+                        {item.meta ? (
+                          <span className="mt-0.5 text-sm text-slate-500">
+                            {item.meta}
+                          </span>
+                        ) : null}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {scheduleRows.length > 0 ? (
+              <section className="mb-10" aria-labelledby="landing-schedule">
+                <h2
+                  id="landing-schedule"
+                  className="text-xl font-bold text-slate-900 sm:text-2xl"
+                >
+                  {scheduleTitle}
+                </h2>
+                <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200">
+                  <table className="min-w-full text-left text-sm">
+                    <thead className="bg-slate-50 text-slate-600">
+                      <tr>
+                        <th scope="col" className="px-4 py-3 font-semibold">
+                          Date
+                        </th>
+                        <th scope="col" className="px-4 py-3 font-semibold">
+                          Paese
+                        </th>
+                        <th scope="col" className="px-4 py-3 font-semibold">
+                          Scheda
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scheduleRows.map((row) => (
+                        <tr
+                          key={`${row.datesLabel}-${row.place}-${row.href ?? row.note ?? ""}`}
+                          className="border-t border-slate-100"
+                        >
+                          <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-800">
+                            {row.datesLabel}
+                          </td>
+                          <td className="px-4 py-3 text-slate-700">{row.place}</td>
+                          <td className="px-4 py-3">
+                            {row.href ? (
+                              <Link
+                                href={row.href}
+                                className="font-semibold text-[#075EAE] hover:underline"
+                              >
+                                {row.note ?? "Apri evento"}
+                              </Link>
+                            ) : (
+                              <span className="text-slate-500">
+                                {row.note ?? "In aggiornamento"}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             ) : null}
 
             {cover ? (

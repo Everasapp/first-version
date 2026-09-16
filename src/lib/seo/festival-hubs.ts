@@ -19,20 +19,25 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
       "Guida alle Cortes Apertas: calendario delle tappe, borghi della Barbagia e cosa fare nei weekend di Autunno in Barbagia.",
     titleIncludes: ["autunno in barbagia", "cortes apertas"],
     paragraphs: [
-      "Autunno in Barbagia è il grande itinerario d’ospitalità dei paesi interni: ogni weekend un borgo apre corti, cantine e laboratori artigiani. Non è un singolo evento, ma una stagione. Per questo su EVERAS raccogliamo le tappe una per una, con data e paese, così puoi scegliere dove andare senza perderti il calendario ufficiale.",
-      "Le Cortes Apertas nascono per far entrare i visitatori nelle case e nei mestieri. Trovi pane, dolci, tessuti, coltelli, vino e musica nelle strade. È un formato che premia chi si muove in giornata: parti al mattino, cammini il centro storico, mangi in corte e torni la sera. Le tappe più attese toccano Oliena, Gavoi, Orgosolo, Mamoiada, Tonara e altri comuni della Barbagia e del Mandrolisai.",
-      "Se cerchi “Autunno in Barbagia 2026” su Google, di solito vuoi tre cose: quale paese apre questo weekend, a che ora, e se c’è un programma serale. Qui trovi le schede collegate al calendario Everas. Quando una tappa è pubblicata, la vedi in elenco con locandina e dettagli; se manca ancora, torna tra qualche giorno: aggiorniamo le date appena arrivano da Comuni e Pro Loco.",
+      "Autunno in Barbagia è il grande itinerario d’ospitalità dei paesi interni: ogni weekend un borgo apre corti, cantine e laboratori artigiani. Non è un singolo evento, ma una stagione. Qui sotto trovi il calendario tappe 2026 con date e paese, e le schede Everas collegate.",
+      "Le Cortes Apertas nascono per far entrare i visitatori nelle case e nei mestieri. Trovi pane, dolci, tessuti, coltelli, vino e musica nelle strade. È un formato che premia chi si muove in giornata: parti al mattino, cammini il centro storico, mangi in corte e torni la sera.",
+      "Se cerchi “Autunno in Barbagia 2026” su Google, di solito vuoi tre cose: quale paese apre questo weekend, a che ora, e se c’è un programma serale. Apri la tappa in tabella per locandina e dettagli; se manca ancora una data, torna tra qualche giorno: aggiorniamo appena arrivano conferme da Comuni e Pro Loco.",
     ],
     faqs: [
       {
         question: "Quando si svolge Autunno in Barbagia?",
         answer:
-          "Di solito da settembre a dicembre, un borgo ogni weekend. Le date cambiano ogni anno: controlla la tappa sul calendario Everas.",
+          "Nel 2026 va dal 5 settembre al 13 dicembre circa, un borgo (o più) ogni weekend. Il calendario tappe in questa pagina è aggiornato con le date pubblicate su Everas.",
       },
       {
         question: "Serve il biglietto?",
         answer:
           "L’ingresso ai paesi è in genere libero. Alcune degustazioni o visite guidate possono essere a pagamento: è indicato sulla scheda dell’evento.",
+      },
+      {
+        question: "Quanti paesi partecipano nel 2026?",
+        answer:
+          "L’edizione 2026 coinvolge oltre 30 località della Barbagia e del Mandrolisai. Scorri la tabella tappe per l’elenco completo delle date già online.",
       },
     ],
   },

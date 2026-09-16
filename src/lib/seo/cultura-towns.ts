@@ -176,6 +176,32 @@ export function findCultureTown(slug: string) {
   return CULTURE_TOWNS.find((article) => article.slug === slug);
 }
 
+function normalizeTownName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+/** Resolve a cultura town guide path from a municipality / place label. */
+export function findCulturaTownPathByName(name: string) {
+  const needle = normalizeTownName(name);
+  if (!needle) return null;
+
+  const exact = CULTURE_TOWNS.find(
+    (article) => normalizeTownName(article.town) === needle,
+  );
+  if (exact) return exact.path;
+
+  const partial = CULTURE_TOWNS.find((article) => {
+    const town = normalizeTownName(article.town);
+    return town.includes(needle) || needle.includes(town);
+  });
+  return partial?.path ?? null;
+}
+
 export function cultureTownLinks() {
   return CULTURE_TOWNS.map((article) => ({
     href: article.path,
