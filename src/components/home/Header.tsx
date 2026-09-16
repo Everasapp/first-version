@@ -119,21 +119,7 @@ export default function Header() {
         </Link>
 
         <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2">
-          {/* Mobile: CTA cultura visibili; da tablet in su solo menu sandwich */}
-          <Link
-            href="/cultura-sarda"
-            className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5 md:hidden"
-          >
-            Scopri
-          </Link>
-          <Link
-            href="/cultura"
-            className="inline-flex h-9 shrink-0 touch-manipulation items-center justify-center rounded-lg bg-[#075EAE] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#E67E22] active:bg-[#C96A1A] sm:px-3.5 md:hidden"
-          >
-            Cultura
-          </Link>
-
-          <div ref={menuWrapRef} className="relative hidden md:block">
+          <div ref={menuWrapRef} className="relative">
             <button
               type="button"
               className="inline-flex h-9 w-9 touch-manipulation items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-800 shadow-sm transition [@media(hover:hover)]:hover:border-[#075EAE] [@media(hover:hover)]:hover:text-[#075EAE]"
