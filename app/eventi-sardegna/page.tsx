@@ -11,7 +11,7 @@ import {
 import { currentMonthLanding, sagreExploreLinks } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
-import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
+import { absoluteUrl } from "@/src/lib/seo/site";
 import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
 
@@ -20,6 +20,11 @@ const HUB_PATH = "/eventi-sardegna";
 const HUB_TITLE = "Eventi in Sardegna: sagre, concerti e festival";
 const HUB_DESCRIPTION =
   "Calendario eventi in Sardegna aggiornato: cosa fare oggi, nel weekend e mese per mese. Sagre, concerti, feste di paese e festival da Nord a Sud.";
+
+const HUB_COVER = {
+  src: "/images/seo/eventi-sardegna-cover.webp",
+  alt: "Piazza in Sardegna con sagra e concerto all’aperto la sera",
+};
 
 const HUB_PARAGRAPHS = [
   "Se cerchi eventi in Sardegna, di solito vuoi tre risposte rapide: cosa c’è oggi, cosa fare nel weekend e dove si fa sagra. Questa è la guida principale di EVERAS: un calendario vivo con data, comune e locandina, non un elenco statico.",
@@ -47,13 +52,13 @@ export const metadata: Metadata = {
     description: HUB_DESCRIPTION,
     url: HUB_PATH,
     type: "website",
-    images: defaultOgImages(),
+    images: [{ url: HUB_COVER.src, width: 1200, height: 630, alt: HUB_COVER.alt }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${HUB_TITLE} | EVERAS`,
     description: HUB_DESCRIPTION,
-    images: defaultOgImages().map((image) => image.url),
+    images: [HUB_COVER.src],
   },
 };
 
@@ -205,6 +210,7 @@ export default async function EventiSardegnaHubPage() {
       paragraphs={HUB_PARAGRAPHS}
       events={upcoming}
       errorMessage={error?.message}
+      cover={HUB_COVER}
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi in Sardegna" },

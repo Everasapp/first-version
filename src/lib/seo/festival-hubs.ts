@@ -19,6 +19,10 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     description:
       "Guida alle Cortes Apertas: calendario delle tappe, borghi della Barbagia e cosa fare nei weekend di Autunno in Barbagia.",
     titleIncludes: ["autunno in barbagia", "cortes apertas"],
+    cover: {
+      src: "/images/seo/autunno-in-barbagia-cover.webp",
+      alt: "Cortes Apertas in un borgo della Barbagia in autunno",
+    },
     paragraphs: [
       "Autunno in Barbagia è il grande itinerario d’ospitalità dei paesi interni: ogni weekend un borgo apre corti, cantine e laboratori artigiani. Non è un singolo evento, ma una stagione. Qui sotto trovi il calendario tappe 2026 con date e paese, e le schede Everas collegate.",
       "Le Cortes Apertas nascono per far entrare i visitatori nelle case e nei mestieri. Trovi pane, dolci, tessuti, coltelli, vino e musica nelle strade. È un formato che premia chi si muove in giornata: parti al mattino, cammini il centro storico, mangi in corte e torni la sera.",
