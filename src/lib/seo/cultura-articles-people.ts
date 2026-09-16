@@ -420,4 +420,293 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     ],
     publishedAt: "2026-09-16",
   },
+  {
+    slug: "emilio-lussu-armungia",
+    path: "/cultura/emilio-lussu-armungia",
+    title: "Emilio Lussu: scrittore e politico da Armungia",
+    h1: "Emilio Lussu, da Armungia all’Italia",
+    description:
+      "Emilio Lussu, nato ad Armungia: Un anno sull’Altipiano, antifascismo, Sardegna e guida del paese su EVERAS.",
+    intro:
+      "Emilio Lussu (1890-1975) nasce ad Armungia, nel Gerrei, e diventa uno degli scrittori e politici sardi più letti in Italia e oltre. Da Un anno sull’Altipiano alla lotta antifascista, il filo resta il paese di origine. Su EVERAS colleghi la sua storia alla guida di Armungia e al calendario eventi del Sud.",
+    excerpt:
+      "Dal Gerrei al canone italiano: Lussu, Armungia e la memoria civile della Sardegna.",
+    hero: {
+      src: "/images/cultura/lussu-ritratto.webp",
+      alt: "Ritratto di Emilio Lussu con paese sardo sullo sfondo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/emilio-lussu-armungia",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Chi era Emilio Lussu",
+        paragraphs: [
+          "Emilio Lussu nasce ad Armungia il 4 dicembre 1890. Combattente nella Prima guerra mondiale, fondatore del Partito Sardo d’Azione, esule antifascista e poi protagonista della Repubblica, lascia pagine che restano scolastiche in tutta Italia, a partire da Un anno sull’Altipiano.",
+          "Non è solo un nome da manuale: è un sardo dell’interno che porta il Gerrei e la Grande Guerra nella letteratura civile europea.",
+        ],
+      },
+      {
+        title: "Armungia e il Gerrei",
+        paragraphs: [
+          "Armungia è il paese della sua infanzia e della memoria pubblica: museo, luoghi legati alla famiglia Lussu, paesaggio del Gerrei. La guida Everas di Armungia raccoglie storia, tradizioni e cosa visitare; da lì passi al Sud Sardegna paese per paese.",
+          "Se cerchi cosa fare in zona, apri anche Eventi a Armungia: sagre, rassegne e appuntamenti del territorio quando sono pubblicati su EVERAS.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Parti dalla guida di Armungia in Scopri la Sardegna, poi esplora il Sud e Cultura Sarda per altri personaggi dell’isola.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Di dove era Emilio Lussu?",
+        answer:
+          "Era di Armungia, nel Gerrei (Sud Sardegna). Lì è nato e lì resta il legame più forte con il territorio.",
+      },
+      {
+        question: "Qual è il suo libro più noto?",
+        answer:
+          "Un anno sull’Altipiano, sulla Prima guerra mondiale. È tra i classici della letteratura italiana del Novecento.",
+      },
+      {
+        question: "Dove leggere di Armungia su EVERAS?",
+        answer:
+          "Apri la guida di Armungia in Scopri la Sardegna e, se cerchi appuntamenti, Eventi a Armungia.",
+      },
+    ],
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/sud-sardegna/armungia",
+        label: "Guida Armungia",
+      },
+      { href: "/cultura-sarda/sud-sardegna", label: "Guide Sud Sardegna" },
+      { href: "/eventi/armungia", label: "Eventi a Armungia" },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "maria-carta-siligo",
+    path: "/cultura/maria-carta-siligo",
+    title: "Maria Carta: la voce della Sardegna da Siligo",
+    h1: "Maria Carta, cantante da Siligo",
+    description:
+      "Maria Carta, cantante e attrice di Siligo: canto tradizionale sardo, fama internazionale e guida del paese su EVERAS.",
+    intro:
+      "Maria Carta (1934-1994) nasce a Siligo, nel Meilogu, e porta il canto sardo su palchi e set in Italia e all’estero. Questa guida collega la sua figura al paese di origine, alla guida Everas di Siligo e agli eventi del Nord quando il territorio si anima.",
+    excerpt:
+      "Da Siligo al mondo: la cantante che ha reso famosa la voce tradizionale sarda.",
+    hero: {
+      src: "/images/cultura/maria-carta-ritratto.webp",
+      alt: "Ritratto di Maria Carta con paesaggio del Meilogu sullo sfondo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/maria-carta-siligo",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Chi era Maria Carta",
+        paragraphs: [
+          "Maria Carta nasce a Siligo il 24 giugno 1934. Diventa una delle voci più riconosciute del canto tradizionale sardo, con dischi, concerti e collaborazioni che escono dai confini dell’isola. Lavora anche come attrice nel cinema e in televisione.",
+          "Per molti ascoltatori fuori dalla Sardegna è il primo incontro con gosos, muttos e un modo di cantare legato alla lingua e alla festa di paese.",
+        ],
+      },
+      {
+        title: "Siligo e il Meilogu",
+        paragraphs: [
+          "Siligo è il punto di partenza: paese del Meilogu, tra colline e tradizioni del Nord-Ovest. La guida Everas di Siligo spiega cosa visitare e come collocare il comune nel Nord Sardegna; Eventi a Siligo raccoglie gli appuntamenti pubblicati in zona.",
+          "Dal Meilogu si raggiungono facilmente Sassari e altri centri del Nord per concerti, sagre e rassegne.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la guida di Siligo, poi le guide del Nord e Cultura Sarda per altri personaggi (da Fresu a Cossiga).",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Di dove era Maria Carta?",
+        answer:
+          "Era di Siligo, in provincia di Sassari, nel Meilogu.",
+      },
+      {
+        question: "Perché è famosa?",
+        answer:
+          "Per il canto tradizionale sardo portato su palchi nazionali e internazionali, e per il lavoro anche come attrice.",
+      },
+      {
+        question: "Dove trovare Siligo su EVERAS?",
+        answer:
+          "Nella guida di Siligo in Scopri la Sardegna e in Eventi a Siligo per il calendario locale.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/siligo", label: "Guida Siligo" },
+      { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
+      { href: "/eventi/siligo", label: "Eventi a Siligo" },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "giuseppe-garibaldi-caprera",
+    path: "/cultura/giuseppe-garibaldi-caprera",
+    title: "Giuseppe Garibaldi a Caprera: La Maddalena e l’isola",
+    h1: "Giuseppe Garibaldi a Caprera",
+    description:
+      "Giuseppe Garibaldi e Caprera: Compendio Garibaldino, La Maddalena e come visitare l’arcipelago con le guide EVERAS.",
+    intro:
+      "Giuseppe Garibaldi sceglie Caprera, nell’arcipelago di La Maddalena, come casa e luogo finale. L’eroe dei Due Mondi non è sardo di nascita, ma il legame con Caprera è tra i più visitati della Gallura. Su EVERAS parti dalla guida di La Maddalena e dagli eventi dell’isola.",
+    excerpt:
+      "Caprera, La Maddalena e il Compendio Garibaldino: dove il Risorgimento tocca la Sardegna.",
+    hero: {
+      src: "/images/cultura/garibaldi-ritratto.webp",
+      alt: "Ritratto di Giuseppe Garibaldi con la costa di Caprera sullo sfondo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/giuseppe-garibaldi-caprera",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Garibaldi e Caprera",
+        paragraphs: [
+          "Dopo le campagne risorgimentali Garibaldi si stabilisce a Caprera, isola dell’arcipelago maddalenino. Lì costruisce una vita agricola e familiare; oggi il Compendio Garibaldino è uno dei musei più cercati del Nord Sardegna.",
+          "Per chi visita La Maddalena, Caprera non è solo spiaggia: è un pezzo di storia d’Italia legato al paesaggio dell’arcipelago.",
+        ],
+      },
+      {
+        title: "La Maddalena e l’arcipelago",
+        paragraphs: [
+          "La guida Everas di La Maddalena collega porto, paesi, Caprera e cosa vedere. Da lì passi alle altre guide del Nord e al calendario: Eventi a La Maddalena raccoglie concerti, feste e appuntamenti quando sono online.",
+          "In estate e nei weekend l’isola si riempie: meglio controllare date e orari sulla scheda evento prima di partire da Palau o Olbia.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la guida di La Maddalena, poi Nord Sardegna e Cultura Sarda per altri personaggi legati all’isola.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Garibaldi era sardo?",
+        answer:
+          "No, nasce a Nizza. Caprera e La Maddalena sono però il cuore del suo legame con la Sardegna.",
+      },
+      {
+        question: "Cosa si visita a Caprera?",
+        answer:
+          "Il Compendio Garibaldino e i percorsi sull’isola. Parti dalla guida di La Maddalena su Scopri la Sardegna.",
+      },
+      {
+        question: "Ci sono eventi a La Maddalena?",
+        answer:
+          "Sì, quando pubblicati: apri Eventi a La Maddalena sul calendario EVERAS.",
+      },
+    ],
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/nord-sardegna/la-maddalena",
+        label: "Guida La Maddalena",
+      },
+      { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
+      { href: "/eventi/la-maddalena", label: "Eventi a La Maddalena" },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "peppino-mereu-tonara",
+    path: "/cultura/peppino-mereu-tonara",
+    title: "Peppino Mereu: il poeta di Tonara",
+    h1: "Peppino Mereu, poeta di Tonara",
+    description:
+      "Peppino Mereu, poeta sardo di Tonara: versi in limba, Barbagia di Belvì e guida del paese su EVERAS.",
+    intro:
+      "Peppino Mereu (1872-1901) nasce a Tonara, in Barbagia di Belvì, e lascia una delle voci più intense della poesia in lingua sarda. Pochi anni di vita, versi che restano. Su EVERAS colleghi Tonara alla guida paese, ad Autunno in Barbagia quando il borgo apre, e agli eventi del Centro.",
+    excerpt:
+      "Tonara, limba e memoria: il poeta della Barbagia di Belvì.",
+    hero: {
+      src: "/images/cultura/peppino-mereu-ritratto.webp",
+      alt: "Ritratto di Peppino Mereu con Tonara e la Barbagia sullo sfondo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/peppino-mereu-tonara",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Chi era Peppino Mereu",
+        paragraphs: [
+          "Peppino Mereu nasce a Tonara nel 1872 e muore giovane, nel 1901. Scrive in sardo versi di amore, dolore e vita di paese che ancora si leggono e si citano in Barbagia. Non è un poeta da museo chiuso: è memoria viva nelle scuole e nelle feste locali.",
+          "Per chi arriva da fuori, Mereu è una porta sulla limba e sul tono dei paesi interni, lontano dalle cartoline di costa.",
+        ],
+      },
+      {
+        title: "Tonara e la Barbagia di Belvì",
+        paragraphs: [
+          "Tonara è nota anche per il torrone e per i ritmi di montagna. La guida Everas del paese spiega storia e cosa visitare; in autunno può entrare nel circuito di Autunno in Barbagia. Eventi a Tonara elenca sagre e appuntamenti quando sono pubblicati.",
+          "Dal paese esplori il Centro Sardegna: Belvì, Aritzo, Desulo e gli altri borghi della dorsale.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la guida di Tonara, Autunno in Barbagia se cerchi le Cortes Apertas, e Cultura Sarda per Deledda, Nivola e gli altri personaggi del Centro.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Di dove era Peppino Mereu?",
+        answer:
+          "Era di Tonara, in Barbagia di Belvì (Centro Sardegna).",
+      },
+      {
+        question: "In che lingua scriveva?",
+        answer:
+          "Soprattutto in sardo (limba), con versi ancora letti e ricordati in Barbagia.",
+      },
+      {
+        question: "Cosa fare a Tonara su EVERAS?",
+        answer:
+          "Apri la guida di Tonara e Eventi a Tonara; in stagione guarda anche Autunno in Barbagia.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/centro-sardegna/tonara", label: "Guida Tonara" },
+      {
+        href: "/cultura-sarda/centro-sardegna",
+        label: "Guide Centro Sardegna",
+      },
+      { href: "/eventi/tonara", label: "Eventi a Tonara" },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Autunno in Barbagia",
+      },
+    ],
+    publishedAt: "2026-09-16",
+  },
 ];

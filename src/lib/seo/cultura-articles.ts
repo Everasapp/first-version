@@ -36,7 +36,7 @@ export const CULTURA_ARTICLES_HUB = {
     "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
     "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi - e poi aprire le schede dei comuni collegati.",
-    "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Paolo Fresu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
+    "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
 
