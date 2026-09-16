@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
-import { upcomingWeekends } from "@/src/lib/seo/weekends";
+import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
 
 const legalLinks = [
   { href: "/privacy", label: "Privacy Policy" },
@@ -58,8 +57,7 @@ const footerLinkClassName =
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const currentMonth = upcomingCalendarMonths(1)[0];
-  const datedWeekends = upcomingWeekends(2);
+  const primaryLinks = getPrimaryNavLinks();
 
   return (
     <footer className="mt-auto border-t border-[#c5d8ec] bg-[#e8f1fa]">
@@ -81,50 +79,15 @@ export default function Footer() {
               aria-label="Pagine eventi"
               className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold"
             >
-              <Link href="/eventi-sardegna" className={footerLinkClassName}>
-                Eventi e sagre
-              </Link>
-              <Link href="/cultura-sarda" className={footerLinkClassName}>
-                Scopri la Sardegna
-              </Link>
-              <Link href="/cultura" className={footerLinkClassName}>
-                Cultura Sarda
-              </Link>
-              <Link href="/eventi-oggi" className={footerLinkClassName}>
-                Eventi oggi
-              </Link>
-              <Link href="/eventi-weekend" className={footerLinkClassName}>
-                Weekend
-              </Link>
-              {currentMonth ? (
-                <Link href={currentMonth.path} className={footerLinkClassName}>
-                  {currentMonth.name} {currentMonth.year}
-                </Link>
-              ) : null}
-              {datedWeekends.map((weekend) => (
+              {primaryLinks.map((link) => (
                 <Link
-                  key={weekend.slug}
-                  href={weekend.path}
+                  key={`${link.href}-${link.label}`}
+                  href={link.href}
                   className={footerLinkClassName}
                 >
-                  {weekend.shortLabel}
+                  {link.label}
                 </Link>
               ))}
-              <Link href="/eventi/sassari" className={footerLinkClassName}>
-                Sassari
-              </Link>
-              <Link href="/eventi/olbia" className={footerLinkClassName}>
-                Olbia
-              </Link>
-              <Link href="/eventi/alghero" className={footerLinkClassName}>
-                Alghero
-              </Link>
-              <Link href="/eventi/cagliari" className={footerLinkClassName}>
-                Cagliari
-              </Link>
-              <Link href="/eventi/nuoro" className={footerLinkClassName}>
-                Nuoro
-              </Link>
             </nav>
           </div>
 
@@ -154,13 +117,6 @@ export default function Footer() {
               className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
             >
               Segnala un evento
-            </Link>
-
-            <Link
-              href="/contatti"
-              className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
-            >
-              Contattaci
             </Link>
           </div>
         </div>

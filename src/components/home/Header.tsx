@@ -2,23 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 
 import {
   markEverasAccountKnown,
   readHasEverasAccount,
 } from "@/src/lib/auth-preference";
+import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
 import { isOrganizerRole, type UserRole } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/client";
 
 const authButtonClassName =
   "inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5";
 
+function scrollToRicerca(event: MouseEvent<HTMLAnchorElement>) {
+  if (window.location.pathname !== "/") return;
+  event.preventDefault();
+  document
+    .getElementById("ricerca")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 export default function Header() {
   // Default: nuovo visitatore → Registrati (evita layout shift su mobile).
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isOrganizerAccount, setIsOrganizerAccount] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuId = useId();
+  const menuWrapRef = useRef<HTMLDivElement>(null);
+  const navLinks = getPrimaryNavLinks();
 
   useEffect(() => {
     setHasAccount(readHasEverasAccount());
@@ -65,8 +79,32 @@ export default function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function onPointerDown(event: Event) {
+      const target = event.target as Node | null;
+      if (!target || !menuWrapRef.current?.contains(target)) {
+        setMenuOpen(false);
+      }
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
+
   return (
-    <header className="sticky top-0 z-50 isolate overflow-x-clip border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 isolate border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-20 min-w-0 max-w-7xl items-end gap-1.5 px-3 pb-3.5 sm:gap-3 sm:px-8">
         <Link href="/" className="relative z-10 shrink-0 touch-manipulation">
           <Image
@@ -80,55 +118,66 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="mb-1.5 ml-auto hidden items-center gap-7 text-sm font-semibold md:flex">
-          <Link href="/" className="touch-manipulation text-blue-700">
-            Home
-          </Link>
-          <Link
-            href="/#ricerca"
-            className="touch-manipulation hover:text-blue-700"
-            onClick={(event) => {
-              if (window.location.pathname !== "/") return;
-              event.preventDefault();
-              document
-                .getElementById("ricerca")
-                ?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-          >
-            Ricerca
-          </Link>
-          <Link
-            href="/categorie"
-            className="touch-manipulation hover:text-blue-700"
-          >
-            Categorie
-          </Link>
-        </nav>
-
-        <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2 md:ml-8">
-          <Link
-            href="/#ricerca"
-            className={`${authButtonClassName} shrink-0 md:hidden`}
-            onClick={(event) => {
-              if (window.location.pathname !== "/") return;
-              event.preventDefault();
-              document
-                .getElementById("ricerca")
-                ?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-          >
-            Ricerca
-          </Link>
+        <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2">
+          {/* Mobile: CTA cultura visibili; da tablet in su solo menu sandwich */}
           <Link
             href="/cultura-sarda"
-            className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5"
+            className="inline-flex h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A] sm:px-3.5 md:hidden"
           >
-            <span className="sm:hidden">Scopri</span>
-            <span className="hidden sm:inline">Scopri la Sardegna</span>
+            Scopri
           </Link>
-          <Link href="/cultura" className={`${authButtonClassName} shrink-0`}>
-            <span className="sm:hidden">Cultura</span>
-            <span className="hidden sm:inline">Cultura Sarda</span>
+          <Link
+            href="/cultura"
+            className="inline-flex h-9 shrink-0 touch-manipulation items-center justify-center rounded-lg bg-[#075EAE] px-2.5 text-xs font-bold text-white transition [@media(hover:hover)]:hover:bg-[#E67E22] active:bg-[#C96A1A] sm:px-3.5 md:hidden"
+          >
+            Cultura
+          </Link>
+
+          <div ref={menuWrapRef} className="relative hidden md:block">
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 touch-manipulation items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-800 shadow-sm transition [@media(hover:hover)]:hover:border-[#075EAE] [@media(hover:hover)]:hover:text-[#075EAE]"
+              aria-expanded={menuOpen}
+              aria-controls={menuId}
+              aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              {menuOpen ? (
+                <X className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <Menu className="h-5 w-5" aria-hidden="true" />
+              )}
+            </button>
+
+            {menuOpen ? (
+              <nav
+                id={menuId}
+                aria-label="Menu sito"
+                className="absolute right-0 top-[calc(100%+0.5rem)] z-50 max-h-[min(70vh,28rem)] w-[min(calc(100vw-1.5rem),18rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white py-2 shadow-lg shadow-slate-900/10"
+              >
+                <ul className="flex flex-col">
+                  {navLinks.map((link) => (
+                    <li key={`${link.href}-${link.label}`}>
+                      <Link
+                        href={link.href}
+                        className="block px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:bg-[#075EAE]/8 hover:text-[#075EAE]"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ) : null}
+          </div>
+
+          <Link
+            href="/#ricerca"
+            className={`${authButtonClassName} shrink-0`}
+            onClick={scrollToRicerca}
+          >
+            Ricerca
           </Link>
 
           {isAuthenticated && isOrganizerAccount ? (
