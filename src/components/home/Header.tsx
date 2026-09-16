@@ -119,6 +119,36 @@ export default function Header() {
         </Link>
 
         <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2">
+          <Link
+            href="/#ricerca"
+            className={`${authButtonClassName} shrink-0`}
+            onClick={scrollToRicerca}
+          >
+            Ricerca
+          </Link>
+
+          {isAuthenticated && isOrganizerAccount ? (
+            <Link href="/dashboard" className={authButtonClassName}>
+              Dashboard
+            </Link>
+          ) : isAuthenticated ? (
+            <Link
+              href="/diventa-organizzatore"
+              className={authButtonClassName}
+            >
+              <span className="sm:hidden">Organizzatore</span>
+              <span className="hidden sm:inline">Diventa organizzatore</span>
+            </Link>
+          ) : hasAccount ? (
+            <Link href="/accedi" className={authButtonClassName}>
+              Accedi
+            </Link>
+          ) : (
+            <Link href="/registrati" className={authButtonClassName}>
+              Registrati
+            </Link>
+          )}
+
           <div ref={menuWrapRef} className="relative">
             <button
               type="button"
@@ -157,36 +187,6 @@ export default function Header() {
               </nav>
             ) : null}
           </div>
-
-          <Link
-            href="/#ricerca"
-            className={`${authButtonClassName} shrink-0`}
-            onClick={scrollToRicerca}
-          >
-            Ricerca
-          </Link>
-
-          {isAuthenticated && isOrganizerAccount ? (
-            <Link href="/dashboard" className={authButtonClassName}>
-              Dashboard
-            </Link>
-          ) : isAuthenticated ? (
-            <Link
-              href="/diventa-organizzatore"
-              className={authButtonClassName}
-            >
-              <span className="sm:hidden">Organizzatore</span>
-              <span className="hidden sm:inline">Diventa organizzatore</span>
-            </Link>
-          ) : hasAccount ? (
-            <Link href="/accedi" className={authButtonClassName}>
-              Accedi
-            </Link>
-          ) : (
-            <Link href="/registrati" className={authButtonClassName}>
-              Registrati
-            </Link>
-          )}
         </div>
       </div>
     </header>

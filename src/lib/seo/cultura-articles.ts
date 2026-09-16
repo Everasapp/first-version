@@ -30,10 +30,10 @@ export const CULTURA_ARTICLES_HUB = {
   title: "Cultura Sarda: storie, longevità e territorio",
   h1: "Cultura Sarda",
   description:
-    "Approfondimenti sulla Sardegna: zona blu, matriarcato, Ichnusa e nomi antichi, territori e legami con il calendario eventi di EVERAS.",
+    "Approfondimenti sulla Sardegna: zona blu, matriarcato, Ichnusa, Grazia Deledda e territori legati al calendario eventi di EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - longevità, ruolo delle donne, nomi antichi, feste, paesaggi interni - e poi tornare al calendario.",
-    "Partiamo da ciò che il mondo cerca sulla Sardegna oltre le spiagge: perché tanti sardi vivono a lungo, perché si parla di isola matriarcale, come si chiamava Ichnusa, e dove il territorio si incontra con sagre e rassegne.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - longevità, ruolo delle donne, nomi antichi, letteratura, feste, paesaggi interni - e poi tornare al calendario.",
+    "Partiamo da ciò che il mondo cerca sulla Sardegna oltre le spiagge: zona blu, isola matriarcale, Ichnusa, Grazia Deledda e il Nobel, e dove il territorio si incontra con sagre e rassegne.",
   ],
 } as const;
 
@@ -249,6 +249,78 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
         question: "Perché la forma a piede?",
         answer:
           "I greci associavano il profilo dell’isola, allungato e “plantare”, a un’impronta (íchnos). Da lì Ichnousa e, in parallelo, Sandaliotis, “isola a forma di sandalo”.",
+      },
+    ],
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "grazia-deledda-premio-nobel",
+    path: "/cultura/grazia-deledda-premio-nobel",
+    title:
+      "Grazia Deledda premio Nobel: la scrittrice di Nuoro e la Sardegna",
+    h1: "Grazia Deledda e il premio Nobel",
+    description:
+      "Grazia Deledda, premio Nobel per la Letteratura 1926: chi era, perché vinse, Nuoro e la Barbagia nei suoi romanzi, e dove seguirne le tracce su EVERAS.",
+    intro:
+      "Nel 1926 Grazia Deledda diventa la prima italiana a ricevere il premio Nobel per la Letteratura. Nata a Nuoro, racconta la Sardegna interiore - passioni, onore, fede, destino - senza folklore da cartolina. Questa guida ripercorre chi era, perché il Nobel, e come leggere oggi il suo legame con l’isola.",
+    excerpt:
+      "La scrittrice di Nuoro, il Nobel 1926 e la Sardegna nei suoi romanzi.",
+    hero: {
+      src: "/images/cultura/nuoro-panorama.webp",
+      alt: "Veduta di Nuoro, città natale di Grazia Deledda",
+      credit: {
+        author: "Herbert wie",
+        license: "CC BY-SA 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Panorama_Parco_di_Colle_Sant'Onofrio_Nuoro_Sardinien.JPG",
+      },
+    },
+    sections: [
+      {
+        title: "Chi era Grazia Deledda",
+        paragraphs: [
+          "Grazia Deledda nasce a Nuoro nel 1871, in una famiglia della piccola borghesia di paese. Studia poco a scuola rispetto ai canoni dell’epoca, ma legge molto e scrive presto: racconti e romanzi che portano la Barbagia e il nuorese sulla scena italiana ed europea.",
+          "Vive poi a Roma con il marito, restando legata all’isola nei temi e nei paesaggi. Muore a Roma nel 1936. Opere come Elias Portolu, Cenere, Canne al vento e Cosima fissano un’immagine letteraria della Sardegna fatta di interiorità e conflitto, non di sole spiagge.",
+        ],
+      },
+      {
+        title: "Il premio Nobel 1926",
+        paragraphs: [
+          "L’Accademia di Svezia le assegna il Nobel per la Letteratura nel 1926, riconoscendo la forza dei suoi ritratti della vita sarda e la chiarezza stilistica. È la prima donna italiana a ottenere il premio in quella disciplina, e una delle poche voci del Mediterraneo a entrare così presto nel canone mondiale.",
+          "Il Nobel non “inventa” Deledda: consolida una fama già costruita su romanzi tradotti e letti fuori dall’Italia. Per la Sardegna resta un punto di orgoglio culturale: Nuoro e la Barbagia entrano nella mappa letteraria internazionale attraverso una scrittrice dell’interno.",
+        ],
+      },
+      {
+        title: "La Sardegna nei suoi libri",
+        paragraphs: [
+          "Nei romanzi deleddiani tornano paesi di montagna, pastori, famiglie strette dal giudizio sociale, amore e colpa, religione e superstizione. Non è un inventario etnografico: è narrativa. Il paesaggio - vento, canne, colline, case di granito - fa da eco agli stati d’animo.",
+          "Chi visita Nuoro oggi può avvicinare quel mondo al Museo Deledda, alle vie del centro storico e alle guide dei paesi della Barbagia. La lettura e il viaggio si intrecciano: stesso territorio, due modi di entrarci.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la guida di Nuoro in Scopri la Sardegna e scorri i comuni del Centro: Barbagia, Mandrolisai, Ogliastra. Poi guarda il calendario - sagre, rassegne, Autunno in Barbagia - per essere nei paesi quando le piazze si animano.",
+          "In Cultura Sarda Deledda si affianca a zona blu, matriarcato e Ichnusa: letteratura, longevità, società e nomi antichi come chiavi diverse sulla stessa isola.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "In che anno Grazia Deledda ha vinto il Nobel?",
+        answer:
+          "Nel 1926, per la Letteratura. È la prima italiana a ricevere il Nobel in quella categoria.",
+      },
+      {
+        question: "Dove è nata?",
+        answer:
+          "A Nuoro, in Sardegna. La città e la Barbagia sono al centro di molti suoi romanzi; a Nuoro si visita anche il museo a lei dedicato.",
+      },
+      {
+        question: "Quali libri leggere per iniziare?",
+        answer:
+          "Tra i più noti: Canne al vento, Elias Portolu, Cenere e Cosima. Da lì puoi collegare i luoghi alle guide paese su Scopri la Sardegna.",
       },
     ],
     publishedAt: "2026-09-16",
