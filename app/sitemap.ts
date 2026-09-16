@@ -90,6 +90,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "hourly",
       priority: 0.95,
     },
+    {
+      url: `${SITE_URL}/eventi-sardegna/sagre`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
     ...upcomingCalendarMonths(8).map((month) => ({
       url: `${SITE_URL}${month.path}`,
       changeFrequency: "daily" as const,

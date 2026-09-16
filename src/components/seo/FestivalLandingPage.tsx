@@ -66,18 +66,21 @@ function formatScheduleDates(startDate: string, endDate?: string) {
 }
 
 function buildScheduleRows(hub: FestivalHub, events: EventCardData[]) {
-  if (hub.slug !== "autunno-in-barbagia") return [];
+  if (events.length === 0) return [];
 
-  // Prefer town stops over the season-long umbrella event.
-  const stops = events
-    .filter((event) => {
+  // Prefer town stops over the season-long umbrella event for Autunno.
+  let stops = [...events];
+  if (hub.slug === "autunno-in-barbagia") {
+    stops = stops.filter((event) => {
       const title = event.title.trim();
       return !/^autunno in barbagia 20\d{2}$/i.test(title);
-    })
-    .sort(
-      (a, b) =>
-        new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
-    );
+    });
+  }
+
+  stops = stops.sort(
+    (a, b) =>
+      new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+  );
 
   const rows = stops.map((event) => {
     const place =
@@ -141,7 +144,7 @@ export default async function FestivalLandingPage({ hub }: { hub: FestivalHub })
       scheduleTitle={
         hub.slug === "autunno-in-barbagia"
           ? "Calendario tappe 2026"
-          : "Calendario"
+          : "Date e appuntamenti"
       }
       relatedLinks={[
         ...uniqueCulturaLinks.slice(0, 8),

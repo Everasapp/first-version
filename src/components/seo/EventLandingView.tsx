@@ -7,6 +7,7 @@ import Header from "@/src/components/home/Header";
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from "@/src/components/seo/Breadcrumbs";
+import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
 
 type FaqItem = { question: string; answer: string };
@@ -310,9 +311,7 @@ export default function EventLandingView({
                       <summary className="cursor-pointer list-none font-bold text-slate-900">
                         {faq.question}
                       </summary>
-                      <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                        {faq.answer}
-                      </p>
+                      <FaqAnswer text={faq.answer} />
                     </details>
                   ))}
                 </div>

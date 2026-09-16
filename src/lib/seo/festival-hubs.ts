@@ -327,6 +327,99 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
       },
     ],
   },
+  {
+    slug: "jazzalguer",
+    path: "/eventi-sardegna/jazzalguer",
+    title: "JazzAlguer ad Alghero: date, concerti e programma",
+    h1: "JazzAlguer ad Alghero",
+    description:
+      "JazzAlguer: il festival jazz di Alghero con date, location e concerti aggiornati su EVERAS.",
+    titleIncludes: ["jazzalguer", "jazz alguer"],
+    paragraphs: [
+      "JazzAlguer è il festival jazz di Alghero: concerti in centro storico, lungomare e location suggestive, spesso a settembre. Chi cerca “JazzAlguer 2026” vuole il giorno del concerto, se serve biglietto e come arrivare in città senza stress di parcheggio.",
+      "Il formato mescola headliner e artisti emergenti, con serate all’aperto quando il clima lo permette. Conviene arrivare da Sassari o Olbia con un po’ di anticipo: il centro si riempie e alcuni posti sono a numero chiuso.",
+      "Su EVERAS trovi l’edizione e gli appuntamenti distinti quando hanno senso da soli. Apri la scheda per orari, ingresso e indirizzo. Per il contesto della città, la guida Scopri Alghero resta il punto di partenza.",
+    ],
+    faqs: [
+      {
+        question: "Quando è JazzAlguer?",
+        answer:
+          "Di solito a settembre, su più serate ad Alghero. Le date precise cambiano ogni edizione e sono sulle schede Everas.",
+      },
+      {
+        question: "I concerti di JazzAlguer sono gratis?",
+        answer:
+          "Alcuni appuntamenti sono a ingresso libero, altri a pagamento o con prenotazione. Il dettaglio è sulla scheda del singolo concerto.",
+      },
+      {
+        question: "Come arrivare ai concerti a Alghero?",
+        answer:
+          "Il centro si raggiunge a piedi o con navette locali. Meglio lasciare l’auto fuori dalle mura e controllare orari sulla scheda Everas.",
+      },
+    ],
+  },
+  {
+    slug: "santa-greca",
+    path: "/eventi-sardegna/santa-greca",
+    title: "Festa di Santa Greca a Decimomannu: date e programma",
+    h1: "Festa di Santa Greca",
+    description:
+      "Santa Greca a Decimomannu: calendario della festa, sagra e come arrivare dal Campidano e da Cagliari.",
+    titleIncludes: ["santa greca"],
+    paragraphs: [
+      "La festa di Santa Greca a Decimomannu è una delle sagre più cercate del Sud Sardegna: giorni di processioni, stand gastronomici e serate in piazza. Chi digita “Santa Greca 2026” vuole le date ufficiali, se c’è il lunedì di festa e come muoversi da Cagliari senza perdere parcheggio.",
+      "Il santuario e il paese si riempiono soprattutto nei weekend: conviene arrivare presto, usare i mezzi o i parcheggi segnalati. Oltre alla parte religiosa trovi bancarelle, musica e specialità locali.",
+      "Su EVERAS teniamo il calendario dell’edizione e gli eventi collegati. Per conoscere Decimomannu e i paesi intorno apri anche le guide Scopri la Sardegna.",
+    ],
+    faqs: [
+      {
+        question: "Quando si svolge Santa Greca a Decimomannu?",
+        answer:
+          "Di solito a settembre, su più giorni. Le date esatte dell’edizione sono sulla scheda Everas e in questa pagina quando disponibili.",
+      },
+      {
+        question: "Santa Greca è gratis?",
+        answer:
+          "L’accesso alla festa in paese è in genere libero. Cibo, attrazioni e alcuni spettacoli possono essere a pagamento: è indicato sulla scheda.",
+      },
+      {
+        question: "Come arrivare a Decimomannu da Cagliari?",
+        answer:
+          "Decimomannu è a pochi chilometri da Cagliari, raggiungibile in auto o con i mezzi urbani/extraurbani. In giorni di punta meglio lasciare l’auto nei parcheggi esterni.",
+      },
+    ],
+  },
+  {
+    slug: "festival-della-bottarga",
+    path: "/eventi-sardegna/festival-della-bottarga",
+    title: "Festival della Bottarga: date, luoghi e programma",
+    h1: "Festival della Bottarga",
+    description:
+      "Festival della Bottarga in Sardegna: date, degustazioni e appuntamenti gastronomici aggiornati su EVERAS.",
+    titleIncludes: ["bottarga", "festival della bottarga"],
+    paragraphs: [
+      "Il Festival della Bottarga celebra uno dei prodotti più iconici della Sardegna: degustazioni, stand, talk e serate dedicate al pesce e alle lagune. Chi cerca l’edizione vuole sapere in quale comune si svolge, quali giorni aprire e se serve prenotazione.",
+      "Spesso l’appuntamento si concentra intorno a Cabras e all’area oristanese, ma le location possono cambiare: per questo teniamo date e luogo sulla scheda, non su un volantino fisso.",
+      "Su EVERAS trovi l’evento principale e gli spin-off gastronomici collegati. Apri la scheda per orari, biglietti e come arrivare; per il territorio usa le guide Scopri dei comuni coinvolti.",
+    ],
+    faqs: [
+      {
+        question: "Quando è il Festival della Bottarga?",
+        answer:
+          "Le date cambiano ogni edizione. Controlla il calendario in questa pagina e le schede Everas appena pubblicate.",
+      },
+      {
+        question: "Dove si svolge il Festival della Bottarga?",
+        answer:
+          "Spesso nell’area di Cabras e Oristano, ma verifica il comune sulla scheda dell’edizione corrente.",
+      },
+      {
+        question: "Serve il biglietto?",
+        answer:
+          "Alcune aree o degustazioni possono richiedere ticket o prenotazione. L’ingresso agli spazi aperti, quando previsto, è indicato sulla scheda.",
+      },
+    ],
+  },
 ];
 
 export function findFestivalHub(slug: string) {

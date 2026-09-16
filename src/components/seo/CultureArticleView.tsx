@@ -5,6 +5,7 @@ import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
+import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
 import PhotoCredit from "@/src/components/seo/PhotoCredit";
 import { cities } from "@/src/data/cities";
@@ -176,9 +177,10 @@ export default function CultureArticleView({
                     <summary className="cursor-pointer list-none font-bold text-slate-900">
                       {faq.question}
                     </summary>
-                    <p className="mt-3 text-base leading-relaxed text-slate-600">
-                      {faq.answer}
-                    </p>
+                    <FaqAnswer
+                      text={faq.answer}
+                      className="mt-3 text-base leading-relaxed text-slate-600"
+                    />
                   </details>
                 ))}
               </div>

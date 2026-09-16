@@ -12,6 +12,8 @@ import { currentMonthLanding, sagreExploreLinks } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
+import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
+import { cityEventsPath } from "@/src/lib/seo/paths";
 
 const HUB_PATH = "/eventi-sardegna";
 
@@ -21,22 +23,11 @@ const HUB_DESCRIPTION =
 
 const HUB_PARAGRAPHS = [
   "Se cerchi eventi in Sardegna, di solito vuoi tre risposte rapide: cosa c’è oggi, cosa fare nel weekend e dove si fa sagra. Questa è la guida principale di EVERAS: un calendario vivo con data, comune e locandina, non un elenco statico.",
-  "Da qui arrivi alle pagine dedicate — Eventi oggi, weekend, mesi e feste grandi come Autunno in Barbagia, Santa Greca o JazzAlguer — senza filtri nascosti. Pubblichiamo appuntamenti da Comuni, Pro Loco e fonti locali, e aggiorniamo ogni giorno.",
+  "Da qui arrivi alle pagine dedicate: Eventi oggi, weekend, mesi, hub Sagre in Sardegna e feste grandi come Autunno in Barbagia, Santa Greca o JazzAlguer, senza filtri nascosti. Pubblichiamo appuntamenti da Comuni, Pro Loco e fonti locali, e aggiorniamo ogni giorno.",
   "Organizzi una sagra o un concerto? Pubblicala su EVERAS: entra in guida e resta visibile a chi cerca cosa fare sull’isola.",
 ];
 
-const HUB_FAQS_BASE = [
-  {
-    question: "Quali sono gli eventi in programma oggi in Sardegna?",
-    answer:
-      "La pagina Eventi oggi mostra solo gli appuntamenti della giornata in corso, con orario e luogo sulla scheda.",
-  },
-  {
-    question: "Quali sono le feste e le sagre in Sardegna?",
-    answer:
-      "Oltre al calendario mese per mese trovi le guide alle feste più cercate: Autunno in Barbagia, Candelieri, Sartiglia, Cavalcata Sarda, Ardia, Corsa degli Scalzi, Sposalizio Selargino e Sant’Efisio.",
-  },
-];
+const GEO_CITIES = ["Cagliari", "Sassari", "Olbia", "Alghero", "Nuoro"] as const;
 
 const HIGHLIGHT_MATCHERS: Array<{ label: string; match: RegExp }> = [
   { label: "Autunno in Barbagia", match: /autunno in barbagia/i },
@@ -82,15 +73,54 @@ export default async function EventiSardegnaHubPage() {
   const { events, error } = await loadFilteredPublishedEvents();
   const upcoming = events.slice(0, 24);
   const month = currentMonthLanding();
-  const datedWeekends = weekendExploreLinks(2)
-    .map((link) => link.label)
-    .join(" e ");
+  const weekendLinks = weekendExploreLinks(2);
+  const datedWeekends = weekendLinks.map((link) => link.label).join(" e ");
+
   const faqs = [
     {
       question: "Cosa c’è da fare in Sardegna questo fine settimana?",
       answer: `Apri Eventi weekend per il fine settimana in corso. Se stai pianificando i giorni dopo, usa le pagine datate, per esempio ${datedWeekends}.`,
     },
-    ...HUB_FAQS_BASE,
+    {
+      question: "Quali sono gli eventi in programma oggi in Sardegna?",
+      answer:
+        "La pagina Eventi oggi mostra solo gli appuntamenti della giornata in corso, con orario e luogo sulla scheda. Da lì passi a domani e al weekend.",
+    },
+    {
+      question: "Dove trovare le sagre in Sardegna?",
+      answer:
+        "Apri l’hub Sagre in Sardegna per il calendario evergreen delle feste di paese. Trovi anche Autunno in Barbagia, Santa Greca a Decimomannu, il Festival della Bottarga e lo Sposalizio Selargino a Selargius.",
+    },
+    {
+      question: "Quali eventi ci sono a Cagliari, Sassari o Olbia?",
+      answer:
+        "Usa i link città in questa pagina: eventi a Cagliari, Sassari, Olbia, Alghero e Nuoro. Per conoscere i luoghi apri anche le guide Scopri di ciascuna città.",
+    },
+    {
+      question: "Cosa fare ad Alghero o Nuoro nel weekend?",
+      answer:
+        "Controlla Eventi weekend e filtra per comune sulla scheda. Ad Alghero in stagione trovi anche JazzAlguer; a Nuoro e nei paesi interni spesso Autunno in Barbagia.",
+    },
+    {
+      question: "Gli eventi in Sardegna sono gratuiti?",
+      answer:
+        "Molte sagre e feste di piazza sono a ingresso libero; concerti e festival possono richiedere biglietto. La pagina Eventi gratuiti raccoglie solo gli appuntamenti free.",
+    },
+    {
+      question: "Come segnalare un evento o una sagra su EVERAS?",
+      answer:
+        "Dalla home puoi pubblicare un evento con titolo, date, comune e locandina. Dopo la revisione compare nel calendario e nelle pagine città come Cagliari o Sassari.",
+    },
+    {
+      question: "Quali festival non perdere quest’anno?",
+      answer:
+        "Tra i più cercati: Autunno in Barbagia, Monumenti Aperti, JazzAlguer ad Alghero, Santa Greca a Decimomannu, Festival della Bottarga e Isole che Parlano a Palau.",
+    },
+    {
+      question: "Come è organizzato il calendario mese per mese?",
+      answer:
+        "Ogni mese ha una pagina dedicata (per esempio eventi di settembre) con sagre, concerti e feste ordinate per data. Da lì passi al weekend e alle guide festival.",
+    },
   ];
 
   const highlights = HIGHLIGHT_MATCHERS.map((item) => {
@@ -103,12 +133,36 @@ export default async function EventiSardegnaHubPage() {
     };
   }).filter((row): row is NonNullable<typeof row> => row != null);
 
-  // Always surface festival hubs even if a matching event card is missing.
   const hubHighlights = [
+    {
+      href: "/eventi-weekend",
+      label: "Cosa fare nel weekend",
+      meta: weekendLinks.map((l) => l.label).join(" · ") || "Fine settimana in corso",
+    },
+    {
+      href: "/eventi-sardegna/sagre",
+      label: "Sagre in Sardegna",
+      meta: "Calendario feste di paese",
+    },
     {
       href: "/eventi-sardegna/autunno-in-barbagia",
       label: "Autunno in Barbagia 2026",
       meta: "Calendario tappe e Cortes Apertas",
+    },
+    {
+      href: "/eventi-sardegna/jazzalguer",
+      label: "JazzAlguer",
+      meta: "Festival jazz ad Alghero",
+    },
+    {
+      href: "/eventi-sardegna/santa-greca",
+      label: "Santa Greca",
+      meta: "Decimomannu e Campidano",
+    },
+    {
+      href: "/eventi-sardegna/festival-della-bottarga",
+      label: "Festival della Bottarga",
+      meta: "Gastronomia e degustazioni",
     },
     {
       href: "/eventi-sardegna/monumenti-aperti",
@@ -132,7 +186,15 @@ export default async function EventiSardegnaHubPage() {
             item.label.toLowerCase().includes("autunno"),
         ),
     ),
-  ].slice(0, 8);
+  ].slice(0, 10);
+
+  const geoQuickLinks = GEO_CITIES.flatMap((city) => {
+    const cultura = findCulturaTownPathByName(city);
+    return [
+      { href: cityEventsPath(city), label: city },
+      ...(cultura ? [{ href: cultura, label: `Guida ${city}` }] : []),
+    ];
+  });
 
   return (
     <EventLandingView
@@ -152,8 +214,11 @@ export default async function EventiSardegnaHubPage() {
         { href: "/eventi-oggi", label: "Oggi" },
         { href: "/eventi-domani", label: "Domani" },
         { href: "/eventi-weekend", label: "Weekend" },
+        ...weekendLinks,
+        { href: "/eventi-sardegna/sagre", label: "Sagre" },
         { href: "/eventi-gratuiti", label: "Gratuiti" },
         { href: month.path, label: "Questo mese" },
+        ...geoQuickLinks.slice(0, 10),
         { href: "/eventi", label: "Tutti gli eventi" },
       ]}
       highlights={mergedHighlights}

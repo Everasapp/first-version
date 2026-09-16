@@ -91,6 +91,7 @@ export function sagreExploreLinks() {
   const months = upcomingCalendarMonths(4);
   return [
     { href: "/eventi-sardegna", label: "Eventi e sagre" },
+    { href: "/eventi-sardegna/sagre", label: "Sagre in Sardegna" },
     { href: "/eventi-oggi", label: "Oggi" },
     { href: "/eventi-domani", label: "Domani" },
     { href: "/eventi-weekend", label: "Weekend" },
