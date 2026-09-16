@@ -642,7 +642,9 @@ async function fetchHtml(url: string) {
     direct.status === 403 ||
     direct.status === 429 ||
     direct.status === 401 ||
-    direct.status === 0;
+    direct.status === 202 ||
+    direct.status === 0 ||
+    looksLikeBotChallenge(direct.html);
 
   if (blocked) {
     const cookie = cookieHeaderFromResponse(direct.response);
@@ -703,6 +705,19 @@ function looksLikeHttpForbidden(html: string) {
   );
 }
 
+/** Challenge anti-bot (es. SiteGround sgcaptcha) che restituisce HTML minimi con HTTP 202. */
+function looksLikeBotChallenge(html: string) {
+  if (!html) return false;
+  const head = html.slice(0, 1200).replace(/\s+/g, " ").toLowerCase();
+  return (
+    head.includes("sgcaptcha") ||
+    head.includes("/.well-known/sgcaptcha") ||
+    head.includes("cf-challenge") ||
+    head.includes("just a moment") ||
+    (html.length < 800 && /meta\s+http-equiv=["']?refresh/i.test(head))
+  );
+}
+
 function isUsableHtml(result: { ok: boolean; html: string }) {
   return result.ok && looksLikeUsefulHtml(result.html);
 }
@@ -710,6 +725,7 @@ function isUsableHtml(result: { ok: boolean; html: string }) {
 function looksLikeUsefulHtml(html: string) {
   if (!html || html.length < 2500) return false;
   if (looksLikeHttpForbidden(html)) return false;
+  if (looksLikeBotChallenge(html)) return false;
   const head = html.slice(0, 2500);
   if (/ppConfig|429 too many|quota exceeded/i.test(head)) return false;
   return /og:title|event-title|<article|<h1/i.test(html);
@@ -1323,6 +1339,11 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
       label: "Descrizione The Events Calendar",
     },
     { sel: ".tribe-events-content", label: "Contenuto The Events Calendar" },
+    // CityNews (*Today.it): corpo articolo in .l-entry__body / .c-entry
+    { sel: "article.l-entry .l-entry__body", label: "Corpo CityNews" },
+    { sel: ".l-entry__body .c-entry", label: "Corpo CityNews" },
+    { sel: "article.l-entry .c-entry", label: "Corpo CityNews" },
+    { sel: ".l-entry__body", label: "Corpo CityNews" },
     { sel: "article .l-entry__content", label: "Contenuto articolo" },
     { sel: ".l-entry__content", label: "Contenuto articolo" },
     { sel: "article .c-content", label: "Contenuto articolo" },
@@ -1337,7 +1358,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   ];
 
   const noise =
-    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links, .field--name-field-file-bando, .paragraph__allegati, .bando-dettaglio__date, .hero, llm-chatbot, .anchor-content";
+    "script, style, noscript, iframe, nav, form, button, aside, footer, .share, .social, .breadcrumb, .calendar-date-day, .related, .related-posts, .related-articles, .jp-relatedposts, .wp-block-query, .wp-block-post-template, .kb-posts, .kadence-posts-grid, .tags, .pagine-correlate, #luogo, #prezzi, #contatti, #ulteriori-informazioni, .tec-events-elementor-event-widget__export, .tec-events-elementor-event-widget__navigation, .tec-events-elementor-event-widget__venue, .tec-events-elementor-event-widget__categories, .comments-area, #comments, .post-navigation, .nav-links, .field--name-field-file-bando, .paragraph__allegati, .bando-dettaglio__date, .hero, llm-chatbot, .anchor-content, .c-story, .l-list-border, .o-skeleton, .c-card";
 
   let best: { html: string; text: string; source: string; rank: number } | null =
     null;
@@ -1385,7 +1406,7 @@ function extractPageBodyDescription($: cheerio.CheerioAPI): {
   if (!best || best.text.length < 220) {
     const paragraphs: string[] = [];
     $(
-      "article .entry-content p, main .entry-content p, .elementor-widget-theme-post-content p, #descrizione p, #cos-e p, .tribe-events-single-event-description p, .field--name-field-descrizione p, .field--name-field-testo-paragrafo p, article.node p",
+      "article.l-entry .l-entry__body p, article.l-entry .c-entry p, article .entry-content p, main .entry-content p, .elementor-widget-theme-post-content p, #descrizione p, #cos-e p, .tribe-events-single-event-description p, .field--name-field-descrizione p, .field--name-field-testo-paragrafo p, article.node p",
     ).each((_, el) => {
       const parent = $(el).closest(noise);
       if (parent.length) return;
