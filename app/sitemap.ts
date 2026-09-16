@@ -9,6 +9,10 @@ import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
 import { CULTURE_HUB_PATH, CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
 import {
+  CULTURA_ARTICLES,
+  CULTURA_ARTICLES_HUB_PATH,
+} from "@/src/lib/seo/cultura-articles";
+import {
   CULTURE_AREAS,
   citiesForCultureArea,
   cultureTownPathForCity,
@@ -106,6 +110,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}${CULTURA_ARTICLES_HUB_PATH}`,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...CULTURA_ARTICLES.map((article) => ({
+      url: `${SITE_URL}${article.path}`,
+      lastModified: new Date(article.publishedAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.76,
+    })),
     ...CULTURE_AREAS.map((area) => ({
       url: `${SITE_URL}${area.path}`,
       changeFrequency: "weekly" as const,

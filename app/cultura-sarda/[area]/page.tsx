@@ -120,7 +120,7 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Cultura sarda", path: CULTURE_HUB_PATH },
+          { name: "Scopri la Sardegna", path: CULTURE_HUB_PATH },
           { name: area.h1, path: area.path },
         ]),
         faqPageSchema(area.faqs),

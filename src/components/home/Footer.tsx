@@ -85,7 +85,10 @@ export default function Footer() {
                 Eventi e sagre
               </Link>
               <Link href="/cultura-sarda" className={footerLinkClassName}>
-                Cultura sarda
+                Scopri la Sardegna
+              </Link>
+              <Link href="/cultura" className={footerLinkClassName}>
+                Cultura Sarda
               </Link>
               <Link href="/eventi-oggi" className={footerLinkClassName}>
                 Eventi oggi

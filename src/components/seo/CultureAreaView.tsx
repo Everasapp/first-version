@@ -11,7 +11,10 @@ import {
   cultureTownPathForCity,
   groupCitiesByLetter,
 } from "@/src/lib/seo/cultura-areas";
-import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
+import {
+  CULTURE_HUB,
+  CULTURE_HUB_PATH,
+} from "@/src/lib/seo/cultura-towns";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
 
 type CultureAreaViewProps = {
@@ -44,14 +47,14 @@ export default function CultureAreaView({
             <Breadcrumbs
               items={[
                 { name: "Home", href: "/" },
-                { name: "Cultura sarda", href: CULTURE_HUB_PATH },
+                { name: CULTURE_HUB.h1, href: CULTURE_HUB_PATH },
                 { name: area.h1 },
               ]}
             />
 
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Cultura sarda
+                Scopri la Sardegna
               </p>
               <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
                 {area.h1}

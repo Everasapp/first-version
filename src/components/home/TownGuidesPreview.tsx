@@ -32,7 +32,7 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-10 sm:px-10 sm:py-12">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-              Guide dei comuni
+              Scopri la Sardegna
             </p>
             <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
               Scopri i paesi oltre il calendario
@@ -60,7 +60,7 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
         <div className="flex flex-col gap-8 sm:gap-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-              Guide dei comuni
+              Scopri la Sardegna
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
               Dove succede qualcosa questa settimana

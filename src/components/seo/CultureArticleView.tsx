@@ -10,7 +10,7 @@ import PhotoCredit from "@/src/components/seo/PhotoCredit";
 import { cities } from "@/src/data/cities";
 import { findCultureAreaByName } from "@/src/lib/seo/cultura-areas";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
-import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
+import { CULTURE_HUB, CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
 
 type CultureArticleViewProps = {
@@ -48,7 +48,7 @@ export default function CultureArticleView({
               <Breadcrumbs
                 items={[
                   { name: "Home", href: "/" },
-                  { name: "Cultura sarda", href: CULTURE_HUB_PATH },
+                  { name: CULTURE_HUB.h1, href: CULTURE_HUB_PATH },
                   ...(cultureArea
                     ? [{ name: cultureArea.h1, href: cultureArea.path }]
                     : []),

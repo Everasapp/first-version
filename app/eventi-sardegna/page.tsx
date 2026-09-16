@@ -162,7 +162,8 @@ export default async function EventiSardegnaHubPage() {
         ...sagreExploreLinks().filter((link) => link.href !== HUB_PATH),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),
-        { href: "/cultura-sarda", label: "Cultura sarda" },
+        { href: "/cultura-sarda", label: "Scopri la Sardegna" },
+        { href: "/cultura", label: "Cultura Sarda" },
       ]}
       jsonLd={[
         collectionPageSchema({

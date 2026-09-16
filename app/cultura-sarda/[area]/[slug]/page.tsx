@@ -125,7 +125,7 @@ export default async function CulturaTownPage({ params }: CulturaTownPageProps) 
           }),
           breadcrumbListSchema([
             { name: "Home", path: "/" },
-            { name: "Cultura sarda", path: CULTURE_HUB_PATH },
+            { name: "Scopri la Sardegna", path: CULTURE_HUB_PATH },
             { name: area.h1, path: area.path },
             { name: article.town, path: article.path },
           ]),
@@ -162,7 +162,7 @@ export default async function CulturaTownPage({ params }: CulturaTownPageProps) 
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Cultura sarda", path: CULTURE_HUB_PATH },
+          { name: "Scopri la Sardegna", path: CULTURE_HUB_PATH },
           { name: area.h1, path: area.path },
           { name: city.city, path },
         ]),

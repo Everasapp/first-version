@@ -11,7 +11,10 @@ import {
   cultureTownPathForCity,
   provinceLabel,
 } from "@/src/lib/seo/cultura-areas";
-import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
+import {
+  CULTURE_HUB,
+  CULTURE_HUB_PATH,
+} from "@/src/lib/seo/cultura-towns";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
 
@@ -55,7 +58,7 @@ export default function CultureTownStubView({
               <Breadcrumbs
                 items={[
                   { name: "Home", href: "/" },
-                  { name: "Cultura sarda", href: CULTURE_HUB_PATH },
+                  { name: CULTURE_HUB.h1, href: CULTURE_HUB_PATH },
                   { name: area.h1, href: area.path },
                   { name: city.city },
                 ]}
@@ -68,7 +71,7 @@ export default function CultureTownStubView({
                 {city.city}
               </h1>
               <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                {`${city.city} è un comune del ${area.name}, in provincia di ${province}. Questa pagina è la scheda del paese nella guida Cultura sarda: da qui arrivi al calendario eventi e agli altri comuni dell’area.`}
+                {`${city.city} è un comune del ${area.name}, in provincia di ${province}. Questa pagina è la scheda del paese in Scopri la Sardegna: da qui arrivi al calendario eventi e agli altri comuni dell’area.`}
               </p>
             </div>
           </header>

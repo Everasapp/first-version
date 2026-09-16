@@ -45,18 +45,18 @@ const GIANNI_CAREEDDU = {
 
 export const CULTURE_HUB = {
   path: CULTURE_HUB_PATH,
-  title: "Cultura sarda: paesi, musei e tradizioni",
-  h1: "Cultura sarda",
+  title: "Scopri la Sardegna: guide ai paesi, musei e tradizioni",
+  h1: "Scopri la Sardegna",
   description:
     "Guide ai paesi della Sardegna partendo da musei e botteghe: storia, tradizioni e cosa visitare, un comune alla volta.",
   paragraphs: [
-    "La cultura sarda non sta solo nelle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
+    "La Sardegna non si capisce solo dalle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
     "Ogni area ha l’elenco dei comuni e una pagina per paese. Nord (93), Centro (46) e Sud (84) hanno le guide lunghe su tutti i comuni: storia, tradizioni, visite e eventi collegati.",
   ],
   faqs: [
     {
-      question: "Cos’è la guida Cultura sarda?",
+      question: "Cos’è Scopri la Sardegna?",
       answer:
         "Una directory dei comuni dell’isola, divisa in Nord, Centro e Sud come i filtri eventi. Non sostituisce il calendario: lo affianca, per chi arriva su EVERAS anche fuori stagione.",
     },
