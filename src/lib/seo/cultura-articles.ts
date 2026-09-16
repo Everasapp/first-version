@@ -53,14 +53,15 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Ogliastra, Barbagia e lo stile di vita che rende la Sardegna una delle Blue Zone del mondo.",
     hero: {
-      src: "/images/cultura/baunei-panorama.webp",
-      alt: "Paesaggio dell’Ogliastra vicino a Baunei, cuore della zona blu sarda",
+      src: "/images/cultura/zona-blu-hero.webp",
+      alt: "Anziani in un paese dell’interno sardo, simbolo della zona blu e della longevità",
       credit: {
-        author: "fotografia di Rosanna C.",
-        license: "CC BY 2.5",
-        licenseUrl: "https://creativecommons.org/licenses/by/2.5",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Sardegna-Baunei-costa_sarda.jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/sardegna-zona-blu",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -125,14 +126,15 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Origini del matriarcato sardo, ruolo della donna nei paesi e perché ancora conta oggi.",
     hero: {
-      src: "/images/cultura/ittiri-costume.webp",
-      alt: "Costume tradizionale femminile di Ittiri, simbolo del ruolo pubblico della donna sarda",
+      src: "/images/cultura/matriarcale-hero.webp",
+      alt: "Tre generazioni di donne sarde a tavola, simbolo della Sardegna matriarcale",
       credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Ittiri_-_Costume_tradizionale_(03).JPG",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/sardegna-matriarcale",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -269,14 +271,15 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
     excerpt:
       "La scrittrice di Nuoro, il Nobel 1926 e la Sardegna nei suoi romanzi.",
     hero: {
-      src: "/images/cultura/nuoro-panorama.webp",
-      alt: "Veduta di Nuoro, città natale di Grazia Deledda",
+      src: "/images/cultura/deledda-ritratto.webp",
+      alt: "Ritratto di Grazia Deledda alla scrivania con Nuoro sullo sfondo",
       credit: {
-        author: "Herbert wie",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_Parco_di_Colle_Sant'Onofrio_Nuoro_Sardinien.JPG",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/grazia-deledda-premio-nobel",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [

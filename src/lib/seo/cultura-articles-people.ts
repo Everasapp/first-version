@@ -17,14 +17,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Dal Sassarese al Quirinale: il presidente sardo noto in Italia e oltre.",
     hero: {
-      src: "/images/cultura/sassari-panorama.webp",
-      alt: "Panorama di Sassari, città natale di Francesco Cossiga",
+      src: "/images/cultura/cossiga-ritratto.webp",
+      alt: "Ritratto di Francesco Cossiga con Sassari sullo sfondo",
       credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Sassari,_panorama_(01).jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/francesco-cossiga-presidente",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -86,14 +87,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Da Ales e Ghilarza al canone mondiale: il pensatore sardo e i luoghi della giovinezza.",
     hero: {
-      src: "/images/cultura/cagliari-panorama.webp",
-      alt: "Veduta di Cagliari, dove Gramsci studiò da giovane",
+      src: "/images/cultura/gramsci-ritratto.webp",
+      alt: "Ritratto di Antonio Gramsci con paesaggio sardo sullo sfondo",
       credit: {
-        author: "Unknown author",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_di_Cagliari_dalla_Darsena_(xilografia).jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/antonio-gramsci",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -159,14 +161,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Dal Monteacuto ai festival internazionali: Fresu, Berchidda e Time in Jazz.",
     hero: {
-      src: "/images/cultura/berchidda-panorama.webp",
-      alt: "Veduta di Berchidda, paese di Paolo Fresu e del Time in Jazz",
+      src: "/images/cultura/fresu-ritratto.webp",
+      alt: "Paolo Fresu che suona la tromba in concerto con paesaggio sardo sullo sfondo",
       credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Berchidda_-_Panorama_(03).JPG",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/paolo-fresu-jazz",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -225,14 +228,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Da Orani a New York: lo scultore sardo e il museo nel suo paese.",
     hero: {
-      src: "/images/cultura/orani-panorama.webp",
-      alt: "Veduta di Orani, paese natale di Costantino Nivola",
+      src: "/images/cultura/nivola-ritratto.webp",
+      alt: "Ritratto di Costantino Nivola nello studio con sculture e Orani sullo sfondo",
       credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Orani,_panorama_(08).jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/costantino-nivola",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -290,14 +294,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Da Oliena al Chelsea: il fantasista sardo noto in tutto il mondo del calcio.",
     hero: {
-      src: "/images/cultura/oliena-panorama.webp",
-      alt: "Veduta di Oliena, paese natale di Gianfranco Zola",
+      src: "/images/cultura/zola-ritratto.webp",
+      alt: "Gianfranco Zola in azione con il pallone e Oliena sullo sfondo",
       credit: {
-        author: "Olianese",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_di_Oliena_dal_Monte_Ortobene.jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/gianfranco-zola",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
@@ -357,14 +362,15 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "La giudicessa di Arborea, la Carta de Logu e Oristano nella storia europea.",
     hero: {
-      src: "/images/cultura/oristano-panorama.webp",
-      alt: "Veduta legata all’Oristanese, terra del Giudicato d’Arborea",
+      src: "/images/cultura/eleonora-darborea-ritratto.webp",
+      alt: "Ritratto di Eleonora d’Arborea con Oristano e il Giudicato sullo sfondo",
       credit: {
-        author: "Leop81 at Italian Wikipedia",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama-Scano_di_Montiferro.jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/eleonora-darborea",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     sections: [
