@@ -6,6 +6,13 @@ import {
   type ListingEventCandidate,
 } from "@/src/lib/admin/event-import";
 import { extractEventFromUrl } from "@/src/lib/admin/event-page-extractor";
+import {
+  classifyImportError,
+  finishImportRun,
+  startImportRun,
+  type ImportRunStatus,
+  type ImportTriggeredBy,
+} from "@/src/lib/cron/import-runs";
 import { normalizeEventCategories } from "@/src/lib/event-categories";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import {
@@ -13,6 +20,9 @@ import {
   stripHtml,
 } from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
+
+const MAX_SOURCE_RETRIES = 2;
+const SOURCE_RETRY_BACKOFF_MS = [1000, 4000] as const;
 
 const LISTING_SOURCES: Array<{ url: string; label: string }> = [
   { url: "https://www.sassaritoday.it/eventi/", label: "SassariToday" },
@@ -401,34 +411,381 @@ async function importDraft(
   return data;
 }
 
-async function collectCandidates(
+type ListingCandidate = ListingEventCandidate & { listingLabel: string };
+
+export type SourceRunResult = {
+  source: string;
+  status: ImportRunStatus;
+  eventsFound: number;
+  eventsParsed: number;
+  eventsCreated: number;
+  duplicates: number;
+  skipped: number;
+  errors: number;
+  durationMs: number;
+  retryCount: number;
+  errorMessage: string | null;
+  httpStatus: number | null;
+  lastErrorCode: string | null;
+};
+
+function isRetryableSourceError(code: string) {
+  return (
+    code === "timeout" ||
+    code === "network" ||
+    code === "http_403" ||
+    code === "http_429" ||
+    code === "http_5xx" ||
+    code === "unknown" ||
+    code.startsWith("http_5")
+  );
+}
+
+async function fetchListingCandidates(
+  source: { url: string; label: string },
   existingUrls: Set<string>,
-  sources = LISTING_SOURCES,
 ) {
-  const seen = new Set<string>();
-  const candidates: Array<ListingEventCandidate & { listingLabel: string }> = [];
-
-  for (const source of sources) {
-    const result = await extractEventFromUrl(source.url);
-    if (!result.listing?.candidates.length) continue;
-
-    for (const item of result.listing.candidates) {
-      const urlKey = normalizeSourceUrl(item.url);
-      if (existingUrls.has(urlKey) || seen.has(urlKey)) continue;
-      if (!isUpcoming(item.startAt)) continue;
-      seen.add(urlKey);
-      candidates.push({ ...item, listingLabel: source.label });
+  const result = await extractEventFromUrl(source.url);
+  if (!result.listing?.candidates.length) {
+    if (!result.ok) {
+      throw new Error(result.error || "listing non disponibile");
     }
-    await sleep(300);
+    return [] as ListingCandidate[];
   }
 
+  const candidates: ListingCandidate[] = [];
+  const seen = new Set<string>();
+  for (const item of result.listing.candidates) {
+    const urlKey = normalizeSourceUrl(item.url);
+    if (existingUrls.has(urlKey) || seen.has(urlKey)) continue;
+    if (!isUpcoming(item.startAt)) continue;
+    seen.add(urlKey);
+    candidates.push({ ...item, listingLabel: source.label });
+  }
   candidates.sort((a, b) => {
     const aTime = a.startAt ? new Date(a.startAt).getTime() : 9e15;
     const bTime = b.startAt ? new Date(b.startAt).getTime() : 9e15;
     return aTime - bTime;
   });
-
   return candidates;
+}
+
+async function importOneCandidate(
+  supabase: SupabaseClient,
+  adminUserId: string,
+  candidate: ListingCandidate,
+  existingEvents: ExistingEventRow[],
+  publish: boolean,
+): Promise<
+  | { kind: "created"; row: ExistingEventRow & { id: string; slug: string; source_url: string } }
+  | { kind: "duplicate" }
+  | { kind: "skipped"; reason: string }
+  | { kind: "error"; error: string }
+> {
+  try {
+    const extracted = await extractEventFromUrl(candidate.url);
+    if (!extracted.ok || !extracted.draft) {
+      return {
+        kind: "skipped",
+        reason: extracted.error || "analisi fallita",
+      };
+    }
+
+    const editable = draftToEditable(extracted.draft);
+    if (!editable.startDate.trim() && candidate.startAt) {
+      editable.startDate = candidate.startAt.slice(0, 10);
+    }
+    if (candidate.endAt) {
+      const listingEnd = candidate.endAt.slice(0, 10);
+      if (!editable.endDate.trim() || listingEnd > editable.endDate.trim()) {
+        editable.endDate = listingEnd;
+      }
+    }
+    if (!editable.sourceName.trim()) {
+      editable.sourceName = candidate.listingLabel;
+    }
+
+    if (
+      !editable.title.trim() ||
+      !editable.municipality.trim() ||
+      !editable.startDate.trim()
+    ) {
+      return { kind: "skipped", reason: "titolo, comune o data mancanti" };
+    }
+
+    const mediaReason = missingMediaReason(editable);
+    if (mediaReason) {
+      return { kind: "skipped", reason: mediaReason };
+    }
+
+    if (
+      isDuplicateOfExisting(
+        existingEvents,
+        editable.title,
+        editable.municipality,
+        editable.startDate,
+        editable.endDate,
+      )
+    ) {
+      return { kind: "duplicate" };
+    }
+
+    const row = await importDraft(supabase, adminUserId, editable, publish);
+    return {
+      kind: "created",
+      row: {
+        id: row.id as string,
+        slug: row.slug as string,
+        title: row.title as string,
+        municipality: row.municipality as string,
+        start_at: row.start_at as string,
+        end_at: null,
+        source_url: candidate.url,
+      },
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "import fallito";
+    if (/immagine/i.test(message)) {
+      return { kind: "skipped", reason: "immagine non scaricabile" };
+    }
+    return { kind: "error", error: message };
+  }
+}
+
+async function importOneSource({
+  supabase,
+  adminUserId,
+  source,
+  existingUrls,
+  existingEvents,
+  remainingLimit,
+  publish,
+  batchId,
+  triggeredBy,
+}: {
+  supabase: SupabaseClient;
+  adminUserId: string;
+  source: { url: string; label: string };
+  existingUrls: Set<string>;
+  existingEvents: ExistingEventRow[];
+  remainingLimit: number;
+  publish: boolean;
+  batchId: string;
+  triggeredBy: ImportTriggeredBy;
+}): Promise<{
+  metrics: SourceRunResult;
+  imported: Array<{
+    id: string;
+    slug: string;
+    title: string;
+    municipality: string;
+    start_at: string;
+    source_url: string;
+  }>;
+  skipped: Array<{ title: string; url: string; reason: string }>;
+  errors: Array<{ title: string; url: string; error: string }>;
+}> {
+  const startedAt = new Date();
+  const runId = await startImportRun({
+    supabase,
+    batchId,
+    source: source.label,
+    triggeredBy,
+    startedAt,
+  });
+
+  let retryCount = 0;
+  let lastClassified = classifyImportError("listing non disponibile");
+
+  for (let attempt = 0; attempt <= MAX_SOURCE_RETRIES; attempt += 1) {
+    try {
+      const candidates = await fetchListingCandidates(source, existingUrls);
+      const batch = candidates.slice(0, Math.max(0, remainingLimit));
+      const imported: Array<{
+        id: string;
+        slug: string;
+        title: string;
+        municipality: string;
+        start_at: string;
+        source_url: string;
+      }> = [];
+      const skipped: Array<{ title: string; url: string; reason: string }> = [];
+      const errors: Array<{ title: string; url: string; error: string }> = [];
+      let duplicates = 0;
+
+      for (const candidate of batch) {
+        const outcome = await importOneCandidate(
+          supabase,
+          adminUserId,
+          candidate,
+          existingEvents,
+          publish,
+        );
+        if (outcome.kind === "created") {
+          imported.push(outcome.row);
+          existingUrls.add(normalizeSourceUrl(outcome.row.source_url));
+          existingEvents.push({
+            title: outcome.row.title,
+            municipality: outcome.row.municipality,
+            start_at: outcome.row.start_at,
+            end_at: outcome.row.end_at,
+          });
+        } else if (outcome.kind === "duplicate") {
+          duplicates += 1;
+          skipped.push({
+            title: candidate.title,
+            url: candidate.url,
+            reason: "già presente su Everas",
+          });
+        } else if (outcome.kind === "skipped") {
+          skipped.push({
+            title: candidate.title,
+            url: candidate.url,
+            reason: outcome.reason,
+          });
+        } else {
+          errors.push({
+            title: candidate.title,
+            url: candidate.url,
+            error: outcome.error,
+          });
+        }
+        await sleep(250);
+      }
+
+      const status: ImportRunStatus =
+        imported.length > 0 && errors.length > 0 ? "partial" : "success";
+      const finishedAt = new Date();
+      await finishImportRun({
+        supabase,
+        runId,
+        status,
+        startedAt,
+        eventsFound: candidates.length,
+        eventsParsed: batch.length,
+        eventsCreated: imported.length,
+        duplicates,
+        skipped: skipped.length - duplicates,
+        errors: errors.length,
+        retryCount,
+        errorMessage:
+          errors[0]?.error || (status === "partial" ? "errori su alcuni eventi" : null),
+        httpStatus: null,
+        lastErrorCode: errors.length ? "event_import" : null,
+      });
+
+      return {
+        metrics: {
+          source: source.label,
+          status,
+          eventsFound: candidates.length,
+          eventsParsed: batch.length,
+          eventsCreated: imported.length,
+          duplicates,
+          skipped: skipped.length - duplicates,
+          errors: errors.length,
+          durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
+          retryCount,
+          errorMessage: errors[0]?.error || null,
+          httpStatus: null,
+          lastErrorCode: errors.length ? "event_import" : null,
+        },
+        imported,
+        skipped,
+        errors,
+      };
+    } catch (error) {
+      lastClassified = classifyImportError(error);
+      if (
+        attempt < MAX_SOURCE_RETRIES &&
+        isRetryableSourceError(lastClassified.lastErrorCode)
+      ) {
+        retryCount = attempt + 1;
+        await sleep(SOURCE_RETRY_BACKOFF_MS[attempt]);
+        continue;
+      }
+
+      const finishedAt = new Date();
+      await finishImportRun({
+        supabase,
+        runId,
+        status: "error",
+        startedAt,
+        retryCount,
+        errors: 1,
+        errorMessage: lastClassified.errorMessage,
+        httpStatus: lastClassified.httpStatus,
+        lastErrorCode: lastClassified.lastErrorCode,
+      });
+
+      return {
+        metrics: {
+          source: source.label,
+          status: "error",
+          eventsFound: 0,
+          eventsParsed: 0,
+          eventsCreated: 0,
+          duplicates: 0,
+          skipped: 0,
+          errors: 1,
+          durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
+          retryCount,
+          errorMessage: lastClassified.errorMessage,
+          httpStatus: lastClassified.httpStatus,
+          lastErrorCode: lastClassified.lastErrorCode,
+        },
+        imported: [],
+        skipped: [],
+        errors: [
+          {
+            title: source.label,
+            url: source.url,
+            error: lastClassified.errorMessage,
+          },
+        ],
+      };
+    }
+  }
+
+  const finishedAt = new Date();
+  await finishImportRun({
+    supabase,
+    runId,
+    status: "error",
+    startedAt,
+    retryCount: MAX_SOURCE_RETRIES,
+    errors: 1,
+    errorMessage: lastClassified.errorMessage,
+    httpStatus: lastClassified.httpStatus,
+    lastErrorCode: lastClassified.lastErrorCode,
+  });
+
+  return {
+    metrics: {
+      source: source.label,
+      status: "error",
+      eventsFound: 0,
+      eventsParsed: 0,
+      eventsCreated: 0,
+      duplicates: 0,
+      skipped: 0,
+      errors: 1,
+      durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
+      retryCount: MAX_SOURCE_RETRIES,
+      errorMessage: lastClassified.errorMessage,
+      httpStatus: lastClassified.httpStatus,
+      lastErrorCode: lastClassified.lastErrorCode,
+    },
+    imported: [],
+    skipped: [],
+    errors: [
+      {
+        title: source.label,
+        url: source.url,
+        error: lastClassified.errorMessage,
+      },
+    ],
+  };
 }
 
 export async function discoverAndImportEventDrafts({
@@ -437,12 +794,16 @@ export async function discoverAndImportEventDrafts({
   limit = 20,
   publish = false,
   onlyHost,
+  triggeredBy = "cron",
+  batchId,
 }: {
   supabase: SupabaseClient;
   adminUserId: string;
   limit?: number;
   publish?: boolean;
   onlyHost?: string;
+  triggeredBy?: ImportTriggeredBy;
+  batchId?: string;
 }) {
   const sources = onlyHost
     ? LISTING_SOURCES.filter((source) =>
@@ -451,8 +812,7 @@ export async function discoverAndImportEventDrafts({
     : LISTING_SOURCES;
   const existingUrls = await loadExistingSourceUrls(supabase);
   const existingEvents = await loadExistingUpcomingEvents(supabase);
-  const candidates = await collectCandidates(existingUrls, sources);
-  const batch = candidates.slice(0, Math.max(1, limit));
+  const resolvedBatchId = batchId || crypto.randomUUID();
 
   const imported: Array<{
     id: string;
@@ -464,105 +824,63 @@ export async function discoverAndImportEventDrafts({
   }> = [];
   const skipped: Array<{ title: string; url: string; reason: string }> = [];
   const errors: Array<{ title: string; url: string; error: string }> = [];
+  const sourceResults: SourceRunResult[] = [];
+  let remainingLimit = Math.max(0, limit);
+  let discoveredNew = 0;
+  let processed = 0;
 
-  for (const candidate of batch) {
+  for (const source of sources) {
     try {
-      const extracted = await extractEventFromUrl(candidate.url);
-      if (!extracted.ok || !extracted.draft) {
-        skipped.push({
-          title: candidate.title,
-          url: candidate.url,
-          reason: extracted.error || "analisi fallita",
-        });
-        continue;
-      }
-
-      const editable = draftToEditable(extracted.draft);
-      if (!editable.startDate.trim() && candidate.startAt) {
-        editable.startDate = candidate.startAt.slice(0, 10);
-      }
-      if (candidate.endAt) {
-        const listingEnd = candidate.endAt.slice(0, 10);
-        if (!editable.endDate.trim() || listingEnd > editable.endDate.trim()) {
-          editable.endDate = listingEnd;
-        }
-      }
-      if (!editable.sourceName.trim()) {
-        editable.sourceName = candidate.listingLabel;
-      }
-
-      if (
-        !editable.title.trim() ||
-        !editable.municipality.trim() ||
-        !editable.startDate.trim()
-      ) {
-        skipped.push({
-          title: candidate.title,
-          url: candidate.url,
-          reason: "titolo, comune o data mancanti",
-        });
-        continue;
-      }
-
-      const mediaReason = missingMediaReason(editable);
-      if (mediaReason) {
-        skipped.push({
-          title: candidate.title,
-          url: candidate.url,
-          reason: mediaReason,
-        });
-        continue;
-      }
-
-      if (
-        isDuplicateOfExisting(
-          existingEvents,
-          editable.title,
-          editable.municipality,
-          editable.startDate,
-          editable.endDate,
-        )
-      ) {
-        skipped.push({
-          title: candidate.title,
-          url: candidate.url,
-          reason: "già presente su Everas",
-        });
-        continue;
-      }
-
-      const row = await importDraft(supabase, adminUserId, editable, publish);
-      imported.push({
-        id: row.id as string,
-        slug: row.slug as string,
-        title: row.title as string,
-        municipality: row.municipality as string,
-        start_at: row.start_at as string,
-        source_url: candidate.url,
+      const result = await importOneSource({
+        supabase,
+        adminUserId,
+        source,
+        existingUrls,
+        existingEvents,
+        remainingLimit,
+        publish,
+        batchId: resolvedBatchId,
+        triggeredBy,
       });
+      sourceResults.push(result.metrics);
+      discoveredNew += result.metrics.eventsFound;
+      processed += result.metrics.eventsParsed;
+      remainingLimit = Math.max(0, remainingLimit - result.metrics.eventsParsed);
+      imported.push(...result.imported);
+      skipped.push(...result.skipped);
+      errors.push(...result.errors);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "import fallito";
-      if (/immagine/i.test(message)) {
-        skipped.push({
-          title: candidate.title,
-          url: candidate.url,
-          reason: "immagine non scaricabile",
-        });
-      } else {
-        errors.push({
-          title: candidate.title,
-          url: candidate.url,
-          error: message,
-        });
-      }
+      const classified = classifyImportError(error);
+      sourceResults.push({
+        source: source.label,
+        status: "error",
+        eventsFound: 0,
+        eventsParsed: 0,
+        eventsCreated: 0,
+        duplicates: 0,
+        skipped: 0,
+        errors: 1,
+        durationMs: 0,
+        retryCount: 0,
+        errorMessage: classified.errorMessage,
+        httpStatus: classified.httpStatus,
+        lastErrorCode: classified.lastErrorCode,
+      });
+      errors.push({
+        title: source.label,
+        url: source.url,
+        error: classified.errorMessage,
+      });
     }
-    await sleep(250);
+    await sleep(300);
   }
 
   return {
-    discoveredNew: candidates.length,
-    processed: batch.length,
+    batchId: resolvedBatchId,
+    triggeredBy,
+    sourceResults,
+    discoveredNew,
+    processed,
     importedCount: imported.length,
     skippedCount: skipped.length,
     errorCount: errors.length,

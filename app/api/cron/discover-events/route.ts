@@ -13,7 +13,13 @@ const JOB_NAME = "discover-events";
 
 // vercel.json schedule "0 6 * * *" = 08:00 Europe/Rome during CEST.
 
-async function runDiscovery() {
+function triggeredByFrom(request: Request) {
+  return request.headers.get("x-everas-triggered-by") === "admin"
+    ? ("admin" as const)
+    : ("cron" as const);
+}
+
+async function runDiscovery(triggeredBy: "cron" | "admin") {
   const supabase = createAdminClient();
   const configuredAdminId = process.env.EVENT_DISCOVERY_ADMIN_USER_ID?.trim();
 
@@ -45,6 +51,7 @@ async function runDiscovery() {
     adminUserId,
     limit,
     publish: true,
+    triggeredBy,
   });
 }
 
@@ -85,22 +92,42 @@ export async function GET(request: Request) {
   });
 
   try {
-    const result = await runDiscovery();
+    const result = await runDiscovery(triggeredByFrom(request));
+    const sourceErrors = result.sourceResults.filter(
+      (row) => row.status === "error",
+    ).length;
+    const sourcePartial = result.sourceResults.filter(
+      (row) => row.status === "partial",
+    ).length;
     await logCronRun({
       supabase: adminClient ?? tryCreateAdminClient(),
       jobName: JOB_NAME,
-      status: "success",
+      status:
+        sourceErrors === result.sourceResults.length &&
+        result.sourceResults.length > 0
+          ? "error"
+          : "success",
       startedAt,
       summary: {
         published: true,
+        batchId: result.batchId,
+        triggeredBy: result.triggeredBy,
         discoveredNew: result.discoveredNew,
         processed: result.processed,
         importedCount: result.importedCount,
         skippedCount: result.skippedCount,
         errorCount: result.errorCount,
+        sourceErrors,
+        sourcePartial,
+        sourceResults: result.sourceResults,
         importedTitles: result.imported.map((row) => row.title),
         skippedSample: result.skipped.slice(0, 10),
       },
+      errorMessage:
+        sourceErrors === result.sourceResults.length &&
+        result.sourceResults.length > 0
+          ? "Tutte le fonti sono fallite"
+          : null,
     });
     return NextResponse.json({ ok: true, published: true, ...result });
   } catch (error) {

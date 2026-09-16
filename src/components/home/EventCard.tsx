@@ -74,13 +74,7 @@ export default function EventCard({ event }: EventCardProps) {
   const eventHref = `/eventi/${event.id}`;
 
   return (
-    <article className="group relative flex h-full min-w-0 w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <Link
-        href={eventHref}
-        className="absolute inset-0 z-0"
-        aria-label={`Apri ${event.title}`}
-      />
-
+    <article className="group relative isolate flex h-full min-w-0 w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
         <Image
           src={event.imageUrl}
@@ -88,7 +82,7 @@ export default function EventCard({ event }: EventCardProps) {
           title={event.title}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 352px"
-          className="pointer-events-none object-cover transition duration-500 group-hover:scale-105"
+          className="object-cover transition duration-500 group-hover:scale-105"
           unoptimized={
             !(
               event.imageUrl.startsWith("/") ||
@@ -98,7 +92,7 @@ export default function EventCard({ event }: EventCardProps) {
           }
         />
 
-        <div className="pointer-events-none absolute left-4 top-4 z-[1] flex flex-wrap gap-2">
+        <div className="absolute left-4 top-4 z-[1] flex flex-wrap gap-2">
           {event.happeningNow && (
             <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               <span className="relative flex h-2 w-2">
@@ -135,23 +129,6 @@ export default function EventCard({ event }: EventCardProps) {
           )}
         </div>
 
-        <div className="absolute right-4 top-4 z-10 flex gap-2">
-          <FavoriteButton
-            eventId={event.eventId}
-            eventTitle={event.title}
-            initialIsFavorite={Boolean(event.isFavorite)}
-          />
-          <ShareEventButton
-            eventId={event.eventId}
-            title={event.title}
-            slug={event.id}
-            imageUrl={event.imageUrl}
-            category={event.category}
-            city={event.municipality || event.location}
-            startAt={event.startDate}
-            dateLabel={event.date}
-          />
-        </div>
       </div>
 
       <div className="relative flex flex-1 flex-col p-5">
@@ -208,6 +185,30 @@ export default function EventCard({ event }: EventCardProps) {
             Scopri →
           </span>
         </div>
+      </div>
+
+      <Link
+        href={eventHref}
+        className="absolute inset-0 z-10"
+        aria-label={`Apri ${event.title}`}
+      />
+
+      <div className="absolute right-4 top-4 z-20 flex gap-2">
+        <FavoriteButton
+          eventId={event.eventId}
+          eventTitle={event.title}
+          initialIsFavorite={Boolean(event.isFavorite)}
+        />
+        <ShareEventButton
+          eventId={event.eventId}
+          title={event.title}
+          slug={event.id}
+          imageUrl={event.imageUrl}
+          category={event.category}
+          city={event.municipality || event.location}
+          startAt={event.startDate}
+          dateLabel={event.date}
+        />
       </div>
     </article>
   );

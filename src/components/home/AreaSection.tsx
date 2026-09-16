@@ -114,7 +114,7 @@ export default function AreaSection({
   const areaHref = primaryCity ? cityEventsPath(primaryCity) : "/eventi";
 
   return (
-    <section className="overflow-x-clip bg-white py-14 sm:py-16">
+    <section className="overflow-x-hidden bg-white py-14 sm:py-16">
       <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="relative h-56 overflow-hidden rounded-[32px] sm:h-72">
           <Image
@@ -197,6 +197,7 @@ export default function AreaSection({
             onMouseLeave={() => setIsPaused(false)}
             onFocusCapture={() => setIsPaused(true)}
             onBlurCapture={() => setIsPaused(false)}
+            onPointerDown={() => setIsPaused(true)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"

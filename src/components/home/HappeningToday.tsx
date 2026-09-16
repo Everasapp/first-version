@@ -142,7 +142,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   }
 
   return (
-    <section className="overflow-x-clip border-b border-slate-200 bg-slate-50 py-14 sm:py-16">
+    <section className="overflow-x-hidden border-b border-slate-200 bg-slate-50 py-14 sm:py-16">
       <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
@@ -186,6 +186,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             onMouseLeave={() => setIsPaused(false)}
             onFocusCapture={() => setIsPaused(true)}
             onBlurCapture={() => setIsPaused(false)}
+            onPointerDown={() => setIsPaused(true)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
