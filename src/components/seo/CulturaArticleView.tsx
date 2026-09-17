@@ -1,11 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import Header from "@/src/components/home/Header";
+import ArticleFullPhoto from "@/src/components/seo/ArticleFullPhoto";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
-import PhotoCredit from "@/src/components/seo/PhotoCredit";
 import type { CulturaArticle } from "@/src/lib/seo/cultura-articles";
 import { CULTURA_ARTICLES_HUB_PATH } from "@/src/lib/seo/cultura-articles";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
@@ -62,21 +61,12 @@ export default function CulturaArticleView({
           </header>
 
           <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-            <figure>
-              <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
-                <Image
-                  src={article.hero.src}
-                  alt={article.hero.alt}
-                  fill
-                  priority
-                  sizes="(max-width: 1280px) 100vw, 1280px"
-                  className="object-cover"
-                />
-              </div>
-              <figcaption>
-                <PhotoCredit credit={article.hero.credit} />
-              </figcaption>
-            </figure>
+            <ArticleFullPhoto
+              src={article.hero.src}
+              alt={article.hero.alt}
+              credit={article.hero.credit}
+              priority
+            />
 
             {article.sections.map((section) => (
               <section key={section.title} className="mt-12">

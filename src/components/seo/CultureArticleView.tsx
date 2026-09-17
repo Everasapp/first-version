@@ -1,13 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
+import ArticleFullPhoto from "@/src/components/seo/ArticleFullPhoto";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
-import PhotoCredit from "@/src/components/seo/PhotoCredit";
 import { cities } from "@/src/data/cities";
 import { findCultureAreaByName } from "@/src/lib/seo/cultura-areas";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
@@ -70,21 +69,12 @@ export default function CultureArticleView({
           </header>
 
           <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-            <figure>
-              <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
-                <Image
-                  src={article.hero.src}
-                  alt={article.hero.alt}
-                  fill
-                  priority
-                  sizes="(max-width: 1280px) 100vw, 1280px"
-                  className="object-cover"
-                />
-              </div>
-              <figcaption>
-                <PhotoCredit credit={article.hero.credit} />
-              </figcaption>
-            </figure>
+            <ArticleFullPhoto
+              src={article.hero.src}
+              alt={article.hero.alt}
+              credit={article.hero.credit}
+              priority
+            />
 
             <section className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900">Storia</h2>
@@ -101,20 +91,13 @@ export default function CultureArticleView({
             <section className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900">Tradizioni</h2>
               {article.traditionPhoto ? (
-                <figure className="mt-6">
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
-                    <Image
-                      src={article.traditionPhoto.src}
-                      alt={article.traditionPhoto.alt}
-                      fill
-                      sizes="(max-width: 1280px) 100vw, 1280px"
-                      className="object-cover object-top"
-                    />
-                  </div>
-                  <figcaption>
-                    <PhotoCredit credit={article.traditionPhoto.credit} />
-                  </figcaption>
-                </figure>
+                <div className="mt-6">
+                  <ArticleFullPhoto
+                    src={article.traditionPhoto.src}
+                    alt={article.traditionPhoto.alt}
+                    credit={article.traditionPhoto.credit}
+                  />
+                </div>
               ) : null}
               <div className="mt-6 space-y-8">
                 {article.traditions.map((item) => (
@@ -135,20 +118,13 @@ export default function CultureArticleView({
                 Cosa visitare
               </h2>
               {article.visitPhoto ? (
-                <figure className="mt-6">
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 sm:aspect-[21/9]">
-                    <Image
-                      src={article.visitPhoto.src}
-                      alt={article.visitPhoto.alt}
-                      fill
-                      sizes="(max-width: 1280px) 100vw, 1280px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <figcaption>
-                    <PhotoCredit credit={article.visitPhoto.credit} />
-                  </figcaption>
-                </figure>
+                <div className="mt-6">
+                  <ArticleFullPhoto
+                    src={article.visitPhoto.src}
+                    alt={article.visitPhoto.alt}
+                    credit={article.visitPhoto.credit}
+                  />
+                </div>
               ) : null}
               <div className="mt-8 space-y-8">
                 {article.visit.map((place) => (
