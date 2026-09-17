@@ -8,7 +8,7 @@ export default async function ImportLogsPage() {
   const { data, error } = await supabase
     .from("import_runs")
     .select(
-      "id, batch_id, source, started_at, completed_at, status, events_found, events_created, duplicates, skipped, errors, duration_ms, error_message, http_status, last_error_code, triggered_by",
+      "id, batch_id, source, started_at, completed_at, status, events_found, events_created, duplicates, skipped, errors, candidates_available, candidates_attempted, limit_skipped, duration_ms, error_message, http_status, last_error_code, triggered_by",
     )
     .order("started_at", { ascending: false })
     .limit(140);

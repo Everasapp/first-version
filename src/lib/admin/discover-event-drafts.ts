@@ -10,6 +10,7 @@ import {
   classifyImportError,
   finishImportRun,
   startImportRun,
+  type ClassifiedError,
   type ImportRunStatus,
   type ImportTriggeredBy,
 } from "@/src/lib/cron/import-runs";
@@ -422,11 +423,38 @@ export type SourceRunResult = {
   duplicates: number;
   skipped: number;
   errors: number;
+  candidatesAvailable: number;
+  candidatesAttempted: number;
+  limitSkipped: number;
   durationMs: number;
   retryCount: number;
   errorMessage: string | null;
   httpStatus: number | null;
   lastErrorCode: string | null;
+};
+
+type ImportedEventRow = {
+  id: string;
+  slug: string;
+  title: string;
+  municipality: string;
+  start_at: string;
+  source_url: string;
+};
+
+type SourceQueue = {
+  source: { url: string; label: string };
+  runId: string | null;
+  startedAt: Date;
+  retryCount: number;
+  candidates: ListingCandidate[];
+  cursor: number;
+  imported: ImportedEventRow[];
+  skipped: Array<{ title: string; url: string; reason: string }>;
+  errors: Array<{ title: string; url: string; error: string }>;
+  duplicates: number;
+  listingFailed: boolean;
+  listingError: ClassifiedError | null;
 };
 
 function isRetryableSourceError(code: string) {
@@ -552,148 +580,21 @@ async function importOneCandidate(
   }
 }
 
-async function importOneSource({
-  supabase,
-  adminUserId,
-  source,
-  existingUrls,
-  existingEvents,
-  remainingLimit,
-  publish,
-  batchId,
-  triggeredBy,
-}: {
-  supabase: SupabaseClient;
-  adminUserId: string;
-  source: { url: string; label: string };
-  existingUrls: Set<string>;
-  existingEvents: ExistingEventRow[];
-  remainingLimit: number;
-  publish: boolean;
-  batchId: string;
-  triggeredBy: ImportTriggeredBy;
-}): Promise<{
-  metrics: SourceRunResult;
-  imported: Array<{
-    id: string;
-    slug: string;
-    title: string;
-    municipality: string;
-    start_at: string;
-    source_url: string;
-  }>;
-  skipped: Array<{ title: string; url: string; reason: string }>;
-  errors: Array<{ title: string; url: string; error: string }>;
+async function fetchListingCandidatesWithRetry(
+  source: { url: string; label: string },
+  existingUrls: Set<string>,
+): Promise<{
+  candidates: ListingCandidate[];
+  retryCount: number;
+  error: ClassifiedError | null;
 }> {
-  const startedAt = new Date();
-  const runId = await startImportRun({
-    supabase,
-    batchId,
-    source: source.label,
-    triggeredBy,
-    startedAt,
-  });
-
   let retryCount = 0;
   let lastClassified = classifyImportError("listing non disponibile");
 
   for (let attempt = 0; attempt <= MAX_SOURCE_RETRIES; attempt += 1) {
     try {
       const candidates = await fetchListingCandidates(source, existingUrls);
-      const batch = candidates.slice(0, Math.max(0, remainingLimit));
-      const imported: Array<{
-        id: string;
-        slug: string;
-        title: string;
-        municipality: string;
-        start_at: string;
-        source_url: string;
-      }> = [];
-      const skipped: Array<{ title: string; url: string; reason: string }> = [];
-      const errors: Array<{ title: string; url: string; error: string }> = [];
-      let duplicates = 0;
-
-      for (const candidate of batch) {
-        const outcome = await importOneCandidate(
-          supabase,
-          adminUserId,
-          candidate,
-          existingEvents,
-          publish,
-        );
-        if (outcome.kind === "created") {
-          imported.push(outcome.row);
-          existingUrls.add(normalizeSourceUrl(outcome.row.source_url));
-          existingEvents.push({
-            title: outcome.row.title,
-            municipality: outcome.row.municipality,
-            start_at: outcome.row.start_at,
-            end_at: outcome.row.end_at,
-          });
-        } else if (outcome.kind === "duplicate") {
-          duplicates += 1;
-          skipped.push({
-            title: candidate.title,
-            url: candidate.url,
-            reason: "già presente su Everas",
-          });
-        } else if (outcome.kind === "skipped") {
-          skipped.push({
-            title: candidate.title,
-            url: candidate.url,
-            reason: outcome.reason,
-          });
-        } else {
-          errors.push({
-            title: candidate.title,
-            url: candidate.url,
-            error: outcome.error,
-          });
-        }
-        await sleep(250);
-      }
-
-      const status: ImportRunStatus =
-        imported.length > 0 && errors.length > 0 ? "partial" : "success";
-      const finishedAt = new Date();
-      await finishImportRun({
-        supabase,
-        runId,
-        status,
-        startedAt,
-        eventsFound: candidates.length,
-        eventsParsed: batch.length,
-        eventsCreated: imported.length,
-        duplicates,
-        skipped: skipped.length - duplicates,
-        errors: errors.length,
-        retryCount,
-        errorMessage:
-          errors[0]?.error || (status === "partial" ? "errori su alcuni eventi" : null),
-        httpStatus: null,
-        lastErrorCode: errors.length ? "event_import" : null,
-      });
-
-      return {
-        metrics: {
-          source: source.label,
-          status,
-          eventsFound: candidates.length,
-          eventsParsed: batch.length,
-          eventsCreated: imported.length,
-          duplicates,
-          skipped: skipped.length - duplicates,
-          errors: errors.length,
-          durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
-          retryCount,
-          errorMessage: errors[0]?.error || null,
-          httpStatus: null,
-          lastErrorCode: errors.length ? "event_import" : null,
-        },
-        imported,
-        skipped,
-        errors,
-      };
+      return { candidates, retryCount, error: null };
     } catch (error) {
       lastClassified = classifyImportError(error);
       if (
@@ -704,65 +605,37 @@ async function importOneSource({
         await sleep(SOURCE_RETRY_BACKOFF_MS[attempt]);
         continue;
       }
-
-      const finishedAt = new Date();
-      await finishImportRun({
-        supabase,
-        runId,
-        status: "error",
-        startedAt,
-        retryCount,
-        errors: 1,
-        errorMessage: lastClassified.errorMessage,
-        httpStatus: lastClassified.httpStatus,
-        lastErrorCode: lastClassified.lastErrorCode,
-      });
-
-      return {
-        metrics: {
-          source: source.label,
-          status: "error",
-          eventsFound: 0,
-          eventsParsed: 0,
-          eventsCreated: 0,
-          duplicates: 0,
-          skipped: 0,
-          errors: 1,
-          durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
-          retryCount,
-          errorMessage: lastClassified.errorMessage,
-          httpStatus: lastClassified.httpStatus,
-          lastErrorCode: lastClassified.lastErrorCode,
-        },
-        imported: [],
-        skipped: [],
-        errors: [
-          {
-            title: source.label,
-            url: source.url,
-            error: lastClassified.errorMessage,
-          },
-        ],
-      };
+      return { candidates: [], retryCount, error: lastClassified };
     }
   }
 
-  const finishedAt = new Date();
-  await finishImportRun({
-    supabase,
-    runId,
-    status: "error",
-    startedAt,
-    retryCount: MAX_SOURCE_RETRIES,
-    errors: 1,
-    errorMessage: lastClassified.errorMessage,
-    httpStatus: lastClassified.httpStatus,
-    lastErrorCode: lastClassified.lastErrorCode,
-  });
+  return { candidates: [], retryCount: MAX_SOURCE_RETRIES, error: lastClassified };
+}
 
-  return {
-    metrics: {
-      source: source.label,
+function buildRoundRobinQueue(queues: SourceQueue[], limit: number) {
+  const order: Array<{ queue: SourceQueue; candidate: ListingCandidate }> = [];
+  const cursors = queues.map(() => 0);
+  const maxRounds = Math.max(0, ...queues.map((q) => q.candidates.length));
+
+  for (let round = 0; round < maxRounds; round += 1) {
+    for (let i = 0; i < queues.length; i += 1) {
+      if (order.length >= limit) return order;
+      const queue = queues[i];
+      if (queue.listingFailed) continue;
+      if (cursors[i] >= queue.candidates.length) continue;
+      const candidate = queue.candidates[cursors[i]];
+      cursors[i] += 1;
+      order.push({ queue, candidate });
+    }
+  }
+
+  return order;
+}
+
+function finalizeSourceQueue(queue: SourceQueue): SourceRunResult {
+  if (queue.listingFailed && queue.listingError) {
+    return {
+      source: queue.source.label,
       status: "error",
       eventsFound: 0,
       eventsParsed: 0,
@@ -770,21 +643,45 @@ async function importOneSource({
       duplicates: 0,
       skipped: 0,
       errors: 1,
-      durationMs: Math.max(0, finishedAt.getTime() - startedAt.getTime()),
-      retryCount: MAX_SOURCE_RETRIES,
-      errorMessage: lastClassified.errorMessage,
-      httpStatus: lastClassified.httpStatus,
-      lastErrorCode: lastClassified.lastErrorCode,
-    },
-    imported: [],
-    skipped: [],
-    errors: [
-      {
-        title: source.label,
-        url: source.url,
-        error: lastClassified.errorMessage,
-      },
-    ],
+      candidatesAvailable: 0,
+      candidatesAttempted: 0,
+      limitSkipped: 0,
+      durationMs: Math.max(0, Date.now() - queue.startedAt.getTime()),
+      retryCount: queue.retryCount,
+      errorMessage: queue.listingError.errorMessage,
+      httpStatus: queue.listingError.httpStatus,
+      lastErrorCode: queue.listingError.lastErrorCode,
+    };
+  }
+
+  const candidatesAvailable = queue.candidates.length;
+  const candidatesAttempted = queue.cursor;
+  const limitSkipped = Math.max(0, candidatesAvailable - candidatesAttempted);
+  const contentSkipped = queue.skipped.length - queue.duplicates;
+  const status: ImportRunStatus =
+    queue.imported.length > 0 && queue.errors.length > 0
+      ? "partial"
+      : "success";
+
+  return {
+    source: queue.source.label,
+    status,
+    eventsFound: candidatesAvailable,
+    eventsParsed: candidatesAttempted,
+    eventsCreated: queue.imported.length,
+    duplicates: queue.duplicates,
+    skipped: contentSkipped,
+    errors: queue.errors.length,
+    candidatesAvailable,
+    candidatesAttempted,
+    limitSkipped,
+    durationMs: Math.max(0, Date.now() - queue.startedAt.getTime()),
+    retryCount: queue.retryCount,
+    errorMessage:
+      queue.errors[0]?.error ||
+      (status === "partial" ? "errori su alcuni eventi" : null),
+    httpStatus: null,
+    lastErrorCode: queue.errors.length ? "event_import" : null,
   };
 }
 
@@ -813,74 +710,210 @@ export async function discoverAndImportEventDrafts({
   const existingUrls = await loadExistingSourceUrls(supabase);
   const existingEvents = await loadExistingUpcomingEvents(supabase);
   const resolvedBatchId = batchId || crypto.randomUUID();
+  const globalLimit = Math.max(0, limit);
 
-  const imported: Array<{
-    id: string;
-    slug: string;
-    title: string;
-    municipality: string;
-    start_at: string;
-    source_url: string;
-  }> = [];
-  const skipped: Array<{ title: string; url: string; reason: string }> = [];
-  const errors: Array<{ title: string; url: string; error: string }> = [];
-  const sourceResults: SourceRunResult[] = [];
-  let remainingLimit = Math.max(0, limit);
-  let discoveredNew = 0;
-  let processed = 0;
+  const queues: SourceQueue[] = [];
 
+  // Phase 1: fetch each listing in isolation (retry preserved).
   for (const source of sources) {
+    const startedAt = new Date();
+    const runId = await startImportRun({
+      supabase,
+      batchId: resolvedBatchId,
+      source: source.label,
+      triggeredBy,
+      startedAt,
+    });
+
     try {
-      const result = await importOneSource({
-        supabase,
-        adminUserId,
-        source,
-        existingUrls,
-        existingEvents,
-        remainingLimit,
-        publish,
-        batchId: resolvedBatchId,
-        triggeredBy,
-      });
-      sourceResults.push(result.metrics);
-      discoveredNew += result.metrics.eventsFound;
-      processed += result.metrics.eventsParsed;
-      remainingLimit = Math.max(0, remainingLimit - result.metrics.eventsParsed);
-      imported.push(...result.imported);
-      skipped.push(...result.skipped);
-      errors.push(...result.errors);
+      const listing = await fetchListingCandidatesWithRetry(source, existingUrls);
+      if (listing.error) {
+        const queue: SourceQueue = {
+          source,
+          runId,
+          startedAt,
+          retryCount: listing.retryCount,
+          candidates: [],
+          cursor: 0,
+          imported: [],
+          skipped: [],
+          errors: [
+            {
+              title: source.label,
+              url: source.url,
+              error: listing.error.errorMessage,
+            },
+          ],
+          duplicates: 0,
+          listingFailed: true,
+          listingError: listing.error,
+        };
+        queues.push(queue);
+        const metrics = finalizeSourceQueue(queue);
+        await finishImportRun({
+          supabase,
+          runId,
+          status: "error",
+          startedAt,
+          retryCount: listing.retryCount,
+          errors: 1,
+          errorMessage: listing.error.errorMessage,
+          httpStatus: listing.error.httpStatus,
+          lastErrorCode: listing.error.lastErrorCode,
+        });
+      } else {
+        queues.push({
+          source,
+          runId,
+          startedAt,
+          retryCount: listing.retryCount,
+          candidates: listing.candidates,
+          cursor: 0,
+          imported: [],
+          skipped: [],
+          errors: [],
+          duplicates: 0,
+          listingFailed: false,
+          listingError: null,
+        });
+      }
     } catch (error) {
       const classified = classifyImportError(error);
-      sourceResults.push({
-        source: source.label,
-        status: "error",
-        eventsFound: 0,
-        eventsParsed: 0,
-        eventsCreated: 0,
-        duplicates: 0,
-        skipped: 0,
-        errors: 1,
-        durationMs: 0,
+      const queue: SourceQueue = {
+        source,
+        runId,
+        startedAt,
         retryCount: 0,
+        candidates: [],
+        cursor: 0,
+        imported: [],
+        skipped: [],
+        errors: [
+          {
+            title: source.label,
+            url: source.url,
+            error: classified.errorMessage,
+          },
+        ],
+        duplicates: 0,
+        listingFailed: true,
+        listingError: classified,
+      };
+      queues.push(queue);
+      await finishImportRun({
+        supabase,
+        runId,
+        status: "error",
+        startedAt,
+        errors: 1,
         errorMessage: classified.errorMessage,
         httpStatus: classified.httpStatus,
         lastErrorCode: classified.lastErrorCode,
       });
-      errors.push({
-        title: source.label,
-        url: source.url,
-        error: classified.errorMessage,
+    }
+
+    await sleep(300);
+  }
+
+  // Phase 2: round-robin attempts across sources until global limit.
+  const plan = buildRoundRobinQueue(
+    queues.filter((queue) => !queue.listingFailed),
+    globalLimit,
+  );
+
+  for (const step of plan) {
+    const { queue, candidate } = step;
+    const outcome = await importOneCandidate(
+      supabase,
+      adminUserId,
+      candidate,
+      existingEvents,
+      publish,
+    );
+    queue.cursor += 1;
+
+    if (outcome.kind === "created") {
+      queue.imported.push(outcome.row);
+      existingUrls.add(normalizeSourceUrl(outcome.row.source_url));
+      existingEvents.push({
+        title: outcome.row.title,
+        municipality: outcome.row.municipality,
+        start_at: outcome.row.start_at,
+        end_at: outcome.row.end_at,
+      });
+    } else if (outcome.kind === "duplicate") {
+      queue.duplicates += 1;
+      queue.skipped.push({
+        title: candidate.title,
+        url: candidate.url,
+        reason: "già presente su Everas",
+      });
+    } else if (outcome.kind === "skipped") {
+      queue.skipped.push({
+        title: candidate.title,
+        url: candidate.url,
+        reason: outcome.reason,
+      });
+    } else {
+      queue.errors.push({
+        title: candidate.title,
+        url: candidate.url,
+        error: outcome.error,
       });
     }
-    await sleep(300);
+
+    await sleep(250);
+  }
+
+  // Phase 3: finish successful listing runs with allocation metrics.
+  const imported: ImportedEventRow[] = [];
+  const skipped: Array<{ title: string; url: string; reason: string }> = [];
+  const errors: Array<{ title: string; url: string; error: string }> = [];
+  const sourceResults: SourceRunResult[] = [];
+
+  for (const queue of queues) {
+    const metrics = finalizeSourceQueue(queue);
+    sourceResults.push(metrics);
+
+    if (!queue.listingFailed) {
+      await finishImportRun({
+        supabase,
+        runId: queue.runId,
+        status: metrics.status,
+        startedAt: queue.startedAt,
+        eventsFound: metrics.eventsFound,
+        eventsParsed: metrics.eventsParsed,
+        eventsCreated: metrics.eventsCreated,
+        duplicates: metrics.duplicates,
+        skipped: metrics.skipped,
+        errors: metrics.errors,
+        retryCount: metrics.retryCount,
+        candidatesAvailable: metrics.candidatesAvailable,
+        candidatesAttempted: metrics.candidatesAttempted,
+        limitSkipped: metrics.limitSkipped,
+        errorMessage: metrics.errorMessage,
+        httpStatus: metrics.httpStatus,
+        lastErrorCode: metrics.lastErrorCode,
+      });
+    }
+
+    imported.push(...queue.imported);
+    skipped.push(...queue.skipped);
+    errors.push(...queue.errors);
   }
 
   return {
     batchId: resolvedBatchId,
     triggeredBy,
     sourceResults,
-    discoveredNew,
-    processed,
+    discoveredNew: sourceResults.reduce(
+      (sum, row) => sum + row.candidatesAvailable,
+      0,
+    ),
+    processed: sourceResults.reduce(
+      (sum, row) => sum + row.candidatesAttempted,
+      0,
+    ),
     importedCount: imported.length,
     skippedCount: skipped.length,
     errorCount: errors.length,
@@ -889,3 +922,4 @@ export async function discoverAndImportEventDrafts({
     errors: errors.slice(0, 20),
   };
 }
+

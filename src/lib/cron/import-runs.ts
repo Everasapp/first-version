@@ -75,6 +75,9 @@ export async function finishImportRun({
   skipped = 0,
   errors = 0,
   retryCount = 0,
+  candidatesAvailable = 0,
+  candidatesAttempted = 0,
+  limitSkipped = 0,
   errorMessage = null,
   httpStatus = null,
   lastErrorCode = null,
@@ -90,6 +93,9 @@ export async function finishImportRun({
   skipped?: number;
   errors?: number;
   retryCount?: number;
+  candidatesAvailable?: number;
+  candidatesAttempted?: number;
+  limitSkipped?: number;
   errorMessage?: string | null;
   httpStatus?: number | null;
   lastErrorCode?: string | null;
@@ -109,6 +115,9 @@ export async function finishImportRun({
       skipped,
       errors,
       retry_count: retryCount,
+      candidates_available: candidatesAvailable,
+      candidates_attempted: candidatesAttempted,
+      limit_skipped: limitSkipped,
       error_message: errorMessage,
       http_status: httpStatus,
       last_error_code: lastErrorCode,

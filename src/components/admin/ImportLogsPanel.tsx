@@ -16,6 +16,9 @@ export type ImportRunRow = {
   duplicates: number;
   skipped: number;
   errors: number;
+  candidates_available: number | null;
+  candidates_attempted: number | null;
+  limit_skipped: number | null;
   duration_ms: number | null;
   error_message: string | null;
   http_status: number | null;
@@ -156,8 +159,11 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
                       <th className="px-4 py-2">Fonte</th>
                       <th className="px-4 py-2">Esito</th>
                       <th className="px-4 py-2">Trovati</th>
+                      <th className="px-4 py-2">Tentati</th>
                       <th className="px-4 py-2">Pubblicati</th>
                       <th className="px-4 py-2">Duplicati</th>
+                      <th className="px-4 py-2">Skip</th>
+                      <th className="px-4 py-2">Limit skip</th>
                       <th className="px-4 py-2">Errori</th>
                       <th className="px-4 py-2">Durata</th>
                     </tr>
@@ -182,8 +188,15 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
                           </span>
                         </td>
                         <td className="px-4 py-2">{row.events_found}</td>
+                        <td className="px-4 py-2">
+                          {row.candidates_attempted ?? "—"}
+                        </td>
                         <td className="px-4 py-2">{row.events_created}</td>
                         <td className="px-4 py-2">{row.duplicates}</td>
+                        <td className="px-4 py-2">{row.skipped}</td>
+                        <td className="px-4 py-2">
+                          {row.limit_skipped ?? "—"}
+                        </td>
                         <td className="px-4 py-2">{row.errors}</td>
                         <td className="px-4 py-2 text-slate-600">
                           {row.duration_ms != null
