@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoaderCircle, Send } from "lucide-react";
 
-import { createClient } from "@/src/lib/supabase/client";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
+import { stripDraftSlugSuffix } from "@/src/lib/slug";
+import { createClient } from "@/src/lib/supabase/client";
 
 type PublishEventButtonProps = {
   eventId: string;
@@ -30,9 +31,13 @@ export default function PublishEventButton({
     setErrorMessage("");
 
     const supabase = createClient();
+    const publicSlug = stripDraftSlugSuffix(eventSlug);
     const { error } = await supabase
       .from("events")
-      .update({ status: "published" })
+      .update({
+        status: "published",
+        ...(publicSlug !== eventSlug ? { slug: publicSlug } : {}),
+      })
       .eq("id", eventId);
 
     if (error) {
@@ -46,7 +51,7 @@ export default function PublishEventButton({
       eventId,
     });
 
-    router.push(`/eventi/${eventSlug}`);
+    router.push(`/eventi/${publicSlug}`);
     router.refresh();
   }
 

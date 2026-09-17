@@ -95,6 +95,16 @@ const nextConfig: NextConfig = {
         destination: "/eventi-sardegna/2026",
         permanent: true,
       },
+      {
+        source: "/eventi/:slug(.*)-draft2",
+        destination: "/eventi/:slug",
+        permanent: true,
+      },
+      {
+        source: "/eventi/:slug(.*)-draft",
+        destination: "/eventi/:slug",
+        permanent: true,
+      },
     ];
   },
 };

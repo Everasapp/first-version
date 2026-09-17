@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { stripDraftSlugSuffix } from "@/src/lib/slug";
+
 /** Suffisso da import/createSlug: Date.now().toString(36). */
 const IMPORT_SUFFIX = /-[a-z0-9]{6,12}$/i;
 
@@ -30,6 +32,17 @@ export async function findReplacementEventSlug(
   const alias = EVENT_SLUG_ALIASES[requestedSlug];
   if (alias && alias !== requestedSlug) {
     return alias;
+  }
+
+  const withoutDraft = stripDraftSlugSuffix(requestedSlug);
+  if (withoutDraft !== requestedSlug && withoutDraft.length >= 8) {
+    const { data: exact } = await supabase
+      .from("events")
+      .select("slug")
+      .eq("status", "published")
+      .eq("slug", withoutDraft)
+      .maybeSingle();
+    if (typeof exact?.slug === "string") return exact.slug;
   }
 
   const stem = eventSlugStem(requestedSlug);

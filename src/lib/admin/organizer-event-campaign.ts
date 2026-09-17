@@ -18,11 +18,11 @@ const MISCLASSIFIED_COMUNE_NAMES = new Set(["Seneghe", "Villanovaforru"]);
 const COMUNE_EVENT_OVERRIDES: Record<string, { slug: string; title: string }> =
   {
     "Comune di Sassari": {
-      slug: "festival-city-city-sassari-2026-draft",
+      slug: "festival-city-city-sassari-2026",
       title: "Festival City&City 2026",
     },
     "Comune di Nuoro": {
-      slug: "notte-bianca-nuoro-2026-draft",
+      slug: "notte-bianca-nuoro-2026",
       title: "Notte Bianca Nuoro 2026",
     },
   };

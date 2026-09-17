@@ -34,6 +34,7 @@ import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { getEventImageStoragePath } from "@/src/lib/images/storagePath";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
+import { stripDraftSlugSuffix } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 import {
   isValidYoutubeUrl,
@@ -313,6 +314,7 @@ export default function EditEventForm({
     }
 
     const shouldPublish = Boolean(options?.publish);
+    const publicSlug = stripDraftSlugSuffix(event.slug);
 
     setIsSaving(true);
     setSaveError("");
@@ -381,6 +383,7 @@ export default function EditEventForm({
             ? organizerDirectoryId
             : null,
           updated_at: new Date().toISOString(),
+          ...(publicSlug !== event.slug ? { slug: publicSlug } : {}),
           ...(shouldPublish ? { status: "published" as const } : {}),
         })
         .eq("id", event.id)
@@ -436,7 +439,7 @@ export default function EditEventForm({
           type: "event_published",
           eventId: event.id,
         });
-        router.push(`/eventi/${event.slug}`);
+        router.push(`/eventi/${publicSlug}`);
       } else {
         router.push(isDraft ? "/dashboard?filtro=bozze" : "/dashboard");
       }
