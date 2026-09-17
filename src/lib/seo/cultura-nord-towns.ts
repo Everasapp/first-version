@@ -48,7 +48,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       },
       {
         title: "Cavalcata Sarda",
-        body: "A metà maggio Sassari tiene la Cavalcata: gruppi in costume da tutta l’isola, a piedi e a cavallo, poi le pariglie all’ippodromo Pinna. Nata a fine Ottocento per una visita reale, è diventata la grande festa laica dei vestiti. Date sul sito del Comune: ogni anno il programma si allarga ai giorni prima della domenica.",
+        body: "A metà maggio Sassari tiene la Cavalcata: gruppi in costume da tutta l’isola, a piedi e a cavallo, poi le pariglie all’ippodromo Pinna. Nata a fine Ottocento per una visita reale, è diventata la grande festa laica dei vestiti. Date sul sito del Comune: ogni anno il programma si allarga ai giorni prima della domenica. Storia e significato stanno nell’articolo Cultura Sarda.",
       },
     ],
     visit: [

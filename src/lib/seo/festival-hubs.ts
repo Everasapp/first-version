@@ -187,7 +187,7 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     paragraphs: [
       "La Cavalcata Sarda è la grande sfilata di Sassari: gruppi in costume da tutta l’isola, cavalli e musiche tradizionali lungo il centro. Chi cerca “Cavalcata Sarda 2026” vuole in pratica il giorno esatto (di solito una domenica di maggio), l’ora di partenza e dove stare senza perdere il corteo.",
       "Non è una sagra di paese: è un appuntamento identitario, con migliaia di persone in piazza e transenne in corso. Conviene arrivare presto, lasciare l’auto fuori dal centro e seguire il percorso a piedi. Nel pomeriggio e in serata ci sono spesso spettacoli e concerti collegati.",
-      "Su EVERAS trovi la scheda della sfilata e gli eventi intorno quando sono pubblicati. Per la viabilità resta decisivo il Comune di Sassari. Se la data dell’anno in corso non è ancora in calendario, torna tra qualche giorno: la aggiorniamo appena arriva la conferma.",
+      "Su EVERAS trovi la scheda della sfilata e gli eventi intorno quando sono pubblicati. Per la viabilità resta decisivo il Comune di Sassari. Se la data dell’anno in corso non è ancora in calendario, torna tra qualche giorno: la aggiorniamo appena arriva la conferma. Storia, costumi e pariglie sono anche nell’articolo Cultura Sarda sulla Cavalcata.",
     ],
     faqs: [
       {

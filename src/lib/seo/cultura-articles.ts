@@ -35,7 +35,7 @@ export const CULTURA_ARTICLES_HUB = {
   description:
     "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei scientifici - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste identitarie - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -444,6 +444,111 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       {
         href: "/cultura-sarda/centro-sardegna",
         label: "Guide Centro Sardegna",
+      },
+    ],
+    publishedAt: "2026-09-17",
+  },
+  {
+    slug: "cavalcata-sarda-sassari",
+    path: "/cultura/cavalcata-sarda-sassari",
+    title: "Cavalcata Sarda a Sassari: storia, costumi e pariglie",
+    h1: "La Cavalcata Sarda a Sassari",
+    description:
+      "Cavalcata Sarda a Sassari: origini, festa della bellezza, sfilata dei costumi, pariglie all’ippodromo Pinna e differenza con i Candelieri.",
+    intro:
+      "Ogni primavera Sassari diventa il palcoscenico laico dei costumi sardi: gruppi da tutta l’isola sfilano a piedi e a cavallo, poi i cavalieri si esibiscono nelle pariglie. Non è un voto né una processione: è la “festa della bellezza”. Questa guida racconta da dove nasce, cosa si vede e come collegarla al calendario EVERAS.",
+    excerpt:
+      "Storia, abiti e pariglie della grande sfilata laica di Sassari.",
+    hero: {
+      src: "/images/cultura/cavalcata-sarda-hero.webp",
+      alt: "Sfilata della Cavalcata Sarda a Sassari: costumi tradizionali, cavalli e piazza d’Italia",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/cavalcata-sarda-sassari",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cos’è la Cavalcata Sarda",
+        paragraphs: [
+          "La Cavalcata Sarda è la grande rassegna identitaria di Sassari: abiti, gioielli, musiche e danze dei paesi dell’isola in un corteo cittadino. Si distingue da Sant’Efisio a Cagliari e dal Redentore a Nuoro perché non ha carattere religioso o votivo. È una festa civile, spesso chiamata festa della bellezza.",
+          "Il cuore è una domenica di maggio, di solito la penultima. Intorno ci sono mostre, concerti e rassegne di canti e balli, ma il momento che cerca chi arriva da fuori resta la sfilata del mattino e, nel pomeriggio, le pariglie all’ippodromo Pinna.",
+        ],
+      },
+      {
+        title: "Da dove nasce",
+        paragraphs: [
+          "Le cronache cittadine, e lo scrittore Enrico Costa, ricordano cavalcate del Settecento in onore dei regnanti, tra cui un corteo del 1711. Non è ancora la festa annuale di oggi: è un antecedente, la nobiltà sassarese che mostra abiti e ranghi per le vie.",
+          "La forma moderna nasce il 20 aprile 1899, per l’inaugurazione del monumento a Vittorio Emanuele II in piazza d’Italia, alla presenza di Umberto I e della regina Margherita. Si ripete in altre visite reali, tra cui il 1929 e il 1939. Dopo la guerra, nei primi anni Cinquanta, il sindaco Oreste Pieroni la riporta come appuntamento fisso: da allora è il grande maggio di Sassari.",
+          "Nel 2026 si è tenuta la 75ª edizione, domenica 17 maggio. La data dell’anno successivo la pubblica il Comune: non è scolpita nel calendario liturgico, va controllata ogni primavera.",
+        ],
+      },
+      {
+        title: "La sfilata: costumi, gruppi, cavalli",
+        paragraphs: [
+          "La domenica mattina il corteo attraversa il centro per un paio di chilometri. Sfilano migliaia di figuranti in abito del proprio paese, a piedi, a cavallo e sulle traccas, i carri addobbati. I numeri cambiano di edizione in edizione: restano i gruppi da ogni provincia, i ricami, la filigrana, i veli.",
+          "L’abito di Sassari, documentato già nell’Ottocento, è urbano e rosso: gonne ampie, corsetti, tulle, oro, corallo e argento. L’abito maschile unisce velluto, orbace, il ceccio rosso e il cugliettu, la sopravveste di pelle che si vede anche tra alcuni gremi dei Candelieri. Non è un costume da noleggio: famiglie e sarte lo custodiscono.",
+          "Il percorso preciso lo decide il Comune ogni anno. Nel 2026 la partenza era da San Giuseppe verso via Roma e piazza d’Italia, con arrivo in via Manno. Per l’edizione in corso guarda la scheda eventi: viabilità e orari si aggiornano.",
+        ],
+      },
+      {
+        title: "Le pariglie all’ippodromo Pinna",
+        paragraphs: [
+          "Nel pomeriggio la festa si sposta all’ippodromo Pinna. Le pariglie sono prove di equilibrio su cavalli in corsa: coppie o terne di cavalieri, acrobazie, la tradizione equestre dell’interno portata in città. Non è un palio votivo come l’Ardia di Sedilo: è spettacolo di abilità, con biglietto o tribune quando il Comune le prevede.",
+          "I gruppi cambiano di anno in anno. Restano un pezzo della giornata, non un optional: chi vede solo il corteo del mattino perde metà della Cavalcata.",
+        ],
+      },
+      {
+        title: "Cavalcata e Candelieri",
+        paragraphs: [
+          "Sassari ha due volti pubblici. A maggio la Cavalcata è laica, colorata, fatta di paesi ospiti. Il 14 agosto i Candelieri sono il rito dei gremi, voto all’Assunta, Unesco. Stessa città, due calendari, due modi di occupare il corso.",
+          "Se arrivi per i vestiti, è maggio. Se arrivi per i ceri e i tamburi, è agosto. La guida di Sassari e le pagine eventi tengono entrambi.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la pagina Cavalcata Sarda nel calendario per data, sfilata e schede dell’anno in corso. Poi la guida di Sassari e gli eventi in città. I Candelieri hanno una pagina dedicata a parte.",
+          "In Cultura Sarda la Cavalcata sta accanto ai Candelieri della guida paese, alla Collezione Mineralogica e ai personaggi sassaresi: stessa piazza, chiavi diverse.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Quando si svolge la Cavalcata Sarda?",
+        answer:
+          "Di solito la penultima domenica di maggio, a Sassari. Nel 2026 è stata il 17 maggio. La data esatta la pubblica il Comune ogni anno: controlla la scheda su EVERAS.",
+      },
+      {
+        question: "È una festa religiosa?",
+        answer:
+          "No. È la grande festa laica dei costumi sardi. Non ha voto né santo titolare, a differenza di Sant’Efisio, del Redentore e dei Candelieri.",
+      },
+      {
+        question: "Dove si vedono le pariglie?",
+        answer:
+          "All’ippodromo Pinna, nel pomeriggio della stessa domenica della sfilata. Orari e accesso sono sul programma comunale e sulla scheda eventi.",
+      },
+      {
+        question: "Che differenza c’è con i Candelieri?",
+        answer:
+          "La Cavalcata è a maggio, laica, con gruppi da tutta l’isola. I Candelieri sono il 14 agosto, rito dei gremi sassaresi. Due feste, due calendari.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/eventi/sassari", label: "Eventi a Sassari" },
+      {
+        href: "/eventi-sardegna/cavalcata-sarda",
+        label: "Cavalcata Sarda, calendario",
+      },
+      {
+        href: "/eventi-sardegna/candelieri-sassari",
+        label: "Candelieri di Sassari",
       },
     ],
     publishedAt: "2026-09-17",
