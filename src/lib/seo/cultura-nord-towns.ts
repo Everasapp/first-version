@@ -44,7 +44,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     traditions: [
       {
         title: "Faradda di li Candareri",
-        body: "La sera del 14 agosto i gremi scendono i candelieri lignei da piazza Castello a Santa Maria di Betlem, voto all’Assunta. Tamburi, flauti, otto portatori per cero, ballo lungo il corso. Dal 2013 è patrimonio Unesco con la Rete delle grandi macchine a spalla italiane, insieme a Nola, Palmi e Viterbo. Non è una sfilata turistica: è il rito della città. Arriva presto, il centro si chiude.",
+        body: "La sera del 14 agosto i gremi scendono i candelieri lignei da piazza Castello a Santa Maria di Betlem, voto all’Assunta. Tamburi, flauti, otto portatori per cero, ballo lungo il corso. Dal 2013 è patrimonio Unesco con la Rete delle grandi macchine a spalla italiane, insieme a Nola, Palmi e Viterbo. Non è una sfilata turistica: è il rito della città. Arriva presto, il centro si chiude. Storia e significato stanno nell’articolo Cultura Sarda.",
       },
       {
         title: "Cavalcata Sarda",

@@ -57,7 +57,7 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     paragraphs: [
       "I Candelieri di Sassari sono la festa identitaria della città: grandi “candeleri” di legno portati a spalla dai gremi lungo un percorso che attraversa il centro, fino in piazza Duomo. Chi cerca “Candelieri Sassari” vuole in pratica il giorno della Faradda, gli orari del corteo e dove mettersi per vedere i gremi senza perdere i saluti.",
       "La tradizione è legata al voto per la peste e al 14 agosto, vigilia dell’Assunta. Intorno alla discesa ci sono prove, musiche, la vestizione dei candelieri e una folla che occupa Corso Vittorio Emanuele. Non è uno spettacolo da tribuna: è una processione civica. Meglio arrivare presto, lasciare l’auto fuori dal centro e seguire il corteo a piedi.",
-      "Su EVERAS trovi l’appuntamento principale e gli eventi collaterali (concerti, mostre, aperitivi in centro) quando sono pubblicati. La scheda ti dice data, luogo e se l’ingresso è libero. Per il programma minuto per minuto dei gremi, resta utile anche l’ufficio turistico comunale: noi teniamo il calendario pulito, con le date confermate.",
+      "Su EVERAS trovi l’appuntamento principale e gli eventi collaterali (concerti, mostre, aperitivi in centro) quando sono pubblicati. La scheda ti dice data, luogo e se l’ingresso è libero. Per il programma minuto per minuto dei gremi, resta utile anche l’ufficio turistico comunale: noi teniamo il calendario pulito, con le date confermate. Storia, gremi e Unesco sono anche nell’articolo Cultura Sarda sui Candelieri.",
     ],
     faqs: [
       {

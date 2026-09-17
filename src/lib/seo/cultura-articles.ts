@@ -550,6 +550,108 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
         href: "/eventi-sardegna/candelieri-sassari",
         label: "Candelieri di Sassari",
       },
+      {
+        href: "/cultura/candelieri-sassari",
+        label: "I Candelieri, approfondimento",
+      },
+    ],
+    publishedAt: "2026-09-17",
+  },
+  {
+    slug: "candelieri-sassari",
+    path: "/cultura/candelieri-sassari",
+    title: "Candelieri di Sassari: Faradda, gremi e Unesco",
+    h1: "I Candelieri di Sassari",
+    description:
+      "Faradda di li Candareri a Sassari: 14 agosto, voto all’Assunta, gremi, discesa dei candelieri lignei e patrimonio Unesco 2013.",
+    intro:
+      "Ogni 14 agosto Sassari scende i candelieri: colonne di legno a spalla, tamburi, gremi. In sassarese è la Faradda di li Candareri, voto all’Assunta, non una sfilata da tribuna. Questa guida racconta origini, corporazioni, percorso e il riconoscimento Unesco, e dove continuare su EVERAS.",
+    excerpt:
+      "La Faradda del 14 agosto: gremi, ceri lignei e patrimonio Unesco.",
+    hero: {
+      src: "/images/cultura/candelieri-sassari-hero.webp",
+      alt: "Discesa dei Candelieri a Sassari: un cero ligneo portato a spalla dai gremianti lungo il corso",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/candelieri-sassari",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cos’è la Faradda",
+        paragraphs: [
+          "La Discesa dei Candelieri è la festa più identitaria di Sassari. Si tiene il 14 agosto, vigilia dell’Assunta. I gremi - le antiche corporazioni di mestiere - portano a spalla grandi ceri di legno da piazza Castello fino a Santa Maria di Betlem, dove si scioglie il voto.",
+          "Non è la Cavalcata: quella è laica, a maggio, con gruppi da tutta l’isola. I Candelieri sono rito cittadino, religioso e civico insieme. Dal 2013 la Faradda è patrimonio culturale immateriale Unesco, nella rete delle grandi macchine a spalla italiane, con i Gigli di Nola, la Varia di Palmi e la Macchina di Santa Rosa a Viterbo.",
+        ],
+      },
+      {
+        title: "Da dove nasce",
+        paragraphs: [
+          "Le fonti collegano l’offerta dei “candeli” alla Vergine di mezz’agosto già al Duecento, quando Sassari era alleata di Pisa. Un documento del 1531 attesta l’ordine di ingresso in chiesa con i candelieri, portati da otto maestranze. Gli archivi cittadini sono lacunosi: il saccheggio francese del 1527 e i moti del 1780 hanno bruciato molta carta.",
+          "In età moderna il rito si lega al voto per la peste. Lo storico Enrico Costa data l’istituzione in quel senso al 1528; altre memorie cittadine insistono sull’epidemia del 1652. Resta il punto: la Faradda non è folklore da agosto, è un patto con l’Assunta che la città rinnova ogni anno.",
+          "Dalle macchine che portavano cera votiva si è passati alle colonne lignee di oggi: capitello con nastri (li betti), fusto col santo del gremio, base a quattro stanghe per otto portatori. Pesano fino a quattro quintali, alte circa tre metri. Il candeliere dei Sarti è l’unico sormontato da un braciere.",
+        ],
+      },
+      {
+        title: "I gremi e la discesa",
+        paragraphs: [
+          "Oggi scendono tredici gremi. Aprono i più recenti, chiudono i più antichi; in chiesa l’ordine si inverte. Nell’elenco: Braccianti, Autoferrotranvieri, Macellai, Fabbri, Piccapietre, Viandanti, Contadini, Falegnami, Ortolani, Calzolai, Sarti, Muratori, Massai. Sarti e Muratori si alternano: negli anni dispari precedono i Sarti, in quelli pari i Muratori.",
+          "La mattina del 14 si vestono i ceri nelle sedi e in casa dell’obriere. Nel pomeriggio il raduno è in piazza Castello; dopo la messa al Rosario la discesa prende Corso Vittorio Emanuele, piazza Sant’Antonio, corso Vico, fino a Santa Maria di Betlem. La banda apre, i tamburi e i pifferi tengono il passo. Il candeliere “baddarinu” - che balla - è di buon auspicio.",
+          "A metà percorso, a Palazzo di Città, i Massai fanno l’Intregu: scambio di bandiera e gonfalone col sindaco. Rappresentano gli altri gremi e la città agraria. Poi, a voto sciolto, di notte, si risale verso Palazzo Ducale per l’investitura del nuovo obriere. Dal 1979 coordina tutto l’Intergremio Città di Sassari, che ha anche seguito la pratica Unesco.",
+        ],
+      },
+      {
+        title: "Prima del 14 e dopo",
+        paragraphs: [
+          "La festa non sta in una sola sera. Il 5 agosto scendono i Piccoli Candelieri, i ragazzi sotto i tredici anni. Nei giorni intorno ci sono prove, concerti, il Candeliere d’oro e d’argento. Dal 14 al 22 i ceri restano in Santa Maria di Betlem: è l’Ottava. Poi ogni gremio li riporta in cappella.",
+          "Ogni corporazione ha anche la festa del proprio santo, sparsa nell’anno. Se non sei in città il 14, il Museo dei Candelieri accanto a Santa Maria tiene ceri e storia dei gremi. La guida di Sassari ti porta lì a piedi dal corso.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la pagina Candelieri di Sassari nel calendario per la Faradda e gli eventi intorno. Poi la guida della città e, a maggio, l’articolo sulla Cavalcata: due volti della stessa piazza.",
+          "In Cultura Sarda i Candelieri stanno accanto alla Cavalcata, alla Collezione Mineralogica e ai personaggi sassaresi. Stessa città, chiavi diverse.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Quando sono i Candelieri a Sassari?",
+        answer:
+          "La Faradda è il 14 agosto, ogni anno. Concerti, piccoli candelieri e feste dei gremi occupano i giorni e i mesi intorno: guarda il calendario EVERAS.",
+      },
+      {
+        question: "Perché si fa la Faradda?",
+        answer:
+          "È il voto all’Assunta, legato alla liberazione dalla peste e a un’offerta di ceri che le fonti fanno risalire almeno al Cinquecento, con radici più antiche pisane.",
+      },
+      {
+        question: "I Candelieri sono Unesco?",
+        answer:
+          "Sì, dal 2013, nella rete delle feste delle grandi macchine a spalla, insieme a Nola, Palmi e Viterbo.",
+      },
+      {
+        question: "Che differenza c’è con la Cavalcata Sarda?",
+        answer:
+          "La Cavalcata è a maggio, laica, con gruppi da tutta l’isola. I Candelieri sono il 14 agosto, rito dei gremi sassaresi. Due calendari, due significati.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/eventi/sassari", label: "Eventi a Sassari" },
+      {
+        href: "/eventi-sardegna/candelieri-sassari",
+        label: "Candelieri, calendario",
+      },
+      {
+        href: "/cultura/cavalcata-sarda-sassari",
+        label: "La Cavalcata Sarda",
+      },
     ],
     publishedAt: "2026-09-17",
   },
