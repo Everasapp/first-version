@@ -35,7 +35,7 @@ export const CULTURA_ARTICLES_HUB = {
   description:
     "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste identitarie - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -651,6 +651,100 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       {
         href: "/cultura/cavalcata-sarda-sassari",
         label: "La Cavalcata Sarda",
+      },
+    ],
+    publishedAt: "2026-09-17",
+  },
+  {
+    slug: "cultura-sarda-feste-e-tradizioni",
+    path: "/cultura/cultura-sarda-feste-e-tradizioni",
+    title: "Cultura sarda: nuraghi, carnevale, costumi e mestieri",
+    h1: "Cultura sarda: feste, mestieri e identità",
+    description:
+      "Cultura sarda in sintesi: civiltà nuragica, carnevale di Mamoiada e Ottana, Sartiglia, costumi, sughero e filigrana, con guide ed eventi EVERAS.",
+    intro:
+      "La Sardegna non è solo costa. È un’isola che ha tenuto lingua, mestieri e riti mentre il Mediterraneo le passava sopra. Questa guida tiene insieme quattro chiavi - nuraghi, feste, abiti, botteghe - e ti manda alle schede EVERAS dei paesi e del calendario, senza brochure da tour operator.",
+    excerpt:
+      "Nuraghi, maschere, costumi e artigianato: una mappa della cultura sarda su EVERAS.",
+    hero: {
+      src: "/images/cultura/cultura-sarda-tradizioni-hero.webp",
+      alt: "Nuraghe, abito tradizionale e maschere del carnevale sardo in un paesaggio mediterraneo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl:
+          "https://www.everas.it/cultura/cultura-sarda-feste-e-tradizioni",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Un’isola antica, non un set",
+        paragraphs: [
+          "I primi villaggi risalgono al Neolitico. Poi arrivano rotte commerciali, conquistatori, lingue. I sardi restano riconoscibili: non perché l’isola sia rimasta chiusa, ma perché ha metabolizzato i passaggi senza cancellare il resto. Nei paesi trovi reperti, dialetti, toponimi che tengono memoria di chi è sbarcato - e di chi c’era già.",
+          "Il pezzo più visibile di quella antichità sono i nuraghi: torri e complessi della civiltà nuragica, sparsi dall’interno alla piana. Non sono “fortezze da cartolina”: sono il segno di una società isolana che costruiva in pietra secoli prima di Roma. Per vederne uno intero, non un dettaglio da parcheggio, parti da Barumini e dalle guide del Centro e del Sud.",
+        ],
+      },
+      {
+        title: "Feste, maschere, calendario",
+        paragraphs: [
+          "Tutto l’anno i paesi tengono sagre e riti. Non è un folklore unico: ogni comune ha il proprio santo, la propria maschera, il proprio modo di occupare la piazza. Quello che attira di più da fuori, d’inverno, è il Carnevale dell’interno.",
+          "A Mamoiada escono i Mamuthones e gli Issohadores; a Ottana i Boes e i Merdules. Sono maschere di legno, pelle, campanacci: vita, morte, gregge, giudizio. Non sono un carnevale da carro allegorico. A Oristano, a Carnevale, Sa Sartiglia è un’altra cosa ancora: giostra equestre, gremi, stella da infilzare. Tre territori, tre grammatiche. Il calendario Carnevale su EVERAS le tiene insieme; le guide paese spiegano il rito senza ridurlo a foto.",
+          "In altri mesi arrivano Cavalcata e Candelieri a Sassari, Autunno in Barbagia, patronali. La cultura sarda non sta in un weekend: sta in un anno. Apri il calendario e scegli un paese, non un “tour delle tradizioni”.",
+        ],
+      },
+      {
+        title: "Abiti, botteghe, filigrana",
+        paragraphs: [
+          "L’abito tradizionale non è un costume da noleggio. Racconta il paese: taglio, colore, gioiello. Lo vedi in Cavalcata, alle feste patronali, in famiglia. La filigrana sarda - oro, argento, corallo - è mestiere, non souvenir da vetrina. Sughero, ceramica, telaio: restano filiere vive in Gallura, Marmilla, Barbagia, a seconda del materiale.",
+          "A Calangianus il Museo del Sughero e le fabbriche tengono una filiera intera. Altri paesi tengono sarte, coltellinai, tessitrici. Non inventiamo corsi e orari: se vuoi entrare in bottega, parti dalla scheda del comune e chiama. Ogni zona ha regole e feste sue: è questo che rende il calendario sempre diverso, non un format replicato.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Da qui apri Mamoiada, Ottana, Oristano, Barumini. Poi Carnevale, Sartiglia, Cavalcata e Candelieri. Scopri la Sardegna è la directory dei paesi; Cultura Sarda è dove stai ora, per i temi.",
+          "Se cerchi la costa, le guide di Stintino, Palau, Santa Teresa e Villasimius tengono mare e paese insieme. Qui il punto è l’altro lato dell’isola: pietra, maschera, telaio.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Cos’è la cultura sarda, in due parole?",
+        answer:
+          "Una identità di paese: nuraghi, lingue, mestieri e feste locali che restano diverse da un comune all’altro, non un unico folklore da brochure.",
+      },
+      {
+        question: "Quali feste vedere per prima?",
+        answer:
+          "Dipende dal mese. D’inverno Carnevale a Mamoiada e Ottana, Sartiglia a Oristano. A maggio la Cavalcata a Sassari, il 14 agosto i Candelieri. Il calendario EVERAS dà le date dell’anno in corso.",
+      },
+      {
+        question: "Dove vedere un nuraghe?",
+        answer:
+          "Il complesso più noto è Barumini, nel Sud. Molti paesi del Centro e del Nord hanno nuraghi visitabili: apri la guida del comune.",
+      },
+      {
+        question: "L’artigianato si visita ancora?",
+        answer:
+          "Sì, in musei e botteghe di paese - sughero, tessuti, coltelli, filigrana. Orari e accessi cambiano: controlla la scheda del comune prima di partire.",
+      },
+    ],
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/centro-sardegna/mamoiada",
+        label: "Guida Mamoiada",
+      },
+      { href: "/cultura-sarda/centro-sardegna/ottana", label: "Guida Ottana" },
+      {
+        href: "/eventi-sardegna/carnevale-sardegna",
+        label: "Carnevale in Sardegna",
+      },
+      {
+        href: "/cultura-sarda/sud-sardegna/barumini",
+        label: "Guida Barumini",
       },
     ],
     publishedAt: "2026-09-17",
