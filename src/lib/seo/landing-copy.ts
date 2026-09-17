@@ -121,7 +121,7 @@ export function buildDateLandingEditorial(input: {
         intro:
           "Per oggi non ci sono ancora eventi pubblicati su EVERAS. Controlla domani, il weekend o il calendario del mese: aggiorniamo continuamente date e locandine.",
         paragraphs: [
-          "Nel frattempo puoi aprire Eventi in Sardegna domani, Eventi in Sardegna questo weekend o gli eventi gratuiti, e tornare qui quando il programma della giornata si riempie.",
+          "Nel frattempo puoi aprire Eventi Sardegna domani, Eventi Sardegna questo weekend o gli eventi gratuiti, e tornare qui quando il programma della giornata si riempie.",
         ],
       };
     }
@@ -160,7 +160,33 @@ export function buildDateLandingEditorial(input: {
     const free = freeSentence(stats);
     if (free) paragraphs.push(free);
     paragraphs.push(
-      "Se la giornata di oggi è già piena, questa pagina serve a chiudere il programma di domani prima di partire. Quando il fine settimana è vicino, passa anche a Eventi in Sardegna questo weekend per venerdì–domenica.",
+      "Se la giornata di oggi è già piena, questa pagina serve a chiudere il programma di Eventi Sardegna domani prima di partire. Quando il fine settimana è vicino, passa anche a Eventi Sardegna questo weekend.",
+    );
+    return { subtitle, intro, paragraphs };
+  }
+
+  if (dateKey === "domenica") {
+    const subtitle = `Solo ${datePhrase}, non tutto il weekend.`;
+    if (stats.total === 0) {
+      return {
+        subtitle,
+        intro:
+          "Per la prossima domenica non ci sono ancora eventi pubblicati su EVERAS. Controlla Eventi Sardegna questo weekend, oggi o il mese in corso.",
+        paragraphs: [
+          "Questa pagina elenca solo la domenica: sagre, processioni e concerti di quel giorno. Il venerdì e il sabato restano su Eventi Sardegna questo weekend.",
+        ],
+      };
+    }
+
+    const intro = citiesJoined
+      ? `Domenica in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"}${categoriesJoined ? ` tra ${categoriesJoined}` : ""}, con più presenza a ${citiesJoined}.`
+      : `Domenica in Sardegna sono in programma ${stats.total} ${stats.total === 1 ? "appuntamento" : "appuntamenti"}${categoriesJoined ? ` tra ${categoriesJoined}` : ""}. Apri la scheda per comune, orario e ingresso.`;
+
+    const paragraphs: string[] = [];
+    const free = freeSentence(stats);
+    if (free) paragraphs.push(free);
+    paragraphs.push(
+      "È la vista della sola domenica del weekend in corso (o di oggi, se sei già in domenica). Per venerdì e sabato usa Eventi Sardegna questo weekend; per lunedì Eventi Sardegna domani quando cade così.",
     );
     return { subtitle, intro, paragraphs };
   }
@@ -207,7 +233,9 @@ export function buildDateLandingFaqs(
       ? "oggi"
       : dateKey === "domani"
         ? "domani"
-        : "questo weekend";
+        : dateKey === "domenica"
+          ? "domenica"
+          : "questo weekend";
 
   return [
     {
@@ -237,12 +265,15 @@ export function buildDateLandingLinks(
   const month = currentMonthLanding();
   const year = currentYearLanding();
   const dateLinks: LandingLink[] = [
-    { href: "/eventi-oggi", label: "Eventi in Sardegna oggi" },
-    { href: "/eventi-domani", label: "Eventi in Sardegna domani" },
-    { href: "/eventi-weekend", label: "Eventi in Sardegna questo weekend" },
+    { href: "/eventi-oggi", label: "Eventi Sardegna oggi" },
+    { href: "/eventi-domani", label: "Eventi Sardegna domani" },
+    { href: "/eventi-weekend", label: "Eventi Sardegna questo weekend" },
+    { href: "/eventi-domenica", label: "Eventi Sardegna domenica" },
+    { href: "/eventi-sud-sardegna-oggi", label: "Eventi Sud Sardegna oggi" },
   ].filter((link) => {
     if (dateKey === "oggi") return link.href !== "/eventi-oggi";
     if (dateKey === "domani") return link.href !== "/eventi-domani";
+    if (dateKey === "domenica") return link.href !== "/eventi-domenica";
     return link.href !== "/eventi-weekend";
   });
 
@@ -262,7 +293,7 @@ export function buildDateLandingLinks(
     { href: "/eventi-gratuiti", label: "Eventi gratuiti in Sardegna" },
     {
       href: month.path,
-      label: `Eventi in Sardegna a ${month.name.toLocaleLowerCase("it")} ${month.year}`,
+      label: month.title,
     },
     { href: year.path, label: year.title },
     { href: "/eventi-sardegna", label: "Calendario eventi in Sardegna" },

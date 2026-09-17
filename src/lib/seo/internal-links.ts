@@ -30,19 +30,27 @@ export function temporalExploreLinks(excludeHref?: string): LandingLink[] {
     [
       {
         href: "/eventi-oggi",
-        label: "Eventi in Sardegna oggi",
+        label: "Eventi Sardegna oggi",
       },
       {
         href: "/eventi-domani",
-        label: "Eventi in Sardegna domani",
+        label: "Eventi Sardegna domani",
       },
       {
         href: "/eventi-weekend",
-        label: "Eventi in Sardegna questo weekend",
+        label: "Eventi Sardegna questo weekend",
+      },
+      {
+        href: "/eventi-domenica",
+        label: "Eventi Sardegna domenica",
+      },
+      {
+        href: "/eventi-sud-sardegna-oggi",
+        label: "Eventi Sud Sardegna oggi",
       },
       {
         href: month.path,
-        label: `Eventi in Sardegna a ${month.name.toLocaleLowerCase("it")} ${month.year}`,
+        label: month.title,
       },
       {
         href: year.path,

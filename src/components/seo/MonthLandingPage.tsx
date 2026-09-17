@@ -135,8 +135,8 @@ export default async function MonthLandingPage({
       relatedLinks={dedupeLinks([
         ...coreDateLinks(month.path),
         { href: year.path, label: year.title },
-        { href: prev.path, label: `Eventi ${prev.name} ${prev.year}` },
-        { href: next.path, label: `Eventi ${next.name} ${next.year}` },
+        { href: prev.path, label: prev.title },
+        { href: next.path, label: next.title },
         ...sagreExploreLinks(),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),

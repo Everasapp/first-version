@@ -18,7 +18,9 @@ export function getPrimaryNavLinks(from = new Date()): PrimaryNavLink[] {
     { href: "/cultura-sarda", label: "Scopri la Sardegna" },
     { href: "/cultura", label: "Cultura Sarda" },
     { href: "/eventi-oggi", label: "Eventi oggi" },
+    { href: "/eventi-domani", label: "Domani" },
     { href: "/eventi-weekend", label: "Weekend" },
+    { href: "/eventi-domenica", label: "Domenica" },
   ];
 
   if (currentMonth) {

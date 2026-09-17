@@ -33,9 +33,9 @@ export const CULTURA_ARTICLES_HUB = {
   title: "Cultura Sarda: storie, personaggi e territorio",
   h1: "Cultura Sarda",
   description:
-    "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa e legami con guide paese ed eventi EVERAS.",
+    "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei scientifici - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -341,6 +341,112 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       },
     ],
     publishedAt: "2026-08-22",
+  },
+  {
+    slug: "collezione-mineralogica-sassari",
+    path: "/cultura/collezione-mineralogica-sassari",
+    title:
+      "Collezione Mineralogica Sassari: minerali Uniss e Geomuseo Monte Arci",
+    h1: "La Collezione Mineralogica di Sassari",
+    description:
+      "Collezione Mineralogica dell’Università di Sassari: minerali, rocce e fossili sardi, visita su prenotazione, e il Geomuseo Monte Arci a Masullas.",
+    intro:
+      "All’Università di Sassari, nel Dipartimento di Agraria, è conservata una collezione di minerali, rocce, fossili e suoli che racconta la geologia dell’isola. Non è un museo da passaggio casuale: si visita su prenotazione. Questa guida spiega cosa contiene, da dove nasce e come collegarla al Geomuseo Monte Arci di Masullas, nell’Oristanese.",
+    excerpt:
+      "Minerali Uniss a Sassari e Geomuseo Monte Arci a Masullas: due chiavi sulla geologia sarda.",
+    hero: {
+      src: "/images/cultura/collezione-mineralogica-hero.webp",
+      alt: "Vetrine di una collezione mineralogica con cristalli, ossidiana e una carta geologica della Sardegna",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl:
+          "https://www.everas.it/cultura/collezione-mineralogica-sassari",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cos’è e dove si trova",
+        paragraphs: [
+          "La Collezione Mineralogica appartiene all’Università degli Studi di Sassari e ha sede nel Dipartimento di Agraria, in via Enrico De Nicola 1. È anche ricordata come museo geo-mineralogico dedicato ai professori Aurelio Serra e Antonio Pietracaprina, che ne hanno curato lo sviluppo nel Novecento.",
+          "Raccoglie circa 1.000 pezzi mineralogici, 300 geologici e 200 paleontologici, più profili pedologici dei suoli sardi. Accanto ai campioni ci sono strumenti scientifici, una raccolta libraria e carte geologiche. La pagina ufficiale è sul sito Uniss, nella sezione Museo.",
+        ],
+      },
+      {
+        title: "Da Medicina ad Agraria",
+        paragraphs: [
+          "Il primo nucleo nasce negli anni Settanta dell’Ottocento, dentro l’antica Facoltà di Medicina, tra le discipline di Storia naturale. Tra il 1879 e il 1884 lavora a Sassari Domenico Lovisato, scienziato e garibaldino, fondatore della sezione sassarese del Club Alpino Italiano.",
+          "Un contributo importante alla mineralogia sarda arriva da Federico Millosevic, professore dal 1905 al 1908 e poi senatore del Regno. Le collezioni si arricchiscono ancora con Aurelio Serra, direttore dal 1935 al 1950, e con Antonio Pietracaprina, dal 1963 al 1991. Oggi il patrimonio sta in Agraria, non in un padiglione turistico del centro.",
+        ],
+      },
+      {
+        title: "Cosa si vede",
+        paragraphs: [
+          "Il percorso è articolato in sezioni mineralogica, geologica, pedologica e paleontologica. Ci sono rocce effusive e intrusive, fossili, monoliti di suoli, marmi e campioni di spiagge sarde, oltre a materiali di siti esteri.",
+          "Alcuni minerali contano perché rari, come la covellite; altri perché arrivano da miniere chiuse da tempo, come argenti e fluorite del Sulcis e del Sarrabus; altri ancora per la forma dei cristalli. È un archivio della Sardegna mineraria e della ricerca universitaria, non una vetrina di souvenir.",
+        ],
+      },
+      {
+        title: "Come visitarla",
+        paragraphs: [
+          "Non è un museo cittadino con biglietteria tutti i giorni. La visita si organizza con l’Università di Sassari: orari, accesso e eventuali chiusure sono quelli comunicati sulla pagina ufficiale della Collezione Mineralogica. Prima di partire conviene prenotare.",
+          "Se sei già in città, abbina la collezione alla guida di Sassari e al calendario eventi: Cavalcata, Candelieri, rassegne in centro. L’università e le piazze stanno nello stesso tessuto urbano, ma i due ritmi - studio e festa - sono diversi.",
+        ],
+      },
+      {
+        title: "Il Geomuseo Monte Arci a Masullas",
+        paragraphs: [
+          "A Masullas, in Marmilla (provincia di Oristano), il Geomuseo Monte Arci “Stefano Incani” racconta il massiccio vulcanico del Monte Arci: minerali, rocce, fossili, diaspri e ricostruzioni paleoambientali. È allestito nell’ex convento dei Cappuccini, in via Cappuccini / piazza Convento.",
+          "Il Monte Arci è uno dei grandi giacimenti di ossidiana del Mediterraneo occidentale: la pietra vetrosa nera ha viaggiato in preistoria ben oltre l’isola. In museo si segue la storia geologica del vulcano, con sale su minerali fluorescenti e diorami dell’attività magmatica.",
+          "A differenza della collezione Uniss, il Geomuseo è pensato per il pubblico: di solito apre dal mercoledì alla domenica, con biglietto. Orari e tariffe cambiano, quindi verifica sul Comune di Masullas o sulla Fondazione Parte Montis prima di metterti in viaggio. Da lì puoi scendere verso Oristano e il Centro Sardegna.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la guida di Sassari per il Nord, quella di Oristano per l’Oristanese, e il calendario per sagre e rassegne. Due musei geologici, due province, la stessa isola: Sassari per l’archivio universitario, Masullas per il racconto del Monte Arci.",
+          "In Cultura Sarda questo approfondimento sta accanto a Ichnusa, zona blu e personaggi: un’altra chiave sul territorio, fatta di rocce e miniere invece che di nomi e letteratura.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Dove si trova la Collezione Mineralogica?",
+        answer:
+          "A Sassari, nel Dipartimento di Agraria dell’Università, in via Enrico De Nicola 1. Dettagli e aggiornamenti sono sulla pagina Uniss della collezione.",
+      },
+      {
+        question: "Si visita senza prenotazione?",
+        answer:
+          "In genere no: non è un museo a ingresso libero quotidiano. La visita si concorda con l’ateneo; controlla il sito ufficiale prima di andare.",
+      },
+      {
+        question: "Cos’è il Geomuseo Monte Arci?",
+        answer:
+          "È il museo mineralogico e paleontologico di Masullas, dedicato al Monte Arci e intitolato a Stefano Incani. Ha sede nell’ex convento dei Cappuccini.",
+      },
+      {
+        question: "Che differenza c’è tra i due musei?",
+        answer:
+          "La collezione Uniss è un patrimonio universitario a Sassari, visitabile su prenotazione. Il Geomuseo è un museo territoriale a Masullas, pensato per il pubblico, sul vulcano e sull’ossidiana del Monte Arci.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/eventi/sassari", label: "Eventi a Sassari" },
+      {
+        href: "/cultura-sarda/centro-sardegna/oristano",
+        label: "Guida Oristano",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna",
+        label: "Guide Centro Sardegna",
+      },
+    ],
+    publishedAt: "2026-09-17",
   },
 ];
 

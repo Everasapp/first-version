@@ -6,16 +6,18 @@ import {
 } from "@/src/lib/seo/rome-time";
 import {
   DOMANI_INTENT,
+  DOMENICA_INTENT,
   OGGI_INTENT,
   WEEKEND_EVERGREEN_INTENT,
 } from "@/src/lib/seo/landing-intents";
 import {
+  nextSundayYmd,
   rollingWeekendRange,
   weekendLongDatePhrase,
   weekendShortDatePhrase,
 } from "@/src/lib/seo/weekends";
 
-export type DateLandingKey = "oggi" | "domani" | "weekend" | "settimana";
+export type DateLandingKey = "oggi" | "domani" | "weekend" | "domenica" | "settimana";
 
 export const DATE_LANDING_META: Record<
   DateLandingKey,
@@ -38,6 +40,12 @@ export const DATE_LANDING_META: Record<
     title: WEEKEND_EVERGREEN_INTENT.seoTitle,
     h1: WEEKEND_EVERGREEN_INTENT.h1,
     description: WEEKEND_EVERGREEN_INTENT.metaDescription,
+  },
+  domenica: {
+    path: DOMENICA_INTENT.path,
+    title: DOMENICA_INTENT.seoTitle,
+    h1: DOMENICA_INTENT.h1,
+    description: DOMENICA_INTENT.metaDescription,
   },
   settimana: {
     path: "/eventi?date=settimana",
@@ -63,6 +71,7 @@ export function formatSearchDateLabel(filter: string) {
     oggi: "Oggi",
     domani: "Domani",
     weekend: "Questo weekend",
+    domenica: "Domenica",
     settimana: "Questa settimana",
   };
   if (presets[trimmed]) return presets[trimmed];
@@ -107,9 +116,23 @@ export function getDateLandingContext(
       range: { start: weekend.start, end: weekend.end },
       datePhrase: longPhrase,
       shortDatePhrase: shortPhrase,
-      h1: `Eventi in Sardegna questo weekend, ${shortPhrase}`,
-      title: `Eventi Sardegna questo weekend | ${shortPhrase}`,
-      metaDescription: `Sagre, concerti, festival e attività in Sardegna da ${longPhrase}. Scopri cosa fare questo weekend su EVERAS.`,
+      h1: WEEKEND_EVERGREEN_INTENT.h1,
+      title: WEEKEND_EVERGREEN_INTENT.seoTitle,
+      metaDescription: `Eventi Sardegna questo weekend (${longPhrase}): sagre, concerti e attività su EVERAS.`,
+    };
+  }
+
+  if (dateKey === "domenica") {
+    const sundayYmd = nextSundayYmd(from);
+    const range = romeDayRange(sundayYmd);
+    const datePhrase = formatRomeLongDay(sundayYmd);
+    return {
+      range,
+      datePhrase,
+      shortDatePhrase: datePhrase,
+      h1: DOMENICA_INTENT.h1,
+      title: DOMENICA_INTENT.seoTitle,
+      metaDescription: `Eventi Sardegna domenica (${datePhrase}): sagre, concerti e feste di paese su EVERAS.`,
     };
   }
 
@@ -126,7 +149,7 @@ export function getDateLandingContext(
       shortDatePhrase: datePhrase,
       h1: OGGI_INTENT.h1,
       title: OGGI_INTENT.seoTitle,
-      metaDescription: `Cosa fare oggi in Sardegna (${datePhrase}): eventi, sagre, concerti e attività aggiornati su EVERAS.`,
+      metaDescription: `Eventi Sardegna oggi (${datePhrase}): sagre, concerti e attività aggiornati su EVERAS.`,
     };
   }
 
@@ -136,7 +159,7 @@ export function getDateLandingContext(
     shortDatePhrase: datePhrase,
     h1: DOMANI_INTENT.h1,
     title: DOMANI_INTENT.seoTitle,
-    metaDescription: `Eventi in Sardegna domani (${datePhrase}): programma per città, sagre e spettacoli su EVERAS.`,
+    metaDescription: `Eventi Sardegna domani (${datePhrase}): programma per città, sagre e spettacoli su EVERAS.`,
   };
 }
 
@@ -169,6 +192,8 @@ export function getDateRange(filter: string) {
       const weekend = rollingWeekendRange();
       return { start: weekend.start, end: weekend.end };
     }
+    case "domenica":
+      return romeDayRange(nextSundayYmd());
     case "settimana": {
       const start = romeDayRange(todayYmd).start;
       const end = romeDayRange(addDaysYmd(todayYmd, 7)).start;

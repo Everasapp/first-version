@@ -60,6 +60,10 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         name: "Centro, cattedrale, Candelieri",
         body: "San Nicola in piazza Duomo, corso Vittorio Emanuele, piazza Tola, Santa Maria di Betlem in fondo alla discesa. Il Museo dei Candelieri, accanto a Santa Maria, tiene i ceri e la storia dei gremi: utile se non sei in città il 14 agosto. Monte d’Accoddi sta fuori, verso Porto Torres: auto o bus, non a piedi dal centro.",
       },
+      {
+        name: "Collezione Mineralogica Uniss",
+        body: "Dipartimento di Agraria, via Enrico De Nicola 1. Minerali, rocce, fossili e suoli sardi: visita su prenotazione, non è il Museo Sanna. La scheda è in Cultura Sarda, con il Geomuseo Monte Arci di Masullas.",
+      },
     ],
     faqs: [
       {

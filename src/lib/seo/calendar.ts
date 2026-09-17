@@ -100,9 +100,9 @@ export function monthLanding(year: number, monthIndex: number): CalendarMonth {
     year,
     monthIndex,
     path: `/eventi-sardegna/${slug}`,
-    title: `Eventi in Sardegna a ${name} ${year}`,
-    h1: `Eventi in Sardegna a ${label} ${year}`,
-    description: `Eventi, sagre e concerti in Sardegna a ${name} ${year}: calendario aggiornato per città e weekend su EVERAS.`,
+    title: `Eventi Sardegna ${name} ${year}`,
+    h1: `Eventi Sardegna ${name} ${year}`,
+    description: `Eventi Sardegna ${name} ${year}: sagre, concerti e festival per città e weekend su EVERAS.`,
     paragraphs: monthParagraphs(label, year, monthIndex),
   };
 }
@@ -176,6 +176,8 @@ export function sagreExploreLinks() {
     { href: "/eventi-oggi", label: "Oggi" },
     { href: "/eventi-domani", label: "Domani" },
     { href: "/eventi-weekend", label: "Weekend" },
+    { href: "/eventi-domenica", label: "Domenica" },
+    { href: "/eventi-sud-sardegna-oggi", label: "Sud oggi" },
     { href: "/eventi/sagre-tradizioni", label: "Sagre e tradizioni" },
     ...months.map((month) => ({
       href: month.path,

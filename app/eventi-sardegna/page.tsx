@@ -118,12 +118,12 @@ export default async function EventiSardegnaHubPage() {
   const faqs = [
     {
       question: "Cosa c’è da fare in Sardegna questo fine settimana?",
-      answer: `Apri Eventi in Sardegna questo weekend per il fine settimana in corso. Se stai pianificando giorni precisi, usa le pagine datate${datedWeekends ? `, per esempio ${datedWeekends}` : ""}.`,
+      answer: `Apri Eventi Sardegna questo weekend per il fine settimana in corso. Se stai pianificando giorni precisi, usa le pagine datate${datedWeekends ? `, per esempio ${datedWeekends}` : ""}.`,
     },
     {
       question: "Quali sono gli eventi in programma oggi in Sardegna?",
       answer:
-        "La pagina Eventi in Sardegna oggi mostra solo gli appuntamenti della giornata in corso. Da lì passi a domani e al weekend.",
+        "La pagina Eventi Sardegna oggi mostra solo gli appuntamenti della giornata in corso. Da lì passi a Eventi Sardegna domenica, al weekend e al Sud.",
     },
     {
       question: "Dove trovare le sagre in Sardegna?",
@@ -164,7 +164,7 @@ export default async function EventiSardegnaHubPage() {
   const hubHighlights = [
     {
       href: "/eventi-weekend",
-      label: "Eventi in Sardegna questo weekend",
+      label: "Eventi Sardegna questo weekend",
       meta:
         weekendLinks.map((l) => l.label).join(" · ") || "Fine settimana in corso",
     },
@@ -180,13 +180,23 @@ export default async function EventiSardegnaHubPage() {
     },
     {
       href: month.path,
-      label: `Eventi a ${month.name.toLocaleLowerCase("it")} ${month.year}`,
+      label: month.title,
       meta: "Calendario del mese in corso",
     },
     {
       href: "/eventi-oggi",
-      label: "Eventi in Sardegna oggi",
+      label: "Eventi Sardegna oggi",
       meta: "Solo la giornata odierna",
+    },
+    {
+      href: "/eventi-domenica",
+      label: "Eventi Sardegna domenica",
+      meta: "Solo la domenica del weekend",
+    },
+    {
+      href: "/eventi-sud-sardegna-oggi",
+      label: "Eventi Sud Sardegna oggi",
+      meta: "Cagliari e il Sud",
     },
     {
       href: "/eventi-gratuiti",
@@ -230,8 +240,10 @@ export default async function EventiSardegnaHubPage() {
         faqs={faqs}
         quickLinks={[
           { href: "/eventi-oggi", label: "Eventi oggi" },
-          { href: "/eventi-domani", label: "Eventi domani" },
+          { href: "/eventi-domani", label: "Domani" },
           { href: "/eventi-weekend", label: "Questo weekend" },
+          { href: "/eventi-domenica", label: "Domenica" },
+          { href: "/eventi-sud-sardegna-oggi", label: "Sud oggi" },
           { href: year.path, label: `Calendario ${year.year}` },
           { href: month.path, label: month.name },
           { href: "/eventi-sardegna/sagre", label: "Sagre" },

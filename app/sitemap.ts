@@ -80,6 +80,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${SITE_URL}/eventi-domenica`,
+      changeFrequency: "hourly",
+      priority: 0.85,
+    },
+    {
+      url: `${SITE_URL}/eventi-sud-sardegna-oggi`,
+      changeFrequency: "hourly",
+      priority: 0.82,
+    },
+    {
       url: `${SITE_URL}/eventi-gratuiti`,
       changeFrequency: "daily",
       priority: 0.8,

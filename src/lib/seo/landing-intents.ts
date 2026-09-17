@@ -69,10 +69,10 @@ export const OGGI_INTENT = {
   primaryKeyword: "eventi Sardegna oggi",
   secondaryKeywords: ["cosa fare oggi in Sardegna", "eventi oggi Sardegna"],
   searchIntent: "Urgenza: cosa c’è in programma nella giornata odierna.",
-  h1: "Cosa fare oggi in Sardegna",
-  seoTitle: "Eventi in Sardegna oggi | Cosa fare oggi",
+  h1: "Eventi Sardegna oggi",
+  seoTitle: "Eventi Sardegna oggi",
   metaDescription:
-    "Eventi in Sardegna oggi: concerti, sagre e attività aggiornati. Scopri cosa fare oggi vicino a te su EVERAS.",
+    "Eventi Sardegna oggi: concerti, sagre e attività aggiornati. Scopri cosa fare oggi in tutta l’isola su EVERAS.",
   canonical: "/eventi-oggi",
   clusterRole: "Nodo «oggi» del cluster temporale.",
 } as const satisfies LandingIntent;
@@ -82,10 +82,10 @@ export const DOMANI_INTENT = {
   primaryKeyword: "eventi Sardegna domani",
   secondaryKeywords: ["cosa fare domani in Sardegna", "programma eventi domani"],
   searchIntent: "Pianificazione a 24h: programma di domani.",
-  h1: "Eventi in Sardegna domani",
-  seoTitle: "Eventi in Sardegna domani | Cosa fare",
+  h1: "Eventi Sardegna domani",
+  seoTitle: "Eventi Sardegna domani",
   metaDescription:
-    "Programma di domani in Sardegna: eventi, spettacoli e sagre con città e orari. Pianifica la giornata su EVERAS.",
+    "Eventi Sardegna domani: spettacoli, sagre e concerti con città e orari. Pianifica la giornata su EVERAS.",
   canonical: "/eventi-domani",
   clusterRole: "Nodo «domani»; complementa oggi senza clonarne la copy.",
 } as const satisfies LandingIntent;
@@ -98,12 +98,44 @@ export const WEEKEND_EVERGREEN_INTENT = {
     "cosa fare in Sardegna nel weekend",
   ],
   searchIntent: "Fine settimana corrente (rolling Fri–Sun).",
-  h1: "Eventi in Sardegna questo weekend",
+  h1: "Eventi Sardegna questo weekend",
   seoTitle: "Eventi Sardegna questo weekend",
   metaDescription:
-    "Scopri sagre, concerti, festival, mercatini e attività in programma in Sardegna questo weekend su EVERAS.",
+    "Eventi Sardegna questo weekend: sagre, concerti, festival e attività da venerdì a domenica su EVERAS.",
   canonical: "/eventi-weekend",
   clusterRole: "Evergreen del weekend. I weekend datati supportano, non sostituiscono.",
+} as const satisfies LandingIntent;
+
+export const DOMENICA_INTENT = {
+  path: "/eventi-domenica",
+  primaryKeyword: "eventi Sardegna domenica",
+  secondaryKeywords: [
+    "cosa fare domenica in Sardegna",
+    "eventi domenica Sardegna",
+  ],
+  searchIntent: "Solo la domenica del weekend in corso (o odierna se è già domenica).",
+  h1: "Eventi Sardegna domenica",
+  seoTitle: "Eventi Sardegna domenica",
+  metaDescription:
+    "Eventi Sardegna domenica: sagre, concerti e feste di paese della prossima domenica, con comune e orario su EVERAS.",
+  canonical: "/eventi-domenica",
+  clusterRole: "Nodo «domenica»; più stretto del weekend evergreen, non lo sostituisce.",
+} as const satisfies LandingIntent;
+
+export const SUD_OGGI_INTENT = {
+  path: "/eventi-sud-sardegna-oggi",
+  primaryKeyword: "eventi Sud Sardegna oggi",
+  secondaryKeywords: [
+    "eventi Cagliari oggi",
+    "cosa fare oggi Sud Sardegna",
+  ],
+  searchIntent: "Urgenza geografica: solo oggi, solo comuni del Sud.",
+  h1: "Eventi Sud Sardegna oggi",
+  seoTitle: "Eventi Sud Sardegna oggi",
+  metaDescription:
+    "Eventi Sud Sardegna oggi: Cagliari, Campidano, Sulcis e Sarrabus. Cosa fare oggi nel Sud dell’isola su EVERAS.",
+  canonical: "/eventi-sud-sardegna-oggi",
+  clusterRole: "Incrocio area + oggi. Non clona Eventi Sardegna oggi.",
 } as const satisfies LandingIntent;
 
 export const CALENDARIO_2026_INTENT = {
@@ -148,6 +180,6 @@ export const GRATUITI_INTENT = {
 export const DATED_WEEKEND_POLICY = {
   canonical: "self" as const,
   evergreenHref: "/eventi-weekend",
-  evergreenLabel: "Eventi in Sardegna questo weekend",
+  evergreenLabel: "Eventi Sardegna questo weekend",
   indexRule: "landingRobots(eventCount) — noindex se 0 eventi",
 };

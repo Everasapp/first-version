@@ -56,6 +56,14 @@ export function rollingWeekendRange(from = new Date()) {
   return weekendLanding(currentWeekendFridayYmd(from));
 }
 
+/** Upcoming Sunday in Europe/Rome (today if already Sunday). */
+export function nextSundayYmd(from = new Date()) {
+  const today = romeYmd(from);
+  const weekday = romeWeekdayIndex(from);
+  if (weekday === 0) return today;
+  return addDaysYmd(today, 7 - weekday);
+}
+
 /** Human phrase: «venerdì 18 a domenica 20 settembre 2026». */
 export function weekendLongDatePhrase(fridayYmd: string, sundayYmd: string) {
   const friday = parseYmd(fridayYmd);
@@ -152,7 +160,7 @@ function weekendParagraphs(dateLabel: string, shortLabel: string) {
   return [
     `Questa pagina raccoglie gli eventi in Sardegna nel fine settimana ${dateLabel}: sagre, concerti, mercatini e feste paese da venerdì a domenica, con comune e locandina sulla scheda.`,
     `È pensata per chi cerca queste date precise (${shortLabel}), non il weekend “in corso” che scorre ogni settimana. Apri la scheda per orari, ingresso e come arrivare.`,
-    `Per il fine settimana attuale usa Eventi in Sardegna questo weekend — elenco rolling aggiornato. Da qui puoi anche passare al mese o alle sagre in Sardegna.`,
+    `Per il fine settimana attuale usa Eventi Sardegna questo weekend — elenco rolling aggiornato. Da qui puoi anche passare a Eventi Sardegna domenica, al mese o alle sagre.`,
   ];
 }
 
