@@ -1738,7 +1738,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     traditions: [
       {
         title: "Feste e identità locale",
-        body: `Sartiglia, san Giovanni e mare di Torre Grande. Le date precise cambiano ogni anno: controlla il calendario eventi ad Oristano su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        body: `Sartiglia, san Giovanni e mare di Torre Grande. Le date precise cambiano ogni anno: controlla il calendario eventi ad Oristano su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori. Storia e rito della giostra stanno nell’articolo Cultura Sarda.`,
       },
       {
         title: "Il Oristanese intorno",

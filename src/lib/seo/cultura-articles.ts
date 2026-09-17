@@ -746,6 +746,109 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
         href: "/cultura-sarda/sud-sardegna/barumini",
         label: "Guida Barumini",
       },
+      {
+        href: "/cultura/sa-sartiglia-oristano",
+        label: "Sa Sartiglia di Oristano",
+      },
+    ],
+    publishedAt: "2026-09-17",
+  },
+  {
+    slug: "sa-sartiglia-oristano",
+    path: "/cultura/sa-sartiglia-oristano",
+    title: "Sa Sartiglia a Oristano: Componidori, stella e gremi",
+    h1: "Sa Sartiglia di Oristano",
+    description:
+      "Sa Sartiglia a Oristano: giostra di Carnevale, Componidori, corsa alla stella, gremi dei Contadini e dei Falegnami, pariglie e date.",
+    intro:
+      "A Carnevale Oristano corre Sa Sartiglia: cavalieri mascherati, una stella appesa a un nastro verde, il Componidori che non tocca terra fino a sera. Non è un palio inventato per i turisti. Questa guida racconta origini, gremi, vestizione e corsa, e dove continuare su EVERAS.",
+    excerpt:
+      "La giostra equestre di Carnevale: stella, maschera e gremi oristanesi.",
+    hero: {
+      src: "/images/cultura/sartiglia-oristano-hero.webp",
+      alt: "Cavaliere mascherato della Sartiglia al galoppo, spada alzata verso una stella sospesa",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/sa-sartiglia-oristano",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cos’è Sa Sartiglia",
+        paragraphs: [
+          "Sa Sartiglia è la giostra equestre di Oristano: ultima domenica di Carnevale e martedì grasso. I cavalieri, in maschera, tentano di infilzare una stella sospesa davanti alla cattedrale, in via Duomo / via Vittorio Emanuele. Il nome viene dallo spagnolo sortija, anello: è una corsa all’anello di tipo mediterraneo, con auspicio agrario - più stelle, migliore l’annata.",
+          "Due giornate, due gremi. La domenica è del Gremio dei Contadini (San Giovanni Battista, stendardo rosso). Il martedì è del Gremio dei Falegnami (San Giuseppe, rosa e azzurro). Le fasi sono le stesse: bando, vestizione, corsa alla stella, remada, pariglie, svestizione. Cambiano i colori del Componidori: nastri rossi e maschera color terra la domenica; rosa e turchino, maschera rosa carne, il martedì.",
+        ],
+      },
+      {
+        title: "Da dove nasce",
+        paragraphs: [
+          "Non ci sono carte medievali sulla giostra. Si pensa a tornei di addestramento, poi a spettacoli pubblici sotto la Corona d’Aragona. La testimonianza più antica è un registro comunale del 1547-48: pagamento di un drappo nero per una Sortilla in onore di Carlo V, intorno al 1546. Nel 1722 una cronaca nuziale savoiarda parla già di corsa alla stella, con i contadini tra i protagonisti.",
+          "Nel Settecento la festa di Carnevale si stabilizza e passa ai gremi. Resta la memoria di su Cungiau de sa Sartiglia, il fondo rustico legato al Gremio dei Contadini. I gremi oristanesi, nati sul modello delle corporazioni barcellonesi, furono aboliti per legge nel 1864; Contadini, Falegnami e Muratori sopravvivono come società. Oggi i primi due tengono la Sartiglia in qualsiasi condizione.",
+        ],
+      },
+      {
+        title: "Su Componidori e la vestizione",
+        paragraphs: [
+          "Il capo corsa è su Componidori: maschera androgina, né uomo né donna una volta vestito. Lo sceglie il gremio. Un tempo era privilegio nobiliare; dal 1973 può essere anche una donna. Il 2 febbraio, alla Candelora, si consegna il cero benedetto: atto ufficiale, anche se il nome oggi si sa prima, per organizzare.",
+          "La mattina della corsa un araldo legge il bando. Poi la vestizione: su una sedia sul tavolo (sa mesitta), le massaieddas in abito tradizionale vestono il cavaliere. Da quel momento non deve toccare terra fino alla svestizione della sera. Prima della maschera, un brindisi con gli oberaius e la richiesta di protezione al santo. Poi la maschera lignea: l’uomo sparisce, resta il signore della festa. In mano avrà sa pippia de maju, lo scettro di pervinca e viole con cui benedice la folla.",
+        ],
+      },
+      {
+        title: "Corsa, remada, pariglie",
+        paragraphs: [
+          "Il corteo - circa 120 cavalieri, a terne - va verso la cattedrale. Sotto la stella, nastro verde, il Componidori e su segundu cumponi incrociano tre volte le spade. Poi il galoppo: prima il capo corsa, poi chi lui sceglie. Componidori e aiutanti (su terzu cumponi) ritentano con lo stocco, la lancia di legno.",
+          "Chiusa la stella, il Componidori riceve sa pippia de maju e fa sa remada: galoppo riverso sul cavallo, benedizione. Poi via Mazzini e le pariglie, acrobazie a tre. Al tramonto si torna a svestire la maschera. Tamburi e trombe scandano ogni passo - avvisano anche che arriva un cavallo. Non è uno spettacolo da tribuna comoda: il centro si chiude, si arriva presto, a piedi.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la pagina Sa Sartiglia nel calendario per le date dell’anno in corso. Poi la guida di Oristano e Carnevale in Sardegna, per Mamoiada e Ottana: stessa stagione, riti diversi. A Sassari, in altri mesi, Cavalcata e Candelieri.",
+          "In Cultura Sarda la Sartiglia sta accanto all’articolo sulle feste e i mestieri: stessa isola, un’altra grammatica.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Quando si corre Sa Sartiglia?",
+        answer:
+          "L’ultima domenica di Carnevale e il martedì grasso, a Oristano. Le date si spostano ogni anno col calendario liturgico: nel 2026 sono state il 15 e il 17 febbraio. Controlla la scheda EVERAS.",
+      },
+      {
+        question: "Chi organizza la giostra?",
+        answer:
+          "I gremi. La domenica il Gremio dei Contadini (San Giovanni), il martedì il Gremio dei Falegnami (San Giuseppe).",
+      },
+      {
+        question: "Chi è su Componidori?",
+        answer:
+          "Il capo corsa, scelto dal gremio. Dopo la vestizione non tocca terra fino a sera. La maschera è androgina: da quel momento non è più “l’uomo” di partenza.",
+      },
+      {
+        question: "La Sartiglia è gratuita?",
+        answer:
+          "Vedere corsa e pariglie dalle strade è in genere libero. Tribune o postazioni riservate, se ci sono, le indica il Comune o la scheda eventi.",
+      },
+    ],
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/centro-sardegna/oristano",
+        label: "Guida Oristano",
+      },
+      { href: "/eventi/oristano", label: "Eventi a Oristano" },
+      {
+        href: "/eventi-sardegna/sa-sartiglia",
+        label: "Sartiglia, calendario",
+      },
+      {
+        href: "/eventi-sardegna/carnevale-sardegna",
+        label: "Carnevale in Sardegna",
+      },
     ],
     publishedAt: "2026-09-17",
   },
