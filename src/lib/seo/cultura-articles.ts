@@ -25,6 +25,8 @@ export type CulturaArticle = {
   faqs: Array<{ question: string; answer: string }>;
   /** Guide paese / hub collegati (link cliccabili in pagina). */
   relatedLinks?: Array<{ href: string; label: string }>;
+  /** Schede evento da mostrare anche se scadute. */
+  relatedEventSlugs?: string[];
   publishedAt: string;
 };
 
@@ -35,7 +37,7 @@ export const CULTURA_ARTICLES_HUB = {
   description:
     "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -692,7 +694,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
         paragraphs: [
           "Tutto l’anno i paesi tengono sagre e riti. Non è un folklore unico: ogni comune ha il proprio santo, la propria maschera, il proprio modo di occupare la piazza. Quello che attira di più da fuori, d’inverno, è il Carnevale dell’interno.",
           "A Mamoiada escono i Mamuthones e gli Issohadores; a Ottana i Boes e i Merdules. Sono maschere di legno, pelle, campanacci: vita, morte, gregge, giudizio. Non sono un carnevale da carro allegorico. A Oristano, a Carnevale, Sa Sartiglia è un’altra cosa ancora: giostra equestre, gremi, stella da infilzare. Tre territori, tre grammatiche. Il calendario Carnevale su EVERAS le tiene insieme; le guide paese spiegano il rito senza ridurlo a foto.",
-          "In altri mesi arrivano Cavalcata e Candelieri a Sassari, Autunno in Barbagia, patronali. La cultura sarda non sta in un weekend: sta in un anno. Apri il calendario e scegli un paese, non un “tour delle tradizioni”.",
+          "In altri mesi arrivano Cavalcata e Candelieri a Sassari, Autunno in Barbagia, patronali, e a Oristano la rassegna Sardegna Cavalli: stesso territorio della giostra, un altro modo di tenere il cavallo in pubblico. La cultura sarda non sta in un weekend: sta in un anno. Apri il calendario e scegli un paese, non un “tour delle tradizioni”.",
         ],
       },
       {
@@ -705,7 +707,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       {
         title: "Come continuare su EVERAS",
         paragraphs: [
-          "Da qui apri Mamoiada, Ottana, Oristano, Barumini. Poi Carnevale, Sartiglia, Cavalcata e Candelieri. Scopri la Sardegna è la directory dei paesi; Cultura Sarda è dove stai ora, per i temi.",
+          "Da qui apri Mamoiada, Ottana, Oristano, Barumini. Poi Carnevale, Sartiglia, Sardegna Cavalli, Cavalcata e Candelieri. Scopri la Sardegna è la directory dei paesi; Cultura Sarda è dove stai ora, per i temi.",
           "Se cerchi la costa, le guide di Stintino, Palau, Santa Teresa e Villasimius tengono mare e paese insieme. Qui il punto è l’altro lato dell’isola: pietra, maschera, telaio.",
         ],
       },
@@ -749,6 +751,10 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       {
         href: "/cultura/sa-sartiglia-oristano",
         label: "Sa Sartiglia di Oristano",
+      },
+      {
+        href: "/cultura/sardegna-cavalli-oristano",
+        label: "Sardegna Cavalli a Oristano",
       },
     ],
     publishedAt: "2026-09-17",
@@ -808,7 +814,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
       {
         title: "Come continuare su EVERAS",
         paragraphs: [
-          "Apri la pagina Sa Sartiglia nel calendario per le date dell’anno in corso. Poi la guida di Oristano e Carnevale in Sardegna, per Mamoiada e Ottana: stessa stagione, riti diversi. A Sassari, in altri mesi, Cavalcata e Candelieri.",
+          "Apri la pagina Sa Sartiglia nel calendario per le date dell’anno in corso. Poi la guida di Oristano e Carnevale in Sardegna, per Mamoiada e Ottana: stessa stagione, riti diversi. A settembre, nello stesso territorio, Sardegna Cavalli è l’altra faccia pubblica del cavallo: fiera e sport, non giostra di Carnevale. A Sassari, in altri mesi, Cavalcata e Candelieri.",
           "In Cultura Sarda la Sartiglia sta accanto all’articolo sulle feste e i mestieri: stessa isola, un’altra grammatica.",
         ],
       },
@@ -849,7 +855,116 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
         href: "/eventi-sardegna/carnevale-sardegna",
         label: "Carnevale in Sardegna",
       },
+      {
+        href: "/cultura/sardegna-cavalli-oristano",
+        label: "Sardegna Cavalli a Oristano",
+      },
     ],
+    publishedAt: "2026-09-17",
+  },
+  {
+    slug: "sardegna-cavalli-oristano",
+    path: "/cultura/sardegna-cavalli-oristano",
+    title:
+      "Sardegna Cavalli a Oristano: fiera equestre, SOE e Sa Rodia",
+    h1: "Sardegna Cavalli a Oristano",
+    description:
+      "Sardegna Cavalli a Oristano: storia della rassegna equestre, Società Oristanese di Equitazione a Sa Rodia, sport, fiera e scheda evento EVERAS.",
+    intro:
+      "Sardegna Cavalli è lo storico appuntamento sportivo e culturale dedicato al mondo equestre, ospitato nelle strutture della Società Oristanese di Equitazione a Sa Rodia. Non è la Sartiglia: è fiera, concorso e territorio. Questa guida racconta da dove nasce, perché sta a Oristano e dove resta la scheda EVERAS, anche dopo la chiusura dell’edizione.",
+    excerpt:
+      "La rassegna equestre di Sa Rodia: sport, fiera e il cavallo oristanese oltre la Sartiglia.",
+    hero: {
+      src: "/images/cultura/sardegna-cavalli-oristano-hero.webp",
+      alt: "Cavaliere in salto ostacoli all’aperto, pini mediterranei e campo della Società Oristanese di Equitazione",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/sardegna-cavalli-oristano",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura Sarda",
+        creditPrefix: "Illustrazione",
+      },
+    },
+    sections: [
+      {
+        title: "Cos’è Sardegna Cavalli",
+        paragraphs: [
+          "Sardegna Cavalli è una rassegna di più giorni sul cavallo: gare, spettacoli, incontri, mostra delle produzioni locali. Si tiene a Oristano, nella zona sportiva di Sa Rodia, dentro gli impianti della Società Oristanese di Equitazione. Il pubblico non è solo quello da paddock: famiglie, allevatori, artigiani, chi viene per lo sport e chi per il territorio.",
+          "Non è un rito di Carnevale e non è un palio votivo. È una fiera con un cuore sportivo - salto ostacoli, volteggio, dressage quando il programma li prevede - e un intorno di stand, cibo, musica. Il marchio è storico per l’Oristanese: è il modo in cui la città ha messo il cavallo in vetrina fuori dalla settimana grassa.",
+        ],
+      },
+      {
+        title: "Perché Oristano, perché la SOE",
+        paragraphs: [
+          "Oristano vive il cavallo tutto l’anno. A Carnevale corre Sa Sartiglia, in maschera, in centro. Il resto dell’anno la pratica sta fuori dal corso: scuola, concorsi, campo. La Società Oristanese di Equitazione nasce nel 1968 da un gruppo di appassionati, con Antonio Cozzoli primo presidente. La prima sede era campagna, tra via Cagliari e Torangius; poi la società si sposta nelle strutture comunali tra Pesaria e Sa Rodia, dove resta.",
+          "I primi concorsi si corsero al campo Tharros. Poco dopo Oristano tenne un nazionale: lo vinse Raimondo D’Inzeo. La SOE è rimasta una delle scuole storiche dell’isola ancora in attività. Non inventiamo orari di maneggio: se vuoi entrare in campo fuori dalla rassegna, chiedi alla società. Qui conta il nesso: senza quella sede, Sardegna Cavalli non avrebbe un palco.",
+        ],
+      },
+      {
+        title: "Sport, fiera, territorio",
+        paragraphs: [
+          "Quando la rassegna è in programma, il cuore agonistico è il concorso di salto ostacoli, sotto l’egida federale. Accanto arrivano discipline e prove aperte al pubblico, seminari su benessere animale e filiera, esibizioni. La Camera di Commercio di Cagliari-Oristano promuove l’edizione recente in partenariato con Comune e Provincia, con il contributo della Regione: non è solo un meeting di club, è anche vetrina di artigianato e agroalimentare, con area Food & Beverage.",
+          "Il cavallo, a Oristano, non sta solo in sella. Tira dietro sellaio, formaggio, pane, gruppi folk. La chiusura può richiamare i tamburini della Sartiglia: stesso suono, altro calendario. Non copiamo il programma minuto per minuto: quello sta sulla locandina e sulla scheda evento.",
+        ],
+      },
+      {
+        title: "Il ritorno del 2026",
+        paragraphs: [
+          "Nel 2026 la rassegna è tornata dal 10 al 13 settembre, dopo sedici anni di assenza. Quattro giornate a Sa Rodia, di nuovo sotto il nome Sardegna Cavalli. L’edizione è chiusa: non la cancelliamo. Resta la scheda su EVERAS, con date, luogo e locandina, perché il prossimo ritorno si legge meglio se l’ultima edizione non sparisce.",
+          "Se cerchi “Sardegna Cavalli 2027” o l’anno in corso, parti da quella scheda e dal calendario di Oristano. Quando Comuni e Camera pubblicano una nuova edizione, la trovi lì. Questo articolo tiene la storia; l’evento tiene il cartellone.",
+        ],
+      },
+      {
+        title: "Come continuare su EVERAS",
+        paragraphs: [
+          "Apri la scheda Sardegna Cavalli 2026, anche se l’appuntamento è scaduto. Poi la guida di Oristano e, a Carnevale, Sa Sartiglia: stesso territorio, due grammatiche del cavallo. A Sassari, in altri mesi, la Cavalcata è un’altra ancora: sfilata di costumi, non fiera di maneggio.",
+          "In Cultura Sarda questo pezzo sta accanto alla Sartiglia e all’articolo sulle feste e i mestieri. Scopri la Sardegna è la directory dei paesi; il calendario è dove torni per le date.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Dov’è Sardegna Cavalli?",
+        answer:
+          "A Oristano, zona sportiva Sa Rodia, negli impianti della Società Oristanese di Equitazione. Non è in centro, non è il percorso della Sartiglia.",
+      },
+      {
+        question: "Quando si svolge?",
+        answer:
+          "L’edizione 2026 è stata dal 10 al 13 settembre. Non è una festa fissa come i Candelieri: le date le decide l’organizzazione di anno in anno. Controlla la scheda EVERAS.",
+      },
+      {
+        question: "Che differenza c’è con Sa Sartiglia?",
+        answer:
+          "La Sartiglia è giostra di Carnevale, in maschera, in centro. Sardegna Cavalli è rassegna sportiva e fieristica a Sa Rodia: concorsi, stand, pubblico da maneggio e da famiglia.",
+      },
+      {
+        question: "L’evento è scaduto: la scheda c’è ancora?",
+        answer:
+          "Sì. Su EVERAS gli eventi conclusi restano raggiungibili dalla URL e da questo articolo. Non comparono più in home e in Esplora, ma la pagina non si cancella.",
+      },
+    ],
+    relatedLinks: [
+      {
+        href: "/eventi/sardegna-cavalli-oristano-2026",
+        label: "Scheda evento 2026",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/oristano",
+        label: "Guida Oristano",
+      },
+      { href: "/eventi/oristano", label: "Eventi a Oristano" },
+      {
+        href: "/cultura/sa-sartiglia-oristano",
+        label: "Sa Sartiglia di Oristano",
+      },
+      {
+        href: "/cultura/cavalcata-sarda-sassari",
+        label: "La Cavalcata Sarda",
+      },
+    ],
+    relatedEventSlugs: ["sardegna-cavalli-oristano-2026"],
     publishedAt: "2026-09-17",
   },
 ];
@@ -861,6 +976,12 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
 
 export function findCulturaArticle(slug: string) {
   return CULTURA_ARTICLES.find((article) => article.slug === slug);
+}
+
+export function findCulturaArticleForEventSlug(eventSlug: string) {
+  return CULTURA_ARTICLES.find((article) =>
+    article.relatedEventSlugs?.includes(eventSlug),
+  );
 }
 
 export function culturaArticleLinks() {

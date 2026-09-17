@@ -76,6 +76,7 @@ import {
 } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
 import { findReplacementEventSlug } from "@/src/lib/seo/event-slug-redirect";
+import { findCulturaArticleForEventSlug } from "@/src/lib/seo/cultura-articles";
 
 type EventDetailPageProps = {
   params: Promise<{
@@ -386,6 +387,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   const cultureHref =
     findCultureTown(cityToSlug(event.municipality))?.path ?? null;
+  const culturaArticle = findCulturaArticleForEventSlug(event.slug);
 
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const formattedPrice =
@@ -547,6 +549,14 @@ async function EventDetailPage({ slug }: { slug: string }) {
                   </Link>
                 </>
               ) : null}
+              {culturaArticle ? (
+                <>
+                  {" · "}
+                  <Link href={culturaArticle.path} className="hover:underline">
+                    {culturaArticle.h1}
+                  </Link>
+                </>
+              ) : null}
             </p>
             <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               {event.title}
@@ -663,6 +673,18 @@ async function EventDetailPage({ slug }: { slug: string }) {
                       className="font-semibold text-[#075EAE] hover:underline"
                     >
                       {event.municipality}
+                    </Link>
+                  </>
+                ) : null}
+                {culturaArticle ? (
+                  <>
+                    {" "}
+                    ·{" "}
+                    <Link
+                      href={culturaArticle.path}
+                      className="font-semibold text-[#075EAE] hover:underline"
+                    >
+                      {culturaArticle.h1}
                     </Link>
                   </>
                 ) : null}

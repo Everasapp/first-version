@@ -1741,6 +1741,10 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         body: `Sartiglia, san Giovanni e mare di Torre Grande. Le date precise cambiano ogni anno: controlla il calendario eventi ad Oristano su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori. Storia e rito della giostra stanno nell’articolo Cultura Sarda.`,
       },
       {
+        title: "Sardegna Cavalli e la SOE",
+        body: `A Sa Rodia la Società Oristanese di Equitazione ospita Sardegna Cavalli: rassegna sportiva e culturale sul mondo equestre, non la giostra di Carnevale. L’edizione resta in scheda su EVERAS anche dopo la chiusura. Storia, sede e differenza con la Sartiglia stanno nell’articolo Cultura Sarda.`,
+      },
+      {
         title: "Il Oristanese intorno",
         body: `Oristano si legge meglio insieme ai comuni vicini del Oristanese: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
       },

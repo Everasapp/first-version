@@ -83,7 +83,7 @@ export const FESTIVAL_HUBS: FestivalHub[] = [
     paragraphs: [
       "Sa Sartiglia è la giostra equestre di Oristano, tra le feste di carnevale più antiche della Sardegna. I cavalieri, mascherati, corrono al galoppo per infilzare una stella sospesa. Non è un palio turistico inventato ieri: è un rito della città, con Componidori, gremi e un cerimoniale che si ripete ogni anno in piazza e lungo le vie del centro.",
       "Chi cerca “Sartiglia 2026” di solito vuole le due giornate (domenica e martedì grasso, in base al calendario liturgico), l’ora della vestizione e se c’è la Sartiglia notturna o la pariglia. Gli orari si spostano di poco di anno in anno, ma il cuore resta lo stesso: mattina in centro, corsa, poi serata in città.",
-      "Su EVERAS la scheda serve a non perdere la data esatta e gli eventi intorno (concerti, mostre, sagre di Carnevale). Per i posti migliori in piazza arriva all’alba o segui le indicazioni del Comune: le transenne cambiano e il centro si chiude al traffico. Se vieni da Sassari o Cagliari, calcola il parcheggio fuori dalle mura e la camminata. Storia, Componidori e gremi sono anche nell’articolo Cultura Sarda sulla Sartiglia.",
+      "Su EVERAS la scheda serve a non perdere la data esatta e gli eventi intorno (concerti, mostre, sagre di Carnevale). Per i posti migliori in piazza arriva all’alba o segui le indicazioni del Comune: le transenne cambiano e il centro si chiude al traffico. Se vieni da Sassari o Cagliari, calcola il parcheggio fuori dalle mura e la camminata. Storia, Componidori e gremi sono anche nell’articolo Cultura Sarda sulla Sartiglia. A settembre, a Sa Rodia, Sardegna Cavalli è l’altra rassegna equestre della città: fiera e sport, non giostra.",
     ],
     faqs: [
       {

@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import EventCard, {
+  type EventCardData,
+} from "@/src/components/home/EventCard";
 import Header from "@/src/components/home/Header";
 import ArticleFullPhoto from "@/src/components/seo/ArticleFullPhoto";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
@@ -11,6 +14,7 @@ import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
 
 type CulturaArticleViewProps = {
   article: CulturaArticle;
+  events?: EventCardData[];
   jsonLd: Array<Record<string, unknown>>;
 };
 
@@ -26,6 +30,7 @@ function formatPublishedAt(value: string) {
 
 export default function CulturaArticleView({
   article,
+  events = [],
   jsonLd,
 }: CulturaArticleViewProps) {
   return (
@@ -83,6 +88,25 @@ export default function CulturaArticleView({
                 ))}
               </section>
             ))}
+
+            {events.length > 0 ? (
+              <section className="mt-12 border-t border-slate-200 pt-10">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Scheda evento
+                </h2>
+                <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                  La scheda resta su EVERAS anche dopo la chiusura: date,
+                  luogo e locandina dell’ultima edizione.
+                </p>
+                <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {events.map((event) => (
+                    <li key={event.eventId}>
+                      <EventCard event={event} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
 
             {article.relatedLinks && article.relatedLinks.length > 0 ? (
               <section className="mt-12 border-t border-slate-200 pt-10">

@@ -88,6 +88,8 @@ export type EventListFilters = {
   freeOnly?: boolean;
   /** Guide festa: tieni l’ultima edizione visibile anche dopo la chiusura. */
   includeExpired?: boolean;
+  /** Schede puntuali (articoli Cultura): includi questi slug. */
+  slugs?: string[];
 };
 
 export const loadFilteredPublishedEvents = cache(
@@ -187,6 +189,10 @@ export const loadFilteredPublishedEvents = cache(
         needles.length === 0 ||
         needles.some((needle) => haystack.includes(needle));
 
+      const matchesSlug =
+        !filters.slugs?.length ||
+        (typeof event.slug === "string" && filters.slugs.includes(event.slug));
+
       return (
         matchesArea &&
         matchesCity &&
@@ -195,7 +201,8 @@ export const loadFilteredPublishedEvents = cache(
         matchesDate &&
         matchesMonth &&
         matchesRange &&
-        matchesTitle
+        matchesTitle &&
+        matchesSlug
       );
     })
     .map((event) => ({
