@@ -74,6 +74,33 @@ export function weekendLongDatePhrase(fridayYmd: string, sundayYmd: string) {
   return `venerdì ${friday.day} ${fridayMonth} ${friday.year} a domenica ${sunday.day} ${sundayMonth} ${sunday.year}`;
 }
 
+/** Compact range for H1/title: «18–20 settembre». Year only if needed. */
+export function weekendShortDatePhrase(fridayYmd: string, sundayYmd: string) {
+  const friday = parseYmd(fridayYmd);
+  const sunday = parseYmd(sundayYmd);
+  const fridayMonth = monthName(friday.monthIndex);
+  const sundayMonth = monthName(sunday.monthIndex);
+  const thisYear = Number(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: ROME_TZ,
+      year: "numeric",
+    }).format(new Date()),
+  );
+  const showYear = friday.year !== thisYear || sunday.year !== thisYear;
+
+  if (friday.year === sunday.year && friday.monthIndex === sunday.monthIndex) {
+    const base = `${friday.day}–${sunday.day} ${fridayMonth}`;
+    return showYear ? `${base} ${friday.year}` : base;
+  }
+
+  if (friday.year === sunday.year) {
+    const base = `${friday.day} ${fridayMonth} – ${sunday.day} ${sundayMonth}`;
+    return showYear ? `${base} ${friday.year}` : base;
+  }
+
+  return `${friday.day} ${fridayMonth} ${friday.year} – ${sunday.day} ${sundayMonth} ${sunday.year}`;
+}
+
 function weekendDateLabel(fridayYmd: string, sundayYmd: string) {
   const friday = parseYmd(fridayYmd);
   const sunday = parseYmd(sundayYmd);
@@ -121,17 +148,18 @@ function weekendShortLabel(fridayYmd: string, sundayYmd: string) {
   return `${friday.day} ${fridayMonth} – ${sunday.day} ${sundayMonth}`;
 }
 
-function weekendParagraphs(dateLabel: string) {
+function weekendParagraphs(dateLabel: string, shortLabel: string) {
   return [
-    `Questo è il calendario del fine settimana ${dateLabel} in Sardegna: sagre, concerti e feste paese da venerdì a domenica, con comune e locandina.`,
-    `Lo usi se stai cercando cosa fare in quei giorni precisi, non un elenco che cambia ogni ora. Apri la scheda per orari, ingresso e come arrivare.`,
-    `Per il weekend in corso c’è anche la pagina sempre aggiornata Eventi weekend. Da qui puoi passare al mese o alle guide delle feste più cercate.`,
+    `Questa pagina raccoglie gli eventi in Sardegna nel fine settimana ${dateLabel}: sagre, concerti, mercatini e feste paese da venerdì a domenica, con comune e locandina sulla scheda.`,
+    `È pensata per chi cerca queste date precise (${shortLabel}), non il weekend “in corso” che scorre ogni settimana. Apri la scheda per orari, ingresso e come arrivare.`,
+    `Per il fine settimana attuale usa Eventi in Sardegna questo weekend — elenco rolling aggiornato. Da qui puoi anche passare al mese o alle sagre in Sardegna.`,
   ];
 }
 
 export function weekendLanding(fridayYmd: string): CalendarWeekend {
   const sundayYmd = addDaysYmd(fridayYmd, 2);
   const dateLabel = weekendDateLabel(fridayYmd, sundayYmd);
+  const shortLabel = weekendShortLabel(fridayYmd, sundayYmd);
   const slug = weekendSlug(fridayYmd, sundayYmd);
   const start = zonedTimeToUtc(fridayYmd, "00:00:00", ROME_TZ);
   const end = zonedTimeToUtc(addDaysYmd(sundayYmd, 1), "00:00:00", ROME_TZ);
@@ -139,16 +167,16 @@ export function weekendLanding(fridayYmd: string): CalendarWeekend {
   return {
     slug,
     path: `/eventi-sardegna/${slug}`,
-    title: `Eventi del fine settimana in Sardegna ${dateLabel}`,
-    h1: `Eventi del weekend ${dateLabel}`,
-    description: `Cosa fare in Sardegna nel fine settimana ${dateLabel}: sagre, concerti e feste paese da Nord a Sud.`,
-    paragraphs: weekendParagraphs(dateLabel),
+    title: `Eventi Sardegna ${shortLabel}`,
+    h1: `Eventi in Sardegna, ${shortLabel}`,
+    description: `Cosa fare in Sardegna nel weekend ${dateLabel}: sagre, concerti e attività da Nord a Sud, con date fisse su EVERAS.`,
+    paragraphs: weekendParagraphs(dateLabel, shortLabel),
     fridayYmd,
     sundayYmd,
     start,
     end,
     dateLabel,
-    shortLabel: weekendShortLabel(fridayYmd, sundayYmd),
+    shortLabel,
   };
 }
 

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { permanentRedirect } from "next/navigation";
 import {
@@ -429,8 +428,6 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const categoryPath = categoryEventsPath(primaryCategorySlug);
   const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
   const heroImage = event.image_url ?? "/images/concert.webp";
-  const optimizable =
-    heroImage.startsWith("/") || heroImage.includes("supabase.co");
 
   return (
     <>
@@ -481,16 +478,16 @@ async function EventDetailPage({ slug }: { slug: string }) {
             ]}
           />
 
-          <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] bg-slate-100 sm:aspect-[21/9]">
-            <Image
+          <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
+            {/* Native img keeps each locandina's real ratio. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={heroImage}
               alt={`${event.title} a ${event.municipality}`}
               title={`${event.title} a ${event.municipality}`}
-              fill
-              priority
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover"
-              unoptimized={!optimizable}
+              className="h-auto w-full"
+              fetchPriority="high"
+              decoding="async"
             />
 
             <div className="absolute right-4 top-4 flex gap-2 sm:right-6 sm:top-6">

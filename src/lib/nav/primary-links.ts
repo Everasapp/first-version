@@ -1,4 +1,4 @@
-import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
+import { upcomingCalendarMonths, currentYearLanding } from "@/src/lib/seo/calendar";
 import { upcomingWeekends } from "@/src/lib/seo/weekends";
 
 export type PrimaryNavLink = {
@@ -9,10 +9,12 @@ export type PrimaryNavLink = {
 /** Link principali condivisi tra header (menu) e footer. */
 export function getPrimaryNavLinks(from = new Date()): PrimaryNavLink[] {
   const currentMonth = upcomingCalendarMonths(1, from)[0];
+  const calendarYear = currentYearLanding(from);
   const datedWeekends = upcomingWeekends(2, from);
 
   const links: PrimaryNavLink[] = [
     { href: "/eventi-sardegna", label: "Eventi e sagre" },
+    { href: calendarYear.path, label: `Calendario ${calendarYear.year}` },
     { href: "/cultura-sarda", label: "Scopri la Sardegna" },
     { href: "/cultura", label: "Cultura Sarda" },
     { href: "/eventi-oggi", label: "Eventi oggi" },

@@ -5,8 +5,14 @@ import {
   romeYmd,
 } from "@/src/lib/seo/rome-time";
 import {
+  DOMANI_INTENT,
+  OGGI_INTENT,
+  WEEKEND_EVERGREEN_INTENT,
+} from "@/src/lib/seo/landing-intents";
+import {
   rollingWeekendRange,
   weekendLongDatePhrase,
+  weekendShortDatePhrase,
 } from "@/src/lib/seo/weekends";
 
 export type DateLandingKey = "oggi" | "domani" | "weekend" | "settimana";
@@ -16,25 +22,22 @@ export const DATE_LANDING_META: Record<
   { path: string; title: string; h1: string; description: string }
 > = {
   oggi: {
-    path: "/eventi-oggi",
-    title: "Cosa fare oggi in Sardegna",
-    h1: "Cosa fare oggi in Sardegna",
-    description:
-      "Scopri cosa fare oggi in Sardegna: concerti, sagre, mostre e appuntamenti in corso sull’isola.",
+    path: OGGI_INTENT.path,
+    title: OGGI_INTENT.seoTitle,
+    h1: OGGI_INTENT.h1,
+    description: OGGI_INTENT.metaDescription,
   },
   domani: {
-    path: "/eventi-domani",
-    title: "Eventi in Sardegna domani",
-    h1: "Eventi in Sardegna domani",
-    description:
-      "Programma di domani in Sardegna: eventi, spettacoli e appuntamenti da non perdere.",
+    path: DOMANI_INTENT.path,
+    title: DOMANI_INTENT.seoTitle,
+    h1: DOMANI_INTENT.h1,
+    description: DOMANI_INTENT.metaDescription,
   },
   weekend: {
-    path: "/eventi-weekend",
-    title: "Eventi in Sardegna questo weekend",
-    h1: "Eventi in Sardegna questo weekend",
-    description:
-      "Cosa fare nel weekend in Sardegna: festival, concerti, sagre e attività da venerdì a domenica.",
+    path: WEEKEND_EVERGREEN_INTENT.path,
+    title: WEEKEND_EVERGREEN_INTENT.seoTitle,
+    h1: WEEKEND_EVERGREEN_INTENT.h1,
+    description: WEEKEND_EVERGREEN_INTENT.metaDescription,
   },
   settimana: {
     path: "/eventi?date=settimana",
@@ -92,10 +95,21 @@ export function getDateLandingContext(
 ) {
   if (dateKey === "weekend") {
     const weekend = rollingWeekendRange(from);
+    const longPhrase = weekendLongDatePhrase(
+      weekend.fridayYmd,
+      weekend.sundayYmd,
+    );
+    const shortPhrase = weekendShortDatePhrase(
+      weekend.fridayYmd,
+      weekend.sundayYmd,
+    );
     return {
       range: { start: weekend.start, end: weekend.end },
-      datePhrase: weekendLongDatePhrase(weekend.fridayYmd, weekend.sundayYmd),
-      metaDescription: `Cosa fare in Sardegna da ${weekendLongDatePhrase(weekend.fridayYmd, weekend.sundayYmd)}: sagre, concerti e appuntamenti su EVERAS.`,
+      datePhrase: longPhrase,
+      shortDatePhrase: shortPhrase,
+      h1: `Eventi in Sardegna questo weekend, ${shortPhrase}`,
+      title: `Eventi Sardegna questo weekend | ${shortPhrase}`,
+      metaDescription: `Sagre, concerti, festival e attività in Sardegna da ${longPhrase}. Scopri cosa fare questo weekend su EVERAS.`,
     };
   }
 
@@ -104,13 +118,25 @@ export function getDateLandingContext(
     dateKey === "oggi" ? todayYmd : addDaysYmd(todayYmd, 1);
   const range = romeDayRange(targetYmd);
   const datePhrase = formatRomeLongDay(targetYmd);
+
+  if (dateKey === "oggi") {
+    return {
+      range,
+      datePhrase,
+      shortDatePhrase: datePhrase,
+      h1: OGGI_INTENT.h1,
+      title: OGGI_INTENT.seoTitle,
+      metaDescription: `Cosa fare oggi in Sardegna (${datePhrase}): eventi, sagre, concerti e attività aggiornati su EVERAS.`,
+    };
+  }
+
   return {
     range,
     datePhrase,
-    metaDescription:
-      dateKey === "oggi"
-        ? `Cosa fare in Sardegna ${datePhrase}: eventi, sagre e concerti aggiornati su EVERAS.`
-        : `Eventi in Sardegna ${datePhrase}: programma, città e dettagli su EVERAS.`,
+    shortDatePhrase: datePhrase,
+    h1: DOMANI_INTENT.h1,
+    title: DOMANI_INTENT.seoTitle,
+    metaDescription: `Eventi in Sardegna domani (${datePhrase}): programma per città, sagre e spettacoli su EVERAS.`,
   };
 }
 
@@ -157,4 +183,11 @@ export function getMonthRange(year: number, monthIndex: number) {
   const start = new Date(year, monthIndex, 1);
   const end = new Date(year, monthIndex + 1, 1);
   return { start, end };
+}
+
+export function getYearRange(year: number) {
+  return {
+    start: new Date(year, 0, 1),
+    end: new Date(year + 1, 0, 1),
+  };
 }

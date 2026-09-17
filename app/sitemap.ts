@@ -6,7 +6,7 @@ import { categories } from "@/src/data/categories";
 import { eventCategorySlugs } from "@/src/lib/event-categories";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
-import { upcomingCalendarMonths } from "@/src/lib/seo/calendar";
+import { upcomingCalendarMonths, calendarYears } from "@/src/lib/seo/calendar";
 import { CULTURE_HUB_PATH, CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
 import {
   CULTURA_ARTICLES,
@@ -96,6 +96,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    ...calendarYears().map((year) => ({
+      url: `${SITE_URL}${year.path}`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    })),
     ...upcomingCalendarMonths(8).map((month) => ({
       url: `${SITE_URL}${month.path}`,
       changeFrequency: "daily" as const,

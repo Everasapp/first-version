@@ -16,6 +16,8 @@ import {
   type CalendarWeekend,
 } from "@/src/lib/seo/weekends";
 import { absoluteUrl, landingRobots } from "@/src/lib/seo/site";
+import { DATED_WEEKEND_POLICY } from "@/src/lib/seo/landing-intents";
+import { temporalExploreLinks, dedupeLinks } from "@/src/lib/seo/internal-links";
 import {
   pickWeekendPosterUrls,
   WEEKEND_MOSAIC_MIN_POSTERS,
@@ -23,6 +25,7 @@ import {
   WEEKEND_OG_TYPE,
   weekendOgPath,
 } from "@/src/lib/seo/weekend-mosaic";
+import { buildLandingStats } from "@/src/lib/seo/landing-copy";
 
 export function buildWeekendLandingMetadata(
   weekend: CalendarWeekend,
@@ -67,36 +70,53 @@ export default async function WeekendLandingPage({
     range: { start: weekend.start, end: weekend.end },
   });
 
+  const stats = buildLandingStats(events);
   const highlights = formatEventHighlightList(
     events.slice(0, 4).map((event) => event.title),
   );
   const posterUrls = pickWeekendPosterUrls(events);
   const mosaicSrc = weekendOgPath(weekend.slug, events.length);
-  const paragraphs = highlights
-    ? [
-        weekend.paragraphs[0],
-        `Tra gli appuntamenti in programma: ${highlights}.`,
-        weekend.paragraphs[2],
-      ]
-    : weekend.paragraphs;
+
+  const intro =
+    stats.total === 0
+      ? `Per il weekend ${weekend.dateLabel} non ci sono ancora eventi pubblicati. Per il fine settimana in corso apri ${DATED_WEEKEND_POLICY.evergreenLabel}.`
+      : `Nel weekend ${weekend.dateLabel} trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} in Sardegna su EVERAS${
+          stats.topCities.length
+            ? `, con più presenza a ${stats.topCities
+                .slice(0, 3)
+                .map((city) => city.name)
+                .join(", ")}`
+            : ""
+        }.`;
+
+  const paragraphs = [
+    weekend.paragraphs[0],
+    ...(highlights
+      ? [`Tra gli appuntamenti in programma: ${highlights}.`]
+      : []),
+    weekend.paragraphs[1],
+    weekend.paragraphs[2],
+  ];
 
   const faqs = [
     {
       question: `Cosa fare in Sardegna nel weekend ${weekend.dateLabel}?`,
-      answer: `Su EVERAS trovi sagre, concerti e feste paese in programma da venerdì a domenica, con comune, orario e locandina.`,
+      answer:
+        stats.total > 0
+          ? `In questa pagina: ${stats.total} appuntamenti con date fisse ${weekend.shortLabel}. Apri la scheda per comune, orario e ingresso.`
+          : `Quando sono pubblicati compaiono qui. Per il weekend attuale usa ${DATED_WEEKEND_POLICY.evergreenLabel}.`,
     },
     {
       question: "Questa pagina è diversa da Eventi weekend?",
-      answer:
-        "Eventi weekend mostra sempre il fine settimana in corso. Questa pagina resta legata a queste date, così puoi aprirla anche nei giorni prima.",
+      answer: `${DATED_WEEKEND_POLICY.evergreenLabel} mostra sempre il fine settimana in corso. Questa pagina resta legata a ${weekend.shortLabel}, così puoi consultarla anche come riferimento datato.`,
     },
   ];
 
   return (
     <EventLandingView
-      eyebrow="Fine settimana"
+      eyebrow="Fine settimana datato"
       h1={weekend.h1}
-      intro={weekend.description}
+      intro={intro}
       paragraphs={paragraphs}
       events={events}
       errorMessage={error?.message}
@@ -114,11 +134,26 @@ export default async function WeekendLandingPage({
         { name: weekend.shortLabel },
       ]}
       faqs={faqs}
-      relatedLinks={[
+      quickLinks={[
+        {
+          href: DATED_WEEKEND_POLICY.evergreenHref,
+          label: DATED_WEEKEND_POLICY.evergreenLabel,
+        },
+        ...stats.topCities.slice(0, 4).map((city) => ({
+          href: city.href,
+          label: city.name,
+        })),
+      ]}
+      relatedLinks={dedupeLinks([
+        {
+          href: DATED_WEEKEND_POLICY.evergreenHref,
+          label: DATED_WEEKEND_POLICY.evergreenLabel,
+        },
+        ...temporalExploreLinks(weekend.path),
         ...sagreExploreLinks(),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),
-      ].filter((link) => link.href !== weekend.path)}
+      ]).filter((link) => link.href !== weekend.path)}
       jsonLd={[
         collectionPageSchema({
           name: weekend.h1,

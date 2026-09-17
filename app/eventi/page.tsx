@@ -23,6 +23,7 @@ import { eventMatchesQuery } from "@/src/utils/nearby-city";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { getDateRange, formatSearchDateLabel } from "@/src/lib/seo/dateRange";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
+import { EVENTI_CATALOG_INTENT } from "@/src/lib/seo/landing-intents";
 import {
   absoluteUrl,
   defaultOgImages,
@@ -40,23 +41,20 @@ type EventsPageProps = {
 };
 
 const eventsListingMetadata: Metadata = {
-  title: "Eventi in Sardegna",
-  description:
-    "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data. Concerti, sagre, mostre e appuntamenti su EVERAS.",
-  alternates: { canonical: "/eventi" },
+  title: EVENTI_CATALOG_INTENT.seoTitle,
+  description: EVENTI_CATALOG_INTENT.metaDescription,
+  alternates: { canonical: EVENTI_CATALOG_INTENT.canonical },
   openGraph: {
-    title: "Eventi in Sardegna | EVERAS",
-    description:
-      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
-    url: "/eventi",
+    title: `${EVENTI_CATALOG_INTENT.seoTitle} | EVERAS`,
+    description: EVENTI_CATALOG_INTENT.metaDescription,
+    url: EVENTI_CATALOG_INTENT.path,
     type: "website",
     images: defaultOgImages(),
   },
   twitter: {
     card: "summary_large_image",
-    title: "Eventi in Sardegna | EVERAS",
-    description:
-      "Esplora tutti gli eventi in Sardegna: filtra per città, categoria e data.",
+    title: `${EVENTI_CATALOG_INTENT.seoTitle} | EVERAS`,
+    description: EVENTI_CATALOG_INTENT.metaDescription,
     images: defaultOgImages().map((image) => image.url),
   },
 };
@@ -205,7 +203,7 @@ export default async function EventsPage({
           ? selectedCategoryName
           : selectedDateLabel
             ? `Eventi · ${selectedDateLabel}`
-            : "Eventi in Sardegna";
+            : EVENTI_CATALOG_INTENT.h1;
 
   const dateRange = getDateRange(selectedDate);
 

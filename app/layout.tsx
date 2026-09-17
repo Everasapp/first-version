@@ -36,11 +36,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.everas.it"),
   title: {
-    default: "Eventi in Sardegna: concerti, sagre e festival | EVERAS",
+    default: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
     template: "%s | EVERAS",
   },
   description:
-    "Scopri cosa fare in Sardegna: concerti, sagre, festival, spettacoli, sport e appuntamenti in tutta l'isola.",
+    "EVERAS è la piattaforma per scoprire eventi, sagre, concerti, workshop e attività in tutta la Sardegna. Cerca per giorno, città o interesse.",
   applicationName: "EVERAS",
   alternates: {
     canonical: "/",
@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     "google-adsense-account": "ca-pub-5513319548780658",
   },
   openGraph: {
-    title: "Eventi in Sardegna: concerti, sagre e festival | EVERAS",
+    title: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
     description:
-      "Scopri cosa fare in Sardegna: concerti, sagre, festival, spettacoli, sport e appuntamenti in tutta l'isola.",
+      "Scopri eventi, sagre, concerti, workshop e attività in tutta la Sardegna. Cerca per giorno, città o interesse su EVERAS.",
     url: "/",
     siteName: "EVERAS",
     locale: "it_IT",
@@ -76,9 +76,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Eventi in Sardegna | EVERAS",
+    title: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
     description:
-      "Scopri concerti, sagre, festival e appuntamenti in tutta la Sardegna.",
+      "Scopri eventi, sagre, concerti, workshop e attività in tutta la Sardegna.",
     images: ["/og.jpg?v=20260811g"],
   },
 };

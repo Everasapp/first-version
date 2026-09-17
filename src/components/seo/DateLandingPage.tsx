@@ -25,7 +25,7 @@ import {
   landingRobots,
 } from "@/src/lib/seo/site";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
-import { dedupeLinks } from "@/src/lib/seo/internal-links";
+import { dedupeLinks, temporalExploreLinks } from "@/src/lib/seo/internal-links";
 
 type DateLandingPageProps = {
   dateKey: Exclude<DateLandingKey, "settimana">;
@@ -37,23 +37,25 @@ export function buildDateLandingMetadata(
 ): Metadata {
   const meta = DATE_LANDING_META[dateKey];
   const context = getDateLandingContext(dateKey);
+  const title = context.title ?? meta.title;
+  const description = context.metaDescription;
   return {
-    title: meta.title,
-    description: context.metaDescription,
+    title,
+    description,
     robots:
       eventCount === undefined ? undefined : landingRobots(eventCount),
     alternates: { canonical: meta.path },
     openGraph: {
-      title: `${meta.title} | EVERAS`,
-      description: context.metaDescription,
+      title: `${title} | EVERAS`,
+      description,
       url: meta.path,
       type: "website",
       images: defaultOgImages(),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${meta.title} | EVERAS`,
-      description: context.metaDescription,
+      title: `${title} | EVERAS`,
+      description,
       images: defaultOgImages().map((image) => image.url),
     },
   };
@@ -66,17 +68,23 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
     date: dateKey,
   });
   const stats = buildLandingStats(events);
+  const highlightTitles =
+    dateKey === "weekend"
+      ? events.slice(0, 5).map((event) => event.title)
+      : [];
   const editorial = buildDateLandingEditorial({
     dateKey,
     stats,
     datePhrase: context.datePhrase,
+    highlightTitles,
   });
   const faqs = buildDateLandingFaqs(dateKey, stats, context.datePhrase);
   const { quickLinks, relatedLinks } = buildDateLandingLinks(dateKey, stats);
+  const h1 = context.h1 ?? meta.h1;
 
   return (
     <EventLandingView
-      h1={meta.h1}
+      h1={h1}
       subtitle={editorial.subtitle}
       intro={editorial.intro}
       paragraphs={editorial.paragraphs}
@@ -85,29 +93,30 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi", href: "/eventi" },
-        { name: meta.h1 },
+        { name: h1 },
       ]}
       faqs={faqs}
       quickLinks={quickLinks}
       relatedLinks={dedupeLinks([
+        ...temporalExploreLinks(meta.path),
         ...relatedLinks,
-        ...weekendExploreLinks(3),
+        ...(dateKey === "weekend" ? [] : weekendExploreLinks(2)),
       ])}
       jsonLd={[
         collectionPageSchema({
-          name: meta.h1,
+          name: h1,
           description: context.metaDescription,
           url: absoluteUrl(meta.path),
         }),
         eventsItemListSchema({
-          name: meta.h1,
+          name: h1,
           path: meta.path,
           events,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
           { name: "Eventi", path: "/eventi" },
-          { name: meta.h1, path: meta.path },
+          { name: h1, path: meta.path },
         ]),
         faqPageSchema(faqs),
       ].filter((item): item is Record<string, unknown> => item != null)}

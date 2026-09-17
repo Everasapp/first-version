@@ -5,7 +5,7 @@ import {
   cityEventsPath,
 } from "@/src/lib/seo/paths";
 import type { DateLandingKey } from "@/src/lib/seo/dateRange";
-import { currentMonthLanding } from "@/src/lib/seo/calendar";
+import { currentMonthLanding, currentYearLanding } from "@/src/lib/seo/calendar";
 import { formatEventHighlightList } from "@/src/lib/seo/weekends";
 
 export type LandingLink = { href: string; label: string };
@@ -89,23 +89,6 @@ export function buildLandingStats(
   return { total: events.length, freeCount, topCities, topCategories };
 }
 
-function citySentence(stats: LandingStats) {
-  if (stats.topCities.length === 0) return null;
-  const names = stats.topCities.slice(0, 3).map((city) => city.name);
-  if (names.length === 1) {
-    return `${names[0]} è la località con più appuntamenti in questo elenco.`;
-  }
-  return `${joinIt(names)} sono tra le località con più eventi in programma.`;
-}
-
-function categorySentence(stats: LandingStats) {
-  if (stats.topCategories.length === 0) return null;
-  const names = stats.topCategories
-    .slice(0, 3)
-    .map((category) => category.name.toLocaleLowerCase("it"));
-  return `Tra le tipologie più presenti trovi ${joinIt(names)}.`;
-}
-
 function freeSentence(stats: LandingStats) {
   if (stats.freeCount <= 0) return null;
   if (stats.freeCount === stats.total) {
@@ -119,58 +102,95 @@ export function buildDateLandingEditorial(input: {
   stats: LandingStats;
   /** e.g. «venerdì 18 a domenica 20 settembre 2026» or «domenica 13 settembre 2026» */
   datePhrase: string;
+  highlightTitles?: string[];
 }) {
-  const { dateKey, stats, datePhrase } = input;
-  const when =
-    dateKey === "oggi"
-      ? "oggi"
-      : dateKey === "domani"
-        ? "domani"
-        : "questo weekend";
+  const { dateKey, stats, datePhrase, highlightTitles = [] } = input;
+  const cityNames = stats.topCities.slice(0, 3).map((city) => city.name);
+  const categoryNames = stats.topCategories
+    .slice(0, 3)
+    .map((category) => category.name.toLocaleLowerCase("it"));
+  const citiesJoined = cityNames.length ? joinIt(cityNames) : null;
+  const categoriesJoined = categoryNames.length ? joinIt(categoryNames) : null;
+  const highlightsJoined = formatEventHighlightList(highlightTitles);
 
-  const subtitle =
-    dateKey === "weekend"
-      ? `Scopri cosa fare in Sardegna da ${datePhrase}.`
-      : dateKey === "oggi"
-        ? `Cosa fare in Sardegna ${datePhrase}.`
-        : `Il programma di ${datePhrase} in tutta l’isola.`;
+  if (dateKey === "oggi") {
+    const subtitle = `Programma di ${datePhrase} in tutta l’isola.`;
+    if (stats.total === 0) {
+      return {
+        subtitle,
+        intro:
+          "Per oggi non ci sono ancora eventi pubblicati su EVERAS. Controlla domani, il weekend o il calendario del mese: aggiorniamo continuamente date e locandine.",
+        paragraphs: [
+          "Nel frattempo puoi aprire Eventi in Sardegna domani, Eventi in Sardegna questo weekend o gli eventi gratuiti, e tornare qui quando il programma della giornata si riempie.",
+        ],
+      };
+    }
 
-  const intro =
-    stats.total === 0
-      ? dateKey === "weekend"
-        ? `Per il weekend ${datePhrase} non ci sono ancora eventi pubblicati su EVERAS. Torna tra poco oppure esplora il calendario del mese e le guide alle feste più cercate.`
-        : `Per ${when} non ci sono ancora eventi pubblicati su EVERAS. Controlla domani, il weekend o il calendario mensile: aggiorniamo continuamente date e locandine da tutta la Sardegna.`
-      : dateKey === "weekend"
-        ? `Questo weekend in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} tra concerti, sagre, festival e appuntamenti culturali. L’elenco copre da ${datePhrase} e si aggiorna man mano che Comuni, Pro Loco e organizzatori pubblicano nuove date.`
-        : dateKey === "oggi"
-          ? `Oggi in Sardegna sono in programma ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} su EVERAS: concerti, sagre, cultura e tempo libero, con comune, orario e locandina sulla scheda.`
-          : `Domani in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} già pubblicati: scegli città e categoria, poi apri la scheda per luogo e dettagli pratici.`;
+    const intro = categoriesJoined
+      ? `Oggi in Sardegna trovi ${stats.total} ${stats.total === 1 ? "appuntamento" : "appuntamenti"} tra ${categoriesJoined}.${citiesJoined ? ` Scopri eventi a ${citiesJoined} e scegli cosa fare vicino a te.` : " Apri la scheda per orario, comune e ingresso."}`
+      : `Oggi in Sardegna sono in programma ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} su EVERAS${citiesJoined ? `, con più presenza a ${citiesJoined}` : ""}. Ogni scheda riporta comune, orario e locandina.`;
+
+    const paragraphs: string[] = [];
+    const free = freeSentence(stats);
+    if (free) paragraphs.push(free);
+    paragraphs.push(
+      "Confronta con il programma di domani e con il weekend se stai organizzando più di una sera. EVERAS indica dove trovare il biglietto quando l’organizzatore lo ha pubblicato: non sostituisce la biglietteria ufficiale.",
+    );
+    return { subtitle, intro, paragraphs };
+  }
+
+  if (dateKey === "domani") {
+    const subtitle = `Pianifica ${datePhrase} con date e luoghi aggiornati.`;
+    if (stats.total === 0) {
+      return {
+        subtitle,
+        intro:
+          "Per domani non ci sono ancora eventi pubblicati su EVERAS. Guarda cosa c’è oggi, prepara il weekend oppure apri il mese in corso mentre il calendario si aggiorna.",
+        paragraphs: [
+          "Le schede compaiono qui appena Comuni, Pro Loco e organizzatori pubblicano nuove date. Puoi anche esplorare sagre e concerti dalle categorie e tornare a questa pagina più tardi.",
+        ],
+      };
+    }
+
+    const intro = citiesJoined
+      ? `Domani in Sardegna il calendario conta ${stats.total} ${stats.total === 1 ? "evento" : "eventi"}${categoriesJoined ? ` tra ${categoriesJoined}` : ""}. Le località con più appuntamenti in elenco sono ${citiesJoined}.`
+      : `Domani in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento già pubblicato" : "eventi già pubblicati"}${categoriesJoined ? ` tra ${categoriesJoined}` : ""}. Usa le schede per luogo, orario e dettagli pratici.`;
+
+    const paragraphs: string[] = [];
+    const free = freeSentence(stats);
+    if (free) paragraphs.push(free);
+    paragraphs.push(
+      "Se la giornata di oggi è già piena, questa pagina serve a chiudere il programma di domani prima di partire. Quando il fine settimana è vicino, passa anche a Eventi in Sardegna questo weekend per venerdì–domenica.",
+    );
+    return { subtitle, intro, paragraphs };
+  }
+
+  // weekend evergreen
+  const subtitle = `Da ${datePhrase} su tutta l’isola.`;
+  if (stats.total === 0) {
+    return {
+      subtitle,
+      intro: `Per il weekend ${datePhrase} non ci sono ancora eventi pubblicati su EVERAS. Torna tra poco oppure esplora il mese, le sagre e gli eventi gratuiti.`,
+      paragraphs: [
+        "Il fine settimana corrente si aggiorna in automatico: quando arrivano nuove locandine le trovi qui, senza dover cercare la pagina datata.",
+      ],
+    };
+  }
+
+  const intro = `Questo weekend in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} tra sagre, concerti, festival e attività.${categoriesJoined ? ` Tra le tipologie più presenti: ${categoriesJoined}.` : ""}${citiesJoined ? ` Più presenza a ${citiesJoined}.` : ""}`;
 
   const paragraphs: string[] = [];
-
-  if (stats.total > 0) {
-    const cities = citySentence(stats);
-    const cats = categorySentence(stats);
-    const free = freeSentence(stats);
-    const bodyParts = [cities, cats, free].filter(Boolean) as string[];
-    if (bodyParts.length > 0) {
-      paragraphs.push(bodyParts.join(" "));
-    }
-
+  const free = freeSentence(stats);
+  if (free) paragraphs.push(free);
+  if (highlightsJoined) {
+    paragraphs.push(`Tra gli appuntamenti in calendario: ${highlightsJoined}.`);
+  }
+  paragraphs.push(
+    "Questa è la landing evergreen del weekend in corso (venerdì–domenica). Per un fine settimana con date fisse usa le pagine datate del calendario; per oggi e domani restano le pagine dedicate. Apri la scheda per conferma di orario e ingresso.",
+  );
+  if (stats.total >= 8) {
     paragraphs.push(
-      dateKey === "weekend"
-        ? `Usa i collegamenti rapidi sotto per passare alle città e alle categorie con più presenza nel weekend, oppure apri oggi, domani e il mese in corso. Ogni scheda evento resta il punto di verità per orario, ingresso e come arrivare.`
-        : `Filtra per città o tipologia dai collegamenti rapidi, confronta con il weekend e con il mese in corso, e apri la scheda per conferma di orario e luogo. EVERAS non sostituisce il biglietto: indica dove trovarlo quando l’organizzatore lo ha pubblicato.`,
-    );
-
-    if (stats.total >= 8) {
-      paragraphs.push(
-        `Se stai organizzando un giro in giornata, parti dalle località in evidenza e verifica sulla mappa del comune come muoverti: in Sardegna i tempi di spostamento contano più delle distanze in chilometri.`,
-      );
-    }
-  } else {
-    paragraphs.push(
-      `Nel frattempo puoi guardare gli eventi del weekend, il calendario mensile o le categorie più cercate — sagre, musica, famiglie — e tornare qui quando il programma si riempie.`,
+      "Se stai organizzando un giro in giornata, parti dalle località in evidenza e verifica i tempi di spostamento: in Sardegna contano più dei chilometri sulla carta.",
     );
   }
 
@@ -215,10 +235,11 @@ export function buildDateLandingLinks(
   stats: LandingStats,
 ): { quickLinks: LandingLink[]; relatedLinks: LandingLink[] } {
   const month = currentMonthLanding();
+  const year = currentYearLanding();
   const dateLinks: LandingLink[] = [
-    { href: "/eventi-oggi", label: "Eventi oggi" },
-    { href: "/eventi-domani", label: "Eventi domani" },
-    { href: "/eventi-weekend", label: "Eventi weekend" },
+    { href: "/eventi-oggi", label: "Eventi in Sardegna oggi" },
+    { href: "/eventi-domani", label: "Eventi in Sardegna domani" },
+    { href: "/eventi-weekend", label: "Eventi in Sardegna questo weekend" },
   ].filter((link) => {
     if (dateKey === "oggi") return link.href !== "/eventi-oggi";
     if (dateKey === "domani") return link.href !== "/eventi-domani";
@@ -238,13 +259,17 @@ export function buildDateLandingLinks(
 
   const relatedLinks: LandingLink[] = [
     ...dateLinks,
-    { href: "/eventi-gratuiti", label: "Eventi gratuiti" },
-    { href: month.path, label: `Eventi ${month.name} ${month.year}` },
-    { href: "/eventi-sardegna", label: "Calendario eventi Sardegna" },
-    { href: "/eventi", label: "Tutti gli eventi" },
+    { href: "/eventi-gratuiti", label: "Eventi gratuiti in Sardegna" },
+    {
+      href: month.path,
+      label: `Eventi in Sardegna a ${month.name.toLocaleLowerCase("it")} ${month.year}`,
+    },
+    { href: year.path, label: year.title },
+    { href: "/eventi-sardegna", label: "Calendario eventi in Sardegna" },
+    { href: "/eventi-sardegna/sagre", label: "Sagre in Sardegna" },
+    { href: "/eventi", label: "Cerca e filtra tutti gli eventi" },
     { href: "/eventi/sagre-tradizioni", label: "Sagre e tradizioni" },
-    { href: "/eventi/musica-concerti", label: "Musica e spettacoli" },
-    { href: "/eventi/famiglie-bambini", label: "Famiglie e bambini" },
+    { href: "/eventi/musica-concerti", label: "Concerti e spettacoli" },
   ];
 
   return { quickLinks, relatedLinks };

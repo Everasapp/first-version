@@ -1,5 +1,5 @@
 import { categories } from "@/src/data/categories";
-import { currentMonthLanding } from "@/src/lib/seo/calendar";
+import { currentMonthLanding, currentYearLanding } from "@/src/lib/seo/calendar";
 import type { LandingLink, LandingStats } from "@/src/lib/seo/landing-copy";
 import {
   categoryEventsPath,
@@ -16,17 +16,58 @@ export function dedupeLinks(links: LandingLink[]): LandingLink[] {
 
 /** Hub temporali e calendario — sempre sicuri da linkare. */
 export function coreDateLinks(excludeHref?: string): LandingLink[] {
+  return temporalExploreLinks(excludeHref);
+}
+
+/**
+ * Anchor text descrittivi per il cluster temporale (CTR + chiarezza intent).
+ * Non include landing tipicamente noindex a zero eventi: i link puntano a hub evergreen.
+ */
+export function temporalExploreLinks(excludeHref?: string): LandingLink[] {
   const month = currentMonthLanding();
+  const year = currentYearLanding();
   return dedupeLinks(
     [
-      { href: "/eventi-oggi", label: "Eventi oggi" },
-      { href: "/eventi-domani", label: "Eventi domani" },
-      { href: "/eventi-weekend", label: "Eventi weekend" },
-      { href: "/eventi-gratuiti", label: "Eventi gratuiti" },
-      { href: month.path, label: `Eventi ${month.name} ${month.year}` },
-      { href: "/eventi-sardegna", label: "Calendario eventi Sardegna" },
-      { href: "/eventi", label: "Tutti gli eventi" },
-      { href: "/categorie", label: "Categorie" },
+      {
+        href: "/eventi-oggi",
+        label: "Eventi in Sardegna oggi",
+      },
+      {
+        href: "/eventi-domani",
+        label: "Eventi in Sardegna domani",
+      },
+      {
+        href: "/eventi-weekend",
+        label: "Eventi in Sardegna questo weekend",
+      },
+      {
+        href: month.path,
+        label: `Eventi in Sardegna a ${month.name.toLocaleLowerCase("it")} ${month.year}`,
+      },
+      {
+        href: year.path,
+        label: year.title,
+      },
+      {
+        href: "/eventi-gratuiti",
+        label: "Eventi gratuiti in Sardegna",
+      },
+      {
+        href: "/eventi-sardegna",
+        label: "Calendario eventi in Sardegna",
+      },
+      {
+        href: "/eventi-sardegna/sagre",
+        label: "Sagre in Sardegna",
+      },
+      {
+        href: "/eventi/musica-concerti",
+        label: "Concerti e spettacoli in Sardegna",
+      },
+      {
+        href: "/eventi",
+        label: "Cerca e filtra tutti gli eventi",
+      },
     ].filter((link) => link.href !== excludeHref),
   );
 }
@@ -45,7 +86,11 @@ export function linksFromLandingStats(
     /** Se impostato, i chip categoria puntano a /eventi/{city}/{category}. */
     cityNameForCategories?: string;
   } = {},
-): { quickLinks: LandingLink[]; relatedCityLinks: LandingLink[]; relatedCategoryLinks: LandingLink[] } {
+): {
+  quickLinks: LandingLink[];
+  relatedCityLinks: LandingLink[];
+  relatedCategoryLinks: LandingLink[];
+} {
   const maxCities = options.maxCities ?? 5;
   const maxCategories = options.maxCategories ?? 5;
 

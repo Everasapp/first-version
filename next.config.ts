@@ -90,6 +90,11 @@ const nextConfig: NextConfig = {
         destination: "/cultura-sarda/nord-sardegna/stintino",
         permanent: true,
       },
+      {
+        source: "/calendario-eventi-sardegna-2026",
+        destination: "/eventi-sardegna/2026",
+        permanent: true,
+      },
     ];
   },
 };

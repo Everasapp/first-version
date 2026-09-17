@@ -11,6 +11,7 @@ import {
 import {
   currentMonthLanding,
   sagreExploreLinks,
+  yearLanding,
 } from "@/src/lib/seo/calendar";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
@@ -112,6 +113,7 @@ export default async function SagreHubPage() {
   );
   const error = categoryError;
   const month = currentMonthLanding();
+  const year = yearLanding(month.year);
   const weekends = weekendExploreLinks(2);
 
   const geoChips = [
@@ -146,6 +148,7 @@ export default async function SagreHubPage() {
       faqs={SAGRE_FAQS}
       quickLinks={[
         { href: "/eventi-weekend", label: "Weekend" },
+        { href: year.path, label: `Calendario ${year.year}` },
         { href: month.path, label: `Sagre di ${month.name}` },
         { href: "/eventi/sagre-tradizioni", label: "Categoria sagre" },
         { href: "/eventi-gratuiti", label: "Gratuiti" },
