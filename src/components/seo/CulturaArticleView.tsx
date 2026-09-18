@@ -48,13 +48,13 @@ export default function CulturaArticleView({
               <Breadcrumbs
                 items={[
                   { name: "Home", href: "/" },
-                  { name: "Cultura Sarda", href: CULTURA_ARTICLES_HUB_PATH },
+                  { name: "Storia e tradizioni", href: CULTURA_ARTICLES_HUB_PATH },
                   { name: article.h1 },
                 ]}
               />
 
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Cultura Sarda · {formatPublishedAt(article.publishedAt)}
+                Storia e tradizioni · {formatPublishedAt(article.publishedAt)}
               </p>
               <h1 className="mt-2 max-w-4xl text-3xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 {article.h1}

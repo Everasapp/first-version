@@ -137,7 +137,7 @@ export default function Header() {
             href="/cultura"
             className="hidden h-9 shrink-0 touch-manipulation items-center justify-center rounded-lg bg-[#075EAE] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#E67E22] active:bg-[#C96A1A]"
           >
-            Cultura Sarda
+            Storia e tradizioni
           </Link>
 
           {isAuthenticated && isOrganizerAccount ? (

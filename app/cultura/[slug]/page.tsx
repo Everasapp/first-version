@@ -97,7 +97,7 @@ export default async function CulturaArticlePage({
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Cultura Sarda", path: CULTURA_ARTICLES_HUB_PATH },
+          { name: "Storia e tradizioni", path: CULTURA_ARTICLES_HUB_PATH },
           { name: article.h1, path: article.path },
         ]),
         ...(faqSchema ? [faqSchema] : []),
