@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/discover-events",
-      "schedule": "0 6 * * *"
+      "schedule": "25 14 * * *"
     },
     {
       "path": "/api/cron/ensure-recurring-events",
