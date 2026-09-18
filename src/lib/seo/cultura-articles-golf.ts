@@ -1,29 +1,17 @@
 import type { CulturaArticle } from "@/src/lib/seo/cultura-articles";
 import type { CulturePhoto } from "@/src/lib/seo/cultura-towns";
 
-const CC_BY_SA_4 = {
-  license: "CC BY-SA 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-} as const;
-const CC_BY_SA_3 = {
-  license: "CC BY-SA 3.0",
-  licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-} as const;
-
-function wikiPhoto(
-  src: string,
-  alt: string,
-  author: string,
-  filePage: string,
-  license: { license: string; licenseUrl: string },
-): CulturePhoto {
+function originalPhoto(src: string, alt: string): CulturePhoto {
   return {
     src,
     alt,
     credit: {
-      author,
-      ...license,
-      sourceUrl: `https://commons.wikimedia.org/wiki/${filePage}`,
+      author: "EVERAS",
+      license: "Illustrazione originale",
+      licenseUrl: "https://www.everas.it/cultura/golf-in-sardegna",
+      sourceUrl: "https://www.everas.it/cultura/golf-in-sardegna",
+      sourceLabel: "Storia e tradizioni",
+      creditPrefix: "Illustrazione",
     },
   };
 }
@@ -78,12 +66,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Pevero Golf Club, Arzachena",
-        photo: wikiPhoto(
-          "/images/cultura/arzachena-panorama.webp",
-          "Arzachena tra i graniti della Gallura, comune del Pevero Golf Club",
-          "Gianni Careddu",
-          "File:Arzachena,_panorama_(01).jpg",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-pevero.webp",
+          "Green e bunker del Pevero Golf Club tra granito, macchia e il mare della Costa Smeralda",
         ),
         paragraphs: [
           "Il Pevero è il campo che il resto d’Europa associa alla Sardegna: 18 buche, par 72, disegnato da Robert Trent Jones tra Cala di Volpe e il golfo del Pevero, nel comune di Arzachena. Granito, laghetti, macchia, maestrale. Non è “Porto Cervo” come indirizzo da cartolina: è territorio di Arzachena, lo stesso dei circoli funerari di Li Muri e del nuraghe Albucciu. Chi arriva solo per il tee time e se ne va senza il paese perde metà della costa.",
@@ -92,12 +77,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Golf Club Puntaldia, San Teodoro",
-        photo: wikiPhoto(
-          "/images/cultura/san-teodoro-panorama.webp",
-          "San Teodoro in Gallura, comune del Golf Club Puntaldia",
-          "Azotoliquido",
-          "File:SanTeodoro_Panorama.JPG",
-          CC_BY_SA_3,
+        photo: originalPhoto(
+          "/images/cultura/golf-puntaldia.webp",
+          "Buca sul mare del Golf Club Puntaldia a San Teodoro, con Tavolara sullo sfondo",
         ),
         paragraphs: [
           "Puntaldia sta sul mare di San Teodoro: 9 buche tecniche tra macchia e baie, green con bunker e pendenze, vista sulle calette e, in barca, su Tavolara e Molara. Non è il 18 buche da classifica mondiale. È un campo da controllo della palla, a pochi minuti da La Cinta e da Cala Brandinchi.",
@@ -106,12 +88,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Botanic Golf Sacuba, Olbia",
-        photo: wikiPhoto(
-          "/images/cultura/olbia-marina.webp",
-          "La marina di Olbia, città del Botanic Golf Sacuba a località Enas",
-          "Gianni Careddu",
-          "File:Olbia,_marina_di_Olbia_(01).jpg",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-sacuba.webp",
+          "Green del Botanic Golf Sacuba tra sugheri e olivi nell’entroterra di Olbia",
         ),
         paragraphs: [
           "Sacuba è il campo più vicino all’aeroporto di Olbia: località Enas, valle verso Pedres, 9 buche par 35 in un giardino botanico di lentisco, sughera, olivo e mirto. Solendra lo mette a circa 10 minuti da OLB. Non è Costa Smeralda da villa. È entroterra di Olbia, con il castello di Pedres e le tombe di giganti a un tiro di auto, Tavolara in prospettiva.",
@@ -120,12 +99,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Florinas Golf, verso Sassari",
-        photo: wikiPhoto(
-          "/images/cultura/florinas-panorama.webp",
-          "Florinas nel Logudoro, comune del Florinas Golf",
-          "Gianni Careddu",
-          "File:Florinas,_panorama_(02).jpg",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-florinas.webp",
+          "Campo da golf di Florinas tra le colline del Logudoro, green e bunker senza mare",
         ),
         paragraphs: [
           "Florinas è l’unico dei nove che non vende il mare in copertina. Località Cantaru Ena, colline del Logudoro, 9 buche più un tracciato pitch & putt. Solendra lo dà a circa 30 minuti da Alghero e a breve da Sassari. Green fee da circolo, non da Costa Smeralda. Serve a chi sta in città o atterra ad Alghero e non vuole attraversare l’isola.",
@@ -134,12 +110,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Is Arenas, Narbolia",
-        photo: wikiPhoto(
-          "/images/cultura/cabras-panorama.webp",
-          "Cabras e il Sinis, territorio vicino alla pineta di Is Arenas a Narbolia",
-          "Gianni Careddu",
-          "File:Cabras_-_Panorama_(02).JPG",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-is-arenas.webp",
+          "Fairway di Is Arenas tra pini e dune sulla costa ovest di Narbolia",
         ),
         paragraphs: [
           "Is Arenas è il campo della costa ovest: 18 buche, par 72, pineta e dune nel comune di Narbolia, provincia di Oristano. Robert von Hagge tra i pini, vento, un tratto di litorale ancora poco costruito. Da Cagliari è più di un’ora; da Alghero Solendra indica 90–105 minuti. Non è un appendice di Oristano città: è pineta, tra il Sinis e la Planargia.",
@@ -148,12 +121,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Is Molas Golf Club, Pula",
-        photo: wikiPhoto(
-          "/images/cultura/pula-panorama.webp",
-          "Pula nel Sulcis, comune di Is Molas a Santa Margherita",
-          "Dirgela",
-          "File:Pula_panorama.jpg",
-          CC_BY_SA_3,
+        photo: originalPhoto(
+          "/images/cultura/golf-is-molas.webp",
+          "Percorso da torneo di Is Molas a Pula, green, bunker e colline del Sulcis verso il mare",
         ),
         paragraphs: [
           "Is Molas sta a Santa Margherita di Pula: 18 buche più un nove, uno dei percorsi da torneo più citati in Italia, tra le ultime colline del Sulcis e il mare. Da Cagliari 40–50 minuti. Il paese vero è Pula, con Nora a un passo. Il golf qui non è un’isola: è la stessa costa delle spiagge, del sito fenicio-romano e dei resort di Santa Margherita.",
@@ -162,12 +132,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Tanka Golf Club, Villasimius",
-        photo: wikiPhoto(
-          "/images/cultura/villasimius-panorama.webp",
-          "Villasimius nel Sarrabus, comune del Tanka Golf Club",
-          "Giamas",
-          "File:Villasimius3.jpg",
-          CC_BY_SA_3,
+        photo: originalPhoto(
+          "/images/cultura/golf-tanka.webp",
+          "Campo del Tanka Golf Club a Villasimius, green tra granito e macchia con il mare alle spalle",
         ),
         paragraphs: [
           "Tanka è il 18 buche del sud-est: par 70, Luigi Rota Caremoli, granito e macchia con il mare di Villasimius in fondo. Da Cagliari circa un’ora. Il comune è Villasimius, Capo Carbonara, le calette del Sarrabus. Quartu Sant’Elena sta sulla strada, se parti dal golfo degli Angeli.",
@@ -176,12 +143,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "Cagliari Golf Club, Quartu Sant’Elena",
-        photo: wikiPhoto(
-          "/images/cultura/quartu-sant-elena-panorama.webp",
-          "Quartu Sant’Elena, comune del Cagliari Golf Club a Flumini di Quartu",
-          "Gianni Careddu",
-          "File:Quartu_Sant'Elena_-_Costume_tradizionale_(09).JPG",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-cagliari.webp",
+          "Nove buche del Cagliari Golf Club a Flumini di Quartu, green accanto a uno specchio d’acqua",
         ),
         paragraphs: [
           "Il Cagliari Golf Club non è in centro Cagliari. Sta a Flumini di Quartu, via Bouganvillee, 9 buche par 36 più driving range, macchia e specchi d’acqua, 15–20 minuti da Cagliari e dall’aeroporto. È il campo urbano del sud: chi atterra a Elmas e ha un pomeriggio, spesso parte da qui.",
@@ -190,12 +154,9 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       },
       {
         title: "La Mora Bianca, Assemini",
-        photo: wikiPhoto(
-          "/images/cultura/assemini-panorama.webp",
-          "Assemini nel Campidano, comune di La Mora Bianca Golf & Country",
-          "Gianni Careddu",
-          "File:Assemini_-_Costume_tradizionale_(11).JPG",
-          CC_BY_SA_4,
+        photo: originalPhoto(
+          "/images/cultura/golf-mora-bianca.webp",
+          "Percorso corto di La Mora Bianca ad Assemini, green e bandiera nella campagna del Campidano",
         ),
         paragraphs: [
           "La Mora Bianca è il circolo di campagna a ridosso di Cagliari: Assemini, strada provinciale 2, azienda agricola della famiglia Vincis, driving range e un percorso corto (6 buche par 3, in crescita verso le 9). Non è Pevero. È il campo dove si impara e si allena, a 20 minuti da Elmas. Solendra lo mette tra i campi raggiungibili da Cagliari; il sito del club conferma Assemini, non la costa di Chia.",
