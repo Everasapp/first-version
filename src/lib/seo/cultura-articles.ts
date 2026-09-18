@@ -1,11 +1,14 @@
-import type { PhotoCredit } from "@/src/lib/seo/cultura-towns";
+import type { CulturePhoto, PhotoCredit } from "@/src/lib/seo/cultura-towns";
 import { CULTURA_PEOPLE_ARTICLES } from "@/src/lib/seo/cultura-articles-people";
+import { CULTURA_SPIAGGE_ARTICLES } from "@/src/lib/seo/cultura-articles-spiagge";
 
 export const CULTURA_ARTICLES_HUB_PATH = "/cultura";
 
 export type CulturaArticleSection = {
   title: string;
   paragraphs: string[];
+  /** Foto a tutta larghezza sotto il titolo, con credit e link alla sorgente. */
+  photo?: CulturePhoto;
 };
 
 export type CulturaArticle = {
@@ -35,9 +38,9 @@ export const CULTURA_ARTICLES_HUB = {
   title: "Cultura Sarda: storie, personaggi e territorio",
   h1: "Cultura Sarda",
   description:
-    "Approfondimenti sulla Sardegna: personaggi noti nel mondo, zona blu, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
+    "Approfondimenti sulla Sardegna: personaggi, zona blu, spiagge, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri, coste e spiagge - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -967,6 +970,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
     relatedEventSlugs: ["sardegna-cavalli-oristano-2026"],
     publishedAt: "2026-09-17",
   },
+  ...CULTURA_SPIAGGE_ARTICLES,
 ];
 
 export const CULTURA_ARTICLES: CulturaArticle[] = [

@@ -78,6 +78,15 @@ export default function CulturaArticleView({
                 <h2 className="text-2xl font-bold text-slate-900">
                   {section.title}
                 </h2>
+                {section.photo ? (
+                  <div className="mt-6">
+                    <ArticleFullPhoto
+                      src={section.photo.src}
+                      alt={section.photo.alt}
+                      credit={section.photo.credit}
+                    />
+                  </div>
+                ) : null}
                 {section.paragraphs.map((paragraph) => (
                   <p
                     key={paragraph.slice(0, 48)}
