@@ -1,4 +1,5 @@
 import type { CulturePhoto, PhotoCredit } from "@/src/lib/seo/cultura-towns";
+import { CULTURA_GOLF_ARTICLES } from "@/src/lib/seo/cultura-articles-golf";
 import { CULTURA_PEOPLE_ARTICLES } from "@/src/lib/seo/cultura-articles-people";
 import { CULTURA_SPIAGGE_ARTICLES } from "@/src/lib/seo/cultura-articles-spiagge";
 
@@ -38,9 +39,9 @@ export const CULTURA_ARTICLES_HUB = {
   title: "Storia e tradizioni: approfondimenti sulla Sardegna",
   h1: "Storia e tradizioni",
   description:
-    "Approfondimenti sulla Sardegna: personaggi, zona blu, spiagge, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
+    "Approfondimenti sulla Sardegna: personaggi, zona blu, spiagge, golf, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Questa sezione è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri, coste e spiagge - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Questa sezione è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri, coste, spiagge e golf - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
@@ -970,6 +971,7 @@ export const CULTURA_THEME_ARTICLES: CulturaArticle[] = [
     relatedEventSlugs: ["sardegna-cavalli-oristano-2026"],
     publishedAt: "2026-09-17",
   },
+  ...CULTURA_GOLF_ARTICLES,
   ...CULTURA_SPIAGGE_ARTICLES,
 ];
 
