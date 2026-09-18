@@ -35,12 +35,12 @@ export type CulturaArticle = {
 
 export const CULTURA_ARTICLES_HUB = {
   path: CULTURA_ARTICLES_HUB_PATH,
-  title: "Cultura Sarda: storie, personaggi e territorio",
-  h1: "Cultura Sarda",
+  title: "Storia e tradizioni: approfondimenti sulla Sardegna",
+  h1: "Storia e tradizioni",
   description:
     "Approfondimenti sulla Sardegna: personaggi, zona blu, spiagge, matriarcato, Ichnusa, collezioni mineralogiche e legami con guide paese ed eventi EVERAS.",
   paragraphs: [
-    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Cultura Sarda è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri, coste e spiagge - e poi aprire le schede dei comuni collegati.",
+    "Qui non trovi le guide paese per paese: quelle stanno in Scopri la Sardegna. Questa sezione è lo spazio per leggere l’isola a tema - personaggi, longevità, società, nomi antichi, musei, feste, mestieri, fiere equestri, coste e spiagge - e poi aprire le schede dei comuni collegati.",
     "Da Grazia Deledda a Francesco Cossiga, da Gramsci a Maria Carta e Emilio Lussu: storie che partono da un paese e arrivano al mondo, con link alle guide Everas.",
   ],
 } as const;
