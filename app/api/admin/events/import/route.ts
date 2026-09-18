@@ -152,7 +152,7 @@ export async function POST(request: Request) {
     try {
       const webp = await downloadAndOptimizeImage(event.imageUrl.trim());
       const slugBase = createSlug(title) || "evento";
-      const path = `imports/${auth.user.id}/${slugBase}-${Date.now()}.webp`;
+      const path = `${auth.user.id}/imports/${slugBase}-${Date.now()}.webp`;
       const { error: uploadError } = await auth.supabase.storage
         .from("event-images")
         .upload(path, webp, {

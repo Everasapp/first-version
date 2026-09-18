@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { discoverAndImportEventDrafts } from "@/src/lib/admin/discover-event-drafts";
 import { isCronAuthorized } from "@/src/lib/cron/auth";
 import { logCronRun } from "@/src/lib/cron/run-log";
-import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
+import {
+  createAdminClient,
+  getAdminKeyDiagnostics,
+  tryCreateAdminClient,
+} from "@/src/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,6 +62,7 @@ async function runDiscovery(triggeredBy: "cron" | "admin") {
 export async function GET(request: Request) {
   const startedAt = new Date();
   const adminClient = tryCreateAdminClient();
+  const keyDiagnostics = getAdminKeyDiagnostics();
 
   if (!isCronAuthorized(request)) {
     await logCronRun({
@@ -67,7 +72,10 @@ export async function GET(request: Request) {
       startedAt,
       summary: {
         hasCronSecret: Boolean(process.env.CRON_SECRET?.trim()),
-        hasServiceRole: Boolean(adminClient),
+        hasServiceRole: keyDiagnostics.bypassesRls,
+        serviceRoleFormat: keyDiagnostics.format,
+        serviceRoleClaim: keyDiagnostics.role,
+        serviceRoleSource: keyDiagnostics.source,
         hasVercelCronHeader:
           request.headers.get("x-vercel-cron") === "1",
         hasAuthorization: Boolean(request.headers.get("authorization")),
@@ -83,7 +91,10 @@ export async function GET(request: Request) {
     status: "started",
     startedAt,
     summary: {
-      hasServiceRole: Boolean(adminClient),
+      hasServiceRole: keyDiagnostics.bypassesRls,
+      serviceRoleFormat: keyDiagnostics.format,
+      serviceRoleClaim: keyDiagnostics.role,
+      serviceRoleSource: keyDiagnostics.source,
       hasCronSecret: Boolean(process.env.CRON_SECRET?.trim()),
       hasAdminUserId: Boolean(
         process.env.EVENT_DISCOVERY_ADMIN_USER_ID?.trim(),
@@ -115,6 +126,8 @@ export async function GET(request: Request) {
         discoveredNew: result.discoveredNew,
         processed: result.processed,
         importedCount: result.importedCount,
+        publishedCount: result.importedCount,
+        imagesUploaded: result.importedCount,
         skippedCount: result.skippedCount,
         errorCount: result.errorCount,
         sourceErrors,
@@ -122,6 +135,9 @@ export async function GET(request: Request) {
         sourceResults: result.sourceResults,
         importedTitles: result.imported.map((row) => row.title),
         skippedSample: result.skipped.slice(0, 10),
+        errors: result.errors,
+        hasServiceRole: keyDiagnostics.bypassesRls,
+        serviceRoleClaim: keyDiagnostics.role,
       },
       errorMessage:
         sourceErrors === result.sourceResults.length &&
@@ -139,10 +155,10 @@ export async function GET(request: Request) {
       status: "error",
       startedAt,
       summary: {
-        hasServiceRole: Boolean(
-          process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
-            process.env.SUPABASE_SECRET_KEY?.trim(),
-        ),
+        hasServiceRole: keyDiagnostics.bypassesRls,
+        serviceRoleFormat: keyDiagnostics.format,
+        serviceRoleClaim: keyDiagnostics.role,
+        serviceRoleSource: keyDiagnostics.source,
       },
       errorMessage: message,
     });

@@ -120,7 +120,7 @@ async function downloadAndStoreEventImage(
     const webp = await optimizeImageToWebp(
       Buffer.from(await response.arrayBuffer()),
     );
-    const path = `imports/${adminUserId}/${createSlug(title) || "evento"}-${Date.now()}.webp`;
+    const path = `${adminUserId}/imports/${createSlug(title) || "evento"}-${Date.now()}.webp`;
     const { error: uploadError } = await supabase.storage
       .from("event-images")
       .upload(path, webp, {
@@ -573,6 +573,12 @@ async function importOneCandidate(
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "import fallito";
+    if (/row-level security|violates row-level/i.test(message)) {
+      return {
+        kind: "error",
+        error: `RLS ha bloccato il salvataggio: ${message}`,
+      };
+    }
     if (/immagine/i.test(message)) {
       return { kind: "skipped", reason: "immagine non scaricabile" };
     }
