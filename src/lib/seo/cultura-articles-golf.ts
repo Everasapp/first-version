@@ -41,13 +41,18 @@ export const CULTURA_GOLF_ARTICLES: CulturaArticle[] = [
       "In Sardegna il golf non è un’unica costa da resort. Sono nove campi, sparsi tra Gallura, Sassarese, Oristanese e sud: 18 buche sul granito della Costa Smeralda, 9 buche a un passo da Quartu, un percorso tra le dune di Narbolia. Questa guida li elenca tutti e li appoggia al paese che sta intorno, così da Pevero apri Arzachena e da Tanka apri Villasimius.",
     excerpt:
       "Nove campi da golf in Sardegna, ciascuno col comune intorno: da Pevero ad Arzachena a Tanka a Villasimius.",
-    hero: wikiPhoto(
-      "/images/cultura/arzachena-panorama.webp",
-      "Arzachena tra i graniti della Gallura, territorio del Pevero Golf Club e della Costa Smeralda",
-      "Gianni Careddu",
-      "File:Arzachena,_panorama_(01).jpg",
-      CC_BY_SA_4,
-    ),
+    hero: {
+      src: "/images/cultura/golf-sardegna-hero.webp",
+      alt: "Un golfista in swing su un fairway verde, con macchia mediterranea, granito e il mare della Sardegna sullo sfondo",
+      credit: {
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura/golf-in-sardegna",
+        sourceUrl: "https://www.everas.it/cultura/golf-in-sardegna",
+        sourceLabel: "Storia e tradizioni",
+        creditPrefix: "Illustrazione",
+      },
+    },
     sections: [
       {
         title: "Come leggere questa guida",
