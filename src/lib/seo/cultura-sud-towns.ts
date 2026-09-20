@@ -2741,55 +2741,95 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "San Sperate",
     province: "Cagliari",
     area: "Campidano di Cagliari",
-    title: "San Sperate: paese museo",
-    h1: "San Sperate",
-    description: "San Sperate in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
+    title: "San Sperate, i muri e il Giardino Sonoro",
+    h1: "San Sperate, i muri e il giardino",
+    description:
+      "San Sperate nel Campidano: gli anni della calce del 1968, il paese museo come fatto comunitario e il Giardino Sonoro. Distinto da Orgosolo.",
     hero: {
       src: "/images/cultura/san-sperate-panorama.webp",
-      alt: "Veduta di San Sperate in Sardegna",
+      alt: "Pietre sonore tra gli agrumi nel Giardino Sonoro di Pinuccio Sciola a San Sperate",
       credit: {
-        author: "Montalembert, Charles Forbes, comte de, 1810-1870 Cavour, Camillo Benso, conte di, 1810-1861",
-        license: "Public domain",
+        author: "D.cupini",
+        license: "CC BY-SA 4.0",
         licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Seconda_lettera_del_sig._conte_di_Montalembert_al_sig._conte_di_Cavour_(IA_secondaletterade00montrich).pdf",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:San_Sperate_-_Associazione_PS_Museum_-_2026-09-02_18-02-30_001.jpg",
       },
     },
-    intro: `San Sperate è paese museo dei murales in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a San Sperate su EVERAS.`,
+    intro:
+      "A San Sperate l’arte non è arrivata come decoro su un borgo già «pittoresco». Nel 1968, documenta il Comune, Pinuccio Sciola e la comunità imbiancano i muri di fango con la calce, in concomitanza con il Corpus Domini. Il muro, da confine tra casa e strada, diventa un supporto collettivo. Il Giardino Sonoro, nell’agrumeto di famiglia, è un secondo strato di quella stessa storia: pietre che suonano, museo dal 2014. Orgosolo, in Barbagia, ha un altro muralismo: un’altra scheda.",
+    historyHeading: "Gli anni della calce",
     history: [
-      `San Sperate è un comune italiano di 8 646 abitanti della città metropolitana di Cagliari, nella sub-regione del Campidano di Cagliari.`,
-      `Oggi San Sperate resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a San Sperate, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Comune racconta il 1968 come un gesto di paese, non come l’inaugurazione di una galleria. Sciola, artista nato qui, torna dai viaggi di studio e sceglie di lavorare perché «il mondo» entri a San Sperate, invece di lasciarlo. Con amici e giovani, al Corpus Domini, ricopre i muri umili — terra e fango — di calce. L’operazione è già una performance: il bianco accecante sotto il sole, i compaesani che si fermano, i primi segni sui muri. I soggetti, scrive ancora il Comune, sono spesso antropologici e politici. Non «nascono i murales» come un marchio: nasce un rapporto nuovo tra spazio abitato e arte, tenuto dalla comunità.",
     ],
+    traditionsHeading: "Dal paese agli artisti",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Arte di strada e festa. Le date precise cambiano ogni anno: controlla il calendario eventi a San Sperate su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Campidano di Cagliari intorno",
-        body: `San Sperate si legge meglio insieme ai comuni vicini del Campidano di Cagliari: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Un laboratorio, non un catalogo di facciate",
+        body: "Dopo la calce, San Sperate diventa un luogo di lavoro condiviso. Il Comune indica tra i primi a insediarsi su quei muri artisti sardi come Foiso Fois e Liliana Cano; poi arrivano ospiti da altre regioni e da altri Paesi. Non elenchiamo le firme. Il punto è un altro: il paese museo, così ribattezzato, è un fatto comunale di partecipazione, non un circuito di street art da spuntare. Nel 1973 lo stesso Comune documenta l’apertura al muralismo messicano e il gemellaggio con Tepito, a Città del Messico: un allargamento del laboratorio, non una biografia da copiare. Orgosolo resta in Barbagia, con Del Casino e i musei comunali del 2026: stesso vocabolo «murales», due storie.",
       },
     ],
+    visitHeading: "Il Giardino Sonoro",
     visit: [
       {
-        name: "Centro di San Sperate",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Murales e centro di San Sperate. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Dall’agrumeto al museo",
+        body: "SardegnaCultura colloca il Giardino Sonoro alla periferia sud-ovest, in via Oriana Fallaci, sull’antico agrumeto della famiglia Sciola. Dagli anni Sessanta è laboratorio a cielo aperto: pietre sonore, «semi», graniti, tra aranci e olivastri. Nel 2014 il giardino è istituito come museo; la tutela è della Fondazione Sciola / PS Museum. Non è il riassunto di una vita d’artista e non sostituisce i muri in paese: è il secondo livello dell’identità culturale di San Sperate. Orari, prenotazioni e visite guidate: psmuseum.it. Qui non si copiano.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a San Sperate?",
-        answer: "Murales e centro di San Sperate. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché San Sperate è chiamata paese museo?",
+        answer:
+          "Perché nel 1968, secondo il Comune, la comunità imbianca i muri di fango e li rende supporto collettivo. «Paese museo» è il nome di quel processo, non uno slogan turistico da usare al posto della storia.",
       },
       {
-        question: "Dove trovo gli eventi a San Sperate?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a San Sperate su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "In cosa San Sperate è diversa da Orgosolo?",
+        answer:
+          "San Sperate è nel Campidano; il gesto documentato parte dalla calce e dalla partecipazione del paese, poi dal Giardino Sonoro. Orgosolo è in Barbagia: il Comune racconta i murales attraverso Del Casino e uno sguardo sul paese, con i musei Miradas, Sonos e Radichinas. Non si visitano l’uno al posto dell’altro.",
+      },
+      {
+        question: "Perché il 1968 è importante nella storia del paese?",
+        answer:
+          "È l’anno in cui, al Corpus Domini, Sciola e la comunità trasformano i muri di fango in uno spazio di lavoro condiviso. Senza quel gesto il «paese museo» resta una formula vuota.",
+      },
+      {
+        question: "Che cos’è il Giardino Sonoro?",
+        answer:
+          "Un museo a cielo aperto nell’agrumeto di famiglia di Pinuccio Sciola, istituito nel 2014 e curato dalla Fondazione Sciola. Le pietre sonore stanno lì, tra gli aranci; non è una targa in piazza e non è la scheda biografica dell’artista.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di San Sperate", href: "https://www.comune.sansperate.ca.it/" },
+      {
+        label: "Comune di San Sperate, 1968–2018 Paese Museo",
+        href: "https://comune.sansperate.ca.it/turismo-e-cultura/la-cultura-nel-paese-museo/1968-2018-san-sperate-paese-museo.html",
+      },
+      {
+        label: "Comune di San Sperate, Il muralismo e gli anni della calce",
+        href: "https://www.comune.sansperate.ca.it/turismo-e-cultura/storia-di-una-comunita/il-muralismo-e-gli-anni-della-calce.html",
+      },
+      {
+        label: "Comune di San Sperate, Muralismo e murales",
+        href: "https://www.comune.sansperate.ca.it/turismo-e-cultura/la-cultura-nel-paese-museo/muralismo-e-murales.html",
+      },
+      {
+        label: "SardegnaCultura, Giardino sonoro – P.S. Museum",
+        href: "https://www.sardegnacultura.it/articolo/san-sperate-giardino-sonoro-p-s-museum",
+      },
+      {
+        label: "Ministero della Cultura, Idese, Giardino Sonoro",
+        href: "https://idese.cultura.gov.it/place/giardino-sonoro-di-pinuccio-sciola/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Orgosolo per non confondere due muralismi; Assemini per un altro mestiere del Campidano, la ceramica.",
+    relatedLinks: [
+      { href: "/cultura-sarda/centro-sardegna/orgosolo", label: "Guida Orgosolo" },
+      { href: "/cultura-sarda/sud-sardegna/assemini", label: "Guida Assemini" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "san-vito",
@@ -4504,55 +4544,86 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Carbonia",
     province: "Sud Sardegna",
     area: "Sulcis",
-    title: "Carbonia: Sulcis e città mineraria",
-    h1: "Carbonia",
-    description: "Carbonia in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
+    title: "Carbonia, città nata dalla miniera",
+    h1: "Carbonia, città nata dalla miniera",
+    description:
+      "Carbonia città di fondazione del 1938: piano urbanistico, gerarchia delle case, Grande Miniera di Serbariu e Museo del Carbone. Distinta da Iglesias.",
     hero: {
       src: "/images/cultura/carbonia-panorama.webp",
-      alt: "Veduta di Carbonia in Sardegna",
+      alt: "Piazza Roma a Carbonia, con il municipio e la chiesa di San Ponziano",
       credit: {
         author: "Alex10",
         license: "CC BY-SA 4.0",
         licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_carbonia.jpg",
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:Carbonia,_Piazza_Roma.jpg",
       },
     },
-    intro: `Carbonia è città del Sulcis nata dalle miniere in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Carbonia su EVERAS.`,
+    intro:
+      "Carbonia non è una città che ha accanto una miniera. È una città che la miniera ha fatto esistere. Il Comune data la fondazione al regio decreto n. 2189 del 5 novembre 1937 e l’inaugurazione al 18 dicembre 1938: company town dell’Azienda Carboni Italiani, a bocca di miniera. Il Museo del Carbone, nella Grande Miniera di Serbariu, è quella miniera diventata memoria. Iglesias è un’altra città, con un’altra storia.",
+    historyHeading: "Una città che non c’era",
     history: [
-      `Carbonia è un comune italiano di 25 219 abitanti, capoluogo della provincia del Sulcis Iglesiente assieme a Iglesias.`,
-      `Oggi Carbonia resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Carbonia, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Nel 1935 il governo costituisce l’A.Ca.I. per le ricerche di carbone. Alla fine del 1936 i sondaggi individuano il bacino Sirai-Serbariu. Serve manodopera vicina ai pozzi e al porto di Sant’Antioco: nasce il progetto di una città operaia. Il Comune è esplicito sulla retorica di regime — il Sulcis settentrionale non era deserto — e sul motivo contingente: Carbonia come simbolo del carbone nazionale. Non rifacciamo qui la cronologia delle società ottocentesche. Il nucleo culturale è questo: nel 1938 una città nuova compare sul piano per estrarre.",
     ],
+    traditionsHeading: "La città di fondazione",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Memoria mineraria e Sulcis. Le date precise cambiano ogni anno: controlla il calendario eventi a Carbonia su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Sulcis intorno",
-        body: `Carbonia si legge meglio insieme ai comuni vicini del Sulcis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Piazza, piano, gerarchia delle case",
+        body: "SardegnaCultura chiama Carbonia insediamento a bocca di miniera. Il piano di Guidi e Valle, con Pulitzer Finali, organizza la piazza come nucleo dei poteri: municipio (Del Debbio), chiesa di San Ponziano — papa condannato ad metalla, assunto a protettore della città del carbone —, torre, dopolavoro, poste. Le residenze seguono le gerarchie del lavoro minerario e si allontanano dal centro: villette per i funzionari, blocchi per impiegati e minatori, alberghi operai a nord per i celibi. È patrimonio urbanistico del Novecento, non un vanto di regime. Il Comune ricorda un altro 18 dicembre, quello del 1948: settantadue giorni di sciopero per i diritti del lavoro e per la sopravvivenza della città. La comunità resta dopo la miniera.",
       },
     ],
+    visitHeading: "Serbariu",
     visit: [
       {
-        name: "Centro di Carbonia",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro razionalista e museo del carbone. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Museo del Carbone",
+        body: "La Grande Miniera di Serbariu è attiva dal 1937 al 1964. Il Museo del Carbone ne rende visitabili lampisteria, galleria sotterranea e sala argani: lampade, attrezzi, documenti, videointerviste; sotto, le tecniche di coltivazione; in sala, le ruote dell’argano. SardegnaCultura indica il CICC, dal 2006, come associazione tra il Comune e il Parco geominerario per gestire il sito. Il Parco è cornice regionale — sede operativa proprio a Serbariu — non l’identità di Carbonia. Orari e biglietti: museodelcarbone.it. Non li copiamo. Iglesias tiene archivio e scuola: un’altra scheda.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Carbonia?",
-        answer: "Centro razionalista e museo del carbone. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Carbonia esiste?",
+        answer:
+          "Perché nel 1937–1938 lo Stato e l’A.Ca.I. fondano una città operaia accanto al bacino di Serbariu. Senza la miniera di carbone non ci sarebbe questo abitato. Lo dicono il Comune e SardegnaCultura.",
       },
       {
-        question: "Dove trovo gli eventi a Carbonia?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Carbonia su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cosa documenta il Museo del Carbone?",
+        answer:
+          "La Grande Miniera di Serbariu e la vita di chi ci ha lavorato: lampisteria, galleria, sala argani. È la miniera che ha prodotto la città, non un’attrazione accanto al centro.",
+      },
+      {
+        question: "Carbonia e Iglesias raccontano la stessa storia?",
+        answer:
+          "No. Carbonia è città di fondazione del 1938. Iglesias è città storica, con cattedrale, istituto minerario e archivio a Monteponi. Il Parco geominerario le comprende entrambe: non le rende intercambiabili.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di Carbonia", href: "https://www.comune.carbonia.su.it/" },
+      {
+        label: "Comune di Carbonia, Tra Ottocento e Novecento",
+        href: "https://www.comune.carbonia.su.it/vivere-il-comune/la-storia/tra-ottocento-e-novecento/",
+      },
+      {
+        label: "SardegnaCultura, Carbonia città di fondazione",
+        href: "https://www.sardegnacultura.it/articolo/carbonia-citta-di-fondazione",
+      },
+      {
+        label: "SardegnaCultura, Museo del carbone",
+        href: "https://www.sardegnacultura.it/articolo/carbonia-museo-del-carbone",
+      },
+      { label: "Museo del Carbone, Grande Miniera di Serbariu", href: "https://www.museodelcarbone.it/" },
+      {
+        label: "Parco Geominerario Storico e Ambientale della Sardegna",
+        href: "https://www.parcogeominerario.sardegna.it/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Iglesias per la città e l’archivio, non per un secondo itinerario in miniera; le guide musei e territori tengono il Parco geominerario senza duplicarlo qui.",
+    relatedLinks: [
+      { href: "/cultura-sarda/sud-sardegna/iglesias", label: "Guida Iglesias" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/territori-sardegna", label: "Territori della Sardegna" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "carloforte",
@@ -4702,55 +4773,92 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Iglesias",
     province: "Sud Sardegna",
     area: "Sulcis",
-    title: "Iglesias: miniere e centro storico",
-    h1: "Iglesias",
-    description: "Iglesias in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
+    title: "Iglesias, la città e l’archivio delle miniere",
+    h1: "Iglesias, la città e l’archivio delle miniere",
+    description:
+      "Iglesias: cattedrale di Santa Chiara, Istituto Asproni e Archivio Storico Minerario IGEA a Monteponi. Cultura del lavoro come scuola e documento, distinta da Carbonia.",
     hero: {
       src: "/images/cultura/iglesias-panorama.webp",
-      alt: "Veduta di Iglesias in Sardegna",
+      alt: "Facciata e campanile trecentesco della cattedrale di Santa Chiara a Iglesias",
       credit: {
-        author: "Unknown authorUnknown author",
-        license: "Public domain",
+        author: "Misterflame2001",
+        license: "CC BY-SA 4.0",
         licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Saint_Demetrius_Panorama_Kalapot_Fresco_10.jpg",
+        sourceUrl: "https://commons.wikimedia.org/wiki/File:FacciataCattedraleIglesias.jpg",
       },
     },
-    intro: `Iglesias è città mineraria del Sulcis-Iglesiente in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Iglesias su EVERAS.`,
+    intro:
+      "Iglesias è città prima di essere un itinerario in miniera. La cattedrale di Santa Chiara sta in piazza con il Municipio e il Palazzo vescovile; sotto l’Istituto Asproni c’è un museo nato da una scuola; a Monteponi l’archivio IGEA conserva la memoria scritta del lavoro. Carbonia, a pochi chilometri, è la città nata nel 1938 per il carbone. Il Parco geominerario ha sede legale qui e operativa a Serbariu: è cornice regionale, non l’identità di questo comune.",
+    historyHeading: "La piazza e la cattedrale",
     history: [
-      `Iglesias è un comune italiano di 24 303 abitanti e co-capoluogo della provincia del Sulcis Iglesiente. Si trova nella Sardegna sud-occidentale, nella regione dell'Iglesiente, di cui è il principale centro abitato e a cui dà il nome. Nei secoli della dominazione aragonese e spagnola fu una delle città regie della Sardegna. È sede vescovile, erede storica dell'antica diocesi di Sulcis.`,
-      `Oggi Iglesias resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Iglesias, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura colloca la cattedrale in una piazza quadrangolare concepita come fulcro amministrativo e religioso. Le epigrafi datano l’impianto prima del 1284 e il completamento prima del 1288; in facciata uno scudo dei Donoratico; il campanile ospita quattro campane, la più antica del 1338. Non è una guida al gotico catalano. È il segno che Iglesias è una città storica che ha prodotto, nei secoli, una cultura del lavoro minerario — non una new town a bocca di pozzo. La Settimana Santa, nominata nella guida EVERAS alle feste, resta secondaria: non è l’identità di questa scheda.",
     ],
+    traditionsHeading: "Una scuola per il lavoro",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Miniere, festa e Iglesiente. Le date precise cambiano ogni anno: controlla il calendario eventi ad Iglesias su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Sulcis intorno",
-        body: `Iglesias si legge meglio insieme ai comuni vicini del Sulcis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "L’Istituto Asproni e il museo",
+        body: "Il Museo dell’arte mineraria sta nei sotterranei dell’Istituto minerario Giorgio Asproni, edificio Liberty inaugurato il 13 dicembre 1911. SardegnaCultura lo descrive come scuola prima che come attrazione: attrezzature, modellini, galleria didattica scavata dagli allievi a partire dal 1934, circa trecento metri sotto e fuori dal perimetro. Il catalogo Idese del Ministero della Cultura ricorda che la formazione dei periti minerari a Iglesias ha un impianto già nel 1871. Qui la cultura del lavoro è trasmissione — insegnare un mestiere — non un tour di cantieri. Orari e prenotazioni: Comune / iglesiasturismo.it.",
       },
     ],
+    visitHeading: "L’archivio a Monteponi",
     visit: [
       {
-        name: "Centro di Iglesias",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro storico e territorio minerario. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Archivio Storico Minerario IGEA",
+        body: "L’archivio, sede negli ex magazzini di Monteponi, è privato e tutelato dal Ministero dal 1994. SardegnaCultura lo considera tra gli archivi industriali più importanti in Europa: planimetrie, personale, infortuni, corrispondenza delle società dismesse, con documenti dal Settecento. Non è una galleria turistica e non sostituisce Serbariu. Accesso per consultazione e visite didattiche: IGEA. Non copiamo giorni e orari. Il Parco geominerario resta nella guida ai musei e in quella ai territori: qui non elenchiamo i siti.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Iglesias?",
-        answer: "Centro storico e territorio minerario. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Iglesias e Carbonia sono la stessa storia mineraria?",
+        answer:
+          "No. Iglesias è città storica, con cattedrale, scuola dei periti e archivio a Monteponi. Carbonia è città di fondazione del 1938, nata per il carbone di Serbariu. Il Parco geominerario le inquadra insieme senza farne una sola guida.",
       },
       {
-        question: "Dove trovo gli eventi ad Iglesias?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Iglesias su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cos’è l’Archivio Storico Minerario di Monteponi?",
+        answer:
+          "L’archivio IGEA, tutelato dal 1994, conserva la documentazione delle società minerarie dismesse. SardegnaCultura lo indica come l’archivio industriale più importante in Sardegna. Si consulta, non si «visita» come una miniera-museo.",
+      },
+      {
+        question: "Perché in questa scheda c’è la cattedrale, se il tema è il lavoro?",
+        answer:
+          "Perché Santa Chiara sta nel nucleo civico della città — piazza, municipio, palazzo vescovile — e dice che Iglesias esisteva come città prima dell’industria contemporanea. Senza quel nucleo la pagina diventerebbe un elenco di miniere.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "SardegnaCultura, Cattedrale di Santa Chiara",
+        href: "https://www.sardegnacultura.it/articolo/iglesias-cattedrale-di-santa-chiara",
+      },
+      {
+        label: "SardegnaCultura, Museo dell’arte mineraria",
+        href: "https://www.sardegnacultura.it/articolo/iglesias-museo-dellarte-mineraria",
+      },
+      {
+        label: "SardegnaCultura, Archivio Storico Minerario IGEA",
+        href: "https://www.sardegnacultura.it/articolo/iglesias-archivio-storico-minerario-igea-spa",
+      },
+      {
+        label: "Ministero della Cultura, Idese, Istituto Giorgio Asproni",
+        href: "https://idese.cultura.gov.it/place/istituto-giorgio-asproni/",
+      },
+      {
+        label: "Soprintendenza archivistica della Sardegna, Archivio IGEA",
+        href: "https://sa-sardegna.cultura.gov.it/progetti/archivi-per-la-storia-del-territorio-e-dellimpresa/archivio-storico-minerario-igea-spa",
+      },
+      {
+        label: "Parco Geominerario Storico e Ambientale della Sardegna",
+        href: "https://www.parcogeominerario.sardegna.it/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Carbonia per la città nata dalla miniera; musei e territori per il Parco geominerario, senza rifarlo qui.",
+    relatedLinks: [
+      { href: "/cultura-sarda/sud-sardegna/carbonia", label: "Guida Carbonia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/territori-sardegna", label: "Territori della Sardegna" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "narcao",
