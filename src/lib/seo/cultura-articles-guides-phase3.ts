@@ -569,9 +569,9 @@ export const CULTURA_GUIDE_ARTICLES_PHASE3: CulturaArticle[] = [
     description:
       "Come usare il calendario EVERAS per capire un territorio: feste, sagre, musica, artigianato, musei, famiglie e comuni. Non solo cosa fare, ma dove si è.",
     intro:
-      "Un evento può essere l’ingresso in un territorio: una Faradda, una tappa di Autunno in Barbagia, una mostra in un civico, una sagra di paese. Si arriva per una data e si può restare sulla guida del comune o sul tema. Questo è il valore che EVERAS cerca: non solo «cosa fare questo weekend», ma capire dove si è. Le date stanno nel database; i testi culturali restano. Se una lista sotto è vuota, il ponte resta: puoi esplorare le guide o pubblicare un appuntamento se lo organizzi.",
+      "Hai letto una guida sulla cultura sarda e vuoi passare agli appuntamenti reali: feste, sagre, mostre, concerti. Questa pagina è il ponte. Segui un tema, apri la guida o il territorio collegato, poi guarda cosa è pubblicato sul calendario EVERAS. Le date dell’edizione stanno nelle schede evento, non nei testi culturali.",
     excerpt:
-      "Dal calendario alle guide: feste, sagre, musica, mestieri e musei come porte sui comuni.",
+      "Dal tema culturale al territorio e agli eventi pubblicati: percorsi pratici su EVERAS.",
     hero: {
       src: "/images/seo/eventi-sardegna-cover.webp",
       alt: "Una piazza in festa in Sardegna: l’evento come accesso al territorio",
@@ -579,53 +579,61 @@ export const CULTURA_GUIDE_ARTICLES_PHASE3: CulturaArticle[] = [
     },
     sections: [
       {
+        title: "Quattro percorsi su EVERAS",
+        paragraphs: [
+          "Tema → guida → eventi: da Feste e tradizioni all’hub Carnevale in Sardegna (o alle categorie sagre e celebrazioni).",
+          "Tradizione → grande festa → territorio: da Grandi feste a Castelsardo, Mamoiada o Ottana, poi agli eventi del comune sulla scheda paese.",
+          "Patrimonio → territorio → eventi: da Musei o Nuraghi e archeologia a Barumini, poi al calendario del territorio.",
+          "Stagione → calendario culturale → eventi: da Tradizioni durante l’anno all’orientamento stagionale, poi agli hub (Sant’Efisio, Autunno in Barbagia, Sartiglia) o al calendario vivo sotto.",
+        ],
+      },
+      {
         title: "Feste tradizionali",
         paragraphs: [
-          "Candelieri, Cavalcata, Sartiglia, Sant’Efisio, carnevali, Lunissanti: le grandi feste hanno hub in Eventi in Sardegna e approfondimenti in Cultura. La scheda evento dell’edizione ha giorno e ora; la guida spiega origine e regole quando le fonti lo consentono.",
-          "Categoria celebrazioni e sagre-tradizioni sul calendario. Guide: tradizioni, grandi feste, calendario stagionale.",
+          "Cosa cercare: carnevali, processioni, patronali. Approfondisci: Feste e tradizioni, Grandi feste. Vedi gli eventi: hub Carnevale, Sant’Efisio, Sartiglia, o le categorie celebrazioni e sagre-tradizioni.",
         ],
       },
       {
         title: "Sagre e gastronomia",
         paragraphs: [
-          "Una sagra racconta spesso un prodotto e un comune, non «la cucina sarda». Food & Drink e sagre sono i filtri. La guida alla cucina tiene pane, carni, mare e formaggi come geografia; i prezzi dei piatti stanno sulla locandina dell’anno.",
+          "Cosa cercare: feste di prodotto e di paese. Approfondisci: Cucina tradizionale. Vedi gli eventi: hub Sagre in Sardegna e Autunno in Barbagia.",
         ],
       },
       {
         title: "Musica e canto",
         paragraphs: [
-          "Tenore in piazza, chitarra, jazz a Berchidda o Alghero, bande: repertori diversi. Categoria musica e concerti. La guida a musica e poesia tiene Unesco e contemporaneo distinti. Maria Carta, Fresu, Mereu hanno schede proprie, non sono locandine.",
+          "Cosa cercare: tenore, chitarra, jazz, rassegne in piazza. Approfondisci: Musica e poesia. Vedi gli eventi: categoria musica e concerti.",
         ],
       },
       {
         title: "Artigianato",
         paragraphs: [
-          "Fiere, biennali del coltello, dimostrazioni in Cortes Apertas: categoria fiere e mercatini. La guida all’artigianato rinvia a Pattada, Aggius, Castelsardo, Alghero, Tempio senza vendere oggetti. Una fiera non certifica l’identità di un paese; la rende visibile per un weekend.",
+          "Cosa cercare: fiere, dimostrazioni, aperture di botteghe. Approfondisci: Artigianato sardo. Vedi gli eventi: categoria fiere e mercatini; in autunno anche Autunno in Barbagia.",
         ],
       },
       {
         title: "Archeologia e storia",
         paragraphs: [
-          "Visite guidate, aperture straordinarie, conferenze: categoria arte e cultura. La guida ai nuraghi e quella alla storia distinguono scavo e interpretazione. Barumini, Ozieri, Cabras, Nora: schede comune e musei, non un tour inventato.",
+          "Cosa cercare: visite, aperture straordinarie, incontri su siti e scavi. Approfondisci: Nuraghi e archeologia (e Storia della Sardegna). Scopri il territorio: Barumini. Vedi gli eventi: categoria arte e cultura.",
         ],
       },
       {
         title: "Musei e mostre",
         paragraphs: [
-          "Mostre temporanee e notti dei musei, quando pubblicate, cadono in arte e cultura. Orari ordinari restano sui siti dei musei. La guida ai musei ragiona per territorio e rifiuta l’elenco automatico.",
+          "Cosa cercare: mostre temporanee e aperture speciali. Approfondisci: Musei. Vedi gli eventi: categoria arte e cultura. Gli orari ordinari restano sui siti dei musei.",
         ],
       },
       {
         title: "Eventi per famiglie",
         paragraphs: [
-          "Laboratori, feste di piazza, rassegne per bambini: categoria famiglie e bambini. Non è una sezione «turistica per tutti». È un filtro di pubblico. Il contesto del comune resta nelle guide paese.",
+          "Cosa cercare: laboratori e rassegne per bambini. Vedi gli eventi: categoria famiglie e bambini. Il contesto del paese resta nella guida comunale.",
         ],
       },
       {
         title: "Eventi nei comuni della Sardegna",
         paragraphs: [
-          "Ogni guida comunale in Scopri la Sardegna mostra gli eventi di quel comune, quando ci sono. Nord, Centro, Sud: stessa griglia del calendario. Da un paese si sale al tema (lingua, mestiere, festa); da un tema si scende al paese.",
-          "Sotto, un estratto dal calendario vivo. Per pubblicare: area organizzatori. EVERAS non sostituisce il Comune; rende visibile ciò che gli organizzatori affidano al database.",
+          "Hai un tema o una tradizione: scegli il territorio, poi guarda cosa è pubblicato. Esempi già in Scopri la Sardegna: Castelsardo (Lunissanti e Anglona), Mamoiada e Ottana (carnevali), Barumini (patrimonio nuragico). Ogni scheda comune mostra gli eventi di quel luogo, quando ci sono. L’indice Nord, Centro, Sud è in Scopri la Sardegna.",
+          "Sotto: estratto dal calendario vivo collegato a queste categorie. EVERAS non sostituisce il Comune: rende visibile ciò che gli organizzatori pubblicano.",
         ],
       },
     ],
@@ -646,31 +654,46 @@ export const CULTURA_GUIDE_ARTICLES_PHASE3: CulturaArticle[] = [
           "Candelieri e canto a tenore sono citati nelle guide, con link Unesco. Le date dell’edizione restano sulle schede evento e sugli hub.",
       },
     ],
-    sources: [
-      {
-        label: "UNESCO — Canto a tenore",
-        href: "https://ich.unesco.org/en/RL/canto-a-tenore-sardinian-pastoral-songs-00165",
-      },
-      {
-        label: "UNESCO — Feste delle grandi macchine a spalla",
-        href: "https://ich.unesco.org/en/RL/celebrations-of-big-shoulder-borne-processional-structures-00721",
-      },
-      {
-        label: "Regione Autonoma della Sardegna",
-        href: "https://www.regione.sardegna.it/",
-      },
-    ],
+    sources: [],
     relatedLinks: [
-      { href: "/cultura", label: "Cultura sarda" },
-      { href: "/eventi-sardegna", label: "Eventi e sagre" },
-      { href: "/cultura-sarda", label: "Scopri la Sardegna" },
-      { href: "/cultura/tradizioni-sarde", label: "Feste e tradizioni" },
-      { href: "/cultura/cucina-sarda", label: "Cucina tradizionale" },
-      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
-      { href: "/cultura/artigianato-sardo", label: "Artigianato" },
-      { href: "/cultura/musei-sardegna", label: "Musei" },
-      { href: "/eventi/famiglie-bambini", label: "Eventi per famiglie" },
-      { href: "/pubblica", label: "Pubblica un evento" },
+      { href: "/cultura/tradizioni-sarde", label: "Approfondisci · Feste e tradizioni" },
+      { href: "/cultura/grandi-feste-sarde", label: "Approfondisci · Grandi feste" },
+      {
+        href: "/cultura/calendario-tradizioni-sarde",
+        label: "Approfondisci · Tradizioni durante l’anno",
+      },
+      { href: "/cultura/musei-sardegna", label: "Approfondisci · Musei" },
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Approfondisci · Nuraghi e archeologia",
+      },
+      {
+        href: "/cultura-sarda/nord-sardegna/castelsardo",
+        label: "Scopri il territorio · Castelsardo",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/mamoiada",
+        label: "Scopri il territorio · Mamoiada",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/ottana",
+        label: "Scopri il territorio · Ottana",
+      },
+      {
+        href: "/cultura-sarda/sud-sardegna/barumini",
+        label: "Scopri il territorio · Barumini",
+      },
+      { href: "/eventi-sardegna", label: "Vedi gli eventi · Calendario Sardegna" },
+      {
+        href: "/eventi-sardegna/carnevale-sardegna",
+        label: "Vedi gli eventi · Carnevale",
+      },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Vedi gli eventi · Autunno in Barbagia",
+      },
+      { href: "/eventi-sardegna/sagre", label: "Vedi gli eventi · Sagre" },
+      { href: "/pubblica", label: "Organizzatori · Pubblica un evento" },
     ],
     relatedCategorySlugs: [
       "sagre-tradizioni",
@@ -680,7 +703,7 @@ export const CULTURA_GUIDE_ARTICLES_PHASE3: CulturaArticle[] = [
       "arte-cultura",
       "famiglie-bambini",
     ],
-    eventSectionTitle: "Eventi in calendario collegati a queste guide",
+    eventSectionTitle: "Eventi pubblicati ora su EVERAS (categorie collegate)",
     publishedAt: "2026-09-20",
   },
 ];
