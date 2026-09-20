@@ -607,6 +607,14 @@ export const CULTURA_GUIDE_ARTICLES_PHASE2: CulturaArticle[] = [
       { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
       { href: "/cultura/musei-sardegna", label: "Musei per territorio" },
       { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+      {
+        href: "/cultura-sarda/nord-sardegna/torralba",
+        label: "Guida Torralba",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/dorgali",
+        label: "Guida Dorgali",
+      },
       { href: "/cultura-sarda/nord-sardegna/ozieri", label: "Guida Ozieri" },
       { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
       { href: "/cultura-sarda/centro-sardegna/cabras", label: "Guida Cabras" },

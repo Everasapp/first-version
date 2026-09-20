@@ -165,6 +165,14 @@ export const CULTURA_GUIDE_ARTICLES_PHASE3: CulturaArticle[] = [
       { href: "/cultura-sarda/centro-sardegna/oristano", label: "Guida Oristano" },
       { href: "/cultura-sarda/centro-sardegna/mamoiada", label: "Guida Mamoiada" },
       { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+      {
+        href: "/cultura-sarda/centro-sardegna/orani",
+        label: "Guida Orani",
+      },
+      {
+        href: "/cultura-sarda/nord-sardegna/castelsardo",
+        label: "Guida Castelsardo",
+      },
       { href: "/cultura-sarda", label: "Scopri la Sardegna" },
       { href: "/eventi/arte-cultura", label: "Arte e cultura in calendario" },
       { href: "/pubblica", label: "Pubblica un evento" },

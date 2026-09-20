@@ -321,6 +321,10 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
         href: "/cultura-sarda/centro-sardegna/mamoiada",
         label: "Guida Mamoiada",
       },
+      {
+        href: "/cultura-sarda/centro-sardegna/ottana",
+        label: "Guida Ottana",
+      },
       { href: "/cultura-sarda/nord-sardegna/castelsardo", label: "Guida Castelsardo" },
       { href: "/eventi-sardegna/sagre", label: "Sagre in Sardegna" },
       { href: "/eventi/celebrazioni", label: "Celebrazioni in calendario" },
@@ -593,6 +597,14 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
       {
         href: "/cultura-sarda/nord-sardegna/castelsardo",
         label: "Guida Castelsardo",
+      },
+      {
+        href: "/cultura-sarda/sud-sardegna/samugheo",
+        label: "Guida Samugheo",
+      },
+      {
+        href: "/cultura-sarda/sud-sardegna/assemini",
+        label: "Guida Assemini",
       },
       { href: "/cultura-sarda/nord-sardegna/alghero", label: "Guida Alghero" },
       {
