@@ -4560,12 +4560,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Carloforte",
     province: "Sud Sardegna",
     area: "Sulcis",
-    title: "Carloforte: Isola di San Pietro",
-    h1: "Carloforte",
-    description: "Carloforte in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
+    title: "Carloforte e la comunità tabarchina",
+    h1: "Carloforte, paese tabarchino",
+    description:
+      "Carloforte sull’isola di San Pietro: comunità tabarchina, lingua ligure, Polo linguistico e Museo civico Casa del Duca.",
     hero: {
       src: "/images/cultura/carloforte-panorama.webp",
-      alt: "Veduta di Carloforte in Sardegna",
+      alt: "Xilografia con panorama di Carloforte",
       credit: {
         author: "Unknown authorUnknown author",
         license: "Public domain",
@@ -4573,42 +4574,71 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Carloforte_(xilografia).jpg",
       },
     },
-    intro: `Carloforte è paese tabarchino sull’isola di San Pietro in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Carloforte su EVERAS.`,
+    intro:
+      "Carloforte è l’unico abitato dell’isola di San Pietro. Ciò che lo distingue da un comune costiero del Sulcis è la comunità tabarchina: una storia di migrazione ligure, una lingua che non è sardo, un ufficio comunale che la insegna. La guida EVERAS alle lingue colloca il tabarchino accanto ad alguerès e sassarese. Qui resta il rapporto tra quella lingua e questo paese.",
+    historyHeading: "Pegli, Tabarka, San Pietro",
     history: [
-      `Carloforte è un comune italiano di 5 790 abitanti della provincia del Sulcis Iglesiente.Il territorio comunale comprende l'isola di San Pietro nella sua interezza e alcune isole minori che la circondano, al largo della sub-regione del Sulcis-Iglesiente, in Sardegna; l'isola è situata a circa 10 km dalla costa sudoccidentale sarda e costituisce, insieme alla vicina isola di Sant'Antioco e ad altri isolotti e.`,
-      `Oggi Carloforte resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Carloforte, la scheda evento su EVERAS rimanda a questa guida.`,
+      "L’ufficio turistico comunale data le origini della comunità al 1738: Carlo Emanuele III concede l’isola a pescatori e commercianti di origine pegliese, che nel Cinquecento si erano insediati a Tabarka, in Tunisia, per il corallo dei Lomellini. Da Tabarka arriva il nome «tabarchini»; dal re, il toponimo Carloforte. SardegnaCultura, al Museo civico, indica i documenti di quella fondazione: lo schizzo dell’isola di Agostino Tagliafico, la pianta del primo nucleo urbano, la copia del giuramento del 24 maggio 1738 nella chiesa di Portoscuso. Non ricostruiamo qui pirateria, miniere o costituzioni di passaggio: il nucleo culturale che il Comune tiene vivo è la comunità che da quella traversata continua a parlarsi.",
     ],
+    languageHeading: "Il tabarchino in paese",
+    language: [
+      "Il tabarchino è una varietà ligure, non una parlata sarda. La guida EVERAS alle lingue lo tiene distinto da catalano, gallurese e sassarese; Calasetta, sull’isola di Sant’Antioco, è l’altro comune in cui la stessa comunità si è insediata. Il Comune di Carloforte gestisce il Polo linguistico Tabarchino all’ExMe (ex mercato civico): corsi, sportello, traduzioni di atti. I progetti TuLiS della Regione finanziano quella tutela. Non copiamo percentuali di parlanti: cambiano, e la guida alle lingue lo dice già.",
+    ],
+    traditionsHeading: "Un mestiere in museo",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Tonno, dialetto tabarchino e festa. Le date precise cambiano ogni anno: controlla il calendario eventi a Carloforte su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Sulcis intorno",
-        body: `Carloforte si legge meglio insieme ai comuni vicini del Sulcis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "La tonnara come lavoro documentato",
+        body: "Nel Museo civico Casa del Duca, SardegnaCultura descrive una Sala della Tonnara: attrezzi, un modello del calato costruito da un rais, lo stabilimento ottocentesco di Portopaglia. È memoria di un mestiere della comunità, non una guida alle spiagge né un menu. La cucina ligure-tabarchina e il tonno, come cibo, stanno nella guida EVERAS alla cucina. Qui non si copiano sagre né date di rassegne.",
       },
     ],
+    visitHeading: "Casa del Duca",
     visit: [
       {
-        name: "Centro di Carloforte",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro, porto e costa di San Pietro. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Museo civico nel fortino",
+        body: "Il museo è nel fortino Carlo Emanuele III, prima costruzione in muratura del 1738, poi carcere, oggi sei sale e un giardino: documenti della colonizzazione, galanzieri (battellieri del minerale), tonnara, attività contadine. Via della Cisterna del Re. Orari: Comune / carloforteturismo.it. Il Polo linguistico è un altro indirizzo, all’ExMe, via XX Settembre: non è un museo, è uno sportello.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Carloforte?",
-        answer: "Centro, porto e costa di San Pietro. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Il tabarchino è sardo?",
+        answer:
+          "No. È una varietà di origine ligure, portata dalla comunità di Pegli e Tabarka. Il Comune la tutela con il Polo linguistico. Il quadro isolano — e il rapporto con Calasetta — sta nella guida EVERAS alle lingue.",
       },
       {
-        question: "Dove trovo gli eventi a Carloforte?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Carloforte su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Carloforte e Calasetta sono lo stesso comune?",
+        answer:
+          "No. Carloforte è l’abitato dell’isola di San Pietro. Calasetta è un altro comune, sull’isola di Sant’Antioco. Condividono la storia tabarchina e la lingua, non l’amministrazione.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di Carloforte", href: "https://www.comune.carloforte.su.it/" },
+      {
+        label: "Comune di Carloforte, Patrimonio culturale / Polo linguistico",
+        href: "https://www.comune.carloforte.su.it/it/topics/patrimonio-culturale",
+      },
+      {
+        label: "Comune di Carloforte, TuLiS e conservazione del tabarchino",
+        href: "https://www.comune.carloforte.su.it/it/page/tulis-tutela-lingue-sarde-progetti-lingue-minoritarie-conservazione-del-tabarchino",
+      },
+      {
+        label: "Ufficio del Turismo di Carloforte, Storia e cultura",
+        href: "https://www.carloforteturismo.it/articolo/storia-e-cultura/",
+      },
+      {
+        label: "SardegnaCultura, Museo civico Casa del Duca",
+        href: "https://www.sardegnacultura.it/articolo/carloforte-museo-civico-casa-del-duca",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Il tabarchino nel quadro delle lingue dell’isola; il tonno, se serve il cibo, nella guida alla cucina — tenuto distinto da questa scheda di comunità.",
+    relatedLinks: [
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/cucina-sarda", label: "Cucina sarda" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/alghero", label: "Guida Alghero" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "gonnesa",

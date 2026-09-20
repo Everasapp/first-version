@@ -429,12 +429,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Bosa",
     province: "Oristano",
     area: "Planargia",
-    title: "Bosa: castello, Temo e Planargia",
-    h1: "Bosa",
-    description: "Bosa in Sardegna: guida al comune della Planargia, cosa visitare e eventi in programma su EVERAS.",
+    title: "Bosa: il Temo, Serravalle e le conce",
+    h1: "Bosa, dal fiume al castello",
+    description:
+      "Bosa sul Temo: centro storico, Castello di Serravalle e Museo delle Conce. Fondazione Bosa, Casa Deriu. Malvasia nella guida alla cucina, non in questa scheda.",
     hero: {
       src: "/images/cultura/bosa-panorama.webp",
-      alt: "Veduta di Bosa in Sardegna",
+      alt: "Xilografia con panorama di Bosa",
       credit: {
         author: "Calc",
         license: "Public domain",
@@ -442,42 +443,72 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Bosa_(xilografia).jpg",
       },
     },
-    intro: `Bosa è borgo sul Temo con castello Malaspina in provincia di Oristano. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Bosa su EVERAS.`,
+    intro:
+      "Bosa si legge dal fiume. SardegnaCultura descrive l’abitato sulle rive del Temo, che sale al rione Sa Costa e al castello di Serravalle. Il Comune ha istituito la Fondazione Bosa per gestire quel patrimonio: castello, Casa Deriu, Pinacoteca Atza, Museo delle Concerie, Teatro. Questa scheda tiene insieme città fluviale, fortificazione e memoria delle conce.",
+    historyHeading: "Bosa nova sul Temo",
     history: [
-      `Bosa è un comune italiano di 7 257 abitanti della provincia di Oristano, nella costa occidentale del centro-nord della Sardegna. Fa parte dell'Unione di comuni della Planargia. È il principale centro abitato della subregione della Planargia e si inserisce, storicamente, nel più vasto territorio del Logudoro, condividendo con quest'ultimo l'utilizzo della variante linguistica del sardo logudorese. Durante il.`,
-      `Oggi Bosa resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Bosa, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il centro storico, scrive SardegnaCultura, corrisponde a Bosa «nova», rifondata presso il porto fluviale; più a monte, presso San Pietro extra muros, resta il nucleo di Bosa «vetus». Dal Temo il borgo sale a Sa Costa. Il castello in cima al colle è detto di Serravalle e, per tradizione, dei Malaspina: la stessa fonte avverte che scavi recenti potrebbero spostare la cronologia delle strutture visibili, e che conviene attendere gli studi. Non fissiamo il 1112 come data di costruzione. Dal 2025 la gestione è della Fondazione Bosa, ente voluto dal Consiglio comunale (delibera 5 dicembre 2024) e costituito con atto dell’8 maggio 2025; il Comune ha in concessione dal Demanio il castello e lo ha affidato alla Fondazione.",
     ],
+    traditionsHeading: "Sas Conzas",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Malvasia, Carnevale e Planargia. Le date precise cambiano ogni anno: controlla il calendario eventi a Bosa su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "La Planargia intorno",
-        body: `Bosa si legge meglio insieme ai comuni vicini della Planargia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Le conce sul fiume",
+        body: "Lungo la sponda sinistra del Temo, vicino al Ponte Vecchio, gli opifici a schiera in trachite rossa — Sas Conzas — sono ciò che resta di un mestiere cittadino. SardegnaCultura le classifica come archeologia proto-industriale: conceria fiorente dal secondo Ottocento alla prima metà del Novecento, poi cessata. Un edificio del Settecento ospita il Museo delle Conce: pozzo, pressa, vasconi, fasi di lavorazione. Non è un’attività ancora in funzione. Orari: Fondazione, non questa pagina.",
       },
     ],
+    visitHeading: "Castello e musei civici",
     visit: [
       {
-        name: "Centro di Bosa",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Castello, Sa Costa e lungofiume. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Serravalle e Casa Deriu",
+        body: "Il complesso del castello occupa il colle sopra Sa Costa; nella cinta, la chiesa di Nostra Signora de Sos Regnos Altos. In corso Vittorio Emanuele, nella zona detta Sa Piatta, Casa Deriu è una dimora ottocentesca con la collezione di Melkiorre Melis; di fronte, la Pinacoteca Antonio Atza. Biglietti cumulativi e aperture: fondazionebosa.it. La Malvasia di Bosa è una denominazione viticola: sta nella guida EVERAS alla cucina, non in un elenco di cantine qui.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Bosa?",
-        answer: "Castello, Sa Costa e lungofiume. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Il castello si chiama Malaspina o Serravalle?",
+        answer:
+          "SardegnaCultura usa entrambi: Castello di Serravalle, comunemente detto dei Malaspina per la tradizione sulla famiglia. La cronologia delle strutture visibili è ancora oggetto di scavo. La gestione è della Fondazione Bosa.",
       },
       {
-        question: "Dove trovo gli eventi a Bosa?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Bosa su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Le concerie di Bosa sono ancora aperte?",
+        answer:
+          "No. L’attività produttiva è cessata nella seconda metà del Novecento. Resta il Museo delle Conce, in uno degli edifici storici di via Sas Conzas, e il fronte degli opifici sul Temo.",
+      },
+      {
+        question: "Dov’è la Malvasia di Bosa in EVERAS?",
+        answer:
+          "Nella guida alla cucina sarda, tra le denominazioni viticole documentate. Questa scheda non è una pagina di enoturismo.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Bosa", href: "https://comune.bosa.or.it/" },
+      {
+        label: "Comune di Bosa, Castello alla Fondazione Bosa",
+        href: "https://comune.bosa.or.it/novita/castello-malaspina-fondazione-bosa-estate-eventi/",
+      },
+      { label: "Fondazione Bosa", href: "https://fondazionebosa.it/" },
+      {
+        label: "SardegnaCultura, Castello di Serravalle",
+        href: "https://www.sardegnacultura.it/articolo/bosa-castello-di-serravalle",
+      },
+      {
+        label: "SardegnaCultura, Museo Casa Deriu",
+        href: "https://www.sardegnacultura.it/articolo/bosa-museo-casa-deriu",
+      },
+      {
+        label: "SardegnaCultura, Museo delle Conce",
+        href: "https://www.sardegnacultura.it/articolo/bosa-museo-delle-conce",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "I musei nel quadro isolano; la Malvasia nella guida alla cucina. Oristano è il capoluogo vicino, non il sostituto di Bosa.",
+    relatedLinks: [
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/cucina-sarda", label: "Cucina sarda" },
+      { href: "/cultura-sarda/centro-sardegna/oristano", label: "Guida Oristano" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "cabras",
@@ -1849,12 +1880,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Orgosolo",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Orgosolo: murales e Supramonte",
-    h1: "Orgosolo",
-    description: "Orgosolo in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    title: "Orgosolo: murales, Miradas e memoria",
+    h1: "Come si guarda Orgosolo",
+    description:
+      "Orgosolo in Barbagia: sistema museale Miradas, Sonos e Radichinas, murales e sguardi sul paese. Il canto a tenore sta nella guida alla musica.",
     hero: {
       src: "/images/cultura/orgosolo-panorama.webp",
-      alt: "Veduta di Orgosolo in Sardegna",
+      alt: "Panorama di Orgosolo, Nuoro",
       credit: {
         author: "Lamberto Zannotti",
         license: "CC BY-SA 3.0",
@@ -1862,42 +1894,58 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Orgosolo_Panorama_-_panoramio.jpg",
       },
     },
-    intro: `Orgosolo è paese dei murales sul Supramonte in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Orgosolo su EVERAS.`,
+    intro:
+      "I muri dipinti sono la prima cosa che si cerca. Il Comune, dal 2026, tiene anche tre musei — Miradas, Sonos, Radichinas — nati dal progetto PNRR «Attrattività dei borghi» del Ministero della Cultura. L’identità documentata non è un catalogo di dipinti: è il modo in cui Orgosolo è stata osservata, e il modo in cui il paese ha imparato a guardarsi. I murales restano in strada; i musei spiegano lo sguardo.",
+    historyHeading: "Sguardi sul paese",
     history: [
-      `Orgosolo è un comune italiano di 3 784 abitanti, che si trova a 620 metri sul livello del mare in provincia di Nuoro, nella regione della Barbagia di Nuoro.`,
-      `Oggi Orgosolo resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Orgosolo, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Miradas, nell’ex casa Buscarini, è il museo che il Comune dedica a quegli sguardi. Il percorso parte dall’inchiesta dell’antropologo Franco Cagnetta, negli anni Cinquanta, e arriva a Francesco Del Casino, l’artista a cui lo stesso Comune attribuisce il volto dipinto del paese. In mezzo: gli scatti di Franco Pinna e il film Banditi a Orgosolo di Vittorio De Seta (1961), girato con persone del paese. Non facciamo di quel film l’essenza del comune: è una delle letture che il museo mette in fila. Fuori, i murales continuano sulle facciate. Non ne diamo un numero: le fonti oscillano.",
     ],
+    traditionsHeading: "Sonos",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Canto a tenore e memoria pastorale. Le date precise cambiano ogni anno: controlla il calendario eventi ad Orgosolo su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "La Barbagia intorno",
-        body: `Orgosolo si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Suoni, non solo muri",
+        body: "Sonos, in via Angioy, è il museo dei suoni: canto a tenore — pratica Unesco, ancora tenuta in paese — ninne nanne, serenate, poesia orale. La guida EVERAS a musica e poesia inquadra il tenore come patrimonio isolano, non come specialità di un solo comune. Qui il punto è che Orgosolo gli ha dato una sede. Radichinas, nell’ex biblioteca, tiene il rapporto col territorio: terre comuni, saperi agro-pastorali, e la rivolta di Pratobello del 1969, quando il paese fermò un poligono militare. Non è una guida al Supramonte.",
       },
     ],
+    visitHeading: "Tre sedi e i muri",
     visit: [
       {
-        name: "Centro di Orgosolo",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Murales del centro e porte sul Supramonte. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Sistema museale comunale",
+        body: "Tre edifici in paese, collegati da un’audioguida sui murales che il Comune pubblica sul sito Discover Orgosolo. Orari e biglietti: Comune / discoverorgosolo.com. San Sperate, nel Campidano, ha un altro muralismo, un altro artista di riferimento, un’altra scheda: non si visitano l’uno al posto dell’altro. Autunno in Barbagia, quando Orgosolo è tappa, è un circuito di corti: secondario, con date sull’hub EVERAS.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Orgosolo?",
-        answer: "Murales del centro e porte sul Supramonte. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Orgosolo è solo i murales?",
+        answer:
+          "I murales sono visibili in strada e il Comune li collega a un’audioguida. Accanto, dal 2026, ci sono tre musei comunali: Miradas (sguardi e Del Casino), Sonos (suoni e tenore), Radichinas (territorio e Pratobello).",
       },
       {
-        question: "Dove trovo gli eventi ad Orgosolo?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Orgosolo su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "I murales di Orgosolo sono gli stessi di San Sperate?",
+        answer:
+          "No. San Sperate è un altro comune, nel Campidano, con un’altra storia di paese-museo. Orgosolo è in Barbagia; il muralismo che il Comune racconta passa da Del Casino e dallo sguardo su questo paese. Le schede EVERAS restano separate.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Orgosolo", href: "https://www.comune.orgosolo.nu.it/" },
+      { label: "Comune di Orgosolo, Discover Orgosolo / Miradas", href: "https://discoverorgosolo.com/attrattori/miradas/" },
+      { label: "Comune di Orgosolo, Sonos", href: "https://discoverorgosolo.com/attrattori/sonos/" },
+      { label: "Comune di Orgosolo, Radichinas", href: "https://discoverorgosolo.com/attrattori/radichinas/" },
+      {
+        label: "Ministero della Cultura, Cultura Borghi, inaugurazione sistema museale",
+        href: "https://borghi.cultura.gov.it/2026/08/miradas-sonos-radichinas-la-nuova-stagione-culturale-di-orgosolo/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Il tenore nella guida alla musica, senza farlo diventare una locandina di Orgosolo; San Sperate per non confondere due muralismi; Mamoiada per un altro paese della Barbagia, con maschere diverse.",
+    relatedLinks: [
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/cultura-sarda/sud-sardegna/san-sperate", label: "Guida San Sperate" },
+      { href: "/cultura-sarda/centro-sardegna/mamoiada", label: "Guida Mamoiada" },
+      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "oristano",
