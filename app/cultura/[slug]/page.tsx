@@ -66,26 +66,47 @@ export default async function CulturaArticlePage({
   if (!article) notFound();
 
   const faqSchema = faqPageSchema(article.faqs);
-  let events: Awaited<
+  const events: Awaited<
     ReturnType<typeof loadFilteredPublishedEvents>
   >["events"] = [];
+  const seen = new Set<string>();
+
+  const eventQueries: Array<
+    Promise<Awaited<ReturnType<typeof loadFilteredPublishedEvents>>>
+  > = [];
 
   if (article.relatedEventSlugs && article.relatedEventSlugs.length > 0) {
-    try {
-      const loaded = await loadFilteredPublishedEvents({
+    eventQueries.push(
+      loadFilteredPublishedEvents({
         slugs: article.relatedEventSlugs,
         includeExpired: true,
-      });
-      events = loaded.events;
+      }),
+    );
+  }
+
+  for (const categorySlug of article.relatedCategorySlugs ?? []) {
+    eventQueries.push(loadFilteredPublishedEvents({ categorySlug }));
+  }
+
+  if (eventQueries.length > 0) {
+    try {
+      const loaded = await Promise.all(eventQueries);
+      for (const batch of loaded) {
+        for (const event of batch.events) {
+          if (seen.has(event.eventId)) continue;
+          seen.add(event.eventId);
+          events.push(event);
+        }
+      }
     } catch {
-      events = [];
+      events.length = 0;
     }
   }
 
   return (
     <CulturaArticleView
       article={article}
-      events={events}
+      events={events.slice(0, 9)}
       jsonLd={[
         articleSchema({
           headline: article.title,
@@ -97,7 +118,7 @@ export default async function CulturaArticlePage({
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Storia e tradizioni", path: CULTURA_ARTICLES_HUB_PATH },
+          { name: "Cultura sarda", path: CULTURA_ARTICLES_HUB_PATH },
           { name: article.h1, path: article.path },
         ]),
         ...(faqSchema ? [faqSchema] : []),

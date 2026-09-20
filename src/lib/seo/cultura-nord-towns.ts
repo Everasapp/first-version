@@ -12,7 +12,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Sassari: Candelieri, Museo Sanna e Cavalcata",
     h1: "Sassari",
     description:
-      "Sassari in Sardegna: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e cosa visitare in centro.",
+      "Sassari: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e centro.",
     hero: {
       src: "/images/cultura/sassari-panorama.webp",
       alt: "Panorama di Sassari sul colle, tra il centro storico e i quartieri nuovi",
@@ -38,17 +38,27 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     intro:
       "Sassari è la città del Nord: non un borgo da cartolina, una piazza che tiene gremi, museo e corso. Chi la cerca per i Candelieri o per la Cavalcata trova anche il Museo Sanna e un centro da camminare, senza trattarla solo come scalo verso il mare.",
     history: [
-      "Nel Medioevo Sassari è comune libero nel giudicato di Torres, poi entra nell’orbita aragonese e spagnola. Resta città di corporazioni: i gremi, le confraternite di mestiere, sono ancora quelli che portano i candelieri. Il sassarese — lingua, non dialetto da souvenir — si parla in centro e nei quartieri, accanto all’italiano e al sardo.",
+      "Nel Medioevo Sassari è comune libero nel giudicato di Torres, poi entra nell’orbita aragonese e spagnola. Resta città di corporazioni: i gremi, le confraternite di mestiere, sono ancora quelli che portano i candelieri.",
       "Piazza d’Italia, il Palazzo Ducale, il corso Vittorio Emanuele che scende verso Santa Maria di Betlem: il tessuto che vedi è Ottocento e Novecento sopra un nucleo più vecchio. Via Roma tiene il Museo Sanna, la più grande istituzione museale del Nord Sardegna. Fuori porta, Monte d’Accoddi è un altare prenuragico a terrazze: non è un nuraghe, è un’altra cosa, e vale il giro in auto.",
+    ],
+    language: [
+      "In centro e nei quartieri si parla sassarese (sassaresu), una varietà che i linguisti collegano al gruppo tosco-corso, distinta dal sardo logudorese dei paesi intorno. Convive con l’italiano. Non pubblichiamo percentuali di parlanti: cambiano e non le inventiamo.",
+      "La guida alle lingue tiene sassarese, gallurese e catalano di Alghero su piani diversi. Nei giorni dei Candelieri e della Cavalcata la piazza è mista: italiano, sassarese, sardo dei gruppi in costume.",
     ],
     traditions: [
       {
         title: "Faradda di li Candareri",
-        body: "La sera del 14 agosto i gremi scendono i candelieri lignei da piazza Castello a Santa Maria di Betlem, voto all’Assunta. Tamburi, flauti, otto portatori per cero, ballo lungo il corso. Dal 2013 è patrimonio Unesco con la Rete delle grandi macchine a spalla italiane, insieme a Nola, Palmi e Viterbo. Non è una sfilata turistica: è il rito della città. Arriva presto, il centro si chiude. Storia e significato stanno nell’articolo Cultura Sarda.",
+        body: "La sera del 14 agosto i gremi scendono i candelieri lignei da piazza Castello a Santa Maria di Betlem, voto all’Assunta. Tamburi, flauti, otto portatori per cero, ballo lungo il corso. Dal 2013 è patrimonio Unesco con la Rete delle grandi macchine a spalla italiane, insieme a Nola, Palmi e Viterbo. Non è una sfilata turistica: è il rito della città. Arriva presto, il centro si chiude. Storia e significato stanno nell’approfondimento sui Candelieri e nella guida alle grandi feste.",
       },
       {
         title: "Cavalcata Sarda",
-        body: "A metà maggio Sassari tiene la Cavalcata: gruppi in costume da tutta l’isola, a piedi e a cavallo, poi le pariglie all’ippodromo Pinna. Nata a fine Ottocento per una visita reale, è diventata la grande festa laica dei vestiti. Date sul sito del Comune: ogni anno il programma si allarga ai giorni prima della domenica. Storia e significato stanno nell’articolo Cultura Sarda.",
+        body: "A metà maggio Sassari tiene la Cavalcata: gruppi in costume da tutta l’isola, a piedi e a cavallo, poi le pariglie all’ippodromo Pinna. Nata a fine Ottocento per una visita reale, è diventata la grande festa laica dei vestiti. Date sul sito del Comune: ogni anno il programma si allarga ai giorni prima della domenica. Storia, abiti e calendario stanno nella scheda Cavalcata e nella guida ai costumi.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Gremi, mestieri di città",
+        body: "I gremi che portano i candelieri nascono come corporazioni di mestiere. Oggi sono confraternite di festa più che botteghe da visitare: non c’è un «artigianato sassarese» unico da vetrina. Il posto per oggetti e abiti è la sezione etnografica del Museo Sanna e il Museo dei Candelieri accanto a Santa Maria di Betlem. Orari sui gestori, non qui.",
       },
     ],
     visit: [
@@ -76,6 +86,36 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "La Faradda è la sera del 14 agosto. La Cavalcata Sarda è a metà maggio: la data esatta la pubblica il Comune ogni anno.",
       },
+      {
+        question: "Si parla sardo a Sassari?",
+        answer:
+          "In città è più visibile il sassarese, una parlata distinta dal sardo logudorese dei paesi. L’italiano è ovunque. Dettagli nella guida alle lingue della Sardegna.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Sassari",
+        href: "https://www.comune.sassari.it/",
+      },
+      {
+        label: "UNESCO — Feste delle grandi macchine a spalla",
+        href: "https://ich.unesco.org/en/RL/celebrations-of-big-shoulder-borne-processional-structures-00721",
+      },
+      {
+        label: "Rete musei archeologici della Sardegna",
+        href: "https://www.musei.sardegna.beniculturali.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/candelieri-sassari", label: "Candelieri" },
+      { href: "/cultura/cavalcata-sarda-sassari", label: "Cavalcata Sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/eventi-sardegna/candelieri-sassari", label: "Candelieri, calendario" },
+      { href: "/eventi-sardegna/cavalcata-sarda", label: "Cavalcata, calendario" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -88,7 +128,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Alghero: città catalana, corallo e Museo MACOR",
     h1: "Alghero",
     description:
-      "Alghero in Sardegna: storia catalana, Museo del Corallo a Villa Costantino, Focs de Sant Joan, bastioni e cosa visitare.",
+      "Alghero: storia catalana, Museo del Corallo a Villa Costantino, Focs de Sant Joan e bastioni.",
     hero: {
       src: "/images/cultura/alghero-panorama.webp",
       alt: "Alghero vista dal mare, con le mura e il porto sul golfo",
@@ -114,17 +154,23 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     intro:
       "Alghero è L’Alguer: città catalana in Nurra, mura sul mare, corallo rosso. Chi arriva per i bastioni trova anche il MACOR a Villa Costantino. Questa scheda tiene lingua, mestiere e visite, senza ridurla a tramonto sui merli.",
     history: [
-      "Nel 1354 Pietro IV d’Aragona prende Alghero e la ripopola con catalani. La lingua resta: l’alguerès si parla ancora, con scuola, insegne e un ufficio della Generalitat. Non è folklore da menu: è una minoranza riconosciuta. Le mura, i bastioni, Porta Terra e la cattedrale di Santa Maria raccontano quella piazzaforte.",
-      "Il corallo — Corallium rubrum — ha tenuto pesca e oreficeria per secoli. Oggi il mestiere è regolamentato e più magro; il museo in Villa Costantino, liberty del 1927, lo mette in fila con biologia, economia e pezzi lavorati. Fuori le mura, verso piazza Sulis, restano le ville di inizio Novecento. Nettuno e Porto Conte sono un altro giro: auto o battello, non il centro.",
+      "Nel 1354 Pietro IV d’Aragona prende Alghero e la ripopola con catalani. Le mura, i bastioni, Porta Terra e la cattedrale di Santa Maria raccontano quella piazzaforte. Fuori le mura, verso piazza Sulis, restano le ville di inizio Novecento. Nettuno e Porto Conte sono un altro giro: auto o battello, non il centro.",
+      "Il corallo — Corallium rubrum — ha tenuto pesca e oreficeria per secoli. Oggi il mestiere è regolamentato e più magro; il museo in Villa Costantino, liberty del 1927, lo mette in fila con biologia, economia e pezzi lavorati.",
+    ],
+    language: [
+      "Ad Alghero (L’Alguer) si parla l’alguerès, varietà di catalano riconosciuta come minoranza linguistica storica dalla legge 15 dicembre 1999, n. 482. Scuola, insegne e rapporti con la Generalitat de Catalunya sono fatti amministrativi documentati dal Comune, non uno slogan da menu.",
+      "Alghero non è «la Sardegna catalana». È una città in Nurra, accanto a comuni dove si parla sardo. La guida alle lingue tiene catalano, sardo, sassarese e gallurese distinti.",
     ],
     traditions: [
       {
-        title: "Lingua e città catalana",
-        body: "In centro senti l’alguerès accanto all’italiano. Feste, toponimi, sardana: il legame con la Catalogna non è uno slogan turistico, è amministrazione e scuola. Se cerchi «Alghero catalano» o «L’Alguer», parti dalle mura e dalle insegne, non dal gadget.",
-      },
-      {
         title: "Focs de Sant Joan",
         body: "Intorno al 23 giugno, San Giovanni, Alghero tiene falò, flama del Canigó, rito del comparatico e salto del fuoco sulla spiaggia di San Giovanni. Bianco, processione, fuoco. Date e iscrizioni le pubblica la Pro Loco ogni anno: non è uno show fisso, è una festa di città.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Corallo",
+        body: "Pesca e lavorazione del corallo rosso sono il mestiere più documentato della città. Il MACOR a Villa Costantino racconta biologia ed economia, non un souvenir da spiaggia. Oreficeria e filigrana si intrecciano al corallo: la guida all’artigianato tiene i territori distinti e non vende pezzi. Orari del museo: museialghero.it.",
       },
     ],
     visit: [
@@ -146,8 +192,26 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         question: "Si parla ancora catalano ad Alghero?",
         answer:
-          "Sì, l’alguerès è lingua viva, anche se non tutti la usano. Lo senti in centro, nelle feste di Sant Joan e nelle insegne. Non è un costume da indossare per un pomeriggio.",
+          "Sì, l’alguerès è lingua viva, anche se non tutti la usano. Lo senti in centro, nelle feste di Sant Joan e nelle insegne. Non è un costume da indossare per un pomeriggio. La guida alle lingue colloca Alghero nel quadro delle minoranze (legge 482/1999).",
       },
+    ],
+    sources: [
+      {
+        label: "Comune di Alghero",
+        href: "https://www.comune.alghero.ss.it/",
+      },
+      {
+        label: "Legge 15 dicembre 1999, n. 482 — minoranze linguistiche",
+        href: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1999-12-15;482",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: catalano di Alghero" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato e corallo" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/eventi-sardegna/jazzalguer", label: "JazzAlguer" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -160,7 +224,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Olbia: museo di Isola Peddone e San Simplicio",
     h1: "Olbia",
     description:
-      "Olbia in Gallura: Museo Archeologico Isola Peddone, basilica di San Simplicio, festa di Mesu Maju e cosa visitare in città.",
+      "Olbia, Gallura: Museo archeologico Isola Peddone, basilica di San Simplicio e festa di Mesu Maju.",
     hero: {
       src: "/images/cultura/olbia-marina.webp",
       alt: "La marina di Olbia sul golfo, con barche e lungomare",
@@ -187,7 +251,11 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Olbia è porto, aeroporto e città di Gallura, non solo lo scalo per la Costa Smeralda. Isola Peddone tiene il museo del porto; San Simplicio è la basilica. Questa scheda parte da lì, senza trattarla come un parcheggio verso le spiagge.",
     history: [
       "Olbia, «felice» in greco, è porto fenicio, focese, punico, romano. Negli scavi del tunnel sotto il lungomare, negli anni Novanta, sono uscite navi romane e un’imbarcazione medievale: tre relitti stanno in museo, con timoni e alberi che in Italia non trovi altrove. I Vandali affondano la flotta nel V secolo; la città si riduce, poi rinasce.",
-      "Nel Medioevo è Terranova, capitale del giudicato di Gallura. Il nome Olbia torna nel 1939. Corso Umberto, il molo Brin, San Simplicio un po’ in disparte rispetto al traffico: il centro che cammini è Novecento sopra un golfo che ha sempre lavorato. L’aeroporto e i traghetti pesano; la basilica e il museo tengono il resto.",
+      "Nel Medioevo è Terranova, capitale del giudicato di Gallura. Il nome Olbia torna nel 1939. Corso Umberto, il molo Brin, San Simplicio un po’ in disparte rispetto al traffico: il centro che cammini è Novecento sopra un golfo che ha sempre lavorato. L’aeroporto e i traghetti pesano; la basilica e il museo tengono il resto. La Costa Smeralda è un altro pezzo di costa, non il nome culturale di Olbia.",
+    ],
+    language: [
+      "In città si sente il gallurese accanto all’italiano. I linguisti lo collegano al gruppo tosco-corso, non al sardo del Logudoro. Non è un gadget da lungomare: sta nelle famiglie, nei toponimi, nei paesi dell’entroterra gallurese più che nei locali della costa.",
+      "La guida alle lingue e quella ai territori (Gallura) tengono questo distinguo. Non inventiamo quanti parlanti restano.",
     ],
     traditions: [
       {
@@ -197,6 +265,12 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         title: "Città di porto",
         body: "Olbia vive di scalo, cantiere, commercio. Il museo sull’isolotto Peddone, a forma di nave ormeggiata, racconta proprio quello: città e porto insieme, dal relitto al Corso. Se la usi solo per noleggiare l’auto, ti perdi la ragione per cui il golfo esiste.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Scalo e cantiere",
+        body: "Non c’è un mestiere da vetrina come la resolza o il tappeto. Il lavoro visibile è il porto: traghetti, aeroporto, cantiere. Isola Peddone tiene i relitti e la storia di quel golfo. La Costa Smeralda è un altro comune culturale, anche quando cade nello stesso itinerario turistico.",
       },
     ],
     visit: [
@@ -220,6 +294,25 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "A metà maggio, con il culmine il 15. Il programma esatto — processione, sagra, palio — lo pubblica ogni anno il Comitato della festa.",
       },
+      {
+        question: "A Olbia si parla sardo?",
+        answer:
+          "La parlata storica della città è il gallurese, distinta dal sardo. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Olbia",
+        href: "https://www.comune.olbia.ot.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/la-maddalena", label: "Guida La Maddalena" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -232,7 +325,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Porto Torres: San Gavino e Turris Libisonis",
     h1: "Porto Torres",
     description:
-      "Porto Torres in Sardegna: basilica di San Gavino, Antiquarium Turritano, area di Turris Libisonis, Festha Manna e ponte romano.",
+      "Porto Torres: basilica di San Gavino, Antiquarium Turritano, Turris Libisonis, Festha Manna e ponte romano.",
     hero: {
       src: "/images/cultura/porto-torres-panorama.webp",
       alt: "Porto Torres vista dal mare, con il porto e il golfo dell’Asinara",
@@ -256,19 +349,24 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       },
     },
     intro:
-      "Porto Torres è colonia romana e porto industriale, non un borgo ricostruito. San Gavino è la basilica più grande del romanico sardo; sotto e accanto resta Turris Libisonis. Si viene per i martiri, l’Antiquarium e il ponte sul Riu Mannu.",
+      "Porto Torres è colonia romana e porto, non un borgo ricostruito. San Gavino è la basilica più grande del romanico sardo; sotto e accanto resta Turris Libisonis. Si viene per i martiri, l’Antiquarium e il ponte sul Riu Mannu, non per una cartolina di golfo.",
     history: [
-      "Turris Libisonis è colonia romana, l’unico porto del nord-ovest con rapporti diretti su Ostia. Terme, mosaici, ponte di inizio I secolo sul Riu Mannu: la città moderna sta sopra quella. L’area detta Palazzo di Re Barbaro è il quartiere che si visita; l’Antiquarium, in via Ponte Romano, tiene statue, iscrizioni, corredi.",
-      "Gavino, Proto e Gianuario, martiri di inizio IV secolo, danno il nome alla basilica su Monte Agellu: due absidi, navata lunghissima, cripta con le tombe ritrovate nel 1614. È chiesa di giudici e pellegrini, non di vetrina. Il Novecento aggiunge cantiere, petrolchimico, traghetti. Il golfo resta quello dell’Asinara.",
+      "Turris Libisonis è colonia romana, porto del nord-ovest con rapporti su Ostia. Terme, mosaici, ponte di inizio I secolo sul Riu Mannu: la città moderna sta sopra quella. L’area detta Palazzo di Re Barbaro è il quartiere che si visita; l’Antiquarium, in via Ponte Romano, tiene statue, iscrizioni, corredi.",
+      "Gavino, Proto e Gianuario, martiri di inizio IV secolo, danno il nome alla basilica su Monte Agellu: due absidi, navata lunghissima, cripta con le tombe ritrovate nel 1614. È chiesa di giudici e pellegrini, non di vetrina. Il Novecento aggiunge cantiere, petrolchimico, traghetti. L’Asinara è un altro comune e un parco: si raggiunge da qui, non è Porto Torres.",
+    ],
+    language: [
+      "Si parla sassarese della Nurra, accanto all’italiano. È la stessa area di Sassari, distinta dal sardo logudorese dei paesi più interni. In porto si mescolano anche lingue di passaggio. La guida alle lingue tiene sassarese e sardo su piani diversi. Non pubblichiamo percentuali di parlanti.",
     ],
     traditions: [
       {
         title: "Festha Manna e martiri turritani",
         body: "Tra maggio e Pentecoste Porto Torres fa la Festha Manna: simulacri di Gavino, Proto e Gianuario, processione, pellegrinaggio notturno da San Nicola di Sassari, scambio delle chiavi tra i due sindaci. Non è la Corsa degli Scalzi di Cabras: è il rito turritano. Date sul sito del Comune, ogni anno diverse con la Pasqua.",
       },
+    ],
+    crafts: [
       {
-        title: "Porto e basilica",
-        body: "La città vive di banchina e di San Gavino. Balai, le chiesette sul mare, il ponte romano: si cammina il lungomare e si sale alla basilica. In agosto il resto è spiaggia; se vuoi i martiri, maggio è il mese.",
+        title: "Porto e cantiere",
+        body: "Il mestiere visibile è lo scalo: banchina, traghetti, industria. Non c’è un artigianato turritano da vetrina. Il posto per oggetti e iscrizioni è l’Antiquarium. Orari sul gestore: da fine 2025 il museo ha avuto chiusure per allestimento, si conferma prima di partire.",
       },
     ],
     visit: [
@@ -292,6 +390,30 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Intorno a Pentecoste, di solito tra fine maggio e giugno, con processione e pellegrinaggio da Sassari. Il Comune pubblica il programma ogni primavera.",
       },
+      {
+        question: "Si parla sardo a Porto Torres?",
+        answer:
+          "In città è più visibile il sassarese della Nurra, distinto dal logudorese dei paesi. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Porto Torres",
+        href: "https://comune.porto-torres.ss.it/",
+      },
+      {
+        label: "Antiquarium Turritano (MiC)",
+        href: "https://antiquariumportotorres.cultura.gov.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: sassarese" },
+      { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/cultura-sarda/nord-sardegna/stintino", label: "Guida Stintino" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -304,7 +426,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "La Maddalena: Caprera, Garibaldi e l’arcipelago",
     h1: "La Maddalena",
     description:
-      "La Maddalena in Sardegna: Compendio Garibaldino di Caprera, Memoriale di Forte Arbuticci, porto e parco dell’arcipelago.",
+      "La Maddalena: Compendio Garibaldino di Caprera, Memoriale di Forte Arbuticci, porto e parco dell’arcipelago.",
     hero: {
       src: "/images/cultura/la-maddalena-panorama.webp",
       alt: "La Maddalena vista dal mare, con il paese sull’isola",
@@ -332,6 +454,10 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     history: [
       "L’arcipelago — Maddalena, Caprera, Santo Stefano, Spargi, Budelli, Razzoli, Santa Maria — è stato scalo, presidio, frontiera. Nel 1793 i francesi attaccano e vengono respinti; Nelson ci passa; nell’Ottocento e nel Novecento la Marina fa della Maddalena una piazzaforte. Il paese sul porto è quello: calata, arsenale, case di granito.",
       "Garibaldi compra terra a Caprera nel 1855 e ci vive, con interruzioni, fino al 1882. La Casa Bianca, gli edifici agricoli, la tomba: oggi è museo statale. A quattro chilometri, Forte Arbuticci (anni 1890) è dal 2012 il Memoriale Giuseppe Garibaldi. Il Parco nazionale regola spiagge e approdi: non è un mare libero da cartina.",
+    ],
+    language: [
+      "Sull’arcipelago si parla gallurese e italiano. La presenza della Marina e il turismo estivo pesano sull’uso quotidiano: in inverno il paese è piccolo, in agosto si mescolano lingue di passaggio. Non è un laboratorio linguistico da vetrina.",
+      "La guida alle lingue colloca il gallurese nel gruppo tosco-corso, distinto dal sardo. Tempio e Aggius, in terraferma, restano i rinvii per sentirlo in un contesto di paese interno.",
     ],
     traditions: [
       {
@@ -365,6 +491,29 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
           "Sì, se calcoli il trasferimento e gli orari diversi. Il Memoriale apre più tardi e non ha mezzo pubblico. Verifica su museigaribaldini.cultura.gov.it.",
       },
     ],
+    sources: [
+      {
+        label: "Musei Garibaldini — Caprera (MiC)",
+        href: "https://museigaribaldini.cultura.gov.it/",
+      },
+      {
+        label: "Comune di La Maddalena",
+        href: "https://www.comune.lamaddalena.ot.it/",
+      },
+      {
+        label: "Parco nazionale Arcipelago di La Maddalena",
+        href: "https://www.lamaddalenapark.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/giuseppe-garibaldi-caprera", label: "Garibaldi a Caprera" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/olbia", label: "Guida Olbia" },
+      { href: "/pubblica", label: "Pubblica un evento" },
+    ],
     publishedAt: "2026-09-11",
   },
   {
@@ -376,7 +525,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Arzachena: Li Muri, Albucciu e Museo Ruzittu",
     h1: "Arzachena",
     description:
-      "Arzachena in Gallura: Museo civico Michele Ruzittu, necropoli di Li Muri, nuraghe Albucciu e siti archeologici oltre la Costa Smeralda.",
+      "Arzachena, Gallura: Museo Ruzittu, necropoli di Li Muri, nuraghe Albucciu. La Costa Smeralda è un altro pezzo del comune.",
     hero: {
       src: "/images/cultura/arzachena-panorama.webp",
       alt: "Panorama di Arzachena tra i graniti della Gallura",
@@ -405,20 +554,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Prima delle ville a mare c’è una cultura preistorica che gli archeologi chiamano di Arzachena: circoli funerari a Li Muri, IV millennio a.C., piccoli, precisi, diversi dalle tombe del resto dell’isola. Poi nuraghi a corridoio come Albucciu, villaggi come La Prisgiona, tombe di giganti (Coddu Ecchju, Li Lolghi, Moru). Il territorio è questo, non solo il golfo.",
       "Il comune autonomo nasce nel 1921. Negli anni Sessanta l’Aga Khan lancia la Costa Smeralda: Porto Cervo, Cala di Volpe, un altro mondo nello stesso municipio. Cannigione resta il borgo di mare del paese. In centro, via Mozart, il Museo civico Michele Ruzittu — intitolato a chi spinse l’autonomia — ha riaperto nel 2022 dopo anni di chiusura.",
     ],
+    language: [
+      "Si parla gallurese, accanto all’italiano. I linguisti lo collegano al gruppo tosco-corso, non al sardo propriamente detto. In costa, d’estate, la piazza è mista. La guida alle lingue tiene gallurese e sardo distinti. Non pubblichiamo conteggi di parlanti.",
+    ],
     traditions: [
       {
         title: "Paese e Costa Smeralda",
         body: "Due geografie. Il paese sta nell’entroterra, granito e piazza; la Costa è un progetto turistico degli anni Sessanta. Se cerchi «Arzachena cosa vedere» e ti escono solo yacht, sei sulla metà sbagliata della scheda. Il Fungo, il masso in centro, è il segno visibile del granito, non un monumento inventato.",
       },
-      {
-        title: "Siti aperti, mestiere di guide",
-        body: "Ge.se.co., società comunale, gestisce museo e aree. Guide, audioguide, info point a Cannigione e Malchittu. Orari e prezzi su arzachenaturismo.com: d’estate i siti stanno aperti tutto il giorno, il museo chiude il lunedì. Non entrare nei recinti fuori orario: è scavo, non pascolo.",
-      },
     ],
     visit: [
       {
         name: "Museo civico Michele Ruzittu",
-        body: "Via Mozart, centro paese. Tre sale, reperti da Li Muri ad Albucciu e La Prisgiona, sezione minerali. Martedì-domenica, di solito 10–13 e 16–19. Telefono 0789 840106, museo@gesecoarzachena.it. Il biglietto cumulativo con i siti archeologici conviene se fai più di un recinto.",
+        body: "Via Mozart, centro paese. Reperti da Li Muri ad Albucciu e La Prisgiona, sezione minerali. Gestione Ge.se.co. Orari e biglietti su arzachenaturismo.com o sul Comune: cambiano, il museo chiude spesso il lunedì. Il cumulativo con i siti conviene se fai più di un recinto. Non entrare nei recinti fuori orario: è scavo, non pascolo.",
       },
       {
         name: "Li Muri, Albucciu, La Prisgiona",
@@ -434,8 +582,29 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         question: "I siti archeologici sono aperti in inverno?",
         answer:
-          "Sì, con orari più corti. Il museo chiude il lunedì tutto l’anno. Controlla arzachenaturismo.com: in bassa stagione qualche recinto può chiudere un giorno.",
+          "Sì, con orari più corti. Il museo chiude spesso il lunedì. Controlla arzachenaturismo.com o il Comune: in bassa stagione qualche recinto può chiudere un giorno.",
       },
+      {
+        question: "Si parla sardo ad Arzachena?",
+        answer:
+          "Si parla gallurese, una varietà distinta dal sardo. L’italiano è ovunque, d’estate anche altre lingue. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Arzachena",
+        href: "https://www.comune.arzachena.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/olbia", label: "Guida Olbia" },
+      { href: "/cultura-sarda/nord-sardegna/tempio-pausania", label: "Guida Tempio" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -448,7 +617,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Castelsardo: castello, intreccio e Lunissanti",
     h1: "Castelsardo",
     description:
-      "Castelsardo in Sardegna: storia del borgo Doria, Museo dell’intreccio, Lunissanti, cattedrale e Roccia dell’Elefante.",
+      "Castelsardo, Anglona: borgo Doria, Museo dell’intreccio, Lunissanti, cattedrale e Roccia dell’Elefante.",
     hero: {
       src: "/images/cultura/castelsardo-panorama.webp",
       alt: "Castelsardo sul promontorio, con il castello dei Doria sul mare dell’Asinara",
@@ -477,14 +646,20 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Nel XII secolo i Doria genovesi alzano la rocca su un promontorio già abitato. Si chiama Castel Genovese, poi Castel Aragonese quando la corona catalano-aragonese la prende nel 1448. I Savoia, nel Settecento, le danno il nome attuale: Castelsardo. Non è un villaggio inventato per i turisti: è una piazzaforte che ha cambiato padrone restando sullo stesso scoglio.",
       "Dal Cinquecento è sede vescovile (diocesi di Ampurias, oggi Tempio-Ampurias). La concattedrale di Sant’Antonio Abate, con la cupola maiolicata, e le cripte del Maestro di Castelsardo raccontano quella stagione. Sotto le mura restano porto, pescherecci e le cestinaie che lavorano ancora sull’uscio.",
     ],
+    language: [
+      "A Castelsardo si parla sardo della fascia di Anglona, accanto all’italiano. Non è sassarese di città né gallurese. La guida alle lingue e quella ai territori tengono l’Anglona distinta dal Sassarese e dalla Gallura.",
+      "Nel Lunissanti i cori della Confraternita di Santa Croce restano il luogo in cui la lingua della festa è più visibile. Non inventiamo un «dialetto da cartolina» per il borgo.",
+    ],
     traditions: [
-      {
-        title: "L’intreccio, mestiere del borgo",
-        body: "A Castelsardo l’intreccio non è folklore da vetrina: è un sapere passato da pescatori e contadini, oggi dalle cestinaie che usano palma nana, fieno marino e rafia. Corbule, canestri, crivelli, nasse. Lo vedi nelle vie del centro, non solo in museo. Il MIM, Museo dell’intreccio mediterraneo, lo mette in fila con pezzi di tutto il Mediterraneo, compreso su fassoi degli stagni oristanesi.",
-      },
       {
         title: "Lunissanti",
         body: "Il lunedì santo è il rito più cercato del paese. La Confraternita di Santa Croce, dal Cinquecento, porta i Misteri da Santa Maria delle Grazie all’abbazia di Tergu, con i cori Miserere, Stabat e Jesus. La sera la Notti Santa spegne le luci del borgo. Non è uno spettacolo: è un pellegrinaggio. Arriva presto, lascia l’auto in basso, cammina.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Intreccio",
+        body: "L’intreccio non è folklore da vetrina: è un sapere passato da pescatori e contadini, oggi dalle cestinaie che usano palma nana, fieno marino e rafia. Corbule, canestri, crivelli, nasse. Lo vedi nelle vie del centro, non solo in museo. Il MIM, Museo dell’intreccio mediterraneo, nel castello dei Doria, lo mette in fila con pezzi di tutto il Mediterraneo, compreso su fassoi degli stagni oristanesi. Orari: mimcastelsardo.it. La guida all’artigianato colloca Castelsardo tra i territori dell’intreccio, senza catalogo di vendita.",
       },
     ],
     visit: [
@@ -508,6 +683,26 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Il lunedì santo, la settimana prima di Pasqua. Date e orari li pubblica la Confraternita ogni anno: il percorso tocca Santa Maria e Tergu.",
       },
+      {
+        question: "Si visitano le botteghe di intreccio?",
+        answer:
+          "Alcune cestinaie lavorano sull’uscio, in centro. Non pubblichiamo orari: si chiede sul posto o al Comune. Il MIM nel castello è il posto certo per vedere i pezzi con didascalie.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Castelsardo",
+        href: "https://www.comune.castelsardo.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato: intreccio" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/tradizioni-sarde", label: "Feste e tradizioni" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Anglona" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -520,7 +715,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Aggius: musei, tappeti e Valle della Luna",
     h1: "Aggius",
     description:
-      "Aggius in Gallura: Museo etnografico MEOC, Museo del Banditismo, tappeti, coro e Valle della Luna.",
+      "Aggius, Gallura: Museo etnografico MEOC, Museo del Banditismo, tappeti, coro e Valle della Luna.",
     hero: {
       src: "/images/cultura/aggius-panorama.webp",
       alt: "Panorama di Aggius ai piedi dei monti di granito, in Gallura",
@@ -549,14 +744,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Il paese sta su un dosso di granito, a oltre 500 metri. Le case in pietra, le viuzze, gli stazzi intorno: è Gallura interna, non costa. Per secoli è stato un crocevia di pastori, contrabbando e latitanze. Il museo nella vecchia Pretura non esalta i fuorilegge: mette in fila sentenze, armi e storie di un territorio isolato, dalla Spagna ai Savoia.",
       "Nel Novecento Aggius tiene tessitura e coro. Gavino Gabriel porta il canto aggese al Vittoriale: D’Annunzio chiama un corista «Galletto di Gallura», nome che il coro porta ancora. Oggi il borgo vive di granito, tappeti e visitatori che salgono da Tempio o dalla Costa Smeralda per un giorno diverso dal mare.",
     ],
+    language: [
+      "Si parla gallurese. I linguisti lo collegano al gruppo tosco-corso, non al sardo propriamente detto. Il coro e i toponimi tengono la lingua in pubblico; in casa l’uso varia. La guida alle lingue e quella a Tempio (città di riferimento della Gallura interna) sono i rinvii.",
+    ],
     traditions: [
-      {
-        title: "Tappeti e tessitura",
-        body: "Il tappeto aggese è il pezzo che esce dal paese. Al MEOC c’è la mostra permanente, con telai e dimostrazioni. In paese restano botteghe: meglio chiamare prima. Lana, colori, motivi geometrici: è un mestiere, non un souvenir da spiaggia.",
-      },
       {
         title: "Coro e Settimana Santa",
         body: "Il Coro di Aggius è tra i più noti della Gallura. A Pasqua il borgo tiene i riti spagnoli delle confraternite, dalla Domenica delle Palme alla Resurrezione: uno dei pochi comuni galluresi che li ha conservati per intero. Se cerchi «coro Aggius» o «Settimana Santa Aggius», le date cambiano ogni anno con il calendario liturgico.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Tappeti e tessitura",
+        body: "Il tappeto aggese è il pezzo che esce dal paese. Al MEOC c’è la mostra permanente, con telai e dimostrazioni. In paese restano botteghe: meglio chiamare prima. Lana, colori, motivi geometrici: è un mestiere, non un souvenir da spiaggia. La guida all’artigianato colloca Aggius nella tessitura, senza catalogo di vendita.",
       },
     ],
     visit: [
@@ -580,6 +780,24 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "La stagione piena è primavera-autunno. Da novembre a marzo chiedi a museodiaggius.it o al Comune: spesso si entra su appuntamento.",
       },
+    ],
+    sources: [
+      {
+        label: "Comune di Aggius",
+        href: "https://www.comune.aggius.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato: tessitura" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      {
+        href: "/cultura-sarda/nord-sardegna/tempio-pausania",
+        label: "Guida Tempio Pausania",
+      },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -621,14 +839,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "In età giudicale si chiama Templo. Nel 1879 aggiunge Pausania, in memoria della diocesi antica di Phausania. È sede vescovile e di tribunale, riferimento dell’entroterra gallurese. Il tessuto è granito: palazzi, pavimenti, viali. Nino Visconti, giudice di Gallura citato da Dante, ha qui una residenza attribuita. Fabrizio De André visse all’Agnata, poco fuori: piazza Faber, con un’installazione nata anche con Renzo Piano, lo ricorda in centro.",
       "Sughero e granito hanno tenuto l’economia. L’ex collegio degli Scolopi è oggi biblioteca e Museo De Muro. La stazione ferroviaria ha dipinti di Giuseppe Biasi. Non è un borgo piccolo: è una cittadina di montagna, con parchi, fonti di Rinaggiu e aria che d’estate chi scappa dalla costa viene a cercare.",
     ],
+    language: [
+      "A Tempio si parla gallurese. I linguisti lo distinguono dal sardo: è una varietà del gruppo tosco-corso, come in altra Gallura. L’italiano è la lingua pubblica della cittadina. La guida alle lingue è il testo di inquadramento.",
+    ],
     traditions: [
       {
         title: "Lu carrasciali timpiesu",
-        body: "Il carnevale di Tempio è allegorico, con carri e maschere, e include lu palu di la frisgiola, giostra a cavallo intorno a un dolce. A marzo le strade si riempiono. A Pasqua li casgiatini, a Natale i papassini. In tavola la suppa cuata. Ad agosto i patroni: San Paolo e la Vergine di Buoncammino.",
+        body: "Il carnevale di Tempio è allegorico, con carri e maschere, e include lu palu di la frisgiola, giostra a cavallo intorno a un dolce. A marzo le strade si riempiono. A Pasqua li casgiatini, a Natale i papassini. In tavola la suppa cuata. Ad agosto i patroni: San Paolo e la Vergine di Buoncammino. Date: Comune, ogni anno.",
       },
+    ],
+    crafts: [
       {
-        title: "Sughero, vino e abito",
-        body: "La lavorazione del sughero ha un museo delle macchine in via Limbara, presso Agris. Vermentino, karana e moscato escono dalle cantine intorno. L’abito tradizionale femminile tempiese è tra i più ricchi della Gallura: lo vedi a luglio, all’incontro internazionale del folklore.",
+        title: "Sughero e abito tempiese",
+        body: "La lavorazione del sughero ha un museo delle macchine in via Limbara, presso Agris: affilatrici, seghe, timbratrici da tappo. Conferma l’apertura al gestore. Vermentino, karana e moscato escono dalle cantine intorno, un altro piano rispetto al mestiere. L’abito tradizionale femminile tempiese è tra i più ricchi della Gallura: lo vedi a luglio, all’incontro internazionale del folklore, e nella guida ai costumi. La guida all’artigianato colloca Tempio e Calangianus nel distretto del sughero.",
       },
     ],
     visit: [
@@ -653,6 +876,23 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
           "Nelle settimane prima di Quaresima, con il clou a febbraio-marzo. Le date esatte le pubblica il Comune ogni anno.",
       },
     ],
+    sources: [
+      {
+        label: "Comune di Tempio Pausania",
+        href: "https://www.comune.tempiopausania.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato: sughero" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/aggius", label: "Guida Aggius" },
+      { href: "/cultura-sarda/nord-sardegna/calangianus", label: "Guida Calangianus" },
+      { href: "/eventi-sardegna/carnevale-sardegna", label: "Carnevale in Sardegna" },
+      { href: "/pubblica", label: "Pubblica un evento" },
+    ],
     publishedAt: "2026-09-11",
   },
   {
@@ -664,7 +904,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Ozieri: museo archeologico, Bisarcio e Premio Ozieri",
     h1: "Ozieri",
     description:
-      "Ozieri in Logudoro: Civico Museo Archeologico, cultura di Ozieri, basilica di Bisarcio, altane e Premio di letteratura sarda.",
+      "Ozieri, Logudoro: Civico Museo Archeologico, cultura di Ozieri, basilica di Bisarcio, altane e Premio Ozieri.",
     hero: {
       src: "/images/cultura/ozieri-panorama.webp",
       alt: "Panorama di Ozieri sull’anfiteatro del Logudoro",
@@ -692,6 +932,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     history: [
       "Nel Neolitico recente (circa 3500-2900 a.C.) dalla grotta di San Michele si definisce la cultura di Ozieri: ceramiche, domus de janas, idoli, una rete che copre l’isola. I reperti stanno nel museo civico, a Cagliari e al Sanna di Sassari. Poi nuraghi, il ponte romano Pont’ezzu, il giudicato, il capoluogo del Monte Acuto nel Trecento.",
       "Nel Settecento Ozieri è il secondo centro del nord-ovest. Francesco Ignazio Mannu, ozierese, scrive Procurade ’e moderare, l’inno dei moti antifeudali. Nel Cinquecento il Maestro di Ozieri dipinge chiese del nord. Il centro di oggi ha altane, palazzi, la cattedrale dell’Immacolata, piazza Cantareddu dove ancora si ascoltano cantadores.",
+    ],
+    language: [
+      "Si parla sardo logudorese. Ozieri è uno dei centri in cui la lingua scritta e recitata è più visibile: Premio Ozieri, cantigos a chiterra, coro. L’italiano è la lingua amministrativa. La guida alle lingue e quella a musica e poesia tengono poesia improvvisata e sardo parlato su piani distinti.",
     ],
     traditions: [
       {
@@ -725,6 +968,25 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
           "Mattina al museo alle Clarisse e in centro (cattedrale, altane). Pomeriggio a Bisarcio, in piana di Chilivani. Se resta tempo, Pont’ezzu o la grotta, con orario confermato.",
       },
     ],
+    sources: [
+      {
+        label: "Comune di Ozieri",
+        href: "https://www.comune.ozieri.ss.it/",
+      },
+      {
+        label: "Rete musei archeologici della Sardegna",
+        href: "https://www.musei.sardegna.beniculturali.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/storia-sardegna", label: "Storia: cultura di Ozieri" },
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/pubblica", label: "Pubblica un evento" },
+    ],
     publishedAt: "2026-09-11",
   },
   {
@@ -736,7 +998,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Stintino: Museo della Tonnara, Asinara e Pelosa",
     h1: "Stintino",
     description:
-      "Stintino in Sardegna: storia dei pescatori dell’Asinara, MUT Museo della Tonnara, Tonnara Saline e cosa vedere oltre la Pelosa.",
+      "Stintino: pescatori dell’Asinara, MUT Museo della Tonnara e Tonnara Saline. La Pelosa è costa, non il paese.",
     hero: {
       src: "/images/cultura/stintino-panorama.webp",
       alt: "Stintino visto dal mare, con la lingua di terra della Nurra",
@@ -760,19 +1022,24 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       },
     },
     intro:
-      "Stintino è un paese di pescatori nato tardi, quando l’Asinara diventò colonia penale e le famiglie lasciarono l’isola. Oggi tutti cercano la Pelosa. Questa scheda parte dal MUT, il Museo della Tonnara: senza quella storia il paese è solo una spiaggia.",
+      "Stintino è un paese di pescatori nato tardi, quando l’Asinara diventò colonia penale e le famiglie lasciarono l’isola. Oggi tutti cercano la Pelosa. Questa scheda parte dal MUT, il Museo della Tonnara: senza quella storia il paese è solo una spiaggia. Non allunghiamo l’elenco delle calette: accessi e regole della Pelosa stanno sul Comune, e cambiano.",
     history: [
       "Nel 1885 lo Stato fa dell’Asinara un lazzaretto e poi un carcere. I pastori e i tonnarotti che ci vivevano scendono sulla lingua di terra di fronte, in Nurra: nasce Istintinu, poi Stintino. Comune autonomo solo dal 1988. Prima era frazione di Sassari. L’identità è quella: gente dell’isola che ha portato reti, barche e la Tonnara Saline sul golfo.",
       "La mattanza nel golfo dell’Asinara dura fino al Novecento. Poi il turismo prende la Pelosa e il porto. Il museo, aperto nel 2016 nell’ex stabilimento Alpi, tiene attrezzi, diari, abiti, video. Non è un museo di pezzi rari: è la memoria di un mestiere spento.",
     ],
+    language: [
+      "Le famiglie che scesero dall’Asinara portarono il parlato di quell’isola, oggi mescolato all’italiano e al sardo della Nurra. Non forziamo un’etichetta unica: Stintino è un paese recente (comune dal 1988), e la lingua di piazza cambia con la stagione. La guida alle lingue inquadra sardo, sassarese e catalano dei comuni vicini senza attribuire a Stintino una «varietà da brochure».",
+    ],
     traditions: [
       {
-        title: "La tonnara",
-        body: "Reti fisse, camere, ciurma, rais. Il MUT ricostruisce il ciclo con filmati e oggetti. D’estate il museo apre anche di sera: conviene, perché di giorno la coda è alla Pelosa. Le Tonnare, il villaggio sul mare verso l’Asinara, restano il segno visibile di quella economia.",
-      },
-      {
         title: "Paese di mare, non solo spiaggia",
-        body: "Processione della Madonna, festa in porto, barche. Stintino è piccolo: in inverno si svuota, in agosto si riempie. Se vuoi il paese, vieni fuori stagione o la sera, dopo che i bagnanti sono scesi dalla Pelosa.",
+        body: "Processione della Madonna, festa in porto, barche. Stintino è piccolo: in inverno si svuota, in agosto si riempie. Se vuoi il paese, vieni fuori stagione o la sera, dopo che i bagnanti sono scesi dalla Pelosa. Accessi e regole della Pelosa: Comune, ogni stagione.",
+      },
+    ],
+    crafts: [
+      {
+        title: "La tonnara",
+        body: "Reti fisse, camere, ciurma, rais: un mestiere spento, non un souvenir. Il MUT (Museo della Tonnara) ricostruisce il ciclo con filmati e oggetti. D’estate il museo apre anche di sera: conviene, perché di giorno la coda è alla Pelosa. Le Tonnare, il villaggio sul mare verso l’Asinara, restano il segno visibile di quella economia. Orari: mutstintino.com.",
       },
     ],
     visit: [
@@ -797,6 +1064,20 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
           "Sì, spesso anche in orario serale tra giugno e settembre. In inverno chiude alcuni giorni feriali: controlla mutstintino.com prima di partire.",
       },
     ],
+    sources: [
+      {
+        label: "Comune di Stintino",
+        href: "https://www.comune.stintino.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Nurra" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/alghero", label: "Guida Alghero" },
+      { href: "/pubblica", label: "Pubblica un evento" },
+    ],
     publishedAt: "2026-09-11",
   },
   {
@@ -808,7 +1089,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Palau: porto per La Maddalena e Capo d’Orso",
     h1: "Palau",
     description:
-      "Palau in Sardegna: porto per l’arcipelago di La Maddalena, Capo d’Orso, Punta Sardegna e cosa visitare oltre i traghetti.",
+      "Palau: porto per La Maddalena, Capo d’Orso e Punta Sardegna. Non solo lo scalo dei traghetti.",
     hero: {
       src: "/images/cultura/palau-panorama.webp",
       alt: "Panorama di Palau sul golfo, tra case e mare della Gallura",
@@ -837,14 +1118,13 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Il nome parla di un riparo: Palau (in gallurese) è abitato stabile soprattutto dal Settecento–Ottocento, quando il porto serve l’arcipelago e la costa di fronte a Caprera. Prima ci sono torri, forti e la memoria militare che guarda lo Stretto. Comune autonomo dal 1959, staccato da Tempio: cresce col turismo e coi collegamenti marittimi.",
       "Il granito governa tutto: scogliere, cave, ville a Porto Rafael, il profilo di Capo d’Orso. La ferrovia Tempio–Palau (oggi legata al Trenino Verde in tratti e stagioni) ha tenuto il paese agganciato all’interno gallurese. Oggi l’identità resta quella di snodo: chi va all’arcipelago passa da qui; chi resta cammina il lungomare e sale alla roccia.",
     ],
+    language: [
+      "Si parla gallurese, accanto all’italiano. È la stessa area di Tempio e Arzachena, distinta dal sardo. In porto, d’estate, si mescolano lingue di passaggio. La guida alle lingue tiene gallurese e sardo distinti.",
+    ],
     traditions: [
       {
         title: "Porto e arcipelago",
-        body: "I traghetti per La Maddalena partono dal porto commerciale; il turismo estivo riempie banchine e parcheggi. Fuori stagione Palau torna paese: chiese, mercato, bar sul molo. Se cerchi «traghetto Palau Maddalena», arriva con margine in alta stagione: code e vento spostano gli orari.",
-      },
-      {
-        title: "Feste e costa gallurese",
-        body: "Patronali, processioni a mare, serate in piazza. La lingua è il gallurese, vicino al corso. In tavola contano pesce, porceddu e i formaggi dell’interno: Palau è costa, ma la Gallura dietro è pastorizia e sughero.",
+        body: "I traghetti per La Maddalena partono dal porto commerciale. Fuori stagione Palau torna paese: chiese, mercato, bar sul molo. Se cerchi il traghetto, arriva con margine in alta stagione: code e vento spostano gli orari. Date di feste: Comune, ogni anno.",
       },
     ],
     visit: [
@@ -866,8 +1146,30 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         question: "Cosa vedere a Palau oltre il porto?",
         answer:
-          "Capo d’Orso e Punta Sardegna. Poi il paese e, se hai tempo, una corsa all’arcipelago o verso Santa Teresa e Arzachena.",
+          "Capo d’Orso e Punta Sardegna. Poi il paese e, se hai tempo, una corsa all’arcipelago. Le spiagge non sono la storia del comune.",
       },
+      {
+        question: "Si parla sardo a Palau?",
+        answer:
+          "Si parla gallurese, distinto dal sardo. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Palau",
+        href: "https://comune.palau.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura-sarda/nord-sardegna/la-maddalena", label: "Guida La Maddalena" },
+      {
+        href: "/cultura-sarda/nord-sardegna/santa-teresa-gallura",
+        label: "Guida Santa Teresa Gallura",
+      },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -880,7 +1182,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Santa Teresa Gallura: torre Longonsardo e Capo Testa",
     h1: "Santa Teresa Gallura",
     description:
-      "Santa Teresa Gallura in Sardegna: Torre di Longonsardo, Capo Testa, Rena Bianca e cosa visitare sullo Stretto di Bonifacio.",
+      "Santa Teresa Gallura: Torre di Longonsardo, Capo Testa e Stretto di Bonifacio.",
     hero: {
       src: "/images/cultura/santa-teresa-panorama.webp",
       alt: "Panorama di Santa Teresa Gallura sulla costa dello Stretto",
@@ -909,14 +1211,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Il forte e la torre aragonese di Longonsardo controllano lo Stretto da secoli. Il paese moderno nasce nell’Ottocento voluto da Vittorio Emanuele I: pianta regolare, piazza centrale, nome alla moglie Maria Teresa. Prima c’erano torri, pastori e il porto naturale. Il comune è gallurese, lingua e tutto: di fronte c’è Bonifacio, non Olbia.",
       "Capo Testa, a ovest, è un altro mondo di granito: cave romane, faro, calette. Il turismo ha riempito agosto; fuori stagione restano vento, sentieri e il traghetto per la Corsica quando gira. Santa Teresa non è un sobborgo di Palau: è testa di ponte nord.",
     ],
+    language: [
+      "Si parla gallurese, accanto all’italiano. Di fronte c’è Bonifacio: lo Stretto è anche un confine linguistico, non solo geografico. La guida alle lingue colloca il gallurese nel gruppo tosco-corso, distinto dal sardo. Non inventiamo quanti parlanti restano.",
+    ],
     traditions: [
       {
         title: "Torre e Stretto",
-        body: "La Torre di Longonsardo (o aragonese) domina il porto vecchio: si visita in estate e nei weekend secondo orari comunali. Da lassù Capo Testa da un lato, Corsica dall’altro. È il pezzo di storia che tiene insieme spiaggia e dogana.",
+        body: "La Torre di Longonsardo (o aragonese) domina il porto vecchio: si visita in estate e nei weekend secondo orari comunali. Da lassù Capo Testa da un lato, Corsica dall’altro. È il pezzo di storia che tiene insieme dogana e paese a scacchiera. Date di feste: Comune.",
       },
+    ],
+    crafts: [
       {
-        title: "Gallura di confine",
-        body: "Festa patronale, musica in piazza, collegamenti con Bonifacio. Si parla gallurese. In tavola aragosta quando c’è, ma anche i piatti dell’interno: qui il mare è vicino, l’isola dietro è sughero e granito.",
+        title: "Granito di Capo Testa",
+        body: "Le cave di granito sul capo sono documentate dall’antichità: pietra estratta e spedita, non un souvenir. Oggi il mestiere visibile è più il taglio e il paesaggio di cava che una bottega da visitare. Si cammina sui sentieri segnati; non si entra dove è vietato.",
       },
     ],
     visit: [
@@ -940,6 +1247,25 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Sì, in stagione con orario del Comune. Fuori estate può essere chiusa infrasettimanale: conferma in loco prima di salire.",
       },
+      {
+        question: "Si parla sardo a Santa Teresa?",
+        answer:
+          "Si parla gallurese, distinto dal sardo. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Santa Teresa Gallura",
+        href: "https://www.comune.santateresagallura.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura-sarda/nord-sardegna/palau", label: "Guida Palau" },
+      { href: "/cultura-sarda/nord-sardegna/tempio-pausania", label: "Guida Tempio" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -952,7 +1278,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Sorso: Romangia, Noli Me Tollere e costa di Platamona",
     h1: "Sorso",
     description:
-      "Sorso in Sardegna: storia della Romangia, chiesa Noli Me Tollere, vino, Carnevale e spiagge di Arboriamar e Platamona.",
+      "Sorso, Romangia: chiesa Noli Me Tollere, vino e Carnevale. Platamona è la costa del comune.",
     hero: {
       src: "/images/cultura/sorso-panorama.webp",
       alt: "Panorama di Sorso sulla piana della Romangia",
@@ -981,14 +1307,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Territorio abitato da sempre: nuraghi, tombe, poi villaggi della Romangia legati a Sassari. Sorso cresce come centro agricolo e vinicolo; il sassarese e il sardo si mescolano nelle case. Nel Novecento la costa di Platamona diventa balneare, mentre il nucleo resta sull’entroterra fertile, a pochi chilometri dal mare.",
       "Oggi è uno dei comuni più popolosi del Nord dopo Sassari e Olbia. Il centro ha municipio, chiese, mercato; la pineta e le spiagge sono l’altra metà del comune. Non è un borgo-cartolina: è una città-paese che lavora e va al mare la sera.",
     ],
+    language: [
+      "Si parla sassarese della Romangia, accanto all’italiano e, in misura variabile, al sardo. Sorso e Sennori stanno nella fascia di Sassari, non in Gallura. La guida alle lingue tiene sassarese e sardo distinti. Non pubblichiamo percentuali.",
+    ],
     traditions: [
       {
-        title: "Noli Me Tollere e feste",
-        body: "La chiesa di Noli Me Tollere è il segno religioso più citato: dedicata al Cristo, con culto e festa che tirano gente dalla provincia. A febbraio il Carnevale di Sorso è tra i più seguiti del Nord: maschere, carri, rogo. In estate sagre e serate in piazza; il vino della Romangia (Cannonau, Vermentino e uvaggi locali) resta il filo agricolo.",
+        title: "Noli Me Tollere e Carnevale",
+        body: "La chiesa di Noli Me Tollere è il segno religioso più citato: culto e festa che tirano gente dalla provincia. A febbraio il Carnevale di Sorso è tra i più seguiti del Nord: maschere, carri, rogo. Date: Comune e Pro Loco, ogni anno. Hub EVERAS: Carnevale in Sardegna.",
       },
+    ],
+    crafts: [
       {
-        title: "Romangia a tavola",
-        body: "Pane, formaggi, verdure dell’orto, vino. Sorso e Sennori si guardano dai colli: stessa campagna, due comuni. Se cerchi «vino Romangia» o «Cantina di Sorso», parti dalle aziende e dalle enoteche in paese, non solo dallo scaffale turistico in costa.",
+        title: "Vino della Romangia",
+        body: "Il mestiere documentato è agricolo: vigneti di collina, Cannonau, Vermentino e uvaggi locali. Si parte dalle cantine in paese, non dallo scaffale in costa. Non pubblichiamo listini né orari di degustazione: si chiede in azienda o in Comune.",
       },
     ],
     visit: [
@@ -1010,8 +1341,27 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         question: "Cosa non perdere a Sorso?",
         answer:
-          "Il centro con Noli Me Tollere, una cantina o un bicchiere di vino della Romangia, e la pineta in costa. A febbraio, il Carnevale.",
+          "Il centro con Noli Me Tollere, una cantina se è aperta, e a febbraio il Carnevale. La costa è nel comune, non è il paese.",
       },
+      {
+        question: "Si parla sardo a Sorso?",
+        answer:
+          "In Romangia è più visibile il sassarese, accanto all’italiano. Non è il gallurese né il logudorese dei paesi alti. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Sorso",
+        href: "https://www.comune.sorso.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: sassarese" },
+      { href: "/cultura/cucina-sarda", label: "Cucina tradizionale" },
+      { href: "/eventi-sardegna/carnevale-sardegna", label: "Carnevale in Sardegna" },
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -1024,7 +1374,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Ittiri: costumi, Logudoro e paese alto",
     h1: "Ittiri",
     description:
-      "Ittiri in Sardegna: storia del Logudoro, costume tradizionale, chiese e cosa visitare tra paese e campagne.",
+      "Ittiri, Logudoro: costume tradizionale, chiese e paese alto tra Sassari e l’interno.",
     hero: {
       src: "/images/cultura/ittiri-panorama.webp",
       alt: "Panorama di Ittiri sul colle del Logudoro",
@@ -1053,14 +1403,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Il territorio è pieno di segni prenuragici e nuragici; il paese medievale sta nella rete del giudicato di Torres e poi nei feudi. Ittiri cresce come centro agricolo e pastorale: grano, vigna, ovini. Il nome resta legato al sardo logudorese e a una dignità del vestito che non è folklore da vetrina.",
       "Nel Novecento emigrazione e ritorno, come in molti paesi del Nord interno. Oggi Ittiri è comune vivo, non museo: scuole, piazza, associazioni che tengono vivo il costume e le feste. Monte Torru e le campagne intorno spiegano perché il paese sta sul colle.",
     ],
+    language: [
+      "Si parla sardo logudorese, accanto all’italiano. Ittiri non è sassarese di città né gallurese. La guida alle lingue e quella ai costumi tengono parlato e abito su piani distinti.",
+    ],
     traditions: [
       {
-        title: "Il costume di Ittiri",
-        body: "Il vestito tradizionale femminile — colori, gioielli, veli — è tra i più fotografati alle sfilate: Cavalcata Sarda, feste patronali, mostre. Non è un costume da noleggio per un giorno: famiglie e sarte lo custodiscono. Se lo vedi in piazza, stai a bordo campo: è rito, non set.",
+        title: "Feste e Cavalcata",
+        body: "Patronali, processioni, canto. Ittiri manda gruppi a cavallo e in costume quando Sassari chiama la Cavalcata: è parte della rete dei paesi del Nord interno. Date: Comune e Pro Loco. Storia della rassegna: scheda Cavalcata e guida ai costumi.",
       },
+    ],
+    crafts: [
       {
-        title: "Feste e Logudoro",
-        body: "Patronali, processioni, canto. Si parla sardo logudorese. In tavola pane, formaggi, malloreddus, porceddu nelle grandi occasioni. Ittiri manda gruppi a cavallo e in costume quando Sassari chiama la Cavalcata: è parte della rete dei paesi del Nord interno.",
+        title: "Sarte e costume",
+        body: "Il vestito tradizionale femminile — colori, gioielli, veli — è tra i più fotografati alle sfilate. Non è un costume da noleggio per un giorno: famiglie e sarte lo custodiscono. Se lo vedi in piazza, stai a bordo campo: è rito, non set. Non pubblichiamo botteghe né listini.",
       },
     ],
     visit: [
@@ -1084,6 +1439,26 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Il centro e le chiese; se c’è una festa o una mostra del costume, resta per quella. Poi un giro sulle colline verso Monte Torru.",
       },
+      {
+        question: "Si parla sardo a Ittiri?",
+        answer:
+          "Sì, logudorese, accanto all’italiano. Non è il sassarese di Sassari. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Ittiri",
+        href: "https://www.comune.ittiri.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/cavalcata-sarda-sassari", label: "Cavalcata Sarda" },
+      { href: "/eventi-sardegna/cavalcata-sarda", label: "Cavalcata, calendario" },
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -1096,7 +1471,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Calangianus: Museo del Sughero e Gallura interna",
     h1: "Calangianus",
     description:
-      "Calangianus in Sardegna: Museo del Sughero, storia della filiera del sughero in Gallura, convento e cosa visitare.",
+      "Calangianus, Gallura interna: Museo del Sughero, filiera del sughero e paese granitico.",
     hero: {
       src: "/images/cultura/calangianus-panorama.webp",
       alt: "Panorama di Calangianus tra sugherete e granito della Gallura",
@@ -1125,14 +1500,19 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Paese gallurese di entroterra, tra sugherete e granito. Nel Novecento la lavorazione del sughero — tappi, pannelli, agglomerati — fa di Calangianus un centro industriale di nicchia conosciuto in Europa. Prima c’erano pastorizia, carbone, piccole attività: il sughero cambia scala e tiene lavoro quando altri paesi si svuotano.",
       "Il tessuto urbano è quello tipico della Gallura interna: case in pietra, chiese, l’ex convento dei cappuccini. Tempio è vicina; il mare (Olbia, Palau) è un’altra mezz’ora. Calangianus non è una frazione-spiaggia: è fabbrica e museo di un mestiere ancora vivo.",
     ],
+    language: [
+      "Si parla gallurese, accanto all’italiano. È l’entroterra di Tempio e Aggius, non la costa. La guida alle lingue tiene gallurese e sardo distinti.",
+    ],
     traditions: [
       {
-        title: "Il sughero",
-        body: "La decortica estiva, i piazzali, le aziende: il ciclo del sughero si vede ancora. Il museo racconta attrezzi, macchine, storia sociale. Non è un’attrazione per bambini annoiati: è la ragione per cui il paese compare nelle mappe economiche dell’isola.",
-      },
-      {
         title: "Gallura interna",
-        body: "Feste patronali, lingua gallurese, cucina di entroterra (puligioni, mazza frissa, porceddu). A settembre e ottobre, quando si lavora il bosco, il paese ha un altro ritmo rispetto ad agosto in costa.",
+        body: "Feste patronali, lingua, cucina di entroterra. A settembre e ottobre, quando si lavora il bosco, il paese ha un altro ritmo rispetto ad agosto in costa. Date: Comune.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Sughero",
+        body: "La decortica estiva, i piazzali, le aziende: il ciclo del sughero si vede ancora. Il museo racconta attrezzi, macchine, storia sociale. Non è un’attrazione da brochure: è la ragione per cui il paese compare nelle mappe economiche dell’isola. La guida all’artigianato colloca Tempio e Calangianus nello stesso distretto, senza catalogo di vendita.",
       },
     ],
     visit: [
@@ -1156,6 +1536,27 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Orari variabili: conferma con il Comune prima di partire, soprattutto fuori estate e il lunedì.",
       },
+      {
+        question: "Si parla sardo a Calangianus?",
+        answer:
+          "Si parla gallurese, distinto dal sardo. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Calangianus",
+        href: "https://comune.calangianus.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato: sughero" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/nord-sardegna/tempio-pausania", label: "Guida Tempio" },
+      { href: "/cultura-sarda/nord-sardegna/aggius", label: "Guida Aggius" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },
@@ -1168,7 +1569,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Valledoria: foce del Coghinas e San Pietro a Mare",
     h1: "Valledoria",
     description:
-      "Valledoria in Sardegna: foce del Coghinas, spiaggia di San Pietro a Mare, Anglona costiera e cosa visitare.",
+      "Valledoria, Anglona: foce del Coghinas. San Pietro a Mare è la frazione-spiaggia, non il comune.",
     hero: {
       src: "/images/cultura/valledoria-panorama.webp",
       alt: "Panorama di Valledoria sulla piana verso il mare",
@@ -1197,14 +1598,13 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "La piana del Coghinas è coltivata da secoli: orti, vigneti, pastorizia. Valledoria come comune moderno nasce nel Novecento (autonomia da Sedini e altri assetti); prima il territorio era sparso tra frazioni e chiese. San Pietro a Mare è il fronte balneare; il nome del comune parla della valle, non solo della battigia.",
       "Il turismo estivo ha allargato campeggi e seconde case. Fuori stagione restano vento di maestrale, foce e un paese che lavora la terra. Badesi è di fronte sulla foce: stesso paesaggio, due comuni.",
     ],
+    language: [
+      "Si parla sardo della fascia di Anglona, accanto all’italiano. Non è gallurese né sassarese di città. Castelsardo, a ovest, è il rinvio di territorio. La guida alle lingue tiene l’Anglona distinta dalla Gallura.",
+    ],
     traditions: [
       {
-        title: "Foce e pesca",
-        body: "Il Coghinas marca il confine naturale: pesca, birdwatching, tramonti sulla foce. Non è una riserva da cartolina sempre accessibile allo stesso modo: rispetta le zone umide e i divieti stagionali.",
-      },
-      {
-        title: "Anglona a tavola",
-        body: "Verdure della piana, pesce quando c’è, pani e dolci da festa. Patronali e sagre estive riempiono San Pietro; in paese le feste restano più sobrie. Si parla sardo e italiano; l’Anglona guarda Castelsardo più che Olbia.",
+        title: "Foce e paese",
+        body: "Il Coghinas marca il confine naturale: pesca, zone umide, luce bassa la sera. Non è una riserva sempre accessibile allo stesso modo: rispetta i divieti stagionali. Patronali e sagre, quando Comune e Pro Loco le pubblicano, stanno in calendario. San Pietro a Mare è la frazione-spiaggia, non il nome culturale del comune.",
       },
     ],
     visit: [
@@ -1226,8 +1626,26 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         question: "Cosa vedere oltre la spiaggia?",
         answer:
-          "La foce del Coghinas e un giro in paese. Con più tempo, Castelsardo a ovest o la Gallura a est.",
+          "La foce del Coghinas e un giro in paese. Con più tempo, Castelsardo a ovest. La battigia non è la storia del comune.",
       },
+      {
+        question: "Si parla sardo a Valledoria?",
+        answer:
+          "Sì, sardo di Anglona, accanto all’italiano. Non è il gallurese della costa a est. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Valledoria",
+        href: "https://comune.valledoria.ss.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Anglona" },
+      { href: "/cultura-sarda/nord-sardegna/castelsardo", label: "Guida Castelsardo" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-11",
   },

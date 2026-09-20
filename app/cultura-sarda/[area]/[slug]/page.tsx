@@ -107,7 +107,15 @@ export default async function CulturaTownPage({ params }: CulturaTownPageProps) 
   }
 
   const article = findCultureTown(slug);
-  const { events } = await loadFilteredPublishedEvents({ city: city.city });
+  let events: Awaited<
+    ReturnType<typeof loadFilteredPublishedEvents>
+  >["events"] = [];
+  try {
+    const loaded = await loadFilteredPublishedEvents({ city: city.city });
+    events = loaded.events;
+  } catch {
+    events = [];
+  }
 
   if (article) {
     return (

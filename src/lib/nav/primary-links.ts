@@ -16,7 +16,7 @@ export function getPrimaryNavLinks(from = new Date()): PrimaryNavLink[] {
     { href: "/eventi-sardegna", label: "Eventi e sagre" },
     { href: calendarYear.path, label: `Calendario ${calendarYear.year}` },
     { href: "/cultura-sarda", label: "Scopri la Sardegna" },
-    { href: "/cultura", label: "Storia e tradizioni" },
+    { href: "/cultura", label: "Cultura sarda" },
     { href: "/eventi-oggi", label: "Eventi oggi" },
     { href: "/eventi-domani", label: "Domani" },
     { href: "/eventi-weekend", label: "Weekend" },

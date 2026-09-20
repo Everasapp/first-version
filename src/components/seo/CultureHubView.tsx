@@ -103,7 +103,7 @@ export default function CultureHubView({ jsonLd }: CultureHubViewProps) {
                     href="/cultura"
                     className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
                   >
-                    Storia e tradizioni
+                    Cultura sarda
                   </Link>
                 </li>
                 <li>

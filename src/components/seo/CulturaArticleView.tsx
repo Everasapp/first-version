@@ -8,6 +8,7 @@ import ArticleFullPhoto from "@/src/components/seo/ArticleFullPhoto";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
+import CulturaSources from "@/src/components/seo/CulturaSources";
 import type { CulturaArticle } from "@/src/lib/seo/cultura-articles";
 import { CULTURA_ARTICLES_HUB_PATH } from "@/src/lib/seo/cultura-articles";
 import { CULTURE_HUB_PATH } from "@/src/lib/seo/cultura-towns";
@@ -48,13 +49,13 @@ export default function CulturaArticleView({
               <Breadcrumbs
                 items={[
                   { name: "Home", href: "/" },
-                  { name: "Storia e tradizioni", href: CULTURA_ARTICLES_HUB_PATH },
+                  { name: "Cultura sarda", href: CULTURA_ARTICLES_HUB_PATH },
                   { name: article.h1 },
                 ]}
               />
 
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Storia e tradizioni · {formatPublishedAt(article.publishedAt)}
+                Cultura sarda · {formatPublishedAt(article.publishedAt)}
               </p>
               <h1 className="mt-2 max-w-4xl text-3xl font-black tracking-tight text-slate-900 sm:text-5xl">
                 {article.h1}
@@ -98,22 +99,38 @@ export default function CulturaArticleView({
               </section>
             ))}
 
-            {events.length > 0 ? (
+            {events.length > 0 || article.kind === "guide" ? (
               <section className="mt-12 border-t border-slate-200 pt-10">
                 <h2 className="text-2xl font-bold text-slate-900">
-                  Scheda evento
+                  {article.eventSectionTitle ?? "Scheda evento"}
                 </h2>
-                <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-                  La scheda resta su EVERAS anche dopo la chiusura: date,
-                  luogo e locandina dell’ultima edizione.
-                </p>
-                <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {events.map((event) => (
-                    <li key={event.eventId}>
-                      <EventCard event={event} />
-                    </li>
-                  ))}
-                </ul>
+                {events.length > 0 ? (
+                  <>
+                    <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                      Date, luogo e locandina dal calendario EVERAS. Non sono
+                      scritte a mano in questa guida.
+                    </p>
+                    <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                      {events.map((event) => (
+                        <li key={event.eventId}>
+                          <EventCard event={event} />
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                    Non ci sono ancora eventi collegati a questo tema. Se
+                    organizzi una festa, una mostra o una sagra, puoi{" "}
+                    <Link
+                      href="/pubblica"
+                      className="font-semibold text-[#075EAE] hover:underline"
+                    >
+                      pubblicare un evento
+                    </Link>
+                    .
+                  </p>
+                )}
               </section>
             ) : null}
 
@@ -164,6 +181,7 @@ export default function CulturaArticleView({
                 </div>
               </section>
             ) : null}
+            <CulturaSources sources={article.sources ?? []} />
           </div>
         </article>
 
@@ -200,10 +218,18 @@ export default function CulturaArticleView({
               </li>
               <li>
                 <Link
+                  href="/pubblica"
+                  className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+                >
+                  Pubblica un evento
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={CULTURA_ARTICLES_HUB_PATH}
                   className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
                 >
-                  ← Tutti gli articoli
+                  Tutte le guide culturali
                 </Link>
               </li>
             </ul>

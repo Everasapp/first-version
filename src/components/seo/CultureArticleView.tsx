@@ -7,6 +7,7 @@ import ArticleFullPhoto from "@/src/components/seo/ArticleFullPhoto";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
+import CulturaSources from "@/src/components/seo/CulturaSources";
 import { cities } from "@/src/data/cities";
 import { findCultureAreaByName } from "@/src/lib/seo/cultura-areas";
 import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
@@ -88,6 +89,20 @@ export default function CultureArticleView({
               ))}
             </section>
 
+            {article.language && article.language.length > 0 ? (
+              <section className="mt-12">
+                <h2 className="text-2xl font-bold text-slate-900">Lingua</h2>
+                {article.language.map((paragraph) => (
+                  <p
+                    key={paragraph.slice(0, 48)}
+                    className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </section>
+            ) : null}
+
             <section className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900">Tradizioni</h2>
               {article.traditionPhoto ? (
@@ -112,6 +127,26 @@ export default function CultureArticleView({
                 ))}
               </div>
             </section>
+
+            {article.crafts && article.crafts.length > 0 ? (
+              <section className="mt-12">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Artigianato e mestieri
+                </h2>
+                <div className="mt-6 space-y-8">
+                  {article.crafts.map((item) => (
+                    <div key={item.title}>
+                      <h3 className="text-lg font-bold text-slate-900 sm:text-xl">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 text-base leading-relaxed text-slate-600 sm:text-lg">
+                        {item.body}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <section className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900">
@@ -140,6 +175,30 @@ export default function CultureArticleView({
               </div>
             </section>
 
+            {article.relatedLinks && article.relatedLinks.length > 0 ? (
+              <section className="mt-12 border-t border-slate-200 pt-10">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Guide e pagine collegate
+                </h2>
+                <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
+                  Cultura, mestieri, lingue e calendario: i testi che tengono
+                  questo comune in un contesto più largo.
+                </p>
+                <ul className="mt-6 flex flex-wrap gap-3">
+                  {article.relatedLinks.map((link) => (
+                    <li key={`${link.href}-${link.label}`}>
+                      <Link
+                        href={link.href}
+                        className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
             <section className="mt-12 border-t border-slate-200 pt-10">
               <h2 className="text-2xl font-bold text-slate-900">
                 Domande frequenti
@@ -161,6 +220,7 @@ export default function CultureArticleView({
                 ))}
               </div>
             </section>
+            <CulturaSources sources={article.sources ?? []} />
           </div>
         </article>
 
@@ -189,11 +249,21 @@ export default function CultureArticleView({
               </div>
             ) : (
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600">
-                {`Al momento non ci sono appuntamenti in programma ${townPrep} ${article.town}. Quando Comuni e Pro Loco pubblicano sagre o concerti, li trovi sul calendario EVERAS.`}
+                Al momento non ci sono appuntamenti in programma {townPrep}{" "}
+                {article.town}. Quando Comuni e Pro Loco pubblicano sagre o
+                concerti, li trovi sul calendario EVERAS. Se organizzi un
+                evento puoi{" "}
+                <Link
+                  href="/pubblica"
+                  className="font-semibold text-[#075EAE] hover:underline"
+                >
+                  pubblicarlo
+                </Link>
+                .
               </p>
             )}
 
-            <div className="mt-10">
+            <div className="mt-10 flex flex-wrap gap-3">
               <Link
                 href={cultureArea?.path ?? CULTURE_HUB_PATH}
                 className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
@@ -201,6 +271,18 @@ export default function CultureArticleView({
                 {cultureArea
                   ? `← Paesi del ${cultureArea.h1}`
                   : "← Tutti i paesi"}
+              </Link>
+              <Link
+                href="/cultura"
+                className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+              >
+                Cultura sarda
+              </Link>
+              <Link
+                href="/pubblica"
+                className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
+              >
+                Pubblica un evento
               </Link>
             </div>
           </div>

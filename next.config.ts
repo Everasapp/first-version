@@ -91,6 +91,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/cultura/cultura-sarda-feste-e-tradizioni",
+        destination: "/cultura",
+        permanent: true,
+      },
+      {
         source: "/calendario-eventi-sardegna-2026",
         destination: "/eventi-sardegna/2026",
         permanent: true,

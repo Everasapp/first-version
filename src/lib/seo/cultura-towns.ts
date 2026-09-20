@@ -23,6 +23,27 @@ export type CulturePhoto = {
   credit: PhotoCredit;
 };
 
+/** Foto da Wikimedia Commons, con pagina File e licenza esplicite. */
+export function wikiCommonsPhoto(input: {
+  src: string;
+  alt: string;
+  author: string;
+  commonsFile: string;
+  license: string;
+  licenseUrl: string;
+}): CulturePhoto {
+  return {
+    src: input.src,
+    alt: input.alt,
+    credit: {
+      author: input.author,
+      license: input.license,
+      licenseUrl: input.licenseUrl,
+      sourceUrl: `https://commons.wikimedia.org/wiki/File:${input.commonsFile.replace(/ /g, "_")}`,
+    },
+  };
+}
+
 export type CultureTownArticle = {
   slug: string;
   path: string;
@@ -37,9 +58,15 @@ export type CultureTownArticle = {
   visitPhoto?: CulturePhoto;
   intro: string;
   history: string[];
+  /** Lingua o varietà locale, quando è documentata. */
+  language?: string[];
   traditions: Array<{ title: string; body: string }>;
+  /** Mestieri ancora visibili nel comune, senza catalogo di vendita. */
+  crafts?: Array<{ title: string; body: string }>;
   visit: Array<{ name: string; body: string }>;
   faqs: Array<{ question: string; answer: string }>;
+  sources?: Array<{ label: string; href: string }>;
+  relatedLinks?: Array<{ href: string; label: string }>;
   publishedAt: string;
 };
 
@@ -52,7 +79,7 @@ export const CULTURE_HUB = {
   title: "Scopri la Sardegna: guide ai paesi, musei e tradizioni",
   h1: "Scopri la Sardegna",
   description:
-    "Guide ai paesi della Sardegna partendo da musei e botteghe: storia, tradizioni e cosa visitare, un comune alla volta.",
+    "Guide ai paesi partendo da musei e botteghe: storia, tradizioni e cosa visitare, un comune alla volta.",
   paragraphs: [
     "La Sardegna non si capisce solo dalle sagre del weekend. Sta nei musei di paese, nelle botteghe ancora accese, nelle chiese, nei laghi e nei nuraghi che i visitatori cercano quando vogliono capire un posto, non solo passarci.",
     "Le guide sono organizzate come i filtri eventi: Nord, Centro e Sud Sardegna. Entri nell’area, trovi l’elenco dei comuni, poi apri la pagina del paese.",
@@ -82,7 +109,7 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
     title: "Pattada: storia, resolza e cosa visitare",
     h1: "Pattada",
     description:
-      "Pattada in Sardegna: storia del paese, sa resolza, museo del coltello, feste e cosa vedere tra centro, chiese e lago Lerno.",
+      "Pattada, Monteacuto: sa resolza, museo del coltello, feste di paese e lago Lerno.",
     hero: {
       src: "/images/cultura/pattada-panorama.webp",
       alt: "Panorama di Pattada sul colle del Monteacuto, tra sugherete e pascoli",
@@ -121,20 +148,25 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
     history: [
       "Il nome, secondo i linguisti, parla di un altopiano: un posto messo in piano, scelto quando i villaggi a valle si unirono per stare più al sicuro. Bantine, ancora oggi frazione, restò fuori da quell’accordo. Prima dei giudicati il territorio era già abitato: cultura di Ozieri, tombe dei giganti, decine di nuraghi. Non è un’invenzione turistica, è il suolo.",
       "Nel Medioevo Pattada stava nella curatoria di Monte Acuto, nel giudicato di Torres. Caduto il giudicato passò per un periodo ad Arborea, poi divenne feudo sotto i catalano-aragonesi. I resti del castello di Olomene, a nord del paese, ricordano quel ruolo di controllo sul territorio. Il feudo si sciolse nell’Ottocento, come nel resto dell’isola.",
-      "Il centro che vedi oggi è erede di quella trama: vicoli acciottolati, case in granito, palazzi neoclassici. Tra fine Ottocento e inizio Novecento, con i tecnici della ferrovia Tirso-Chilivani, arrivarono fontane, scalinate e il mercato pubblico in pietra locale. La ferrovia chiuse nel 1969; restano ponti e ruderi. Pattada è anche “culla della poesia” in logudorese: da qui sono partiti versi e concorsi che hanno tenuto viva la lingua.",
+      "Il centro che vedi oggi è erede di quella trama: vicoli acciottolati, case in granito, palazzi neoclassici. Tra fine Ottocento e inizio Novecento, con i tecnici della ferrovia Tirso-Chilivani, arrivarono fontane, scalinate e il mercato pubblico in pietra locale. La ferrovia chiuse nel 1969; restano ponti e ruderi.",
+    ],
+    language: [
+      "Si parla sardo logudorese. Pattada è anche «culla della poesia» in quella varietà: versi, concorsi, canto a tenore (formazioni come Su Tenore Sa Niera). L’italiano è la lingua pubblica. La guida alle lingue e quella a musica e poesia tengono parlato, poesia e Unesco su piani distinti.",
     ],
     traditions: [
-      {
-        title: "Sa resolza, il coltello di Pattada",
-        body: "Sa resolza — detta anche pattadesa — è il coltello a serramanico che ha fatto il nome del paese. Lama in acciaio, spesso a foglia di mirto, manico in corno. Nasce come attrezzo del pastore e del contadino, non come souvenir: per questo le botteghe contano ancora. Ogni due anni, in estate, la Biennale del coltello porta a Pattada collezionisti e maestri da fuori isola. Lungo le vie trovi i laboratori aperti: è lì che capisci la differenza tra un oggetto fatto a mano e una copia da banco.",
-      },
       {
         title: "Feste, cavalieri e palio",
         body: "La patrona è Santa Sabina, il 29 agosto: messa, processione, sfilata a cavallo con sas banderas e abiti tradizionali, poi tenores in piazza Su Pebianu. A fine agosto i dieci rioni (sos ’ighinados) si sfidano nel palio degli asinelli, dal centro fino a piazza d’Italia. A luglio c’è il palio del Monte Acuto, corsa ippica tra i comuni vicini. I cavalieri pattadesi sono chiesti in tutta la Sardegna: Cavalcata sarda, Sant’Efisio, feste di Ozieri e Oschiri. A aprile la Madonna del Carmelo apre il corteo a cavallo; a giugno i falò di Santu Juanne.",
       },
       {
-        title: "Lingua, canto a tenore e tavola",
-        body: "Si parla sardo logudorese. Il canto a tenore — patrimonio Unesco — ha avuto a Pattada formazioni come Su Tenore Sa Niera. In tavola contano pecorino, ricotta, perette, origliettas al miele, pane e paste come su misturu. Ad aprile Abbuconizos e Binu apre cantine e botteghe nel centro, sullo spirito delle Cortes Apertas: si mangia e si cammina il paese, non solo si guarda.",
+        title: "Tavola e cantine",
+        body: "In tavola contano pecorino, ricotta, perette, origliettas al miele, pane e paste come su misturu. Ad aprile Abbuconizos e Binu apre cantine e botteghe nel centro, sullo spirito delle Cortes Apertas: si mangia e si cammina il paese, non solo si guarda. Date: Comune e Pro Loco, ogni edizione.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Sa resolza",
+        body: "Sa resolza — detta anche pattadesa — è il coltello a serramanico che ha fatto il nome del paese. Lama in acciaio, spesso a foglia di mirto, manico in corno. Nasce come attrezzo del pastore e del contadino, non come souvenir: per questo le botteghe contano ancora. Ogni due anni, in estate, la Biennale del coltello porta a Pattada collezionisti e maestri da fuori isola. Lungo le vie trovi i laboratori aperti: è lì che capisci la differenza tra un oggetto fatto a mano e una copia da banco. La guida all’artigianato colloca la resolza tra i mestieri di territorio, senza farne un catalogo.",
       },
     ],
     visit: [
@@ -167,6 +199,25 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Il Museo Culter è in via Vittorio Emanuele a Pattada, con laboratorio annesso. Conferma orari sul sito del museo prima di partire: in paese piccolo i giorni di apertura cambiano.",
       },
+    ],
+    sources: [
+      {
+        label: "Comune di Pattada",
+        href: "https://www.comune.pattada.ss.it/",
+      },
+      {
+        label: "UNESCO — Canto a tenore",
+        href: "https://ich.unesco.org/en/RL/canto-a-tenore-sardinian-pastoral-songs-00165",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato: resolza" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/territori-sardegna", label: "Territori: Monteacuto" },
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-10",
   },

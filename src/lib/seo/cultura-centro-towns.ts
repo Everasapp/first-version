@@ -1157,12 +1157,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Mamoiada",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Mamoiada: mamuthones e issohadores",
+    title: "Mamoiada: mamuthones, issohadores e Museo delle Maschere",
     h1: "Mamoiada",
-    description: "Mamoiada in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Mamoiada, Barbagia: carnevale dei mamuthones e issohadores e Museo delle Maschere Mediterranee.",
     hero: {
       src: "/images/cultura/mamoiada-panorama.webp",
-      alt: "Veduta di Mamoiada in Sardegna",
+      alt: "Panorama di Mamoiada nella Barbagia di Ollolai",
       credit: {
         author: "Raffaele Graziano Ballore",
         license: "CC BY-SA 4.0",
@@ -1170,40 +1171,81 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Mamoiada_Panorama.jpg",
       },
     },
-    intro: `Mamoiada è casa dei mamuthones in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Mamoiada su EVERAS.`,
+    intro:
+      "Mamoiada è il paese dei mamuthones e degli issohadores. Non è un set fotografico: è una comunità della Barbagia di Ollolai che tiene il carnevale e tre musei civici. Questa scheda distingue ciò che si vede in piazza da ciò che resta interpretazione.",
     history: [
-      `Mamoiada è un comune italiano di 2 343 abitanti della provincia di Nuoro, situato a 644 m s.l.m. nella Barbagia di Ollolai. Fa parte della IX Comunità montana Nuorese. Dista 15 km da Nuoro.`,
-      `Oggi Mamoiada resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Mamoiada, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Paese della Barbagia di Ollolai, a pochi chilometri da Nuoro. Il territorio ha presenze nuragiche, come gran parte dell’interno: non è una specialità da brochure. La storia visibile oggi è quella del paese — corti, chiese, le associazioni che tengono le maschere — non una fondazione mitica.",
+      "Il Museo delle Maschere Mediterranee, in piazza Europa, e gli altri musei civici (MATer, Museo della Cultura e del Lavoro) sono gestioni comunali documentate. Non sostituiscono il carnevale: lo spiegano fuori stagione. Orari e biglietti: museomaschere.it e Comune.",
+    ],
+    language: [
+      "Si parla sardo della Barbagia, nell’area nuorese, accanto all’italiano. Il Comune tiene uno sportello per la lingua sarda: è un fatto amministrativo, non una misura di quanti la usano in casa. La guida alle lingue colloca questa varietà accanto al campidanese, senza fonderle.",
     ],
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Carnevale e Autunno in Barbagia. Le date precise cambiano ogni anno: controlla il calendario eventi a Mamoiada su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Mamuthones e issohadores",
+        body: "Fatto: a Carnevale escono i mamuthones — maschera nera di legno, pelle di pecora, campanacci — e gli issohadores, con corde e abito più chiaro, che guidano il gruppo. I giorni seguono il calendario liturgico; il Comune e le associazioni pubblicano le uscite ogni anno. Interpretazione: l’origine «preistorica» o nuragica delle maschere non è un dato di scavo. Resta una tradizione viva, descritta dalle fonti etnografiche, non un rito datato al Bronzo.",
       },
       {
-        title: "La Barbagia intorno",
-        body: `Mamoiada si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Non è Ottana",
+        body: "Boes e merdules sono di Ottana, un altro paese, un’altra grammatica. Non si mescolano in un unico «carnevale barbaricino». Hub EVERAS: Carnevale in Sardegna. Quando Mamoiada è tappa di Autunno in Barbagia, si aprono le corti: è un circuito contemporaneo, non il carnevale.",
+      },
+    ],
+    crafts: [
+      {
+        title: "Maschere, pelli, campanacci",
+        body: "Il mestiere documentato è quello delle maschere: legno intagliato, oraccera, sonagli. Si vede nei laboratori quando sono aperti e nelle sale del Museo delle Maschere. Non è un souvenir da banco: è l’attrezzatura del rito. La guida all’artigianato non vende pezzi; orari dei musei sul gestore.",
       },
     ],
     visit: [
       {
-        name: "Centro di Mamoiada",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Museo delle Maschere Mediterranee",
+        body: "Piazza Europa 15. Espone maschere di Mamoiada e confronti mediterranei. Serve a distinguere mamuthones e issohadores da altre maschere, non a sostituire febbraio in piazza. Biglietti e chiusure su museomaschere.it. Nello stesso sistema comunale: MATer (archeologia e territorio) e Museo della Cultura e del Lavoro.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Museo delle Maschere e centro. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Centro di Mamoiada",
+        body: "Corso, chiese, corti. In paese piccolo gli orari cambiano: conferma sul Comune. Il carnevale si cammina in strada; fuori stagione il museo tiene il filo. Nuoro è vicina: ISRE e MAN sono un altro giro, non Mamoiada.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Mamoiada?",
-        answer: "Museo delle Maschere e centro. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Le maschere si vedono solo a Carnevale?",
+        answer:
+          "In piazza sì, nei giorni che pubblica il Comune. Fuori stagione le vedi al Museo delle Maschere, se è aperto. Non inventiamo uscite «tutto l’anno».",
       },
       {
-        question: "Dove trovo gli eventi a Mamoiada?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Mamoiada su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Mamuthones e boes sono la stessa cosa?",
+        answer:
+          "No. Mamuthones e issohadores sono di Mamoiada. Boes e merdules sono di Ottana. Due paesi, due riti.",
       },
+      {
+        question: "Le maschere vengono dai nuraghi?",
+        answer:
+          "Non è dimostrato. È un’interpretazione che circola, non un fatto di scavo. Qui teniamo distinta la pratica contemporanea dalle ipotesi sull’origine.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Mamoiada",
+        href: "https://www.comune.mamoiada.nu.it/",
+      },
+      {
+        label: "Sistema Musei di Mamoiada",
+        href: "https://www.museomaschere.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/tradizioni-sarde", label: "Feste e tradizioni" },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/eventi-sardegna/carnevale-sardegna", label: "Carnevale in Sardegna" },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Autunno in Barbagia",
+      },
+      { href: "/cultura-sarda/centro-sardegna/ottana", label: "Guida Ottana" },
+      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-13",
   },
@@ -1269,53 +1311,98 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Nuoro",
     province: "Nuoro",
     area: "Nuorese",
-    title: "Nuoro: museo MAN, Deledda e Barbagia",
+    title: "Nuoro: ISRE, MAN, Deledda e Redentore",
     h1: "Nuoro",
-    description: "Nuoro in Sardegna: guida al comune del Nuorese, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Nuoro: Museo ISRE, MAN, casa Deledda e sagra del Redentore sul monte Ortobene.",
     hero: {
       src: "/images/cultura/nuoro-panorama.webp",
-      alt: "Veduta di Nuoro in Sardegna",
+      alt: "Nuoro vista dal parco di colle Sant’Onofrio, verso il monte Ortobene",
       credit: {
         author: "Herbert wie",
         license: "CC BY-SA 4.0",
         licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Parco_di_Colle_Sant'Onofrio_Nuoro_Sardinien.JPG",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Panorama_Parco_di_Colle_Sant'Onofrio_Nuoro_Sardinien.JPG",
       },
     },
-    intro: `Nuoro è capitale culturale della Barbagia in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Nuoro su EVERAS.`,
+    intro:
+      "Nuoro è capoluogo di Barbagia: musei ISRE e MAN, casa Deledda, il Redentore sul monte Ortobene. Chi la cerca per la letteratura trova anche una piazza di città. Questa scheda tiene istituti e feste, senza chiamarla «Atene sarda».",
     history: [
-      `Nuoro è un comune italiano di 32 593 abitanti, capoluogo dell'omonima provincia della Sardegna centro-orientale dal 1927.`,
-      `Oggi Nuoro resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Nuoro, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Paese pastorale dell’interno, diventa capoluogo di provincia nel 1927. Prima è un centro di Barbagia con chiese, corti, famiglie che tengono terra e gregge. Grazia Deledda, nata qui nel 1871, prende il Nobel per la Letteratura nel 1926: è un fatto, non un marchio turistico. L’articolo EVERAS sulla scrittrice tiene biografia e libri distinti da questa guida.",
+      "Il tessuto visibile è Ottocento e Novecento: corso Garibaldi, piazza Satta, i rioni Seuna e San Pietro. Il monte Ortobene sta sopra la città; la statua del Redentore è del 1901. L’ISRE (Istituto superiore regionale etnografico) e il MAN sono due istituti diversi: etnografia regionale l’uno, arte moderna e contemporanea l’altro.",
+    ],
+    language: [
+      "Si parla sardo nuorese, nell’area logudorese-centrale, accanto all’italiano. Non è il campidanese di Cagliari. Il canto a tenore è Unesco immateriale e sta in vari paesi della Barbagia: non è un’invenzione della sola città. La guida a musica e poesia e quella alle lingue tengono i piani distinti.",
     ],
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Autunno in Barbagia, letteratura e festa di San Francesco. Le date precise cambiano ogni anno: controlla il calendario eventi a Nuoro su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Sagra del Redentore",
+        body: "A fine agosto Nuoro tiene la festa del Redentore, legata alla statua sul monte Ortobene: processione, gruppi in costume, programma civile e religioso. Resta una festa di Nuoro, anche se arrivano delegazioni da altri paesi. Date e percorso: Comune, ogni anno. Non c’è un hub festival dedicato su EVERAS; le schede evento, quando pubblicate, stanno in calendario. Contesto nella guida alle grandi feste.",
       },
       {
-        title: "Il Nuorese intorno",
-        body: `Nuoro si legge meglio insieme ai comuni vicini del Nuorese: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Autunno in Barbagia",
+        body: "Il circuito delle Cortes Apertas è dei paesi intorno, un borgo (o più) ogni weekend. Nuoro è il capoluogo da cui molti partono, non la tappa unica. Calendario tappe: hub Autunno in Barbagia. Mamoiada, Oliena, Gavoi e gli altri restano le guide di paese.",
       },
     ],
     visit: [
       {
-        name: "Centro di Nuoro",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "ISRE — Museo della vita e delle tradizioni popolari",
+        body: "Abiti, oggetti di lavoro, interni allestiti, con provenienza. È il posto per vedere differenze di costume, non una foto unica «sarda». Orari e mostre: isresardegna.it e Comune. Non confonderlo con il MAN.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Museo MAN, museo Deledda e centro storico. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "MAN e Museo Deledda",
+        body: "Il MAN (Museo d’Arte della Provincia di Nuoro) è arte moderna e contemporanea. Il Museo Deledda, nell’orbita ISRE, è la casa-studio della scrittrice. Due visite diverse. Orari sui gestori, non qui.",
+      },
+      {
+        name: "Centro e monte Ortobene",
+        body: "Corso, cattedrale, piazza Satta. Il Redentore sta sul monte: auto o sentieri, non a piedi dal corso in mezz’ora. In inverno e con vento il monte è un altro clima. Conferma accessi sul Comune.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Nuoro?",
-        answer: "Museo MAN, museo Deledda e centro storico. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Cosa vedere a Nuoro in un giorno?",
+        answer:
+          "ISRE al mattino, poi centro e Museo Deledda. Il MAN se ti interessa l’arte contemporanea. Ortobene nel pomeriggio se il tempo tiene.",
       },
       {
-        question: "Dove trovo gli eventi a Nuoro?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Nuoro su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "ISRE e MAN sono lo stesso museo?",
+        answer:
+          "No. ISRE è etnografia regionale. MAN è arte moderna e contemporanea. Due istituti, due biglietti, due orari.",
       },
+      {
+        question: "Quando è la festa del Redentore?",
+        answer:
+          "A fine agosto. Il giorno esatto e il programma li pubblica il Comune ogni anno. Non copiamo un calendario fisso.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Nuoro",
+        href: "https://www.comune.nuoro.it/",
+      },
+      {
+        label: "ISRE — Istituto superiore regionale etnografico",
+        href: "https://www.isresardegna.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      {
+        href: "/cultura/grazia-deledda-premio-nobel",
+        label: "Grazia Deledda",
+      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/cultura/grandi-feste-sarde", label: "Grandi feste" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Autunno in Barbagia",
+      },
+      { href: "/cultura-sarda/centro-sardegna/mamoiada", label: "Guida Mamoiada" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-13",
   },
@@ -1717,57 +1804,89 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Oristano",
     province: "Oristano",
     area: "Oristanese",
-    title: "Oristano: Sartiglia e Sinis",
+    title: "Oristano: Sartiglia, Arborea e Antiquarium",
     h1: "Oristano",
-    description: "Oristano in Sardegna: guida al comune del Oristanese, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Oristano: Sa Sartiglia, giudicato d’Arborea, Antiquarium arborense e torre di Mariano.",
     hero: {
       src: "/images/cultura/oristano-panorama.webp",
-      alt: "Veduta di Oristano in Sardegna",
+      alt: "La torre di Mariano II a Oristano, in piazza Roma",
       credit: {
-        author: "Leop81 at Italian Wikipedia",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama-Scano_di_Montiferro.jpg",
+        author: "Giorgio Galeotti",
+        license: "CC BY 4.0",
+        licenseUrl: "https://creativecommons.org/licenses/by/4.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Torre_di_San_Cristoforo_o_di_Mariano_II_-_Oristano,_Italia_-_15_Agosto_2020.jpg",
       },
     },
-    intro: `Oristano è città della Sartiglia e porta sul Sinis in provincia di Oristano. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Oristano su EVERAS.`,
+    intro:
+      "Oristano è la città della Sartiglia e l’erede visibile del giudicato d’Arborea. Chi arriva per Carnevale trova anche l’Antiquarium e la torre di Mariano. Questa scheda tiene giostra, storia giudicale e visite, senza spingerla sul mare di Torre Grande.",
     history: [
-      `Oristano è un comune italiano di 29 787 abitanti capoluogo dell'omonima provincia, situato nella Sardegna centro-occidentale.`,
-      `Oggi Oristano resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Oristano, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Nel Medioevo è capitale del giudicato d’Arborea. Eleonora d’Arborea e la Carta de Logu, fine Trecento, sono fatti documentati, non slogan. Il giudicato si chiude nel Quattrocento, dopo Sanluri (1409). Restano la torre di Mariano II, il duomo, un centro di isolati bassi. L’articolo su Eleonora tiene biografia e carta distinte da questa guida.",
+      "L’Antiquarium arborense raccoglie reperti del territorio giudicale e romano. Tharros è un altro comune: Cabras, sul Sinis. Non è un quartiere di Oristano. Torre Grande è la marina: un altro giro, non la storia della piazza.",
+    ],
+    language: [
+      "Si parla sardo arborense, nell’area campidanese occidentale, accanto all’italiano. Non è il nuorese né il cagliaritano di città. La guida alle lingue tiene le varietà distinte. Nei giorni della Sartiglia la piazza è mista: italiano, sardo, voci dei gremi.",
     ],
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Sartiglia, san Giovanni e mare di Torre Grande. Le date precise cambiano ogni anno: controlla il calendario eventi ad Oristano su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori. Storia e rito della giostra stanno nell’articolo Cultura Sarda.`,
+        title: "Sa Sartiglia",
+        body: "Domenica e martedì di Carnevale i gremi dei Contadini e dei Falegnami tengono la giostra: cavalieri mascherati, stella, Componidori. Non è un palio intercambiabile con Sedilo o con la Cavalcata. Date legate al calendario liturgico; orari sul Comune. Storia, vestizione e corsa stanno nell’articolo Sa Sartiglia e nell’hub calendario.",
       },
       {
         title: "Sardegna Cavalli e la SOE",
-        body: `A Sa Rodia la Società Oristanese di Equitazione ospita Sardegna Cavalli: rassegna sportiva e culturale sul mondo equestre, non la giostra di Carnevale. L’edizione resta in scheda su EVERAS anche dopo la chiusura. Storia, sede e differenza con la Sartiglia stanno nell’articolo Cultura Sarda.`,
+        body: "A Sa Rodia la Società Oristanese di Equitazione ospita Sardegna Cavalli: rassegna sportiva e culturale sul mondo equestre, non la giostra di Carnevale. Storia, sede e differenza con la Sartiglia stanno nell’articolo Cultura Sarda. Date: scheda evento quando è pubblicata.",
       },
+    ],
+    crafts: [
       {
-        title: "Il Oristanese intorno",
-        body: `Oristano si legge meglio insieme ai comuni vicini del Oristanese: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Gremi di Contadini e Falegnami",
+        body: "I due gremi che corrono la Sartiglia nascono come corporazioni di mestiere. Oggi sono confraternite di festa più che botteghe da visitare: non c’è un «artigianato oristanese» unico da vetrina. Il posto per oggetti e territorio è l’Antiquarium. Orari sul Comune, non qui.",
       },
     ],
     visit: [
       {
-        name: "Centro di Oristano",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Antiquarium arborense",
+        body: "Museo civico in centro: reperti del giudicato e del territorio, utile prima o dopo Tharros (che sta a Cabras). Orari: Comune di Oristano. Non copiamo listini.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro storico, Torre di Mariano e museo antiquarium. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Torre di Mariano, duomo, centro",
+        body: "La torre, la cattedrale, via Duomo dove si corre la stella. Fuori Carnevale il centro si cammina in poche ore. Tharros e lo stagno sono Cabras e Sinis: un altro comune, un altro biglietto.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Oristano?",
-        answer: "Centro storico, Torre di Mariano e museo antiquarium. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Cosa vedere a Oristano oltre la Sartiglia?",
+        answer:
+          "Antiquarium, torre di Mariano e duomo. Tharros è a Cabras. Torre Grande è la spiaggia comunale, non la storia della città.",
       },
       {
-        question: "Dove trovo gli eventi ad Oristano?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Oristano su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando si corre la Sartiglia?",
+        answer:
+          "Domenica e martedì di Carnevale. La data slitta ogni anno col calendario liturgico. Hub EVERAS: Sa Sartiglia.",
       },
+      {
+        question: "Sartiglia e Sardegna Cavalli sono la stessa cosa?",
+        answer:
+          "No. La Sartiglia è giostra di Carnevale, in maschera, in centro. Sardegna Cavalli è rassegna a Sa Rodia: sport e fiera.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Oristano",
+        href: "https://www.comune.oristano.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/sa-sartiglia-oristano", label: "Sa Sartiglia" },
+      { href: "/cultura/eleonora-darborea", label: "Eleonora d’Arborea" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/grandi-feste-sarde", label: "Grandi feste" },
+      { href: "/eventi-sardegna/sa-sartiglia", label: "Sartiglia, calendario" },
+      { href: "/cultura-sarda/centro-sardegna/cabras", label: "Guida Cabras (Tharros)" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-13",
   },

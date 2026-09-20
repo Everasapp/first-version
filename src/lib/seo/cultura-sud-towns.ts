@@ -317,53 +317,88 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Cagliari",
     province: "Cagliari",
     area: "Cagliari",
-    title: "Cagliari: Castello, musei e golfo",
+    title: "Cagliari: Castello, Sant’Efisio e Cittadella dei Musei",
     h1: "Cagliari",
-    description: "Cagliari in Sardegna: guida al comune del Cagliari, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Cagliari: quartieri storici, Sant’Efisio, Museo archeologico nazionale in Cittadella. Nora è a Pula.",
     hero: {
       src: "/images/cultura/cagliari-panorama.webp",
-      alt: "Veduta di Cagliari in Sardegna",
+      alt: "Cagliari vista dalla darsena, con il colle di Castello sul golfo",
       credit: {
-        author: "Unknown authorUnknown author",
+        author: "Autore ignoto",
         license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Cagliari_dalla_Darsena_(xilografia).jpg",
+        licenseUrl: "https://creativecommons.org/publicdomain/mark/1.0/deed.it",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Panorama_di_Cagliari_dalla_Darsena_(xilografia).jpg",
       },
     },
-    intro: `Cagliari è capoluogo dell’isola sul golfo degli Angeli in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Cagliari su EVERAS.`,
+    intro:
+      "Cagliari è il capoluogo: Castello sul colle, quattro quartieri, Sant’Efisio il 1° maggio. Chi la cerca per il mare trova anche la Cittadella dei Musei. Questa scheda tiene città, voto e visite, senza ridurla a tramonto sul Poetto.",
     history: [
-      `Cagliari è un comune italiano di 145 729 abitanti capoluogo della regione autonoma della Sardegna e dell'omonima città metropolitana. La popolazione della sua area urbana funzionale, la zona di pendolarismo di Cagliari, è di 462.000 abitanti circa. Cagliari è la 27ª città più popolosa d'Italia e la più popolosa dell'isola di Sardegna.`,
-      `Oggi Cagliari resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Cagliari, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Prima dei giudicati il golfo è già abitato. Karaly è colonia punica, poi città romana. Nel Medioevo il giudicato di Cagliari ha il suo centro a Santa Igia, distrutta nel 1258. Sul colle restano le torri pisane — San Pancrazio e l’Elefante — e il Castello che gli aragonesi tengono come piazzaforte.",
+      "Stampace, Marina, Villanova e Castello sono quattro quartieri, non un centro unico. Piazza Yenne, il Bastione di Saint Remy, i corsi: il tessuto visibile è Ottocento e Novecento sopra quel colle. La Cittadella dei Musei, nell’ex arsenale, è il polo statale di archeologia dell’isola. Nora sta in comune di Pula: non è un quartiere di Cagliari.",
+    ],
+    language: [
+      "Si parla sardo campidanese, nella varietà cagliaritana, accanto all’italiano. Non è il sardo di Nuoro né il sassarese: fonetica e lessico cambiano. La guida alle lingue tiene campidanese e logudorese distinti. Non pubblichiamo percentuali di parlanti.",
     ],
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Sant’Efisio, mare e vita di città. Le date precise cambiano ogni anno: controlla il calendario eventi a Cagliari su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Sant’Efisio",
+        body: "Il 1° maggio la statua esce da Stampace e il corteo va verso Nora, a Pula: voto della città, carri, abiti dei paesi che partecipano. Non la chiamiamo «la festa più importante della Sardegna»: è la processione più visibile del capoluogo. Percorso, orari e viabilità li pubblica il Comune con l’Arciconfraternita; ogni edizione può spostare servizi. Storia e calendario stanno nell’hub Sant’Efisio e nella guida alle grandi feste.",
       },
+    ],
+    crafts: [
       {
-        title: "Il Cagliari intorno",
-        body: `Cagliari si legge meglio insieme ai comuni vicini del Cagliari: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Confraternite e carri",
+        body: "Intorno a Sant’Efisio restano confraternite, carri votivi e sarte degli abiti. Non c’è un «artigianato cagliaritano» unico da vetrina, come la resolza a Pattada o il corallo ad Alghero. Il posto per oggetti e provenienze è la Cittadella e i musei civici, con orari sui gestori. La guida all’artigianato tiene i mestieri di territorio, senza catalogo.",
       },
     ],
     visit: [
       {
-        name: "Centro di Cagliari",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Cittadella dei Musei",
+        body: "Museo archeologico nazionale: preistoria, nuragico, fenicio-punico, romano, tra le collezioni statali più ampie dell’isola. Nella stessa cittadella pinacoteca e altre raccolte, ognuna con orario proprio. Conferma su musei.sardegna.beniculturali.it: chiusure e biglietti cambiano. Non è una visita da mezz’ora se ti interessa l’archeologia.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Castello, Marina, Poetto e musei cittadini. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Castello, torri, quartieri",
+        body: "Torre dell’Elefante, Torre di San Pancrazio, cattedrale, Bastione di Saint Remy. Poi scendi: Marina verso il porto, Stampace verso Sant’Efisio, Villanova. Cammina al mattino. Il Poetto è la costa urbana: un altro giro, non la storia del colle.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Cagliari?",
-        answer: "Castello, Marina, Poetto e musei cittadini. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Cosa vedere a Cagliari in un giorno?",
+        answer:
+          "Mattina in Cittadella. Poi Castello e un quartiere a piedi (Stampace se ti interessa Sant’Efisio). Nora è a Pula: serve un altro mezzo giorno.",
       },
       {
-        question: "Dove trovo gli eventi a Cagliari?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Cagliari su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando è Sant’Efisio?",
+        answer:
+          "Il 1° maggio è la data tradizionale di partenza da Stampace. Rientro e tappe li pubblica il Comune ogni anno. Hub EVERAS: calendario Sant’Efisio.",
       },
+      {
+        question: "Si parla sardo a Cagliari?",
+        answer:
+          "Sì, il campidanese cagliaritano, insieme all’italiano. Non è la stessa varietà del centro dell’isola. Dettagli nella guida alle lingue.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Cagliari",
+        href: "https://www.comune.cagliari.it/",
+      },
+      {
+        label: "Rete musei archeologici della Sardegna",
+        href: "https://www.musei.sardegna.beniculturali.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/grandi-feste-sarde", label: "Grandi feste" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
+      { href: "/eventi-sardegna/sant-efisio", label: "Sant’Efisio, calendario" },
+      { href: "/cultura-sarda/sud-sardegna/pula", label: "Guida Pula (Nora)" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-14",
   },
@@ -3901,53 +3936,80 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Barumini",
     province: "Sud Sardegna",
     area: "Marmilla",
-    title: "Barumini: Su Nuraxi UNESCO",
+    title: "Barumini: Su Nuraxi Unesco e Casa Zapata",
     h1: "Barumini",
-    description: "Barumini in Sardegna: guida al comune della Marmilla, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Barumini, Marmilla: Su Nuraxi Patrimonio mondiale Unesco, Casa Zapata e Centro Giovanni Lilliu.",
     hero: {
       src: "/images/cultura/barumini-panorama.webp",
-      alt: "Veduta di Barumini in Sardegna",
+      alt: "Il complesso nuragico Su Nuraxi a Barumini, con torre centrale e villaggio",
       credit: {
         author: "Norbert Nagel",
         license: "CC BY-SA 3.0",
         licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Nuraghe_Su_Nuraxi_-_Barumini_-_Sardinia_-_Italy_-_29.jpg",
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Nuraghe_Su_Nuraxi_-_Barumini_-_Sardinia_-_Italy_-_29.jpg",
       },
     },
-    intro: `Barumini è casa del nuraghe Su Nuraxi, Patrimonio UNESCO in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Barumini su EVERAS.`,
+    intro:
+      "Barumini è il paese di Su Nuraxi, iscritto Unesco nel 1997. Non è un parco a tema: è un comune della Marmilla con un nuraghe complesso scavato da Giovanni Lilliu e gestito dalla Fondazione Barumini. Questa scheda tiene sito, Casa Zapata e paese, senza inventare orari.",
     history: [
-      `Barumini è un comune italiano di 1 080 abitanti della provincia del Medio Campidano, nella sub-regione storica della Marmilla.`,
-      `Oggi Barumini resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Barumini, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Su Nuraxi è un nuraghe complesso con villaggio: torre centrale, torri laterali, corti, capanne. Gli scavi di Giovanni Lilliu, dagli anni Cinquanta, ne hanno fatto il caso più noto della civiltà nuragica. L’iscrizione Unesco è del 1997: Patrimonio mondiale, un elenco diverso da quello immateriale dei Candelieri o del canto a tenore.",
+      "Il paese sta in Marmilla, tra colline di basalto. Casa Zapata, palazzo cinquecentesco della famiglia aragonese, sorge sopra un altro nuraghe — Nuraxi ’e Cresia — visibile da passerelle. Il Centro Giovanni Lilliu tiene mostre sullo scavo. La Fondazione Barumini gestisce i tre luoghi; biglietti e fasce di visita stanno sul loro sito, non qui.",
+    ],
+    language: [
+      "Si parla sardo campidanese della Marmilla, accanto all’italiano. È la stessa grande area linguistica di Cagliari, non il logudorese del centro dell’isola. La guida alle lingue tiene le varietà distinte. Non pubblichiamo conteggi di parlanti.",
     ],
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Archeologia nuragica e Marmilla. Le date precise cambiano ogni anno: controlla il calendario eventi a Barumini su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "La Marmilla intorno",
-        body: `Barumini si legge meglio insieme ai comuni vicini della Marmilla: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Sito, mostre, calendario di paese",
+        body: "La vita pubblica visibile è quella del patrimonio: visite guidate a Su Nuraxi, mostre al Centro Lilliu. Sagre e patronali, quando Comune e Pro Loco le pubblicano, stanno nel calendario EVERAS. Non costruiamo una «festa-simbolo» che le fonti non danno come tale. Un nuraghe non è una sagra.",
       },
     ],
     visit: [
       {
-        name: "Centro di Barumini",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Su Nuraxi",
+        body: "Area archeologica a ridosso del paese. La Fondazione indica visita guidata, di solito a gruppi e a orari fissi. Non è un sentiero libero: si entra con biglietto. In caso di maltempo il gestore può chiudere per sicurezza. Conferma su fondazionebarumini.it prima di partire. La guida ai nuraghi colloca Su Nuraxi tra i complessi, distinto da tombe dei giganti e domus de janas.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Su Nuraxi e centro di Barumini. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Casa Zapata e Centro Giovanni Lilliu",
+        body: "In paese. Casa Zapata unisce palazzo, nuraghe sotto il pavimento e sezioni di reperti. Il Centro Lilliu racconta lo scavo e tiene mostre temporanee. Spesso un unico biglietto copre i tre siti: si verifica sulla Fondazione. Il centro del comune è piccolo: chiese e piazza, non un secondo itinerario turistico.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Barumini?",
-        answer: "Su Nuraxi e centro di Barumini. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Su Nuraxi è l’unico nuraghe Unesco?",
+        answer:
+          "È il sito nuragico iscritto nella Lista del patrimonio mondiale (1997). Altri nuraghi hanno tutele diverse. Candelieri e canto a tenore stanno su elenchi Unesco immateriali, un altro piano.",
       },
       {
-        question: "Dove trovo gli eventi a Barumini?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Barumini su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Casa Zapata è lo stesso sito di Su Nuraxi?",
+        answer:
+          "No. Su Nuraxi è l’area a cielo aperto. Casa Zapata è il palazzo in paese, sopra Nuraxi ’e Cresia. Si visitano insieme se il biglietto della Fondazione lo prevede.",
       },
+      {
+        question: "Dove confermo orari e prezzi?",
+        answer:
+          "Sul sito della Fondazione Barumini. Questa guida non copia listini: cambiano per stagione e sicurezza.",
+      },
+    ],
+    sources: [
+      {
+        label: "UNESCO — Su Nuraxi di Barumini",
+        href: "https://whc.unesco.org/en/list/833/",
+      },
+      {
+        label: "Fondazione Barumini Sistema Cultura",
+        href: "https://www.fondazionebarumini.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura", label: "Cultura sarda" },
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
+      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
+      { href: "/pubblica", label: "Pubblica un evento" },
     ],
     publishedAt: "2026-09-14",
   },
