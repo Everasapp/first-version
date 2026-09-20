@@ -1865,7 +1865,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     ],
     relatedLinksHeading: "Scopri anche",
     relatedLinksIntro:
-      "La biografia di Nivola nella scheda personaggio; Nuoro come capoluogo vicino, senza spostare il museo. Autunno in Barbagia solo se cerchi le corti, non al posto del museo.",
+      "Il percorso dell’artista nella scheda Nivola; Nuoro come capoluogo vicino, senza spostare il museo. Autunno in Barbagia solo se cerchi le corti, non al posto del museo.",
     relatedLinks: [
       { href: "/cultura/costantino-nivola", label: "Costantino Nivola" },
       { href: "/cultura/musei-sardegna", label: "Musei" },

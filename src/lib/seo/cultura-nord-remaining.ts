@@ -479,7 +479,7 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     relatedLinksIntro:
       "Fresu nella scheda personaggio; JazzAlguer per non confondere i due festival; la guida alla musica per il quadro isolano, senza ripetere il programma estivo.",
     relatedLinks: [
-      { href: "/cultura/paolo-fresu-jazz", label: "Paolo Fresu e Berchidda" },
+      { href: "/cultura/paolo-fresu-jazz", label: "Paolo Fresu" },
       { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
       { href: "/eventi-sardegna/jazzalguer", label: "JazzAlguer" },
       { href: "/cultura/musei-sardegna", label: "Musei" },

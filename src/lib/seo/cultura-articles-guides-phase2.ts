@@ -249,7 +249,7 @@ export const CULTURA_GUIDE_ARTICLES_PHASE2: CulturaArticle[] = [
       { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
       { href: "/cultura/maria-carta-siligo", label: "Maria Carta" },
       { href: "/cultura/peppino-mereu-tonara", label: "Peppino Mereu" },
-      { href: "/cultura/paolo-fresu-jazz", label: "Paolo Fresu e Berchidda" },
+      { href: "/cultura/paolo-fresu-jazz", label: "Paolo Fresu" },
       {
         href: "/cultura-sarda/centro-sardegna/mamoiada",
         label: "Guida Mamoiada",

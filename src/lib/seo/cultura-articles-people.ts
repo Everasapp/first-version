@@ -152,14 +152,14 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
   {
     slug: "paolo-fresu-jazz",
     path: "/cultura/paolo-fresu-jazz",
-    title: "Paolo Fresu: il jazzista di Berchidda noto nel mondo",
-    h1: "Paolo Fresu e Berchidda",
+    title: "Paolo Fresu, il jazz e la Sardegna",
+    h1: "Paolo Fresu, il jazz e la Sardegna",
     description:
-      "Paolo Fresu, trombettista jazz di Berchidda: carriera internazionale, Time in Jazz e guida del paese su EVERAS.",
+      "Paolo Fresu: formazione a Berchidda e al Conservatorio di Cagliari, percorso jazz internazionale, ricerca musicale. Time in Jazz resta nella scheda del paese.",
     intro:
-      "Paolo Fresu porta il suono della Sardegna sui palchi di mezzo mondo. Nato a Berchidda, è tra i jazzisti italiani più riconosciuti all’estero e anima il festival Time in Jazz nel suo paese. Questa pagina collega la fama internazionale al territorio Everas.",
+      "Paolo Fresu è trombettista e flicornista. Nasce a Berchidda nel 1961 e costruisce un percorso jazz che attraversa l’Italia e la scena internazionale senza cancellare l’origine. Questa pagina racconta il musicista. Time in Jazz, come fatto di paese e associazione, sta nella scheda EVERAS di Berchidda.",
     excerpt:
-      "Dal Monteacuto ai festival internazionali: Fresu, Berchidda e Time in Jazz.",
+      "Formazione, jazz e Sardegna: il percorso di Paolo Fresu, senza il calendario del festival.",
     hero: {
       src: "/images/cultura/fresu-ritratto.webp",
       alt: "Paolo Fresu che suona la tromba in concerto con paesaggio sardo sullo sfondo",
@@ -174,35 +174,55 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     },
     sections: [
       {
-        title: "Chi è Paolo Fresu",
+        title: "Origini e formazione",
         paragraphs: [
-          "Paolo Fresu nasce a Berchidda, nel Nord Sardegna. Tromba e flicorno lo portano da giovani band locali a collaborazioni e tour in Europa, America e Asia. Il suo jazz dialoga con melodie e silenzi dell’isola senza ridursi a folklore.",
-          "A Berchidda ha radicato Time in Jazz: festival che ogni anno richiama pubblico e musicisti da fuori, e tiene il paese sulla mappa culturale internazionale.",
+          "La biografia ufficiale pubblicata sul sito di Fresu data la nascita al 10 febbraio 1961, a Berchidda. A undici anni inizia lo strumento nella banda musicale del paese. Dopo esperienze di musica leggera, scopre il jazz nel 1980. L’attività professionale parte nel 1982: seminari di Siena Jazz e registrazioni per la RAI sotto Bruno Tommaso.",
+          "Nel 1984 si diploma in tromba al Conservatorio Giovanni Pierluigi da Palestrina di Cagliari, con Enzo Morandini. Frequenta poi il DAMS all’Università di Bologna. Qui non elenchiamo titoli onorari né premi: servono al curriculum, non al nucleo di questa scheda.",
         ],
       },
       {
-        title: "Berchidda e il territorio",
+        title: "Il percorso nel jazz",
         paragraphs: [
-          "Berchidda sta tra sugherete e il massiccio del Limbara. La guida Everas del comune racconta storia, tradizioni e cosa visitare; il calendario eventi ti dice quando il jazz e le feste di paese si incontrano.",
-          "Dal paese puoi allargare al Nord Sardegna: Sassari, Olbia, Alghero e gli altri comuni della directory Scopri la Sardegna.",
+          "Fresu lavora a progetti che tengono insieme jazz, musica contemporanea e dialoghi con altri repertori, senza ridurli a folklore da cartolina. Insegna a lungo — tra cui i seminari di Siena Jazz e, per un quarto di secolo, i Seminari jazz di Nuoro — e suona in organici italiani e internazionali. Tromba e flicorno restano lo strumento del percorso.",
+          "Nel 2010 fonda l’etichetta Tŭk Music. Non copiamo discografie né tournée: cambiano, e il sito ufficiale le tiene aggiornate. Il punto editoriale è un musicista formatosi in Sardegna che ha scelto il jazz come lingua di lavoro, non come costume.",
         ],
       },
       {
-        title: "Come continuare su EVERAS",
+        title: "Berchidda e Time in Jazz",
         paragraphs: [
-          "Apri la guida di Berchidda, controlla gli eventi in zona e scorri Cultura Sarda per altri personaggi dell’isola.",
+          "Dal 1988 Fresu dirige artisticamente Time in Jazz, festival nato a Berchidda. È un tratto della sua biografia, non il calendario dell’edizione in corso. Associazione, sede Sa Casara, rapporto col Comune e con il Museo del vino: scheda EVERAS di Berchidda. Date, palchi e biglietti: timeinjazz.it e, quando pubblicati, gli eventi su EVERAS.",
         ],
       },
     ],
     faqs: [
       {
-        question: "Di dove è Paolo Fresu?",
-        answer: "Di Berchidda, in provincia di Sassari, Nord Sardegna.",
+        question: "Qual è il rapporto tra Paolo Fresu e Berchidda?",
+        answer:
+          "Ci nasce e ci forma nella banda del paese. Da lì parte il percorso jazz. Time in Jazz, che dirige dal 1988, è un fatto di Berchidda: la scheda del comune lo racconta come istituzione territoriale.",
       },
       {
-        question: "Cos’è Time in Jazz?",
+        question: "Che cos’è Time in Jazz?",
         answer:
-          "Il festival jazz legato a Fresu e a Berchidda, con appuntamenti che attraggono pubblico internazionale.",
+          "Un festival jazz nato a Berchidda nel 1988, con associazione culturale dal 1997. Non è una rassegna generica «di Fresu»: ha sede e organizzazione in paese. Dettaglio e calendario: guida Berchidda e sito del festival.",
+      },
+      {
+        question: "Quale ruolo ha avuto la Sardegna nel suo percorso?",
+        answer:
+          "È il luogo della formazione (banda, poi Conservatorio di Cagliari) e del ritorno istituzionale con Time in Jazz. Il jazz di Fresu non è un souvenir isolano: è un linguaggio costruito da qui verso fuori.",
+      },
+    ],
+    sources: [
+      {
+        label: "Paolo Fresu, sito ufficiale / biografia",
+        href: "https://www.paolofresu.it/it/bio/",
+      },
+      {
+        label: "Paolo Fresu, biografia ufficiale (PDF)",
+        href: "https://www.paolofresu.it/upload/gestione_files/pdf/paolo-fresu-bio-ita-completa-gen-2022-1641662356.pdf",
+      },
+      {
+        label: "Associazione culturale Time in Jazz",
+        href: "https://timeinjazz.it/associazione-culturale-time-in-jazz/",
       },
     ],
     relatedLinks: [
@@ -210,23 +230,22 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
         href: "/cultura-sarda/nord-sardegna/berchidda",
         label: "Guida Berchidda",
       },
-      { href: "/cultura-sarda/nord-sardegna", label: "Guide Nord Sardegna" },
-      { href: "/eventi/berchidda", label: "Eventi a Berchidda" },
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/cultura", label: "Cultura sarda" },
     ],
-    publishedAt: "2026-08-31",
+    publishedAt: "2026-09-20",
   },
   {
     slug: "costantino-nivola",
     path: "/cultura/costantino-nivola",
-    title:
-      "Costantino Nivola: lo scultore di Orani tra Sardegna e New York",
-    h1: "Costantino Nivola",
+    title: "Costantino Nivola, arte tra Sardegna e mondo",
+    h1: "Costantino Nivola, arte tra Sardegna e mondo",
     description:
-      "Costantino Nivola, artista di Orani: fuga dal fascismo, opera negli USA, museo a Orani e guida del paese su EVERAS.",
+      "Costantino Nivola: origini a Orani, formazione, antifascismo, sandcasting e scultura per l’architettura negli Stati Uniti. Il museo resta nella scheda di Orani.",
     intro:
-      "Costantino Nivola (1911-1988) nasce a Orani, in Barbagia, e diventa scultore e muralista di rilievo internazionale, soprattutto negli Stati Uniti. Dalle officine di paese alle facoltà americane e ai grandi rilievi in cemento: una traiettoria che riporta sempre a Orani, dove oggi c’è il museo a lui dedicato.",
+      "Costantino Nivola (Orani, 1911 — East Hampton, 1988) è scultore e progettista. Cresce tra muratura di paese e botteghe, studia a Monza, lavora per Olivetti, lascia l’Italia antifascista e costruisce negli Stati Uniti una ricerca sul rilievo e sullo spazio pubblico. Questa pagina racconta l’artista. Fondazione, lavatoio e museo a Orani: scheda EVERAS del comune.",
     excerpt:
-      "Da Orani a New York: lo scultore sardo e il museo nel suo paese.",
+      "Da Orani a New York: percorso, sandcasting e memoria sarda, senza rifare il museo.",
     hero: {
       src: "/images/cultura/nivola-ritratto.webp",
       alt: "Ritratto di Costantino Nivola nello studio con sculture e Orani sullo sfondo",
@@ -241,46 +260,74 @@ export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
     },
     sections: [
       {
-        title: "Da Orani al mondo",
+        title: "Origini e formazione",
         paragraphs: [
-          "Nivola cresce a Orani come apprendista muratore e stuccatore. Fugge dal fascismo verso Parigi e poi gli Stati Uniti (1939), dove lavora a rilievi architettonici e insegna in sedi prestigiose, da Harvard a Columbia.",
-          "La fama americana non cancella l’origine: il linguaggio astratto e i grandi cementi dialogano con la memoria materiale della Sardegna. A Orani la Fondazione e il museo Nivola raccolgono opere e percorso biografico.",
+          "La biografia della Fondazione Nivola lo fa nascere a Orani il 6 luglio 1911, figlio di muratore. Impara il mestiere del padre; a Sassari è apprendista del pittore Mario Delitala. Nel 1931 una borsa di studio lo porta all’Istituto Superiore per le Industrie Artistiche di Monza (ISIA): grafica, maestri come Giuseppe Pagano, amicizie con Salvatore Fancello e Giovanni Pintori.",
+          "Pagano lo coinvolge in allestimenti (Triennale di Milano, Expo di Parigi). Entra in Olivetti come grafico e diventa direttore artistico della sezione grafica dell’ufficio pubblicità. Nel 1938 sposa Ruth Guggenheim; le posizioni antifasciste e il matrimonio lo costringono a lasciare l’Italia per Parigi e, nel 1939, per gli Stati Uniti.",
         ],
       },
       {
-        title: "Visitare Orani",
+        title: "Il percorso fuori dalla Sardegna",
         paragraphs: [
-          "Orani è un paese della Barbagia: la guida Everas aiuta a orientarsi tra storia, tradizioni e dintorni. Il museo Nivola è il ponte più diretto tra arte contemporanea internazionale e interno sardo.",
-          "Da qui puoi collegarti ad altri comuni del Centro - Nuoro, Oliena, Autunno in Barbagia - e al calendario eventi.",
+          "A New York lavora come art director per riviste di architettura e design. Frequenta gli ambienti degli artisti emigrati; diventa amico e discepolo di Le Corbusier, con cui divide lo studio per anni. Compra casa a Springs, Long Island. Insegna design in sedi americane, tra cui Harvard (Design Workshop, poi Carpenter Center) e Columbia.",
+          "Non elenchiamo qui ogni commissione pubblica americana. Il filo è un artista formatosi in Italia che, da emigrato, lavora al confine tra scultura e architettura — la «sintesi delle arti» del dopoguerra — e torna periodicamente in Sardegna senza farne soltanto nostalgia.",
         ],
       },
       {
-        title: "Come continuare su EVERAS",
+        title: "La ricerca: sandcasting e temi",
         paragraphs: [
-          "Apri la guida di Orani e le guide del Centro Sardegna. Per letteratura e altri personaggi, resta in Cultura Sarda.",
+          "Nella casa-giardino di Long Island, intorno al 1950, inventa il sandcasting: sculture e rilievi in gesso o cemento ricavati da matrici modellate nella sabbia. Il grande rilievo per lo showroom Olivetti di New York (progetto BBPR) gli dà riconoscimento internazionale come scultore per l’architettura. La Fondazione riassume i temi ricorrenti: «madre» e «costruttore», vita comunitaria, arte come partecipazione; forme moderne che riprendono memoria popolare e preistoria sarda.",
+          "Dagli anni Sessanta lavora anche piccole terrecotte intime; poi marmo e bronzo, con figure femminili. Sandcast, madri, vedove: la collezione a Orani le conserva. Qui non facciamo catalogo di opere né elenco di mostre.",
+        ],
+      },
+      {
+        title: "Il rapporto con Orani",
+        paragraphs: [
+          "Orani non è solo il paese di nascita. Nel 1958 Nivola esegue il graffito della chiesa di Sa Itria e lascia sculture nelle strade del paese. La memoria pubblica contemporanea — Fondazione del 1990, museo nel lavatoio dal 1995 — è un fatto di Orani: sede, restauro, collezione e orari stanno nella scheda EVERAS del comune. Qui resta il percorso dell’artista che rende quel museo necessario.",
         ],
       },
     ],
     faqs: [
       {
-        question: "Dove è nato Nivola?",
-        answer: "A Orani, in Barbagia (provincia di Nuoro).",
+        question: "Qual è il rapporto tra Nivola e Orani?",
+        answer:
+          "Ci nasce e ci impara il mestiere. Torna a lavorare nel paese (Sa Itria, 1958). Dopo la morte, Fondazione e museo a Orani custodiscono l’opera: la scheda del comune racconta l’istituzione; questa pagina racconta l’artista.",
       },
       {
-        question: "Perché è famoso all’estero?",
+        question: "Dove si trova il Museo Nivola?",
         answer:
-          "Per sculture e rilievi architettonici realizzati soprattutto negli Stati Uniti, e per l’insegnamento in università americane.",
+          "A Orani, via Gonare, nell’ex lavatoio comunale sul colle di Su Càntaru. Dettagli di sede e visita: guida EVERAS Orani e museonivola.it.",
+      },
+      {
+        question: "Quali temi caratterizzano la ricerca artistica di Nivola?",
+        answer:
+          "Secondo la Fondazione: sandcasting e rilievo per l’architettura; temi della madre e del costruttore; arte pubblica e comunità; più tardi terracotta, marmo e bronzo. Non è un elenco di pezzi da spuntare.",
+      },
+    ],
+    sources: [
+      {
+        label: "Museo Nivola, Costantino Nivola (biografia)",
+        href: "https://museonivola.it/costantino-nivola/",
+      },
+      {
+        label: "Museo Nivola, About / Fondazione",
+        href: "https://museonivola.it/about/",
+      },
+      {
+        label: "Museo Nivola, Collection",
+        href: "https://museonivola.it/en/collection/",
+      },
+      {
+        label: "Archives of American Art, Costantino Nivola papers",
+        href: "https://www.aaa.si.edu/collections/costantino-nivola-papers-8096",
       },
     ],
     relatedLinks: [
       { href: "/cultura-sarda/centro-sardegna/orani", label: "Guida Orani" },
-      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
-      {
-        href: "/cultura-sarda/centro-sardegna",
-        label: "Guide Centro Sardegna",
-      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura", label: "Cultura sarda" },
     ],
-    publishedAt: "2026-09-02",
+    publishedAt: "2026-09-20",
   },
   {
     slug: "gianfranco-zola",
