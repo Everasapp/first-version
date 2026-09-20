@@ -93,12 +93,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Assemini",
     province: "Cagliari",
     area: "Campidano di Cagliari",
-    title: "Assemini: ceramica e Campidano",
-    h1: "Assemini",
-    description: "Assemini in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
+    title: "Assemini: strexiaius e Città della Ceramica",
+    h1: "Assemini, paese della ceramica",
+    description:
+      "Assemini nel Campidano: strexiaius, su strexu e socio AiCC. Mostra permanente della ceramica, con fonti del Comune e dell’associazione delle Città della Ceramica.",
     hero: {
       src: "/images/cultura/assemini-panorama.webp",
-      alt: "Veduta di Assemini in Sardegna",
+      alt: "Costume tradizionale di Assemini",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -106,42 +107,67 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Assemini_-_Costume_tradizionale_(11).JPG",
       },
     },
-    intro: `Assemini è paese della ceramica nel Campidano in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Assemini su EVERAS.`,
+    intro:
+      "Ad Assemini il mestiere visibile è il tornio. Il Comune si presenta come paese della ceramica; il municipio è socio dell’Associazione Italiana Città della Ceramica. Cagliari è vicina: qui il punto non è l’hinterland, è su strexu.",
+    historyHeading: "Nel Campidano, dietro Cagliari",
     history: [
-      `Assemini è un comune italiano di 25 563 abitanti della città metropolitana di Cagliari in Sardegna. È classificato secondo gli standard turistici come \"Paese di antica tradizione della ceramica\".`,
-      `Oggi Assemini resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Assemini, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Assemini sta in pianura alle spalle del capoluogo, dove il Cixerri e il Flumini Mannu arrivano alla laguna di Santa Gilla. Il Comune descrive un abitato di campi, orti e botteghe, e mette al centro i ceramisti. Non allarghiamo questa scheda alla città metropolitana né alla laguna come guida naturalistica: il riconoscimento culturale che il Comune rivendica è la ceramica.",
     ],
+    traditionsHeading: "Su strexu",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Ceramica, festa e Campidano. Le date precise cambiano ogni anno: controlla il calendario eventi ad Assemini su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Campidano di Cagliari intorno",
-        body: `Assemini si legge meglio insieme ai comuni vicini del Campidano di Cagliari: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Stoviglie da cortile",
+        body: "L’AiCC, sulla scheda di Assemini, chiama strexiaius i figuli e su strexu il corredo di casseruole, scodelle, tegami, brocche e fiaschi ricavati al tornio (sa roda), essiccati e cotti. Il luogo di lavoro descritto è il cortile: pozzo, vasche, tornio, tettoia, forno. Non è un’invenzione turistica recente: è il vocabolario del mestiere che l’associazione delle Città della Ceramica e il Comune tengono insieme.",
       },
     ],
+    crafts: [
+      {
+        title: "Mostra permanente e botteghe",
+        body: "Il Comune ha dedicato all’arte una mostra mercato permanente, con produzioni locali. L’AiCC e Mater Ceramica indicano il Centro Pilota per la Ceramica (via Lazio) come sede della collezione e del confronto con altri centri italiani. Orari, aperture e laboratori si chiedono al Comune (ufficio attività produttive): qui non si copiano. La guida EVERAS all’artigianato colloca Assemini nella filiera della ceramica senza fare catalogo di vendita.",
+      },
+    ],
+    visitHeading: "Dove si vede il mestiere",
     visit: [
       {
-        name: "Centro di Assemini",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro e laboratori di ceramica. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Centro Pilota per la Ceramica",
+        body: "È il punto civico della filiera: collezione e mostra dei ceramisti asseminesi, non un museo statale. Contatti sul Comune e sulle pagine AiCC / Buongiorno Ceramica. Una bottega in paese non è automaticamente visitabile: si conferma con l’artigiano.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Assemini?",
-        answer: "Centro e laboratori di ceramica. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Assemini è associata alla ceramica?",
+        answer:
+          "Perché il Comune la presenta come città di antica tradizione della ceramica e perché è socio dell’Associazione Italiana Città della Ceramica. Il mestiere documentato è quello degli strexiaius.",
       },
       {
-        question: "Dove trovo gli eventi ad Assemini?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Assemini su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cos’è su strexu?",
+        answer:
+          "Nella scheda AiCC di Assemini è il vasellame d’uso — scodelle, tegami, brocche e affini — prodotto al tornio. Non è un marchio IGP.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di Assemini", href: "https://www.comune.assemini.ca.it/" },
+      {
+        label: "Comune di Assemini, Città e territorio",
+        href: "https://www.comune.assemini.ca.it/vivere-il-comune/citta-e-territorio.html",
+      },
+      {
+        label: "AiCC, soci dell’Associazione Italiana Città della Ceramica",
+        href: "https://www.buongiornoceramica.it/home/chi-siamo/soci/",
+      },
+      {
+        label: "AiCC / Buongiorno Ceramica, scheda Assemini",
+        href: "https://www.buongiornoceramica.it/city/assemini/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "La ceramica nel quadro dei mestieri sardi, e Cagliari come capoluogo vicino — non come sostituto di Assemini.",
+    relatedLinks: [
+      { href: "/cultura/artigianato-sardo", label: "Artigianato sardo" },
+      { href: "/cultura-sarda/sud-sardegna/cagliari", label: "Guida Cagliari" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ballao",
@@ -2199,13 +2225,14 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     path: "/cultura-sarda/sud-sardegna/pula",
     town: "Pula",
     province: "Cagliari",
-    area: "Sulcis",
-    title: "Pula: Nora e costa sud",
-    h1: "Pula",
-    description: "Pula in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
+    area: "Capo di Pula",
+    title: "Pula: Nora e il territorio del Capo di Pula",
+    h1: "Pula: storia, Nora e patrimonio del territorio",
+    description:
+      "Nora nel comune di Pula: sito MiC, chiesa di Sant’Efisio e PulArchàios. Guida culturale sul rapporto tra paese e città antica, senza spiagge e senza orari copiati.",
     hero: {
       src: "/images/cultura/pula-panorama.webp",
-      alt: "Veduta di Pula in Sardegna",
+      alt: "Panorama di Pula, Cagliari",
       credit: {
         author: "Dirgela",
         license: "CC BY-SA 3.0",
@@ -2213,42 +2240,86 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Pula_panorama.jpg",
       },
     },
-    intro: `Pula è porta su Nora e le spiagge del sud in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Pula su EVERAS.`,
+    intro:
+      "Pula e Nora non coincidono. Nora è la città antica sul Capo di Pula; Pula è il comune contemporaneo, erede territoriale di quel promontorio ma non la stessa città. Questa pagina serve a non confondere il sito MiC, il paese, il golfo di Cagliari e le spiagge — queste ultime restano fuori, perché qui il tema è il patrimonio.",
+    historyHeading: "Pula e il suo territorio",
     history: [
-      `Pula è un comune italiano di 7 017 abitanti della città metropolitana di Cagliari in Sardegna, situato a sud-ovest del capoluogo. Fondata nel periodo medievale e sviluppatasi nel XVIII secolo, è famosa per il sito archeologico di Nora, risalente al periodo fenicio e romano. Grazie alle sue spiagge, nel XX secolo è diventata un'importante meta turistica.`,
-      `Oggi Pula resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Pula, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il comune sta sul versante meridionale del golfo di Cagliari, non nel Sulcis minerario. L’Unione dei Comuni Nora e Bithia ricorda che le fonti antiche parlano di Nora, sul Capo di Pula, e che Pula nasce come centro urbano erede territoriale di Nora, senza continuità culturale diretta con l’abitato punico-romano. In età medievale il territorio è ricordato come Padulis de Nura («palude di Nora»); in età aragonese compare la Villa di Pula.",
+      "Nora viene abbandonata tra VII e VIII secolo: il progetto di scavo dell’Università di Padova e la Direzione regionale Musei Sardegna datano le ultime frequentazioni all’VIII secolo. Il paese di Pula, più interno rispetto al promontorio, è un altro strato: parrocchia, ville, e la chiesa di Sant’Efisio accanto all’area archeologica.",
     ],
+    traditionsHeading: "PulArchàios e Sant’Efisio a Nora",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Archeologia, mare e festa di paese. Le date precise cambiano ogni anno: controlla il calendario eventi a Pula su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "PulArchàios",
+        body: "PulArchàios è la rassegna che la Fondazione Pula Cultura organizza nell’area archeologica di Nora: teatro, musica e incontri tra i resti. Non è una festa tradizionale del paese, è un’iniziativa culturale contemporanea sul sito. Date, titoli e biglietti stanno sulle schede evento EVERAS e sul sito della Fondazione: qui non copiamo il programma.",
       },
       {
-        title: "Il Sulcis intorno",
-        body: `Pula si legge meglio insieme ai comuni vicini del Sulcis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "L’arrivo di Sant’Efisio",
+        body: "Il 1° maggio la processione cagliaritana di Sant’Efisio arriva alla chiesa presso Nora, nel territorio di Pula. Il rito è di Cagliari; il luogo di arrivo è di Pula. Per il calendario: hub EVERAS Sant’Efisio e guida Cagliari. Non è una festa nata per il turismo balneare.",
       },
     ],
+    visitHeading: "Nora e il paese",
     visit: [
       {
-        name: "Centro di Pula",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Nora, il sito archeologico",
+        body: "L’area archeologica di Nora è un istituto della Direzione regionale Musei nazionali Sardegna (MiC). Frequentazione fenicia del Capo di Pula dall’VIII secolo a.C.; la stele di Nora reca la prima attestazione del nome della Sardegna. L’abitato stabile si sviluppa in età punica; con i Romani Nora è municipium, con foro, teatro e terme. Gli scavi moderni partono da fine Ottocento (Nissardi) e dagli anni Cinquanta (Pesce). Orari, chiusure e biglietti: pagina ufficiale MiC e Fondazione Pula Cultura. La guida EVERAS su nuraghi e archeologia inquadra Nora nel sistema isolano; questa pagina tiene il rapporto con Pula.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Area archeologica di Nora e costa. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Il paese oltre Nora",
+        body: "Il centro di Pula non è un villaggio di servizio al parco. L’Unione Nora e Bithia indica tra i riferimenti la parrocchia e Villa Santa Maria; accanto al sito, la chiesa di Sant’Efisio è il punto di arrivo del pellegrinaggio di maggio. Per orari di culto e visite: parrocchia e Comune. Non elenchiamo spiagge, golf né villaggi turistici: non sono identità culturale del comune in questa scheda.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Pula?",
-        answer: "Area archeologica di Nora e costa. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Dove si trova l’antica Nora rispetto a Pula?",
+        answer:
+          "Sul promontorio del Capo di Pula, nel territorio comunale, a breve distanza dal centro abitato. Nora è il sito; Pula è il comune.",
       },
       {
-        question: "Dove trovo gli eventi a Pula?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Pula su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Perché Nora è importante dal punto di vista archeologico?",
+        answer:
+          "Documenta le fasi fenicia, punica e quella di Roma. La stele di Nora attesta per la prima volta il nome della Sardegna. Fonte: Direzione regionale Musei Sardegna (MiC).",
+      },
+      {
+        question: "Quali informazioni aggiornate consultare per visitare Nora?",
+        answer:
+          "La pagina MiC dell’area archeologica e il sito della Fondazione Pula Cultura. Su EVERAS non copiamo orari né prezzi.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di Pula", href: "https://www.comune.pula.ca.it/" },
+      {
+        label: "Direzione regionale Musei Sardegna, Area archeologica di Nora",
+        href: "https://musei.sardegna.beniculturali.it/musei/area-archeologica-di-nora/",
+      },
+      {
+        label: "Fondazione Pula Cultura",
+        href: "https://www.fondazionepulacultura.it/",
+      },
+      {
+        label: "Unione dei Comuni Nora e Bithia, storia del territorio",
+        href: "https://www.unionenoraebithia.it/udcnoraebithia/zf/index.php/servizi-aggiuntivi/index/index/idtesto/33",
+      },
+      {
+        label: "Università di Padova, progetto Nora (abitato altomedievale)",
+        href: "https://nora.beniculturali.unipd.it/storia-del-sito/labitato-altomedievale/",
+      },
+      {
+        label: "EVERAS, hub Sant’Efisio",
+        href: "https://www.everas.it/eventi-sardegna/sant-efisio",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Nora nel sistema museale e archeologico EVERAS; Sant’Efisio e Cagliari per il pellegrinaggio di maggio; la guida di storia per il quadro isolano, senza duplicare le spiagge.",
+    relatedLinks: [
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/eventi-sardegna/sant-efisio", label: "Sant’Efisio" },
+      { href: "/cultura-sarda/sud-sardegna/cagliari", label: "Guida Cagliari" },
+      { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "quartu-sant-elena",
@@ -2480,12 +2551,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Samugheo",
     province: "Sud Sardegna",
     area: "Barigadu",
-    title: "Samugheo: storia, tradizioni e cosa visitare",
-    h1: "Samugheo",
-    description: "Samugheo in Sardegna: guida al comune del Barigadu, cosa visitare e eventi in programma su EVERAS.",
+    title: "Samugheo e l’arte tessile sarda",
+    h1: "I telai di Samugheo",
+    description:
+      "Samugheo tiene il MURATS, museo regionale della tessitura, e Tessingiu, mostra dell’artigianato. Perché il paese conta per i telai sardi.",
     hero: {
       src: "/images/cultura/samugheo-panorama.webp",
-      alt: "Veduta di Samugheo in Sardegna",
+      alt: "Tzichi, nel territorio di Samugheo",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -2493,42 +2565,63 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Samugheo_-_Tzichi.jpg",
       },
     },
-    intro: `Samugheo è comune del Barigadu in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Samugheo su EVERAS.`,
+    intro:
+      "Samugheo tiene il Museo Unico Regionale dell’Arte Tessile Sarda. La collezione è del Comune, destinata alla fruizione pubblica: tovaglie, coperte, abiti, telai, e pezzi rari come i tapinos ’e mortu. Tessingiu, la mostra dell’artigianato, è l’appuntamento che ogni anno riporta i mestieri in paese: non sostituisce il museo.",
+    historyHeading: "Perché i telai stanno qui",
     history: [
-      `Samugheo è un comune italiano di 2 617 abitanti della provincia di Oristano in Sardegna.`,
-      `Oggi Samugheo resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Samugheo, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il MURATS nasce nel 2002, scrive il Comune, per recuperare manufatti restati a lungo nelle cassapanche — di Samugheo e di altri centri — e tenerne la memoria tessile dell’isola. SardegnaCultura e la carta dei servizi del museo ripetono lo stesso punto: la tessitura tradizionale ha perso terreno in molte comunità e a Samugheo è restata pratica viva. Per questo la sede regionale del museo tessile è in questo paese, non a Oristano e non a Cagliari.",
     ],
+    traditionsHeading: "Tessingiu",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Barigadu. Le date precise cambiano ogni anno: controlla il calendario eventi a Samugheo su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Barigadu intorno",
-        body: `Samugheo si legge meglio insieme ai comuni vicini del Barigadu: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "La mostra, non il calendario",
+        body: "Il Comune chiama Tessingiu «storica Mostra dell’artigianato sardo». Si tiene in paese (di solito all’ex Cantina sociale) e, nelle edizioni recenti, il biglietto è stato agganciato anche al MURATS. È una rassegna di mestieri, con il tessile come cuore identitario di Samugheo, non una sagra di prodotto. Edizione, orari e prezzi: Comune e schede EVERAS. Questa pagina non li copia.",
       },
     ],
+    visitHeading: "MURATS",
     visit: [
       {
-        name: "Centro di Samugheo",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Samugheo e il territorio comunale. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Museo Unico Regionale dell’Arte Tessile Sarda",
+        body: "Via Bologna, alla periferia del paese. Proprietà comunale, servizio pubblico. La collezione permanente — lana, cotone, lino — comprende biancheria, abiti, teli da campagna e strumenti da telaio. Tra i pezzi che il museo segnala come rari: i tapinos ’e mortu, drappi usati per la veglia funebre. Orari e tariffe: murats.it. La guida EVERAS all’artigianato parla di tessitura soprattutto da Aggius: qui il rinvio è inverso, dal paese-museo alla filiera.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Samugheo?",
-        answer: "il centro di Samugheo e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché il museo regionale del tessile è a Samugheo?",
+        answer:
+          "Perché il Comune e SardegnaCultura presentano Samugheo come centro in cui la produzione tessile è restata viva, e perché il MURATS è un istituto comunale nato per conservare quella memoria a scala isolana.",
       },
       {
-        question: "Dove trovo gli eventi a Samugheo?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Samugheo su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Tessingiu e il MURATS sono la stessa cosa?",
+        answer:
+          "No. Il MURATS è il museo, aperto lungo l’anno secondo il proprio calendario. Tessingiu è la mostra dell’artigianato. In alcune edizioni il Comune ha previsto un biglietto unico: resta un’organizzazione, non una fusione delle due istituzioni.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      { label: "Comune di Samugheo", href: "https://www.comune.samugheo.or.it/it" },
+      {
+        label: "Comune di Samugheo, Musei e luoghi da visitare",
+        href: "https://www.comune.samugheo.or.it/it/page/musei-e-luoghi-da-visitare-5167782e-c7a3-40db-8444-17a09dc83ee1",
+      },
+      {
+        label: "Comune di Samugheo, Tessingiu",
+        href: "https://www.comune.samugheo.or.it/it/news/apertura-mostra-dell-artigianato-sardo-tessingiu",
+      },
+      { label: "MURATS, carta dei servizi / collezione", href: "https://www.murats.it/collezione/" },
+      {
+        label: "SardegnaCultura, MURATS",
+        href: "https://www.sardegnacultura.it/articolo/samugheo-museo-unico-regionale-dellarte-tessile-sarda",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Aggius per un altro centro di tessitura documentato; la guida ai mestieri per il quadro isolano, senza ripetere le sale del MURATS.",
+    relatedLinks: [
+      { href: "/cultura/artigianato-sardo", label: "Artigianato sardo" },
+      { href: "/cultura-sarda/nord-sardegna/aggius", label: "Guida Aggius" },
+      { href: "/cultura/costumi-sardi", label: "Costumi sardi" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "san-basilio",

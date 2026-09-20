@@ -485,12 +485,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Cabras",
     province: "Oristano",
     area: "Sinis",
-    title: "Cabras: Sinis, Tharros e bottarga",
-    h1: "Cabras",
-    description: "Cabras in Sardegna: guida al comune del Sinis, cosa visitare e eventi in programma su EVERAS.",
+    title: "Cabras: Tharros, Corsa degli Scalzi e il Sinis",
+    h1: "Cabras: storia, tradizioni e patrimonio del territorio",
+    description:
+      "Tharros a Capo San Marco, Corsa degli Scalzi, bottarga di muggine e stagni del Sinis: Cabras come ingresso territoriale, con fonti comunali e hub EVERAS.",
     hero: {
       src: "/images/cultura/cabras-panorama.webp",
-      alt: "Veduta di Cabras in Sardegna",
+      alt: "Panorama di Cabras, Oristano",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -498,42 +499,96 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Cabras_-_Panorama_(02).JPG",
       },
     },
-    intro: `Cabras è capitale del Sinis e della bottarga in provincia di Oristano. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Cabras su EVERAS.`,
+    intro:
+      "Cabras sta sulla riva dello stagno e amministra la parte meridionale del Sinis: costa, lagune, Capo San Marco e i resti di Tharros. Questa pagina è l’ingresso territoriale a quei nessi — pesca, rito, archeologia — e rimanda alle guide e agli hub EVERAS dove ogni tema è già trattato per esteso.",
+    historyHeading: "Un territorio tra storia e acqua",
     history: [
-      `Cabras è un comune italiano di 8 721 abitanti della provincia di Oristano in Sardegna. Si trova nella regione del Campidano di Oristano sulla riva sinistra dello stagno chiamato stagno di Cabras o Mari Pontis, uno degli stagni più grandi d'Europa.`,
-      `Oggi Cabras resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Cabras, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Comune di Cabras occupa la fascia meridionale della penisola del Sinis, sulla costa centro-occidentale. Nel territorio cadono Capo San Marco, l’isola di Mal di Ventre e un sistema di zone umide — stagno di Cabras, Mistras, Mar’e Pontis, Mar’e Pauli, Pauli’e Sali — che il Comune e l’Area marina protetta descrivono come parte del paesaggio culturale, non come sfondo. L’AMP «Penisola del Sinis – Isola di Mal di Ventre» è istituita con decreto del Ministero dell’Ambiente del 12 dicembre 1997; la gestione è affidata al Comune di Cabras.",
+      "Lo stagno di Cabras, sulle cui rive sorge l’abitato, è indicato dall’ente gestore dell’AMP come uno dei più estesi d’Europa (oltre 20 km²). Il Comune ricorda che gli stagni del territorio sono aree Ramsar, cioè zone umide di importanza internazionale. Pesca, rotte di uccelli e insediamenti storici stanno sullo stesso piano: non è un «paesaggio naturale» staccato dalla vita del paese.",
     ],
+    traditionsHeading: "Corsa degli Scalzi e bottarga",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Corsa degli Scalzi e festa della bottarga. Le date precise cambiano ogni anno: controlla il calendario eventi a Cabras su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "La Corsa degli Scalzi",
+        body: "È un rito votivo, non una gara. Il Comune di Cabras la presenta come festa che da oltre quattro secoli porta i curridoris — giovani in saio bianco, a piedi nudi — da Cabras al villaggio di San Salvatore, nel Sinis, in onore del Cristo. Il voto è legato alla memoria di un saccheggio e al rifugio della statua a San Salvatore; andata, veglia e ritorno li pubblica il Comune per ogni edizione. Le date cambiano: restano sull’hub EVERAS Corsa degli Scalzi e sulle schede evento, non in questa pagina.",
       },
       {
-        title: "Il Sinis intorno",
-        body: `Cabras si legge meglio insieme ai comuni vicini del Sinis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Bottarga e tradizione della pesca",
+        body: "La bottarga di muggine (bottariga) è iscritta nell’elenco nazionale dei Prodotti agroalimentari tradizionali della Sardegna: ovaie di Mugil cephalus salate ed essiccate. Non è un marchio IGP «di Cabras»: è un PAT regionale, e Cabras è uno dei luoghi in cui la lavorazione si intreccia alla pesca nello stagno. Il Festival della Bottarga, in paese, è la rassegna contemporanea di questo prodotto; calendario e schede sono sull’hub EVERAS. Qui non diamo ricette né listini: il punto è il nesso tra laguna, muggine e mestiere.",
       },
     ],
+    visitHeading: "Tharros e gli stagni",
     visit: [
       {
-        name: "Centro di Cabras",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Tharros e il patrimonio archeologico",
+        body: "Tharros sta a Capo San Marco, nel comune di Cabras, non ad Oristano. È un insediamento fenicio-punico e poi romano, oggi area archeologica; i materiali e il contesto si visitano anche attraverso il Museo civico Giovanni Marongiu, che la Fondazione Mont’e Prama indica come sede dei Giganti di Mont’e Prama. Questa scheda non ripete la guida EVERAS su nuraghi, musei e archeologia: lì stanno inquadramento e collegamenti. Orari e biglietti si consultano sulle pagine della Fondazione / Parco, non qui.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Tharros, stagni e Museo Civico. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Stagni e paesaggio culturale",
+        body: "Gli stagni non sono un’appendice «naturalistica». Sono il motivo per cui Cabras è dove è: pesca, salinità, rapporto con il mare aperto dell’AMP. Il Comune distingue il mare della costa dal sistema lagunare interno. Per vincoli, accessi e tutela: sito dell’AMP e Comune. Non elenchiamo spiagge.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Cabras?",
-        answer: "Tharros, stagni e Museo Civico. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Cabras è legata a Tharros?",
+        answer:
+          "Perché Tharros è nel territorio comunale, a Capo San Marco / San Giovanni di Sinis. Cabras è il comune di riferimento per sito, Museo civico e Area marina protetta.",
       },
       {
-        question: "Dove trovo gli eventi a Cabras?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Cabras su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Cos'è la Corsa degli Scalzi?",
+        answer:
+          "Un rito votivo dei curridoris da Cabras al villaggio di San Salvatore di Sinis, documentato dal Comune come festa plurisecolare. Le date dell’edizione stanno sul Comune e sull’hub EVERAS.",
+      },
+      {
+        question: "Perché la bottarga è legata alla tradizione locale?",
+        answer:
+          "Perché la lavorazione delle ovaie di muggine — PAT della Sardegna, non IGP comunale — si è consolidata intorno alla pesca nello stagno di Cabras.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Cabras", href: "https://www.comune.cabras.or.it/" },
+      {
+        label: "Comune di Cabras, Il territorio",
+        href: "https://comune.cabras.or.it/it/page/il-territorio",
+      },
+      {
+        label: "Comune di Cabras, Corsa degli Scalzi",
+        href: "https://www.comune.cabras.or.it/it/news/corsa-degli-scalzi-2026",
+      },
+      {
+        label: "Area Marina Protetta Penisola del Sinis – Isola di Mal di Ventre",
+        href: "https://www.areamarinasinis.it/",
+      },
+      {
+        label: "Ministero dell’Ambiente, AMP Penisola del Sinis",
+        href: "https://www.mase.gov.it/portale/area-marina-protetta-penisola-del-sinis-isola-di-mal-di-ventre",
+      },
+      { label: "Fondazione Mont’e Prama", href: "https://monteprama.it/" },
+      {
+        label: "Regione Sardegna, elenco PAT 2020 (bottarga di muggine)",
+        href: "https://www.regione.sardegna.it/documenti/1_422_20200709112021.pdf",
+      },
+      {
+        label: "EVERAS, hub Corsa degli Scalzi",
+        href: "https://www.everas.it/eventi-sardegna/corsa-degli-scalzi",
+      },
+      {
+        label: "EVERAS, hub Festival della Bottarga",
+        href: "https://www.everas.it/eventi-sardegna/festival-della-bottarga",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Tharros e il museo nel sistema archeologico EVERAS; Corsa e bottarga negli hub di calendario; Oristano per il contesto arborense, senza spostare Tharros nel capoluogo.",
+    relatedLinks: [
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/eventi-sardegna/corsa-degli-scalzi", label: "Corsa degli Scalzi" },
+      { href: "/eventi-sardegna/festival-della-bottarga", label: "Festival della Bottarga" },
+      { href: "/cultura-sarda/centro-sardegna/oristano", label: "Guida Oristano" },
+      { href: "/cultura/grandi-feste-sarde", label: "Grandi feste tradizionali" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "desulo",
@@ -597,12 +652,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Dorgali",
     province: "Nuoro",
     area: "Baronia",
-    title: "Dorgali: Grotta del Bue Marino e Golfo di Orosei",
-    h1: "Dorgali",
-    description: "Dorgali in Sardegna: guida al comune della Baronia, cosa visitare e eventi in programma su EVERAS.",
+    title: "Dorgali: museo civico e Serra Orrios",
+    h1: "Dorgali, Serra Orrios e il museo archeologico",
+    description:
+      "A Dorgali il museo civico e il villaggio nuragico di Serra Orrios. Cala Gonone è frazione: questa scheda non è una guida alle calette.",
     hero: {
       src: "/images/cultura/dorgali-panorama.webp",
-      alt: "Veduta di Dorgali in Sardegna",
+      alt: "Panorama di Cala Gonone, frazione di Dorgali",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -610,42 +666,63 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Dorgali_-_Cala_Gonone_-_Panorama_(08).JPG",
       },
     },
-    intro: `Dorgali è paese tra montagna e Golfo di Orosei in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Dorgali su EVERAS.`,
+    intro:
+      "Chi scende a Cala Gonone arriva al porto. Il comune ha il suo centro culturale a Dorgali, nell’entroterra: museo archeologico in via Lamarmora e, nel territorio, il villaggio nuragico di Serra Orrios. Le calette del golfo stanno nella guida alle spiagge; qui restano i reperti e il villaggio.",
+    historyHeading: "Un museo che parla dei siti",
     history: [
-      `Dorgali è un comune italiano di 8 217 abitanti della provincia di Nuoro. Con la sua superficie di 226,54 km² è l'ottavo comune della Sardegna, in ordine di estensione.`,
-      `Oggi Dorgali resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Dorgali, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Museo archeologico di Dorgali è un istituto del Comune: tre sale in sequenza cronologica, nell’edificio delle scuole elementari. Espone reperti dai siti del territorio — il Comune cita, tra gli oggetti a terra, il menhir di Mariughia, macine, dolium, anfore, un’ancora e un paramezzale di nave. I contenuti didattici sui siti gestiti dal Comune e da comuni vicini rientrano in un progetto della Regione. Orari e tariffe: pagina comunale del museo. Non li copiamo.",
     ],
+    traditionsHeading: "Paese e frazione",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Filigrana, Cannonau e mare della Baronia. Le date precise cambiano ogni anno: controlla il calendario eventi a Dorgali su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "La Baronia intorno",
-        body: `Dorgali si legge meglio insieme ai comuni vicini della Baronia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Cala Gonone",
+        body: "Cala Gonone è frazione di Dorgali, sul golfo: porto e abitato costiero, non un comune. La foto in testa a questa scheda è un panorama di Cala Gonone, non del centro di Dorgali. Per le calette (Cala Luna e le altre) la guida EVERAS alle spiagge tiene il golfo come sistema; qui non le elenchiamo.",
       },
     ],
+    visitHeading: "Serra Orrios",
     visit: [
       {
-        name: "Centro di Dorgali",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Cala Gonone, grotte e centro di Dorgali. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Villaggio nuragico di Serra Orrios",
+        body: "Nel comune di Dorgali, sull’altopiano del Gollei. Il Ministero della Cultura lo descrive come uno dei villaggi nuragici più estesi e meglio conservati: circa un centinaio di capanne, due tempietti a megaron con recinto, due tombe di giganti. I materiali di scavo — pesi da telaio, matrici di fusione, ceramica — sono al museo civico. Accesso e biglietti: gestore del sito / museo, non questa pagina. La guida EVERAS su nuraghi e archeologia inquadra Serra Orrios nel sistema isolano.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Dorgali?",
-        answer: "Cala Gonone, grotte e centro di Dorgali. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Serra Orrios è nel comune di Dorgali?",
+        answer:
+          "Sì. SardegnaCultura e il Ministero della Cultura lo collocano in comune di Dorgali. I reperti di scavo si vedono al museo civico in paese.",
       },
       {
-        question: "Dove trovo gli eventi a Dorgali?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Dorgali su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Cala Gonone è un comune?",
+        answer:
+          "No. È frazione di Dorgali, sul golfo. Il museo archeologico e Serra Orrios stanno nell’entroterra comunale. Per le calette: guida EVERAS alle spiagge.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Dorgali", href: "https://www.comune.dorgali.nu.it/" },
+      {
+        label: "Comune di Dorgali, Museo archeologico",
+        href: "https://www.comune.dorgali.nu.it/index.php/tzente/articoli/732",
+      },
+      {
+        label: "Ministero della Cultura, villaggio nuragico di Serra Orrios",
+        href: "https://cultura.gov.it/luogo/villaggio-nuragico-di-serra-orrios",
+      },
+      {
+        label: "SardegnaCultura, complesso nuragico di Serra Orrios",
+        href: "https://www.sardegnacultura.it/articolo/dorgali-complesso-nuragico-di-serra-orrios",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Serra Orrios nella guida archeologica; il golfo, se serve il mare, nella guida alle spiagge — tenuta distinta da questa scheda.",
+    relatedLinks: [
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/eventi-sardegna/autunno-in-barbagia", label: "Autunno in Barbagia" },
+      { href: "/cultura/spiagge-piu-belle-sardegna", label: "Spiagge della Sardegna" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "fonni",
@@ -1692,12 +1769,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Orani",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Orani: Nivola e Barbagia",
-    h1: "Orani",
-    description: "Orani in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    title: "Il Museo Nivola a Orani",
+    h1: "Orani e il Museo Nivola",
+    description:
+      "A Orani la Fondazione Costantino Nivola e il museo nell’ex lavatoio comunale: istituzione, luogo e patrimonio contemporaneo. La biografia dell’artista sta nella scheda EVERAS dedicata.",
     hero: {
       src: "/images/cultura/orani-panorama.webp",
-      alt: "Veduta di Orani in Sardegna",
+      alt: "Panorama di Orani, Nuoro",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -1705,42 +1783,65 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Orani,_panorama_(08).jpg",
       },
     },
-    intro: `Orani è paese di Costantino Nivola in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Orani su EVERAS.`,
+    intro:
+      "A Orani il rapporto tra artista e paese è un’istituzione, non una targa. Nel 1990 la Regione Sardegna, il Comune e la famiglia di Costantino Nivola costituiscono la Fondazione; nel 1995 il museo apre nell’antico lavatoio comunale, sul colle di Su Càntaru. La scheda EVERAS su Nivola tiene il percorso di vita. Qui restano il lavatoio, la Fondazione e il museo come fatto di Orani.",
+    historyHeading: "Una fondazione in paese",
     history: [
-      `Orani è un comune del Centro Sardegna, nella zona storica della Barbagia. Come molti paesi dell’interno, tiene insieme memoria agro-pastorale, chiese e un centro che si vive soprattutto nelle feste.`,
-      `Oggi Orani resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Orani, la scheda evento su EVERAS rimanda a questa guida.`,
+      "La Fondazione Costantino Nivola nasce a Orani nel 1990 (L.R. n. 35 del 31 luglio 1990; L.R. n. 14 del 20 settembre 2006, art. 21). L’atto costitutivo, nel 1991, lo firmano Ruth Guggenheim Nivola, il sindaco Tonino Rocca e Giovanni Dettori per la Regione. Lo scopo dichiarato non è solo conservare un nome: promuovere l’opera di Nivola e, più in generale, l’arte contemporanea, con mostre, ricerca e scambi. La Fondazione gestisce il museo e l’annesso parco: un complesso di edifici espositivi, uffici e depositi in posizione panoramica sul territorio comunale.",
     ],
+    traditionsHeading: "Dal lavatoio al museo",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Arte contemporanea e Autunno in Barbagia. Le date precise cambiano ogni anno: controlla il calendario eventi ad Orani su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "La Barbagia intorno",
-        body: `Orani si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Uno spazio civico, non una villa d’artista",
+        body: "SardegnaCultura e il catalogo Idese del Ministero della Cultura collocano il museo nell’antico lavatoio, alto sul paese, sul fianco della collina di Su Càntaru, con la sorgente dentro il recinto. Il restauro del 1995 è di Peter Chermayeff e Umberto Floris: l’acqua che attraversava le vasche resta nel cortile. Il museo stesso si descrive come laboratorio — arte, architettura, natura — e come funzione civile per le comunità locali, non solo come sala monografica. Autunno in Barbagia, quando Orani è tappa, è un circuito di corti: secondario rispetto a questa istituzione; le date stanno sull’hub EVERAS.",
       },
     ],
+    visitHeading: "Il Museo Nivola",
     visit: [
       {
-        name: "Centro di Orani",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Museo Nivola e centro. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Via Gonare",
+        body: "Sede in via Gonare 2. La collezione permanente, esposta a rotazione, comprende sculture, dipinti, disegni e sandcast. Il sito della Fondazione parla di tre corpi lungo la collina, con interventi successivi di Gianfranco Crisci e Alessandro Floris. Orari, biglietti e mostre in corso: museonivola.it. Non copiamo cataloghi di opere né didascalie del Comune. Per la biografia (Orani, gli Stati Uniti, il ritorno delle opere): scheda EVERAS Costantino Nivola.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Orani?",
-        answer: "Museo Nivola e centro. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Il Museo Nivola è un museo civico del Comune?",
+        answer:
+          "Lo gestisce la Fondazione Costantino Nivola. Il Comune di Orani è tra i soggetti che l’hanno istituita, insieme alla Regione e alla famiglia dell’artista. Non è un ufficio comunale: è una fondazione con sede e museo in paese.",
       },
       {
-        question: "Dove trovo gli eventi ad Orani?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Orani su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Perché il museo è a Orani e non a Nuoro?",
+        answer:
+          "Perché Nivola nasce a Orani e perché la sede scelta è l’ex lavatoio comunale, sul colle di Su Càntaru. Nuoro resta il capoluogo vicino; il museo è un fatto di questo comune.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Orani", href: "https://www.comune.orani.nu.it/" },
+      { label: "Museo Nivola, Fondazione", href: "https://museonivola.it/fondazione/" },
+      { label: "Museo Nivola, About", href: "https://museonivola.it/about/" },
+      {
+        label: "SardegnaCultura, Lavatoio di Orani",
+        href: "https://www.sardegnacultura.it/articolo/orani-lavatoio",
+      },
+      {
+        label: "Ministero della Cultura, Idese, Museo Nivola",
+        href: "https://idese.cultura.gov.it/place/museo-nivola/",
+      },
+      {
+        label: "Ministero della Cultura, Atlante architettura contemporanea, Museo Nivola",
+        href: "https://atlantearchitetturacontemporanea.cultura.gov.it/museo-nivola/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "La biografia di Nivola nella scheda personaggio; Nuoro come capoluogo vicino, senza spostare il museo. Autunno in Barbagia solo se cerchi le corti, non al posto del museo.",
+    relatedLinks: [
+      { href: "/cultura/costantino-nivola", label: "Costantino Nivola" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
+      { href: "/eventi-sardegna/autunno-in-barbagia", label: "Autunno in Barbagia" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "orgosolo",
@@ -2120,12 +2221,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Ottana",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Ottana: boes e merdules",
-    h1: "Ottana",
-    description: "Ottana in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    title: "Ottana: Boes, Merdules e Carnevale",
+    h1: "Ottana: Boes, Merdules e tradizioni del Carnevale",
+    description:
+      "Boes e Merdules ad Ottana: maschere lignee, Carnevale barbaricino e differenza da Mamoiada. Fonti del Comune, dell’associazione e dell’ISRE.",
     hero: {
       src: "/images/cultura/ottana-panorama.webp",
-      alt: "Veduta di Ottana in Sardegna",
+      alt: "Panorama di Ottana, Nuoro",
       credit: {
         author: "Manuel M",
         license: "CC BY-SA 3.0",
@@ -2133,42 +2235,87 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Ottana.JPG",
       },
     },
-    intro: `Ottana è paese delle maschere boes e merdules in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Ottana su EVERAS.`,
+    intro:
+      "Ad Ottana il Carnevale ha un volto proprio: i Boes e i Merdules. Non è «il carnevale sardo» in generale e non è Mamoiada. Questa pagina resta sul rito ottanese; Mamoiada ha la sua scheda, con mamuthones e issohadores.",
+    historyHeading: "Ottana e la sua identità culturale",
     history: [
-      `Ottana è un comune italiano di 2 138 abitanti della provincia di Nuoro.`,
-      `Oggi Ottana resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Ottana, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Ottana è un comune della provincia di Nuoro, in area barbaricina. La visibilità culturale contemporanea passa soprattutto dal Carnevale e dalle maschere lignee, non da un parco archeologico di scala nazionale. Il Comune pubblica avvisi e programmi delle edizioni; l’associazione culturale Boes e Merdules cura in paese la trasmissione del rito.",
+      "Non ricostruiamo qui una storia istituzionale lunga (giudicati, feudi) in assenza di una sintesi sul sito comunale. Ciò che è documentato con fonti usabili in questa scheda è il Carnevale e il suo rapporto con altre maschere del centro Sardegna.",
     ],
+    language: [
+      "Si parla sardo dell’area nuorese/barbaricina. Per il quadro delle lingue: guida EVERAS. Non trattiamo l’ottanese come varietà a sé con grammatica propria: non abbiamo una fonte linguistica dedicata al solo comune.",
+    ],
+    traditionsHeading: "Boes, Merdules e il Carnevale",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Carnevale e festa in Barbagia. Le date precise cambiano ogni anno: controlla il calendario eventi ad Ottana su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Boes e Merdules",
+        body: "Sono le maschere del Carnevale ottanese. L’associazione Boes e Merdules descrive i Boes con volto bovino in legno (caratza), pelli e campanacci; i Merdules con volto grottesco, figura che guida e spesso si oppone. Sa Filonzana è la figura femminile che fila: l’associazione la presenta come maschera che «taglia il filo» della vita. L’ISRE, nel Museo del costume a Nuoro, espone Boes e Merdules tra le maschere tradizionali. Interpretazioni mitiche o un’origine nuragica circolano; l’associazione stessa tratta l’etimologia di merdule come ipotesi. Su EVERAS non le diamo per certe.",
       },
       {
-        title: "La Barbagia intorno",
-        body: `Ottana si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Il Carnevale di Ottana",
+        body: "Si svolge nel periodo di Carnevale, intorno a domenica e martedì grasso, secondo il calendario liturgico e le delibere comunali. Non fissiamo qui le date di un’edizione: vanno sul Comune e sulle schede EVERAS. Il Carnevale ottanese esce in piazza, con sfilata e suono dei campanacci: non è una giostra equestre e non è una faradda di gremi.",
+      },
+      {
+        title: "Ottana e le tradizioni della Sardegna centrale",
+        body: "Mamoiada ha mamuthones e issohadores: altro legno, altri ruoli, altro paese. Le due tradizioni si citano insieme nella letteratura etnografica e nella guida EVERAS sulle tradizioni; non sono equivalenti e non si visitano l’una al posto dell’altra. Nuoro (ISRE) è il museo di contesto. Autunno in Barbagia, quando Ottana è tappa, è un circuito contemporaneo di corti aperte: secondario rispetto al Carnevale, con calendario sull’hub EVERAS.",
       },
     ],
+    visitHeading: "Dove approfondire",
     visit: [
       {
-        name: "Centro di Ottana",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "In paese, a Carnevale",
+        body: "Il rito si vede in piazza, nei giorni di Carnevale. Programma: Comune di Ottana e associazione Boes e Merdules. Non indichiamo un museo civico delle maschere: sul sito comunale non risulta una sede espositiva stabile dedicata.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro e territorio della piana. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "ISRE a Nuoro",
+        body: "Per vedere le maschere in esposizione: Museo del costume di Nuoro (ISRE), che include Boes e Merdules. È un’istituzione regionale, non un ufficio di Ottana. Guida EVERAS: Nuoro.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Ottana?",
-        answer: "Centro e territorio della piana. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Cosa sono i Boes e i Merdules?",
+        answer:
+          "Maschere del Carnevale di Ottana: Boes a volto bovino, Merdules a volto grottesco, entrambe in legno, con pelli e campanacci. Fonte: associazione Boes e Merdules; esposizione ISRE a Nuoro.",
       },
       {
-        question: "Dove trovo gli eventi ad Ottana?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Ottana su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando si svolge il Carnevale di Ottana?",
+        answer:
+          "Nel periodo di Carnevale, secondo il calendario liturgico. Le date dell’edizione le pubblicano il Comune e le schede EVERAS: non le copiamo qui.",
+      },
+      {
+        question: "Qual è la differenza tra le maschere di Ottana e quelle di Mamoiada?",
+        answer:
+          "Ottana: Boes e Merdules. Mamoiada: mamuthones e issohadores. Paesi, ruoli e iconografia sono distinti; le schede EVERAS restano separate.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      { label: "Comune di Ottana", href: "https://www.comune.ottana.nu.it/" },
+      {
+        label: "Associazione culturale Boes e Merdules",
+        href: "https://www.merdules.it/",
+      },
+      { label: "ISRE Sardegna", href: "https://www.isresardegna.it/" },
+      {
+        label: "EVERAS, hub Carnevale in Sardegna",
+        href: "https://www.everas.it/eventi-sardegna/carnevale-sardegna",
+      },
+      {
+        label: "EVERAS, hub Autunno in Barbagia",
+        href: "https://www.everas.it/eventi-sardegna/autunno-in-barbagia",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Mamoiada per le maschere vicine ma non equivalenti; Carnevale e Autunno in Barbagia per il calendario; Nuoro e i costumi per il contesto ISRE.",
+    relatedLinks: [
+      { href: "/cultura-sarda/centro-sardegna/mamoiada", label: "Guida Mamoiada" },
+      { href: "/cultura/tradizioni-sarde", label: "Tradizioni sarde" },
+      { href: "/eventi-sardegna/carnevale-sardegna", label: "Carnevale in Sardegna" },
+      { href: "/eventi-sardegna/autunno-in-barbagia", label: "Autunno in Barbagia" },
+      { href: "/cultura/costumi-sardi", label: "Costumi sardi" },
+      { href: "/cultura-sarda/centro-sardegna/nuoro", label: "Guida Nuoro" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ovodda",

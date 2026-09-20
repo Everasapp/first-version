@@ -58,15 +58,24 @@ export type CultureTownArticle = {
   visitPhoto?: CulturePhoto;
   intro: string;
   history: string[];
+  /** Override dell’H2 Storia; se assente resta «Storia». */
+  historyHeading?: string;
   /** Lingua o varietà locale, quando è documentata. */
   language?: string[];
+  languageHeading?: string;
   traditions: Array<{ title: string; body: string }>;
+  /** Override dell’H2 Tradizioni; se assente resta «Tradizioni». */
+  traditionsHeading?: string;
   /** Mestieri ancora visibili nel comune, senza catalogo di vendita. */
   crafts?: Array<{ title: string; body: string }>;
   visit: Array<{ name: string; body: string }>;
+  /** Override dell’H2 Cosa visitare; se assente resta «Cosa visitare». */
+  visitHeading?: string;
   faqs: Array<{ question: string; answer: string }>;
   sources?: Array<{ label: string; href: string }>;
   relatedLinks?: Array<{ href: string; label: string }>;
+  relatedLinksHeading?: string;
+  relatedLinksIntro?: string;
   publishedAt: string;
 };
 

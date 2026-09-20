@@ -78,7 +78,9 @@ export default function CultureArticleView({
             />
 
             <section className="mt-12">
-              <h2 className="text-2xl font-bold text-slate-900">Storia</h2>
+              <h2 className="text-2xl font-bold text-slate-900">
+                {article.historyHeading ?? "Storia"}
+              </h2>
               {article.history.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 48)}
@@ -91,7 +93,9 @@ export default function CultureArticleView({
 
             {article.language && article.language.length > 0 ? (
               <section className="mt-12">
-                <h2 className="text-2xl font-bold text-slate-900">Lingua</h2>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  {article.languageHeading ?? "Lingua"}
+                </h2>
                 {article.language.map((paragraph) => (
                   <p
                     key={paragraph.slice(0, 48)}
@@ -104,7 +108,9 @@ export default function CultureArticleView({
             ) : null}
 
             <section className="mt-12">
-              <h2 className="text-2xl font-bold text-slate-900">Tradizioni</h2>
+              <h2 className="text-2xl font-bold text-slate-900">
+                {article.traditionsHeading ?? "Tradizioni"}
+              </h2>
               {article.traditionPhoto ? (
                 <div className="mt-6">
                   <ArticleFullPhoto
@@ -150,7 +156,7 @@ export default function CultureArticleView({
 
             <section className="mt-12">
               <h2 className="text-2xl font-bold text-slate-900">
-                Cosa visitare
+                {article.visitHeading ?? "Cosa visitare"}
               </h2>
               {article.visitPhoto ? (
                 <div className="mt-6">
@@ -178,11 +184,11 @@ export default function CultureArticleView({
             {article.relatedLinks && article.relatedLinks.length > 0 ? (
               <section className="mt-12 border-t border-slate-200 pt-10">
                 <h2 className="text-2xl font-bold text-slate-900">
-                  Guide e pagine collegate
+                  {article.relatedLinksHeading ?? "Guide e pagine collegate"}
                 </h2>
                 <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-                  Cultura, mestieri, lingue e calendario: i testi che tengono
-                  questo comune in un contesto più largo.
+                  {article.relatedLinksIntro ??
+                    "Cultura, mestieri, lingue e calendario: i testi che tengono questo comune in un contesto più largo."}
                 </p>
                 <ul className="mt-6 flex flex-wrap gap-3">
                   {article.relatedLinks.map((link) => (

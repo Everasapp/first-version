@@ -400,12 +400,13 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Berchidda",
     province: "Sassari",
     area: "Monteacuto",
-    title: "Berchidda: Time in Jazz e Monte Limbara",
-    h1: "Berchidda",
-    description: "Berchidda in Sardegna: guida al comune del Monteacuto, cosa visitare e eventi in programma su EVERAS.",
+    title: "Berchidda: Time in Jazz e l’enoteca regionale",
+    h1: "Time in Jazz a Berchidda",
+    description:
+      "A Berchidda il festival Time in Jazz, con associazione dal 1997, e il Museo del vino – Enoteca regionale. Musica e cultura enologica del territorio, senza scheda di cantina.",
     hero: {
       src: "/images/cultura/berchidda-panorama.webp",
-      alt: "Veduta di Berchidda in Sardegna",
+      alt: "Panorama di Berchidda, Sassari",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -413,42 +414,77 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Berchidda_-_Panorama_(03).JPG",
       },
     },
-    intro: `Berchidda è paese del Time in Jazz di Paolo Fresu in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Berchidda su EVERAS.`,
+    intro:
+      "Berchidda tiene due istituzioni documentate, distinte. Dal 1988 il festival Time in Jazz nasce qui, con direzione artistica di Paolo Fresu; nel 1997 i volontari e il Comune confluiscono in un’associazione culturale con sede in paese. Nel 1999 Comunità Montana del Monte Acuto e Comune aprono il Museo del vino – Enoteca regionale della Sardegna. La scheda EVERAS su Fresu tiene la biografia del musicista. Qui restano il festival come fatto di Berchidda e il museo del vino come istituto territoriale.",
+    historyHeading: "Un festival nato in paese",
     history: [
-      `Berchidda è un comune italiano di 2 584 abitanti della provincia della Gallura Nord-Est Sardegna. Il paese fa parte della regione storica del Monte Acuto, con una buona parte del suo territorio che era riconducibile alla Baronia detta "Silvas de intro".`,
-      `Oggi Berchidda resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Berchidda, la scheda evento su EVERAS rimanda a questa guida.`,
+      "L’associazione Time in Jazz data il festival al 1988, a Berchidda, e la propria costituzione al dicembre 1997. Fresu, nel testo pubblicato sul sito, indica insieme ai volontari anche il Comune di Berchidda. Da allora l’associazione opera nel paese e nei comuni limitrofi: il festival estivo non è chiuso in una sola piazza. Sede: Sa Casara, sulla strada principale — uffici, spazi per mostre temporanee, archivio e CasArt, la collezione permanente d’arte contemporanea dell’associazione. Edizione, palchi e biglietti: timeinjazz.it e, quando pubblicati, le schede EVERAS. Non li copiamo.",
     ],
+    traditionsHeading: "La cultura del vino",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Il jazz in piazza ogni estate, con concerti anche nei paesi vicini. Le date precise cambiano ogni anno: controlla il calendario eventi a Berchidda su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Monteacuto intorno",
-        body: `Berchidda si legge meglio insieme ai comuni vicini del Monteacuto: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Museo del vino – Enoteca regionale",
+        body: "Il Ministero della Cultura e il Comune lo descrivono come struttura della Comunità Montana del Monte Acuto e del Comune di Berchidda, attiva dal 1999, in via Gian Giorgio Casu. Espone attrezzi delle fasi della produzione (zappe, torchi, tini, tappatrici) e un percorso multimediale sulla cultura enologica. SardegnaCultura e Idese legano il territorio al Vermentino di Gallura DOCG: è un inquadramento di viticoltura, non un listino di cantina. Lo stesso SardegnaCultura indica iniziative collaterali del museo con Time in Jazz: due istituti del paese, non un unico evento. Orari, degustazioni e vendita: gestore, non questa pagina.",
       },
     ],
+    visitHeading: "Due sedi",
     visit: [
       {
-        name: "Centro di Berchidda",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Festival Time in Jazz (estate) e le strade verso il Limbara. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Sa Casara e il festival",
+        body: "Sa Casara è la casa dell’associazione, non un museo statale del jazz. Si visita quando l’associazione apre spazi e mostre; in estate il festival si allarga a chiese, piazze e altri luoghi del Nord Sardegna, come scrive lo stesso organizzatore. JazzAlguer è un altro festival, ad Alghero: hub EVERAS distinto. Il Limbara, ai cui piedi il Ministero colloca Berchidda, è geografia del sito museale, non un itinerario escursionistico di questa scheda.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Berchidda?",
-        answer: "Festival Time in Jazz (estate) e le strade verso il Limbara. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Time in Jazz e JazzAlguer sono lo stesso festival?",
+        answer:
+          "No. Time in Jazz nasce a Berchidda nel 1988 ed è organizzato dall’associazione omonima. JazzAlguer è un altro festival, ad Alghero. Su EVERAS hanno hub e schede distinte.",
       },
       {
-        question: "Dove trovo gli eventi a Berchidda?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Berchidda su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Il Museo del vino è una cantina?",
+        answer:
+          "No. È un museo etnografico con enoteca regionale annessa, istituito da Comunità Montana e Comune nel 1999. Espone attrezzi e cultura enologica del territorio; la vendita e le degustazioni, se attive, appartengono al servizio del museo, non a una cantina sociale in questa scheda.",
+      },
+      {
+        question: "Time in Jazz si tiene solo a Berchidda?",
+        answer:
+          "Il festival nasce a Berchidda e l’associazione ha sede qui. L’organizzatore indica concerti anche in altri luoghi del Nord Sardegna. Il calendario di ogni edizione sta sul sito del festival e, se pubblicato, su EVERAS.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      { label: "Comune di Berchidda", href: "https://www.comune.berchidda.ss.it/" },
+      {
+        label: "Comune di Berchidda, Turismo / Museo del Vino",
+        href: "https://www.comune.berchidda.ss.it/it/topics/58",
+      },
+      {
+        label: "Associazione culturale Time in Jazz",
+        href: "https://timeinjazz.it/associazione-culturale-time-in-jazz/",
+      },
+      { label: "Time in Jazz, Amministrazione trasparente", href: "https://timeinjazz.it/amministrazione-trasparente/" },
+      {
+        label: "Ministero della Cultura, Museo del vino – Enoteca regionale",
+        href: "https://cultura.gov.it/luogo/museo-del-vino-enoteca-regionale-della-sardegna",
+      },
+      {
+        label: "SardegnaCultura, Museo del vino di Berchidda",
+        href: "https://www.sardegnacultura.it/articolo/berchidda-museo-del-vino-enoteca-regionale-della-sardegna",
+      },
+      {
+        label: "Ministero della Cultura, Idese, Museo del Vino",
+        href: "https://idese.cultura.gov.it/place/museo-del-vino/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Fresu nella scheda personaggio; JazzAlguer per non confondere i due festival; la guida alla musica per il quadro isolano, senza ripetere il programma estivo.",
+    relatedLinks: [
+      { href: "/cultura/paolo-fresu-jazz", label: "Paolo Fresu e Berchidda" },
+      { href: "/cultura/musica-canto-poesia-sarda", label: "Musica e poesia" },
+      { href: "/eventi-sardegna/jazzalguer", label: "JazzAlguer" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "bessude",
@@ -3816,12 +3852,13 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Torralba",
     province: "Sassari",
     area: "Meilogu",
-    title: "Torralba: nuraghe Santu Antine e Valle dei Nuraghi",
-    h1: "Torralba",
-    description: "Torralba in Sardegna: guida al comune del Meilogu, cosa visitare e eventi in programma su EVERAS.",
+    title: "Torralba e il nuraghe Santu Antine",
+    h1: "Santu Antine a Torralba",
+    description:
+      "Santu Antine nel comune di Torralba: mastio, bastione trilobato e Museo della Valle dei Nuraghi. Perché il complesso conta, con fonti del Comune e di SardegnaCultura.",
     hero: {
       src: "/images/cultura/torralba-panorama.webp",
-      alt: "Veduta di Torralba in Sardegna",
+      alt: "Panorama di Torralba, Sassari",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -3829,42 +3866,62 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Torralba,_panorama_(02).jpg",
       },
     },
-    intro: `Torralba è casa del nuraghe Santu Antine in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Torralba su EVERAS.`,
+    intro:
+      "Santu Antine sta nel territorio di Torralba, nel Meilogu. Il Comune lo presenta come uno dei siti nuragici più importanti e meglio conservati dell’isola: una torre centrale (mastio) e un bastione trilobato. I reperti di scavo non restano solo sul campo: SardegnaCultura li colloca nel Museo della Valle dei Nuraghi, in paese. La guida EVERAS ai nuraghi inquadra la civiltà; questa scheda tiene il monumento al suo comune.",
+    historyHeading: "Perché il complesso conta",
     history: [
-      `Torralba è un comune del Nord Sardegna, nella zona storica del Meilogu. Come molti paesi dell’isola, tiene insieme memoria agro-pastorale, chiese e un centro che si vive soprattutto nelle feste.`,
-      `Oggi Torralba resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Torralba, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Comune descrive una torre centrale a tre piani, in grandi blocchi di basalto posati a secco, e tre torri sul bastione. La cupola a tholos — massi in cerchi concentrici fino a chiudersi — è la tecnica che lo stesso Comune chiama ingegneria nuragica, non un effetto di cartolina. Oggi il mastio è alto circa 17 metri. Non ripetiamo qui gallerie, feritoie e ricostruzioni di altezza originaria da schede turistiche: servono al gestore del sito. Ciò che rende Torralba il comune di questo patrimonio è il nesso tra monumento, scavo e museo dei reperti.",
     ],
+    traditionsHeading: "I reperti in paese",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `La Valle dei Nuraghi, tra Torralba, Bonorva e Thiesi. Le date precise cambiano ogni anno: controlla il calendario eventi a Torralba su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
-      },
-      {
-        title: "Il Meilogu intorno",
-        body: `Torralba si legge meglio insieme ai comuni vicini del Meilogu: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Museo della Valle dei Nuraghi",
+        body: "In via Carlo Felice, a Torralba. SardegnaCultura lo classifica come museo archeologico ed etnografico: un plastico delle fasi del complesso (Bronzo medio ed età del Ferro), reperti dalle capanne del villaggio, una sezione sul Logudoro-Meilogu. Il museo illustra in particolare le caratteristiche costruttive di Santu Antine. Gestione condivisa con il centro accoglienza del nuraghe. Biglietti e aperture: gestore / Comune, non questa pagina.",
       },
     ],
+    visitHeading: "Visitare Santu Antine",
     visit: [
       {
-        name: "Centro di Torralba",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
-      },
-      {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Nuraghe Santu Antine e il museo della Valle dei Nuraghi. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Il nuraghe",
+        body: "Accesso in auto e centro visitatori: lo scrive il Comune. Il terreno e le scale non sono adatti a ogni mobilità. «Valle dei Nuraghi» è il nome del museo e del paesaggio di monumenti intorno; Santu Antine, come sito, è nel comune di Torralba. Altri nuraghi del Meilogu hanno gestioni proprie. Per cosa è un nuraghe, e cosa non è: guida EVERAS all’archeologia.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Torralba?",
-        answer: "Nuraghe Santu Antine e il museo della Valle dei Nuraghi. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Il museo e il nuraghe sono la stessa visita?",
+        answer:
+          "No. Santu Antine è l’area archeologica nel territorio comunale. Il Museo della Valle dei Nuraghi, in via Carlo Felice, espone reperti e un plastico del monumento. Spesso condividono la gestione: orari e biglietti si confermano sul gestore.",
       },
       {
-        question: "Dove trovo gli eventi a Torralba?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Torralba su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Santu Antine è «nella Valle dei Nuraghi» o a Torralba?",
+        answer:
+          "Il complesso è nel comune di Torralba. «Valle dei Nuraghi del Logudoro-Meilogu» è il nome del museo e il modo in cui si indica il paesaggio di monumenti intorno: non è un altro comune.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      { label: "Comune di Torralba", href: "https://comune.torralba.ss.it/" },
+      {
+        label: "Comune di Torralba, Complesso nuragico Santu Antine",
+        href: "https://comune.torralba.ss.it/luoghi/2760130/complesso-nuragico-santu-antine",
+      },
+      {
+        label: "SardegnaCultura, Museo della Valle dei Nuraghi",
+        href: "https://www.sardegnacultura.it/articolo/torralba-museo-della-valle-dei-nuraghi-del-logudoro-meilogu",
+      },
+      {
+        label: "Nuraghe Santu Antine, sito del gestore",
+        href: "https://www.nuraghesantuantine.it/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Santu Antine è già l’immagine della guida ai nuraghi: lì sta l’inquadramento della civiltà, qui il comune. Barumini per un altro complesso con tutela Unesco, senza classifica.",
+    relatedLinks: [
+      { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "trinita-d-agultu-e-vignola",
