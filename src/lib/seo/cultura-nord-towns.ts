@@ -614,10 +614,10 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Castelsardo",
     province: "Sassari",
     area: "Anglona",
-    title: "Castelsardo: castello, intreccio e Lunissanti",
-    h1: "Castelsardo",
+    title: "Castelsardo, intreccio e Lunissanti",
+    h1: "Castelsardo, intreccio e Lunissanti",
     description:
-      "Castelsardo, Anglona: borgo Doria, Museo dell’intreccio, Lunissanti, cattedrale e Roccia dell’Elefante.",
+      "A Castelsardo il MIM documenta l’intreccio di fibre vegetali; il Lunissanti è il rito della Confraternita di Santa Croce verso Tergu. Non una guida al borgo.",
     hero: {
       src: "/images/cultura/castelsardo-panorama.webp",
       alt: "Castelsardo sul promontorio, con il castello dei Doria sul mare dell’Asinara",
@@ -629,64 +629,42 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
           "https://commons.wikimedia.org/wiki/File:Castelsardo_(01).JPG",
       },
     },
-    visitPhoto: {
-      src: "/images/cultura/castelsardo-elefante.webp",
-      alt: "La Roccia dell’Elefante sulla strada tra Castelsardo e Sedini",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Castelsardo_-_Roccia_dell%27Elefante_(01).jpg",
-      },
-    },
     intro:
-      "Castelsardo è un borgo a picco sul golfo dell’Asinara: il castello dei Doria in cima, le case colorate sotto, il porto in basso. Chi lo cerca vuole il museo dell’intreccio, il Lunissanti e la Roccia dell’Elefante. Questa scheda tiene insieme storia, mestieri e visite, senza trattarlo solo come cartolina da tramonto.",
+      "Castelsardo si legge meglio attraverso due fatti culturali, non attraverso una lista di attrazioni. Il primo è l’intreccio di fibre vegetali: mestiere ancora visibile in paese e documentato dal MIM, Museo dell’intreccio mediterraneo, nella fortezza dei Doria. Il secondo è il Lunissanti: rito di Settimana Santa della Confraternita dell’Oratorio di Santa Croce, con percorso verso l’abbazia di Tergu.",
+    historyHeading: "L’intreccio e il MIM",
     history: [
-      "Nel XII secolo i Doria genovesi alzano la rocca su un promontorio già abitato. Si chiama Castel Genovese, poi Castel Aragonese quando la corona catalano-aragonese la prende nel 1448. I Savoia, nel Settecento, le danno il nome attuale: Castelsardo. Non è un villaggio inventato per i turisti: è una piazzaforte che ha cambiato padrone restando sullo stesso scoglio.",
-      "Dal Cinquecento è sede vescovile (diocesi di Ampurias, oggi Tempio-Ampurias). La concattedrale di Sant’Antonio Abate, con la cupola maiolicata, e le cripte del Maestro di Castelsardo raccontano quella stagione. Sotto le mura restano porto, pescherecci e le cestinaie che lavorano ancora sull’uscio.",
+      "L’intreccio a Castelsardo non è un folklore da vetrina. È un sapere di cestineria — corbule, canestri, crivelli, setacci — legato a usi quotidiani, pesca e campagna, che nelle vie del centro resta pratica delle cestinaie, non solo pezzo da museo. La guida EVERAS all’artigianato colloca Castelsardo tra i territori dell’intreccio; qui il punto è il rapporto tra quel mestiere e questo comune. Non è tessitura a telaio: Samugheo e il MURATS raccontano un’altra filiera.",
+      "SardegnaCultura colloca il MIM nel castello dei Doria (XII secolo), via Marconi: centro di documentazione su prodotti intrecciati con fibre vegetali del Mediterraneo, con nove ambienti su due piani — tecniche al piano inferiore, ambiti d’uso al superiore. In mostra, soprattutto, pezzi della cestineria di Castelsardo; spazio anche a manufatti sardi di vita quotidiana e, tra i pezzi segnalati, «su fassoi» degli stagni di Cabras e Santa Giusta. Orari e biglietti: mimcastelsardo.it. Non li copiamo.",
     ],
-    language: [
-      "A Castelsardo si parla sardo della fascia di Anglona, accanto all’italiano. Non è sassarese di città né gallurese. La guida alle lingue e quella ai territori tengono l’Anglona distinta dal Sassarese e dalla Gallura.",
-      "Nel Lunissanti i cori della Confraternita di Santa Croce restano il luogo in cui la lingua della festa è più visibile. Non inventiamo un «dialetto da cartolina» per il borgo.",
-    ],
+    traditionsHeading: "Il Lunissanti",
     traditions: [
       {
-        title: "Lunissanti",
-        body: "Il lunedì santo è il rito più cercato del paese. La Confraternita di Santa Croce, dal Cinquecento, porta i Misteri da Santa Maria delle Grazie all’abbazia di Tergu, con i cori Miserere, Stabat e Jesus. La sera la Notti Santa spegne le luci del borgo. Non è uno spettacolo: è un pellegrinaggio. Arriva presto, lascia l’auto in basso, cammina.",
+        title: "Confraternita, Misteri, Tergu",
+        body: "SardegnaCultura descrive il Lunissanti come apertura della Settimana Santa (Chida Santa) a Castelsardo: il lunedì successivo alla Domenica delle Palme. Prima dell’alba i membri della Confraternita dell’Oratorio di Santa Croce, in tunica e cappuccio bianchi, si muovono verso Santa Maria di Tergu. Dodici Apostoli portano i Misteri; tre cori della stessa confraternita (Miserere, Stabat, Jesus) cantano a quattro voci. Dopo la messa del mattino la processione percorre circa otto chilometri fino all’abbazia di Nostra Signora di Tergu, dove i Misteri sono offerti alla Madonna; nel pomeriggio il corteo rientra alla chiesa di Santa Maria in paese. La sera, la Notti Santa riporta Misteri e cori nel centro storico. Non è un carnevale di maschere: Ottana e Mamoiada restano un altro calendario. Non è uno spettacolo da brochure: è un rito di confraternita. Date e orari dell’edizione: confraternita e fonti locali; su EVERAS, quando pubblicati.",
       },
     ],
-    crafts: [
-      {
-        title: "Intreccio",
-        body: "L’intreccio non è folklore da vetrina: è un sapere passato da pescatori e contadini, oggi dalle cestinaie che usano palma nana, fieno marino e rafia. Corbule, canestri, crivelli, nasse. Lo vedi nelle vie del centro, non solo in museo. Il MIM, Museo dell’intreccio mediterraneo, nel castello dei Doria, lo mette in fila con pezzi di tutto il Mediterraneo, compreso su fassoi degli stagni oristanesi. Orari: mimcastelsardo.it. La guida all’artigianato colloca Castelsardo tra i territori dell’intreccio, senza catalogo di vendita.",
-      },
-    ],
+    visitHeading: "Il paese sotto il castello",
     visit: [
       {
-        name: "Castello dei Doria e Museo dell’intreccio",
-        body: "Il MIM è dentro la fortezza: nove sale su due piani, terrazze sul golfo. Orari e biglietti sul sito del museo (mimcastelsardo.it). Dagli spalti, con il tempo pulito, si arriva a vedere l’Asinara. Accanto, il percorso verso il Museo delle origini genovesi e le cripte della cattedrale.",
-      },
-      {
-        name: "Cattedrale, centro e Roccia dell’Elefante",
-        body: "Sant’Antonio Abate è gotico-catalano e rinascimentale, con la pala del Maestro di Castelsardo. Santa Maria delle Grazie custodisce il Cristo nero del Lunissanti. Fuori paese, al km 4 della SS134 verso Sedini, la Roccia dell’Elefante è una trachite a forma di pachiderma, con domus de janas scavate nel corpo. Fermati con attenzione: la strada è stretta.",
+        name: "Fortezza e tessuto urbano",
+        body: "Il castello dei Doria non è qui un itinerario panoramico: è la sede del MIM. Sotto la rocca, il tessuto storico tiene botteghe di intreccio e le chiese del rito — Santa Maria come nodo del rientro dei Misteri. Non elenchiamo cattedrale, spiagge né la Roccia dell’Elefante: non sono il nucleo di questa scheda. Samugheo per la tessitura; Ottana e Mamoiada per i carnevali di maschere; la guida ai mestieri e quella alle tradizioni per il quadro isolano.",
       },
     ],
     faqs: [
       {
-        question: "Cosa vedere a Castelsardo in un giorno?",
+        question: "Che cos’è il Museo dell’intreccio mediterraneo?",
         answer:
-          "Mattina in salita: cattedrale, vie del centro, cestinaie. Poi il castello e il museo dell’intreccio. Nel pomeriggio la Roccia dell’Elefante, sulla strada per Sedini.",
+          "È il museo etnografico nel castello dei Doria a Castelsardo. SardegnaCultura lo presenta come centro di documentazione sull’intreccio di fibre vegetali del Mediterraneo, con forte presenza della cestineria locale. Sede e aperture: mimcastelsardo.it.",
       },
       {
-        question: "Quando è il Lunissanti?",
+        question: "Che cos’è il Lunissanti di Castelsardo?",
         answer:
-          "Il lunedì santo, la settimana prima di Pasqua. Date e orari li pubblica la Confraternita ogni anno: il percorso tocca Santa Maria e Tergu.",
+          "È il rito che apre la Settimana Santa in paese: lunedì dopo le Palme, organizzato dalla Confraternita dell’Oratorio di Santa Croce, con Misteri, cori e percorso verso l’abbazia di Tergu. Non è un carnevale e non è «la» Settimana Santa di tutta l’isola.",
       },
       {
-        question: "Si visitano le botteghe di intreccio?",
+        question: "Qual è il rapporto tra il Lunissanti e Tergu?",
         answer:
-          "Alcune cestinaie lavorano sull’uscio, in centro. Non pubblichiamo orari: si chiede sul posto o al Comune. Il MIM nel castello è il posto certo per vedere i pezzi con didascalie.",
+          "Il percorso del Lunissanti collega Castelsardo all’abbazia di Nostra Signora di Tergu: lì, secondo SardegnaCultura, i Misteri sono offerti alla Madonna prima del rientro in paese. Tergu non «ospita» un festival generico: è tappa del rito di questa confraternita.",
       },
     ],
     sources: [
@@ -694,17 +672,31 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
         label: "Comune di Castelsardo",
         href: "https://www.comune.castelsardo.ss.it/",
       },
+      {
+        label: "MIM — Museo dell’intreccio mediterraneo",
+        href: "https://www.mimcastelsardo.it/",
+      },
+      {
+        label: "SardegnaCultura, Museo dell’intreccio mediterraneo",
+        href: "https://www.sardegnacultura.it/index.php/articolo/castelsardo-museo-dellintreccio-mediterraneo",
+      },
+      {
+        label: "SardegnaCultura, Settimana Santa a Castelsardo",
+        href: "https://www.sardegnacultura.it/articolo/settimana-santa-a-castelsardo",
+      },
     ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Samugheo per la tessitura, non per l’intreccio; Ottana e Mamoiada per i carnevali di maschere, non per il Lunissanti; artigianato e tradizioni per il quadro isolano senza rifare questa scheda.",
     relatedLinks: [
-      { href: "/cultura", label: "Cultura sarda" },
-      { href: "/cultura/artigianato-sardo", label: "Artigianato: intreccio" },
-      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
-      { href: "/cultura/tradizioni-sarde", label: "Feste e tradizioni" },
-      { href: "/cultura/territori-sardegna", label: "Territori: Anglona" },
+      { href: "/cultura/artigianato-sardo", label: "Artigianato sardo" },
       { href: "/cultura/musei-sardegna", label: "Musei" },
-      { href: "/pubblica", label: "Pubblica un evento" },
+      { href: "/cultura/tradizioni-sarde", label: "Feste e tradizioni" },
+      { href: "/cultura-sarda/sud-sardegna/samugheo", label: "Guida Samugheo" },
+      { href: "/cultura-sarda/centro-sardegna/ottana", label: "Guida Ottana" },
+      { href: "/cultura-sarda/centro-sardegna/mamoiada", label: "Guida Mamoiada" },
     ],
-    publishedAt: "2026-09-11",
+    publishedAt: "2026-09-20",
   },
   {
     slug: "aggius",

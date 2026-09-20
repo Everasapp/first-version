@@ -4069,10 +4069,10 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Barumini",
     province: "Sud Sardegna",
     area: "Marmilla",
-    title: "Barumini: Su Nuraxi Unesco e Casa Zapata",
-    h1: "Barumini",
+    title: "Su Nuraxi, Unesco e Barumini",
+    h1: "Su Nuraxi, Unesco e Barumini",
     description:
-      "Barumini, Marmilla: Su Nuraxi Patrimonio mondiale Unesco, Casa Zapata e Centro Giovanni Lilliu.",
+      "A Barumini Su Nuraxi è Patrimonio mondiale Unesco dal 1997: scavi di Giovanni Lilliu e sistema Fondazione con Casa Zapata e Centro Lilliu.",
     hero: {
       src: "/images/cultura/barumini-panorama.webp",
       alt: "Il complesso nuragico Su Nuraxi a Barumini, con torre centrale e villaggio",
@@ -4085,45 +4085,40 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
       },
     },
     intro:
-      "Barumini è il paese di Su Nuraxi, iscritto Unesco nel 1997. Non è un parco a tema: è un comune della Marmilla con un nuraghe complesso scavato da Giovanni Lilliu e gestito dalla Fondazione Barumini. Questa scheda tiene sito, Casa Zapata e paese, senza inventare orari.",
+      "Barumini è il comune della Marmilla in cui Su Nuraxi — nuraghe complesso con villaggio — è iscritto nella Lista del patrimonio mondiale Unesco dal 1997. Gli scavi di Giovanni Lilliu, dagli anni Cinquanta, ne hanno fatto il caso più noto della civiltà nuragica; la Fondazione Barumini gestisce oggi il sito insieme a Casa Zapata e al Centro Giovanni Lilliu. Questa scheda racconta quel sistema culturale, non un monumento isolato e non un itinerario turistico.",
+    historyHeading: "Su Nuraxi e l’Unesco",
     history: [
-      "Su Nuraxi è un nuraghe complesso con villaggio: torre centrale, torri laterali, corti, capanne. Gli scavi di Giovanni Lilliu, dagli anni Cinquanta, ne hanno fatto il caso più noto della civiltà nuragica. L’iscrizione Unesco è del 1997: Patrimonio mondiale, un elenco diverso da quello immateriale dei Candelieri o del canto a tenore.",
-      "Il paese sta in Marmilla, tra colline di basalto. Casa Zapata, palazzo cinquecentesco della famiglia aragonese, sorge sopra un altro nuraghe — Nuraxi ’e Cresia — visibile da passerelle. Il Centro Giovanni Lilliu tiene mostre sullo scavo. La Fondazione Barumini gestisce i tre luoghi; biglietti e fasce di visita stanno sul loro sito, non qui.",
+      "Su Nuraxi è un nuraghe complesso con villaggio: torre centrale, torri laterali, corti, capanne, a ridosso del paese. L’iscrizione Unesco del 1997 lo colloca nella Lista del patrimonio mondiale — un piano diverso dagli elenchi immateriali dei Candelieri o del canto a tenore. Altri nuraghi dell’isola hanno tutele nazionali o regionali diverse: qui conta il riconoscimento mondiale legato a questo sito. La guida EVERAS ai nuraghi inquadra la civiltà e le tipologie; qui resta perché Barumini è il comune di quel caso.",
     ],
-    language: [
-      "Si parla sardo campidanese della Marmilla, accanto all’italiano. È la stessa grande area linguistica di Cagliari, non il logudorese del centro dell’isola. La guida alle lingue tiene le varietà distinte. Non pubblichiamo conteggi di parlanti.",
-    ],
+    traditionsHeading: "Lilliu e il sistema culturale",
     traditions: [
       {
-        title: "Sito, mostre, calendario di paese",
-        body: "La vita pubblica visibile è quella del patrimonio: visite guidate a Su Nuraxi, mostre al Centro Lilliu. Sagre e patronali, quando Comune e Pro Loco le pubblicano, stanno nel calendario EVERAS. Non costruiamo una «festa-simbolo» che le fonti non danno come tale. Un nuraghe non è una sagra.",
+        title: "Dallo scavo alla Fondazione",
+        body: "Gli scavi di Giovanni Lilliu, dagli anni Cinquanta, legano la ricerca archeologica a questo territorio: non apriamo qui una biografia dell’archeologo, solo il rapporto con Barumini. Casa Zapata, palazzo cinquecentesco della famiglia aragonese in paese, sorge sopra un altro nuraghe — Nuraxi ’e Cresia — visibile da passerelle, con sezioni di reperti. Il Centro Giovanni Lilliu tiene mostre sullo scavo. La Fondazione Barumini Sistema Cultura gestisce i tre luoghi; aperture e biglietti stanno su fondazionebarumini.it, non in questa pagina.",
       },
     ],
+    visitHeading: "Barumini e la Marmilla",
     visit: [
       {
-        name: "Su Nuraxi",
-        body: "Area archeologica a ridosso del paese. La Fondazione indica visita guidata, di solito a gruppi e a orari fissi. Non è un sentiero libero: si entra con biglietto. In caso di maltempo il gestore può chiudere per sicurezza. Conferma su fondazionebarumini.it prima di partire. La guida ai nuraghi colloca Su Nuraxi tra i complessi, distinto da tombe dei giganti e domus de janas.",
-      },
-      {
-        name: "Casa Zapata e Centro Giovanni Lilliu",
-        body: "In paese. Casa Zapata unisce palazzo, nuraghe sotto il pavimento e sezioni di reperti. Il Centro Lilliu racconta lo scavo e tiene mostre temporanee. Spesso un unico biglietto copre i tre siti: si verifica sulla Fondazione. Il centro del comune è piccolo: chiese e piazza, non un secondo itinerario turistico.",
+        name: "Il paese come contesto",
+        body: "Il paese sta in Marmilla, tra colline di basalto: contesto del sito, non una seconda guida all’area. Il centro comunale è piccolo; sagre e patronali, quando Comune e Pro Loco le pubblicano, restano nel calendario EVERAS — un nuraghe non è una sagra. Per altri rapporti territorio–archeologia su EVERAS: Torralba (Santu Antine), Dorgali (Serra Orrios e museo), la guida ai nuraghi e quella ai musei.",
       },
     ],
     faqs: [
       {
-        question: "Su Nuraxi è l’unico nuraghe Unesco?",
+        question: "Perché Su Nuraxi è patrimonio Unesco?",
         answer:
           "È il sito nuragico iscritto nella Lista del patrimonio mondiale (1997). Altri nuraghi hanno tutele diverse. Candelieri e canto a tenore stanno su elenchi Unesco immateriali, un altro piano.",
       },
       {
-        question: "Casa Zapata è lo stesso sito di Su Nuraxi?",
+        question: "Qual è il rapporto tra Giovanni Lilliu e Barumini?",
         answer:
-          "No. Su Nuraxi è l’area a cielo aperto. Casa Zapata è il palazzo in paese, sopra Nuraxi ’e Cresia. Si visitano insieme se il biglietto della Fondazione lo prevede.",
+          "Lilliu ha diretto gli scavi di Su Nuraxi dagli anni Cinquanta, rendendo il complesso il caso più noto della civiltà nuragica. A Barumini il Centro a lui intitolato e la Fondazione tengono viva quella memoria di ricerca: non è una scheda biografica autonoma.",
       },
       {
-        question: "Dove confermo orari e prezzi?",
+        question: "Che cosa comprende il sistema culturale di Barumini?",
         answer:
-          "Sul sito della Fondazione Barumini. Questa guida non copia listini: cambiano per stagione e sicurezza.",
+          "Su Nuraxi (area a cielo aperto), Casa Zapata in paese sopra Nuraxi ’e Cresia, e il Centro Giovanni Lilliu. Li gestisce la Fondazione Barumini: non sono lo stesso ingresso, ma un sistema collegato al comune.",
       },
     ],
     sources: [
@@ -4136,15 +4131,16 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         href: "https://www.fondazionebarumini.it/",
       },
     ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "La guida ai nuraghi per il fenomeno isolano; Torralba e Dorgali per altri nessi territorio–archeologia, senza classifica tra siti.",
     relatedLinks: [
-      { href: "/cultura", label: "Cultura sarda" },
       { href: "/cultura/nuraghi-archeologia-sardegna", label: "Nuraghi e archeologia" },
       { href: "/cultura/musei-sardegna", label: "Musei" },
-      { href: "/cultura/storia-sardegna", label: "Storia della Sardegna" },
-      { href: "/cultura/lingue-sardegna", label: "Lingue della Sardegna" },
-      { href: "/pubblica", label: "Pubblica un evento" },
+      { href: "/cultura-sarda/nord-sardegna/torralba", label: "Guida Torralba" },
+      { href: "/cultura-sarda/centro-sardegna/dorgali", label: "Guida Dorgali" },
     ],
-    publishedAt: "2026-09-14",
+    publishedAt: "2026-09-20",
   },
   {
     slug: "villacidro",
