@@ -373,12 +373,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Bitti",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Bitti: storia, tradizioni e cosa visitare",
+    title: "Bitti: canto a tenore e patrimonio culturale",
     h1: "Bitti",
-    description: "Bitti in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Bitti e il canto a tenore: patrimonio musicale della Sardegna, quattro voci tradizionali e Museo Multimediale del Canto a Tenore.",
     hero: {
       src: "/images/cultura/bitti-panorama.webp",
-      alt: "Veduta di Bitti in Sardegna",
+      alt: "Panorama di Bitti in Barbagia, paese legato al canto a tenore",
       credit: {
         author: "The original uploader was Azzuffu at Italian Wikipedia.",
         license: "CC BY-SA 2.0",
@@ -386,42 +387,90 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Bitti_panorama_da_gurumuru.JPG",
       },
     },
-    intro: `Bitti è comune della Barbagia in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Bitti su EVERAS.`,
+    intro:
+      "Bitti si legge attraverso il canto a tenore. Nel paese ha sede il Museo Multimediale del Canto a Tenore, istituito dal Comune: un punto di documentazione e ascolto di una pratica musicale pastorale che riguarda molte comunità della Sardegna centrale, non solo questo comune.",
+    historyHeading: "Canto a tenore e vita di comunità",
     history: [
-      `Bitti è un comune italiano di 2 451 abitanti tra i più conosciuti della provincia di Nuoro nella subregione storica della Barbagia.`,
-      `Oggi Bitti resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Bitti, la scheda evento su EVERAS rimanda a questa guida.`,
+      "L’UNESCO descrive il canto a tenore come forma di canto polifonico nata nella cultura pastorale della Sardegna, praticata soprattutto in Barbagia e in altre aree dell’interno. Non è soltanto uno spettacolo da palco: è una pratica immersa nella vita quotidiana e nelle occasioni sociali — bar (su zilleri), matrimoni, tosatura, feste religiose, carnevale barbaricino — come documenta la scheda ufficiale.",
+      "Il repertorio è ampio e varia da zona a zona; i testi possono essere antichi o contemporanei. UNESCO segnala anche la vulnerabilità della pratica ai cambiamenti socio-economici e alle performance pensate per il turismo. Qui non inventiamo origini cronologiche né leggende di fondazione presentate come storia.",
     ],
+    traditionsHeading: "Le quattro voci e il museo",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Barbagia. Le date precise cambiano ogni anno: controlla il calendario eventi a Bitti su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Bassu, contra, mesu oche, oche",
+        body: "Il tenore è un canto a quattro voci maschili, in cerchio. SardegnaCultura indica bassu, contra, mesu oche e oche; UNESCO usa anche le forme boche e mesu boche. Una voce solista canta prosa o poesia; le altre formano il coro. Il timbro gutturale di bassu e contra è uno dei tratti distintivi citati dalle fonti. Non è un fenomeno esclusivo di Bitti: è tradizione sarda e pastorale più ampia, di cui il paese è un luogo particolarmente riconoscibile per la presenza del museo.",
       },
       {
-        title: "La Barbagia intorno",
-        body: `Bitti si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Museo Multimediale del Canto a Tenore",
+        body: "SardegnaCultura lo presenta come il primo museo sardo dedicato al canto a tenore: istituito nell’estate 2005 dal Comune di Bitti, nell’antico quartiere di Monte Mannu (via Mameli 52), in un’ala del Museo della Civiltà Pastorale e Contadina. Obiettivo dichiarato: studio, documentazione e valorizzazione dei canti a tenore dell’isola, con materiali sonori, collaborazioni con paesi in cui la pratica è viva, e installazioni multimediali — tra cui quattro totem in circolo, come i cantori, per ascoltare le voci insieme o separate. Orari e biglietti non li fissiamo qui: vanno confermati sulle pagine ufficiali.",
+      },
+      {
+        title: "Il riconoscimento Unesco",
+        body: "Il riconoscimento riguarda il Canto a tenore, Sardinian pastoral songs — la pratica culturale nel suo insieme — non il comune di Bitti come località iscritta. Proclamazione nel 2005; iscrizione nella Representative List of the Intangible Cultural Heritage of Humanity nel 2008. È patrimonio culturale immateriale, un piano diverso dal Patrimonio mondiale di siti archeologici come Su Nuraxi.",
       },
     ],
+    visitHeading: "Cosa cercare a Bitti",
     visit: [
       {
-        name: "Centro di Bitti",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Il museo e il paese",
+        body: "Chi cerca la cultura di Bitti parte dal Museo Multimediale del Canto a Tenore: ascolto, documentazione e rapporto tra musica, pastorizia e comunità. Il museo sta nel tessuto del paese, a Monte Mannu, vicino alla parrocchiale: non è un padiglione isolato da theme park.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Bitti e il territorio comunale. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Nella rete della musica sarda",
+        body: "Su EVERAS la guida a musica, canto e poesia colloca il tenore nel quadro isolano, distinto dal canto a chitarra e da altri repertori. Orgosolo, con Sonos, documenta suoni e tenore in un altro paese della Barbagia: non è un doppione di Bitti, è un altro punto della stessa pratica. Questa scheda resta su Bitti e sul suo museo.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Bitti?",
-        answer: "il centro di Bitti e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è il canto a tenore?",
+        answer:
+          "È una forma di canto polifonico maschile a quattro voci, legata alla cultura pastorale della Sardegna. Si esegue in cerchio; non è soltanto musica da concerto, ma pratica di comunità documentata dall’UNESCO.",
       },
       {
-        question: "Dove trovo gli eventi a Bitti?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Bitti su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quali sono le quattro voci del canto a tenore?",
+        answer:
+          "Bassu, contra, mesu oche (o mesu boche) e oche (o boche), secondo le denominazioni usate da SardegnaCultura e UNESCO. Una voce guida; le altre accompagnano.",
+      },
+      {
+        question: "Perché il canto a tenore è riconosciuto dall’UNESCO?",
+        answer:
+          "Come patrimonio culturale immateriale: proclamato nel 2005 e iscritto nella Lista rappresentativa nel 2008. Il riconoscimento riguarda la pratica «Canto a tenore, Sardinian pastoral songs», non un singolo comune.",
+      },
+      {
+        question: "Che ruolo ha Bitti nella tradizione del canto a tenore?",
+        answer:
+          "Bitti ospita il Museo Multimediale del Canto a Tenore, istituito dal Comune nel 2005: luogo di studio, documentazione e valorizzazione. Il tenore resta una tradizione più ampia della sola Barbagia bitiese.",
+      },
+      {
+        question: "Cosa racconta il Museo Multimediale del Canto a Tenore?",
+        answer:
+          "Materiale sonoro di complessi vocali, installazioni sulle quattro voci, ascolti da varie zone dell’isola e spazi per approfondire la polifonia della Sardegna centrale. Dettagli aggiornati di accesso: fonti ufficiali.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      {
+        label: "UNESCO — Canto a tenore, Sardinian pastoral songs",
+        href: "https://ich.unesco.org/en/RL/canto-a-tenore-sardinian-pastoral-songs-00165",
+      },
+      {
+        label: "SardegnaCultura — Museo Multimediale del Canto a Tenore",
+        href: "https://www.sardegnacultura.it/articolo/bitti-museo-multimediale-del-canto-a-tenore",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "La guida alla musica colloca il tenore nel quadro isolano; Orgosolo documenta suoni e canto in un altro paese della Barbagia, senza sostituire Bitti.",
+    relatedLinks: [
+      {
+        href: "/cultura/musica-canto-poesia-sarda",
+        label: "Musica, canto e poesia",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/orgosolo",
+        label: "Guida Orgosolo",
+      },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "bosa",
@@ -1520,12 +1569,13 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Oliena",
     province: "Nuoro",
     area: "Barbagia",
-    title: "Oliena: Cannonau e Supramonte",
+    title: "Oliena: Supramonte, archeologia e tradizioni",
     h1: "Oliena",
-    description: "Oliena in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Oliena tra Supramonte e Valle di Lanaittu: archeologia nuragica e paleolitica, patrimonio del paese e tradizioni della comunità.",
     hero: {
       src: "/images/cultura/oliena-panorama.webp",
-      alt: "Veduta di Oliena in Sardegna",
+      alt: "Panorama di Oliena ai piedi del Supramonte",
       credit: {
         author: "Olianese",
         license: "Public domain",
@@ -1533,42 +1583,102 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Oliena_dal_Monte_Ortobene.jpg",
       },
     },
-    intro: `Oliena è paese del Cannonau ai piedi del Corrasi in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Oliena su EVERAS.`,
+    intro:
+      "Oliena si legge nel rapporto tra paese e paesaggio calcareo del Supramonte. Monte Corrasi, la Valle di Lanaittu e una lunga presenza umana — dalla Grotta Corbeddu a Sa Sedda ’e Sos Carros — tengono insieme ambiente, archeologia e comunità. Non è una guida al trekking: qui conta come il territorio e le pratiche culturali si sono intrecciati.",
+    historyHeading: "Oliena e il Supramonte",
     history: [
-      `Oliena è un comune italiano di 6 364 abitanti della provincia di Nuoro in Sardegna.`,
-      `Oggi Oliena resta un punto della directory Cultura sarda del Centro: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Oliena, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaTurismo colloca Monte Corrasi nel territorio di Oliena: massiccio calcareo-dolomitico, cima alta del Supramonte, con pareti, pianori e un paesaggio che scende verso olivi, viti e mandorli a valle. Il paese sta ai piedi di questi rilievi; il Supramonte di Oliena, con valli e doline, è il quadro geografico in cui si capisce l’insediamento, non un elenco di sentieri.",
+      "La Valle di Lanaittu — nella stessa area calcarea — concentra testimonianze archeologiche e ambientali legate a Oliena. È il passaggio naturale tra il paese e la profondità del Supramonte: qui si leggono frequentazioni antiche e architetture nuragiche senza trasformare la valle in itinerario outdoor.",
     ],
+    traditionsHeading: "Lanaittu, Sa Sedda, paese",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Vino, festa e Barbagia di Ollolai. Le date precise cambiano ogni anno: controlla il calendario eventi ad Oliena su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Grotta Corbeddu",
+        body: "Nella Valle di Lanaittu, SardegnaCultura indica la Grotta Corbeddu come sito da cui provengono le prime attestazioni archeologiche della presenza umana in Sardegna riferibili al Paleolitico superiore, con frequentazioni successive (tra cui fasi neolitiche). Restiamo su questa formulazione istituzionale, senza assolutizzazioni sul «primo» abitante dell’isola. I dettagli di scavo e datazione stanno sulla scheda SardegnaCultura.",
       },
       {
-        title: "La Barbagia intorno",
-        body: `Oliena si legge meglio insieme ai comuni vicini della Barbagia: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.`,
+        title: "Sa Sedda ’e Sos Carros",
+        body: "Villaggio nuragico in territorio comunale di Oliena, nella Valle di Lanaittu, tra Bronzo Recente e prima età del Ferro. SardegnaCultura lo colloca tra le architetture legate al culto e alla gestione dell’acqua: nella «rotonda» con bacile centrale, decorata da teste di muflone e/o ariete da cui zampillava l’acqua, la struttura cultuale dialoga con il villaggio sottostante. È uno dei casi più noti di questa tipologia sull’isola — non un nuraghe isolato, ma un complesso di villaggio e santuario.",
+      },
+      {
+        title: "Tradizioni e patrimonio del centro",
+        body: "Nel paese, SardegnaCultura documenta il complesso dell’ex convento gesuitico e la chiesa di Sant’Ignazio di Loyola (fine Seicento, assetto settecentesco), con opere e manufatti conservati nel complesso: un segno del patrimonio storico-religioso urbano accanto al paesaggio. SardegnaTurismo ricorda anche produzioni locali — tra cui il cannonau detto Nepente — e manifatture tradizionali: qui restano come fatti di tradizione produttiva, non come guida enogastronomica o commerciale. Autunno in Barbagia / Cortes Apertas, quando Oliena vi partecipa, è una manifestazione territoriale di più comuni: le date stanno sull’hub EVERAS, non in questa scheda.",
       },
     ],
+    visitHeading: "Cosa cercare a Oliena",
     visit: [
       {
-        name: "Centro di Oliena",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Nuclei culturali",
+        body: "Centro storico e Sant’Ignazio; Monte Corrasi e il Supramonte come paesaggio culturale; Valle di Lanaittu con Grotta Corbeddu e Sa Sedda ’e Sos Carros. Orari e accessi ai siti archeologici si confermano sulle pagine ufficiali: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro, cantine e porte sul Supramonte. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Intorno, senza confondere i confini",
+        body: "Dorgali e Orgosolo condividono l’orizzonte del Supramonte e della Barbagia, ciascuno con schede proprie su EVERAS. Il villaggio di Tiscali, spesso citato nelle guide alla valle, appartiene al territorio di Dorgali nel contesto del Supramonte di confine: non lo attribuiamo a Oliena. La guida ai nuraghi colloca Sa Sedda nel quadro isolano senza rifare qui il catalogo dei siti.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Oliena?",
-        answer: "Centro, cantine e porte sul Supramonte. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Oliena è legata al Supramonte?",
+        answer:
+          "Perché il paese sta ai piedi del massiccio calcareo di Monte Corrasi, nel Supramonte di Oliena: paesaggio e insediamento si leggono insieme, come indicano le fonti territoriali regionali.",
       },
       {
-        question: "Dove trovo gli eventi ad Oliena?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Oliena su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cos’è la Valle di Lanaittu?",
+        answer:
+          "Un’area calcarea del Supramonte di Oliena in cui si concentrano testimonianze archeologiche e ambientali, tra cui la Grotta Corbeddu e il villaggio nuragico Sa Sedda ’e Sos Carros.",
+      },
+      {
+        question: "Che cosa rende importante Sa Sedda ’e Sos Carros?",
+        answer:
+          "È un villaggio nuragico (Bronzo Recente–prima età del Ferro) con una rotonda cultuale legata all’acqua — bacile centrale e decorazioni a testa di muflone/ariete — tra i più noti esempi di questa tipologia in Sardegna.",
+      },
+      {
+        question: "Che cosa è stato trovato nella Grotta Corbeddu?",
+        answer:
+          "Secondo SardegnaCultura, le prime attestazioni archeologiche della presenza umana in Sardegna riferibili al Paleolitico superiore, con frequentazioni successive. È un orizzonte documentato in contesto archeologico, non una formula assoluta sull’origine dell’insediamento umano sull’isola.",
+      },
+      {
+        question: "Autunno in Barbagia è una manifestazione esclusiva di Oliena?",
+        answer:
+          "No. È un circuito territoriale (Cortes Apertas) che coinvolge più comuni della Barbagia. Oliena può esserne tappa; il calendario dell’edizione sta sull’hub EVERAS Autunno in Barbagia.",
       },
     ],
-    publishedAt: "2026-09-13",
+    sources: [
+      {
+        label: "SardegnaCultura — Sa Sedda ’e Sos Carros",
+        href: "https://www.sardegnacultura.it/articolo/oliena-villaggio-nuragico-sa-sedda-e-sos-carros",
+      },
+      {
+        label: "SardegnaCultura — Grotta Corbeddu",
+        href: "https://www.sardegnacultura.it/index.php/articolo/oliena-grotta-corbeddu",
+      },
+      {
+        label: "SardegnaCultura — Chiesa di Sant’Ignazio di Loyola",
+        href: "https://www.sardegnacultura.it/articolo/oliena-chiesa-di-santignazio-di-loyola",
+      },
+      {
+        label: "SardegnaTurismo — Monte Corrasi",
+        href: "https://www.sardegnaturismo.it/it/esplora/monte-corrasi",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "I nuraghi nel quadro isolano; Dorgali per il Supramonte di confine; Autunno in Barbagia per il circuito delle Cortes, non come festa solo di Oliena.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      {
+        href: "/cultura-sarda/centro-sardegna/dorgali",
+        label: "Guida Dorgali",
+      },
+      {
+        href: "/eventi-sardegna/autunno-in-barbagia",
+        label: "Hub Autunno in Barbagia",
+      },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ollolai",

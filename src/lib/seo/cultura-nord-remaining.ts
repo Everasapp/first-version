@@ -176,9 +176,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Ardara",
     province: "Sassari",
     area: "Logudoro",
-    title: "Ardara: basilica di San Pietro e capitale giudicale",
+    title: "Ardara: Santa Maria del Regno",
     h1: "Ardara",
-    description: "Ardara in Sardegna: guida al comune del Logudoro, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Ardara e Santa Maria del Regno: cappella palatina dei giudici di Torres, basalto e retablo di Giovanni Muru.",
     hero: {
       src: "/images/cultura/ardara-panorama.webp",
       alt: "Veduta di Ardara in Sardegna",
@@ -189,42 +190,86 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Ardara_panorama.jpg",
       },
     },
-    intro: `Ardara è antica capitale del giudicato di Torres in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Ardara su EVERAS.`,
+    intro:
+      "A Ardara il fatto culturale è Santa Maria del Regno: chiesa in pietra scura sul pianoro vulcanico, un tempo cappella palatina annessa al castello dei giudici di Torres. Qui contano monumento, giuramento giudicale e retablo cinquecentesco — non una storia generica del Giudicato né monumenti di altri comuni.",
+    historyHeading: "Cappella palatina e consacrazione",
     history: [
-      `Ardara è un comune italiano di 680 abitanti della città metropolitana di Sassari, nell'antica regione del Logudoro.`,
-      `Oggi Ardara resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Ardara, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura e Idese collocano Santa Maria del Regno nel centro di Ardara, a breve distanza dai ruderi del castello giudicale. Fu cappella palatina: i sovrani del regno di Torres prestavano giuramento al suo altare quando assumevano la carica. Idese attribuisce la costruzione a Donna Giorgia, sorella del giudice Gonnario Comita, con maestranze di ambito pisano.",
+      "L’edificio, a tre navate, fu iniziato nell’XI secolo e concluso nel 1107: l’epigrafe di consacrazione dell’altare maggiore riporta la data del 7 maggio 1107. Le fonti istituzionali descrivono murature in basalto o trachite nera — pietra vulcanica scura — e un’architettura essenziale, tipica del primo romanico isolano: facciata a cinque specchi, portale e bifora, campanile incompleto.",
     ],
+    traditionsHeading: "Retablo e memoria giudicale",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Memoria giudicale nel Logudoro. Le date precise cambiano ogni anno: controlla il calendario eventi ad Ardara su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Il Retablo maggiore",
+        body: "Nell’abside Idese documenta il Retablo maggiore di Ardara, polittico del 1515 di Giovanni Muru: trentuno tavole con scene della vita di Maria, santi e profeti, e al centro la scultura lignea di Nostra Signora del Regno. Il contrasto tra pietra scura e oro del polittico è parte del carattere del monumento. Esiste anche un retablo minore con scene della Passione.",
       },
       {
-        title: "Il Logudoro intorno",
-        body: `Ardara si legge meglio insieme ai comuni vicini del Logudoro: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Ardara, non Saccargia né Bisarcio",
+        body: "Questa scheda resta su Santa Maria del Regno. La Basilica di Saccargia appartiene a Codrongianos; Sant’Antioco di Bisarcio è nel territorio di Ozieri. Eventuali collegamenti giudicali o di pellegrinaggio servono da contesto, non da attribuzione di quei monumenti ad Ardara.",
       },
     ],
+    visitHeading: "Nel paese",
     visit: [
       {
-        name: "Centro di Ardara",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Chiesa e castello",
+        body: "La chiesa sorge all’ingresso dell’abitato; i ruderi del castello giudicale restano nelle vicinanze. Modalità di accesso e orari si confermano sul Comune e sulle schede istituzionali: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Basilica di San Pietro di Ardara. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Contesto Logudoro",
+        body: "Su EVERAS, Codrongianos e Porto Torres documentano altri snodi del romanico e del Giudicato di Torres. Ardara resta il nodo cappella palatina + retablo.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Ardara?",
-        answer: "Basilica di San Pietro di Ardara. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Santa Maria del Regno è legata ai giudici di Torres?",
+        answer:
+          "Fu cappella palatina annessa al castello di Ardara. SardegnaCultura e Idese ricordano che i giudici prestavano giuramento al suo altare all’assunzione della carica.",
       },
       {
-        question: "Dove trovo gli eventi ad Ardara?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Ardara su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando fu consacrata?",
+        answer:
+          "Nel 1107. L’epigrafe dell’altare maggiore, documentata da Idese, indica il 7 maggio 1107.",
+      },
+      {
+        question: "Che cos’è il retablo di Giovanni Muru?",
+        answer:
+          "È il polittico del 1515 sull’altare maggiore: trentuno tavole dipinte e, al centro, la scultura di Nostra Signora del Regno, secondo Idese.",
+      },
+      {
+        question: "Saccargia o Bisarcio appartengono ad Ardara?",
+        answer:
+          "No. Saccargia è a Codrongianos; Bisarcio a Ozieri. Ardara ha Santa Maria del Regno come monumento centrale di questa scheda.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Ardara, Chiesa di Santa Maria del Regno",
+        href: "https://www.sardegnacultura.it/articolo/ardara-chiesa-di-santa-maria-del-regno",
+      },
+      {
+        label: "Idese / Ministero della Cultura — Santa Maria del Regno e Retablo",
+        href: "https://idese.cultura.gov.it/place/chiesa-s-maria-del-regno/",
+      },
+      {
+        label: "Comune di Ardara — Chiesa di Nostra Signora del Regno",
+        href: "https://comune.ardara.ss.it/luoghi/2818790/chiesa-nostra-signora-regno",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Altri snodi del Logudoro giudicale e romanico — senza confondere i monumenti.",
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/nord-sardegna/codrongianos",
+        label: "Guida Codrongianos",
+      },
+      {
+        href: "/cultura-sarda/nord-sardegna/porto-torres",
+        label: "Guida Porto Torres",
+      },
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "badesi",
@@ -660,9 +705,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Bonorva",
     province: "Sassari",
     area: "Meilogu",
-    title: "Bonorva: Sant’Andrea Priu e Meilogu",
+    title: "Bonorva: Sant'Andrea Priu",
     h1: "Bonorva",
-    description: "Bonorva in Sardegna: guida al comune del Meilogu, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Bonorva e la necropoli di Sant'Andrea Priu: domus de janas, Tomba del Capo e riuso cristiano nel Meilogu.",
     hero: {
       src: "/images/cultura/bonorva-panorama.webp",
       alt: "Veduta di Bonorva in Sardegna",
@@ -673,42 +719,88 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Bonorva_-_Panorama_(05).jpg",
       },
     },
-    intro: `Bonorva è necropoli di Sant’Andrea Priu in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Bonorva su EVERAS.`,
+    intro:
+      "Sul limite della piana di Santa Lucia, a pochi chilometri da Bonorva, un affioramento trachitico ospita la necropoli di Sant’Andrea Priu. Contano le domus de janas e la loro lunga vita: dal neolitico al riuso cristiano. Non è una guida generica al Meilogu.",
+    historyHeading: "La necropoli sull’affioramento",
     history: [
-      `Bonorva è un comune italiano di 3 013 abitanti della città metropolitana di Sassari in Sardegna.`,
-      `Oggi Bonorva resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Bonorva, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura descrive una ventina di sepolture scavate sulla parete e sul pianoro di un affioramento trachitico alto circa 10 metri. Le prime fasi d’uso si legano alla Cultura di Ozieri (Neolitico finale, circa 3200-2800 a.C.); l’arco cronologico complessivo resta nel neo-eneolitico tra IV e III millennio a.C. Non tutte le tombe sono oggi accessibili: cedimenti della roccia hanno danneggiato vani e accessi.",
+      "Tra le sepolture pluricellulari spiccano la Tomba del Capo, la Tomba a capanna circolare e la Tomba a camera. La Tomba del Capo — la più ampia — comprende 18 ambienti intorno a due vani principali, con soffitto che riproduce travetti di un tetto e altri dettagli architettonici «domestici». Le altre due riproducono elementi di abitazione (tetto a cono; tetto a doppio spiovente). Il sito fu indagato nel 1916 da Antonio Taramelli.",
     ],
+    traditionsHeading: "Riuso cristiano e UNESCO seriale",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Meilogu di campagna e cavalli. Le date precise cambiano ogni anno: controlla il calendario eventi a Bonorva su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Dalla domus al culto cristiano",
+        body: "La necropoli fu riutilizzata a lungo. In età medievale la Tomba del Capo divenne luogo di culto: sulle pareti delle due camere più interne furono realizzati affreschi di soggetto cristiano. È questa stratificazione — sepoltura preistorica e riuso religioso — il fatto culturale da tenere fermo, non un elenco di ogni ipogeo.",
       },
       {
-        title: "Il Meilogu intorno",
-        body: `Bonorva si legge meglio insieme ai comuni vicini del Meilogu: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Rapporto con il sito UNESCO",
+        body: "Nel 2025 l’UNESCO ha iscritto il sito seriale «Funerary Tradition in the Prehistory of Sardinia – The domus de janas» / «Tradizioni funerarie nella Preistoria della Sardegna: le domus de janas». Non è un riconoscimento riservato al solo comune di Bonorva né un sito Unesco «autonomo» di Priu: è un insieme di componenti sull’isola. Fonti istituzionali italiane includono esplicitamente la necropoli di Sant’Andrea Priu tra le componenti di quel sito seriale. Su EVERAS, Barumini resta un altro riconoscimento Unesco (Su Nuraxi), di natura diversa.",
       },
     ],
+    visitHeading: "Bonorva e Priu",
     visit: [
       {
-        name: "Centro di Bonorva",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Dal paese alla piana di Santa Lucia",
+        body: "La necropoli sta fuori dal centro, verso Bono, in località Santa Lucia (SP 43 secondo la scheda regionale). Orari e biglietti si confermano sui contatti istituzionali: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Necropoli di Sant’Andrea Priu. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Domus e paesaggio",
+        body: "Sedini, nell’Anglona, documenta un’altra esperienza di domus (museo in paese). Priu resta il caso di Bonorva: necropoli estesa sull’affioramento e Tomba del Capo. La guida all’archeologia colloca i temi senza confonderli.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Bonorva?",
-        answer: "Necropoli di Sant’Andrea Priu. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è Sant’Andrea Priu?",
+        answer:
+          "È la necropoli a domus de janas nel territorio di Bonorva, scavata in un affioramento trachitico presso la piana di Santa Lucia. Comprende circa una ventina di sepolture, tra cui la Tomba del Capo.",
       },
       {
-        question: "Dove trovo gli eventi a Bonorva?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Bonorva su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Cosa rende particolare la Tomba del Capo?",
+        answer:
+          "È la sepoltura più ampia documentata nella scheda regionale: 18 ambienti, dettagli architettonici che riproducono elementi domestici, e successivo riuso cristiano con affreschi sulle camere interne.",
+      },
+      {
+        question: "Sant’Andrea Priu è «il» sito UNESCO di Bonorva?",
+        answer:
+          "No in questi termini. L’iscrizione UNESCO 2025 riguarda un sito seriale sulle domus de janas della Sardegna. Priu ne è una componente; non equivale a dire che Bonorva o la sola necropoli siano un Patrimonio mondiale autonomo.",
+      },
+      {
+        question: "Quando è stata studiata?",
+        answer:
+          "L’indagine archeologica documentata da SardegnaCultura risale al 1916, a opera di Antonio Taramelli.",
+      },
+      {
+        question: "Dove trovo informazioni ufficiali per la visita?",
+        answer:
+          "Sulla scheda SardegnaCultura della necropoli e sui contatti ivi indicati. Lo stato di fruibilità può cambiare: non fissiamo orari in questa guida.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Bonorva, Necropoli di Sant'Andrea Priu",
+        href: "https://www.sardegnacultura.it/articolo/bonorva-necropoli-di-santandrea-priu",
+      },
+      {
+        label: "UNESCO — Funerary Tradition in the Prehistory of Sardinia – The domus de janas",
+        href: "https://whc.unesco.org/en/list/1730/",
+      },
+      {
+        label: "Direzione regionale Musei Sardegna — Domus de Janas UNESCO (elenco componenti)",
+        href: "https://musei.sardegna.beniculturali.it/notizie/le-domus-de-janas-riconosciute-patrimonio-mondiale-dellumanita/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Archeologia isolana; un altro caso di domus; Barumini per distinguere i riconoscimenti Unesco.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura-sarda/nord-sardegna/sedini", label: "Guida Sedini" },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "bortigiadas",
@@ -774,7 +866,8 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     area: "Meilogu",
     title: "Borutta: San Pietro di Sorres",
     h1: "Borutta",
-    description: "Borutta in Sardegna: guida al comune del Meilogu, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Borutta e San Pietro di Sorres: ex cattedrale della diocesi di Sorres, bicromia romanica e monastero benedettino nel Meilogu.",
     hero: {
       src: "/images/cultura/borutta-panorama.webp",
       alt: "Veduta di Borutta in Sardegna",
@@ -785,42 +878,79 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Borutta_-_Panorama_(01).JPG",
       },
     },
-    intro: `Borutta è paese di San Pietro di Sorres in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Borutta su EVERAS.`,
+    intro:
+      "Sul colle che domina la piana, a breve distanza da Borutta, sta San Pietro di Sorres: ex cattedrale della diocesi omonima, poi abbandonata e oggi affiancata da un monastero benedettino. Contano architettura, storia diocesana e paesaggio del Meilogu — non una guida spirituale né monumenti di altri paesi.",
+    historyHeading: "Cattedrale della diocesi di Sorres",
     history: [
-      `Borutta è un comune italiano di 250 abitanti della città metropolitana di Sassari, nell'antica regione storico-geografica del Meilogu.`,
-      `Oggi Borutta resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Borutta, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura colloca la chiesa nel territorio di Borutta, su un colle vicino alla strada storica Nord-Sud. Nel Medioevo fu sede della diocesi di Sorres: San Pietro Apostolo svolse funzioni di cattedrale. La diocesi è documentata almeno dal 1112 fino al 1503, quando venne incorporata nell’arcivescovado turritano. Sul sito si trovano anche tombe di età bizantina.",
+      "Secondo SardegnaTurismo, quando Sorres fu rasa al suolo in età aragonese la popolazione si riversò a Borutta, che divenne nuova residenza del vescovo; nei secoli successivi l’ex cattedrale fu abbandonata. I restauri di fine Ottocento ne fecero monumento nazionale; a metà Novecento, con l’insediamento monastico (1953-54 secondo SardegnaCultura), sorsero i fabbricati neoromanici. SardegnaTurismo indica l’abbazia dal 1974.",
     ],
+    traditionsHeading: "Architettura e monastero",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Romanico e colline del Meilogu. Le date precise cambiano ogni anno: controlla il calendario eventi a Borutta su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Bicromia e fasi",
+        body: "L’edificio medievale è in conci di calcare e pietra vulcanica. SardegnaCultura distingue un impianto a muratura più liscia e strutture di ricostruzione in opera bicroma, con lesene, archetti e finte logge in facciata. L’aula è a tre navate voltate a crociera. I restauri di fine Ottocento hanno modificato parte della decorazione. Non attribuiamo a Borutta monumenti di Torralba o di altri comuni: le cave vicine sono solo contesto di materiale.",
       },
       {
-        title: "Il Meilogu intorno",
-        body: `Borutta si legge meglio insieme ai comuni vicini del Meilogu: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Monastero e museo",
+        body: "Sui resti dell’antico episcopio è impiantato il monastero benedettino. SardegnaTurismo ricorda anche il museo della cattedrale di Sorres, con sezioni su diocesi, opere d’arte e archeologia del colle. Orari e modalità di visita non li copiamo: vanno verificati sulle fonti ufficiali.",
       },
     ],
+    visitHeading: "Meilogu e collegamenti",
     visit: [
       {
-        name: "Centro di Borutta",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Dal paese al colle",
+        body: "Il complesso sta fuori dal centro di Borutta, raggiungibile in pochi chilometri verso la SS 131. Questa scheda non è un itinerario di chiese del Meilogu.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Abbazia e basilica di San Pietro di Sorres. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Romanico vicino",
+        body: "Su EVERAS, Codrongianos racconta Saccargia. Sono due monumenti distinti: qui la tesi resta Sorres come ex cattedrale e monastero.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Borutta?",
-        answer: "Abbazia e basilica di San Pietro di Sorres. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché San Pietro di Sorres era una cattedrale?",
+        answer:
+          "Perché fu sede episcopale della diocesi di Sorres. SardegnaCultura indica funzioni di cattedrale e documentazione della diocesi dal 1112 al 1503.",
       },
       {
-        question: "Dove trovo gli eventi a Borutta?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Borutta su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quali caratteristiche ha l’architettura?",
+        answer:
+          "Pianta a tre navate, opera bicroma di calcare e pietra vulcanica, facciata con lesene e finte logge. Le dimensioni sono motivate dal ruolo di cattedrale.",
+      },
+      {
+        question: "Qual è il rapporto tra basilica e monastero?",
+        answer:
+          "Il monastero benedettino sorge sui resti dell’antico episcopio, con fabbricati neoromanici aggiunti a metà Novecento. La chiesa medievale resta il nucleo del complesso.",
+      },
+      {
+        question: "Dove si trova nel Meilogu?",
+        answer:
+          "Su un colle nel territorio comunale di Borutta, a breve distanza dal paese e dalla SS 131, nella Sardegna nord-occidentale.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Borutta, Chiesa di San Pietro di Sorres",
+        href: "https://www.sardegnacultura.it/articolo/borutta-chiesa-di-san-pietro-di-sorres",
+      },
+      {
+        label: "SardegnaTurismo — San Pietro di Sorres",
+        href: "https://www.sardegnaturismo.it/it/esplora/san-pietro-di-sorres",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Altro romanico del Nord e memoria archeologica del Meilogu — senza confondere i siti.",
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/nord-sardegna/codrongianos",
+        label: "Guida Codrongianos",
+      },
+      { href: "/cultura-sarda/nord-sardegna/bonorva", label: "Guida Bonorva" },
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "bottidda",
@@ -1332,9 +1462,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Codrongianos",
     province: "Sassari",
     area: "Logudoro",
-    title: "Codrongianos: Santissima Trinità di Saccargia",
+    title: "Codrongianos: Saccargia",
     h1: "Codrongianos",
-    description: "Codrongianos in Sardegna: guida al comune del Logudoro, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Codrongianos e la Basilica della Santissima Trinità di Saccargia: romanico, bicromia e affreschi absidali nel Logudoro.",
     hero: {
       src: "/images/cultura/codrongianos-panorama.webp",
       alt: "Veduta di Codrongianos in Sardegna",
@@ -1345,42 +1476,79 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Codrongianos,_panorama_(07).jpg",
       },
     },
-    intro: `Codrongianos è paese della basilica di Saccargia in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Codrongianos su EVERAS.`,
+    intro:
+      "Nella piana di Saccargia, nel territorio di Codrongianos, la basilica della Santissima Trinità emerge con il campanile e la bicromia di calcare e pietra vulcanica. Questa scheda resta su quel monumento: non è una rassegna del romanico isolano.",
+    historyHeading: "Abbazia camaldolese e fasi costruttive",
     history: [
-      `Codrongianos è un comune italiano di 1 246 abitanti della città metropolitana di Sassari.`,
-      `Oggi Codrongianos resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Codrongianos, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura e Idese (Ministero della Cultura) collocano chiesa e resti del monastero nella campagna di Saccargia, comune di Codrongianos. Dal 1112 l’abbazia figura tra i possedimenti sardi dei camaldolesi; Idese ricorda la concessione da parte del giudice Costantino I de Lacon-Gunale e di Marcusa. Accanto alla chiesa restano strutture del chiostro e del monastero, oggetto di scavo.",
+      "L’edificio ha pianta a croce commissa con transetto triabsidato. Si distinguono due fasi: un primo impianto (fine XI – inizi XII secolo) con conci sommariamente sbozzati; poi sopraelevazione e allungamento dell’aula, portico, campanile e sagrestia, con opera bicroma più regolare tipica di maestranze pisano-pistoiesi della seconda metà del XII secolo. I restauri del primo Novecento hanno modificato portico, campanile e decorazioni della facciata.",
     ],
+    traditionsHeading: "Bicromia e affreschi",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Romanico bianco e nero nel Logudoro. Le date precise cambiano ogni anno: controlla il calendario eventi a Codrongianos su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Calcare e basalto",
+        body: "Le murature alternano conci di calcare e di pietra vulcanica. È la bicromia — non un generico «stile romanico» — a rendere riconoscibile Saccargia nel paesaggio di Codrongianos. Idese sottolinea il richiamo al romanico toscano nella composizione dei materiali locali.",
       },
       {
-        title: "Il Logudoro intorno",
-        body: `Codrongianos si legge meglio insieme ai comuni vicini del Logudoro: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Abside affrescata",
+        body: "SardegnaCultura evidenzia gli affreschi absidali tra i pochi di epoca romanica superstiti in Sardegna. Idese li data al XII secolo e ne indica Cristo in Mandorla e scene della Passione. Non inventiamo attribuzioni d’artista oltre a quanto le fonti istituzionali espongono.",
       },
     ],
+    visitHeading: "Codrongianos e il monumento",
     visit: [
       {
-        name: "Centro di Codrongianos",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Nel territorio comunale",
+        body: "La basilica sta fuori dal centro, lungo la SS 597, in località pubblica di Saccargia / Nostra Signora di S’Accalza. Orari e modalità di accesso si confermano sui contatti istituzionali della scheda SardegnaCultura: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Basilica della Santissima Trinità di Saccargia. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Contesto giudicale, senza catalogo",
+        body: "Idese colloca Saccargia sul percorso che da Ardara (cappella palatina) conduceva a San Gavino di Porto Torres. Su EVERAS quelle guide esistono come schede di paese: qui servono da contesto, non da elenco di chiese da aggiungere a questa pagina.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Codrongianos?",
-        answer: "Basilica della Santissima Trinità di Saccargia. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è la Basilica di Saccargia?",
+        answer:
+          "È la chiesa abbaziale della Santissima Trinità nel territorio di Codrongianos, con resti del monastero camaldolese. È un monumento del romanico sardo documentato da SardegnaCultura e dal Ministero della Cultura (Idese).",
       },
       {
-        question: "Dove trovo gli eventi a Codrongianos?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Codrongianos su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Cosa caratterizza l’architettura?",
+        answer:
+          "Pianta a croce commissa, bicromia di calcare e pietra vulcanica, portico e campanile legati a una seconda fase costruttiva. Gli affreschi dell’abside sono tra i pochi romanici superstiti in Sardegna.",
+      },
+      {
+        question: "Quando entra nella rete camaldolese?",
+        answer:
+          "Dal 1112, secondo SardegnaCultura e Idese, che ricordano anche il ruolo del giudice Costantino I e di Marcusa nella fondazione/concessione.",
+      },
+      {
+        question: "I restauri moderni hanno cambiato l’aspetto?",
+        answer:
+          "Sì. SardegnaCultura segnala che i restauri dell’inizio del Novecento hanno ricostruito il portico, sopraelevato il campanile e risarcito le decorazioni della facciata.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Codrongianos, Chiesa della Santissima Trinità di Saccargia",
+        href: "https://www.sardegnacultura.it/articolo/codrongianos-chiesa-della-santissima-trinita-di-saccargia",
+      },
+      {
+        label: "Idese / Ministero della Cultura — Basilica di Saccargia",
+        href: "https://idese.cultura.gov.it/place/basilica-della-santissima-trinita-di-saccargia/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Contesto giudicale e Logudoro vicino — senza trasformare questa scheda in un itinerario di chiese.",
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/sassari", label: "Guida Sassari" },
+      {
+        href: "/cultura-sarda/nord-sardegna/porto-torres",
+        label: "Guida Porto Torres",
+      },
+      { href: "/cultura-sarda/nord-sardegna/ardara", label: "Guida Ardara" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "cossoine",
@@ -1780,9 +1948,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Isola dell'Asinara",
     province: "Sassari",
     area: "Nurra",
-    title: "Asinara: parco nazionale ed ex carcere",
+    title: "Isola dell'Asinara: colonia penale e Parco Nazionale",
     h1: "Isola dell'Asinara",
-    description: "Isola dell'Asinara in Sardegna: guida al comune del Nurra, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Asinara: dalla colonia penale al Parco Nazionale, memoria carceraria a Cala d’Oliva e Osservatorio della Memoria.",
     hero: {
       src: "/images/cultura/isola-dell-asinara-panorama.webp",
       alt: "Veduta di Isola dell'Asinara in Sardegna",
@@ -1793,42 +1962,84 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Isola_dell'Asinara_-_vista_da_Torre_del_Falcone.JPG",
       },
     },
-    intro: `Isola dell'Asinara è parco nazionale e memoria del carcere in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Isola dell'Asinara su EVERAS.`,
+    intro:
+      "L’Asinara non è un comune autonomo: appartiene amministrativamente a Porto Torres. Questa scheda tratta l’isola come paesaggio di memoria — dalla colonia penale al Parco Nazionale — non come guida naturalistica, balneare o di trekking.",
+    historyHeading: "Dal lazzaretto alla colonia penale",
     history: [
-      `L'Asinara è un'isola italiana del mar Mediterraneo, situata fra il Mar di Sardegna a ovest, il Mare di Corsica a nord e l'omonimo golfo a est; a sud è separata dalla piccola Isola Piana da uno stretto canale navigabile, il cosiddetto Passaggio dei Fornelli. Fa parte del comune di Porto Torres, nella città metropolitana di Sassari, ed è interamente ricompresa nell'omonimo Parco Nazionale dell'Asinara.`,
-      `Oggi Isola dell'Asinara resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Isola dell'Asinara, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Nel 1885, dopo dibattito parlamentare, lo Stato approvò l’installazione di un lazzaretto e di una colonia penale agricola. La popolazione residente fu allontanata forzatamente; parte delle famiglie si stabilì nell’area di Stintino. L’Ente Parco descrive una colonia organizzata in diramazioni sul territorio, basata sul lavoro coatto e su attività produttive differenziate, affiancata dalla Stazione Sanitaria Marittima Quarantenaria.",
+      "Nel Novecento l’isola ospitò anche campi di prigionia (austro-ungarici durante la Prima guerra mondiale; prigionieri etiopi negli anni Trenta). Negli anni Settanta alcune diramazioni divennero sede di supercarcere. Nel 1985 Giovanni Falcone e Paolo Borsellino soggiornarono presso l’ex Foresteria di Cala d’Oliva. La chiusura del carcere fu progressiva; nel 1997 nacque il Parco Nazionale dell’Asinara, poi l’Area Marina Protetta, gestiti dallo stesso Ente.",
     ],
+    traditionsHeading: "Luoghi della memoria",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Natura protetta, niente villaggio turistico classico. Le date precise cambiano ogni anno: controlla il calendario eventi ad Isola dell'Asinara su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Cala d’Oliva",
+        body: "Cala d’Oliva fu uno dei nuclei della vita carceraria e amministrativa sull’isola. L’ex Diramazione Centrale ospita oggi l’Osservatorio della Memoria. L’ex Foresteria, dove soggiornarono Falcone e Borsellino, è oggi caserma del Corpo Forestale della Regione, secondo l’Ente Parco.",
       },
       {
-        title: "Il Nurra intorno",
-        body: `Isola dell'Asinara si legge meglio insieme ai comuni vicini del Nurra: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Osservatorio della Memoria",
+        body: "Inaugurato nel 2017 nell’ex Diramazione Centrale di Cala d’Oliva, l’Osservatorio è un percorso espositivo sulla vita nella colonia penale: oggetti personali, attrezzi da lavoro e strumentazione medica in uno dei cameroni usati come dormitorio. È parte del progetto di valorizzazione dei beni storico-culturali dell’Asinara, non una guida ai sentieri.",
       },
     ],
+    visitHeading: "Parco e amministrazione",
     visit: [
       {
-        name: "Centro di Isola dell'Asinara",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Parco Nazionale, non comune",
+        body: "L’intera isola rientra nel Parco Nazionale e nell’Area Marina Protetta. L’Ente ha sede amministrativa a Porto Torres. Modalità di accesso, trasporti e orari non li elenchiamo: cambiano e spettano ai canali ufficiali del Parco.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Cala d’Oliva, Fornelli e i sentieri del parco. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Memoria e territorio vicino",
+        body: "Su EVERAS, Porto Torres è il comune di riferimento amministrativo; Stintino entra nella storia dell’esodo del 1885. Questa scheda resta sulla memoria carceraria e sulla nascita del Parco.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Isola dell'Asinara?",
-        answer: "Cala d’Oliva, Fornelli e i sentieri del parco. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Quando è stata utilizzata come colonia penale?",
+        answer:
+          "Dal 1885, con lazzaretto e colonia penale agricola. La funzione penitenziaria si trasformò nel tempo, fino al supercarcere degli ultimi decenni del Novecento, prima della chiusura progressiva.",
       },
       {
-        question: "Dove trovo gli eventi ad Isola dell'Asinara?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Isola dell'Asinara su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cos’è l’Osservatorio della Memoria?",
+        answer:
+          "È il percorso espositivo inaugurato nel 2017 nell’ex Diramazione Centrale di Cala d’Oliva, dedicato alla vita nella colonia penale attraverso oggetti e ambienti del carcere.",
+      },
+      {
+        question: "Perché Cala d’Oliva è importante nella memoria dell’isola?",
+        answer:
+          "Fu un nodo della vita carceraria e amministrativa; vi si trovano l’Osservatorio della Memoria e l’ex Foresteria legata, tra l’altro, al soggiorno di Falcone e Borsellino nel 1985.",
+      },
+      {
+        question: "Quando è diventata Parco Nazionale?",
+        answer:
+          "Nel 1997, secondo l’Ente Parco. In seguito è stata istituita anche l’Area Marina Protetta, sotto lo stesso ente gestore.",
+      },
+      {
+        question: "Qual è il rapporto amministrativo tra Asinara e Porto Torres?",
+        answer:
+          "L’isola fa parte del comune di Porto Torres. Non esiste un comune autonomo «Isola dell’Asinara»: la scheda EVERAS tratta l’isola come unità culturale e territoriale del Parco.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "Parco Nazionale dell'Asinara — Storia",
+        href: "https://www.parcoasinara.org/storia/",
+      },
+      {
+        label: "Parco Nazionale dell'Asinara — Osservatorio della Memoria",
+        href: "https://www.parcoasinara.org/attivita/gli-osservatori-del-parco/osservatorio-della-memoria/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Comune amministrativo e storia dell’esodo collegata a Stintino.",
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/nord-sardegna/porto-torres",
+        label: "Guida Porto Torres",
+      },
+      { href: "/cultura-sarda/nord-sardegna/stintino", label: "Guida Stintino" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ittireddu",
@@ -2956,9 +3167,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Perfugas",
     province: "Sassari",
     area: "Anglona",
-    title: "Perfugas: museo archeologico e Anglona",
+    title: "Perfugas: MAP e Pozzo sacro Predio Canopoli",
     h1: "Perfugas",
-    description: "Perfugas in Sardegna: guida al comune del Anglona, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Perfugas: Museo Archeologico e Paleobotanico dell’Anglona e Pozzo sacro Predio Canopoli nel centro del paese.",
     hero: {
       src: "/images/cultura/perfugas-panorama.webp",
       alt: "Veduta di Perfugas in Sardegna",
@@ -2969,42 +3181,79 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Perfugas,_panorama_(07).jpg",
       },
     },
-    intro: `Perfugas è museo archeologico dell’Anglona in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Perfugas su EVERAS.`,
+    intro:
+      "A Perfugas convivono due piani distinti: il MAP, museo territoriale che legge l’Anglona, e il Pozzo sacro Predio Canopoli, monumento nuragico nel tessuto del paese. Non sono la stessa cosa e non vanno confusi.",
+    historyHeading: "Il MAP come chiave dell’Anglona",
     history: [
-      `Perfugas è un comune italiano di 2 200 abitanti della città metropolitana di Sassari. Si trova nella regione storica dell'Anglona.`,
-      `Oggi Perfugas resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Perfugas, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Museo Archeologico e Paleobotanico (MAP), aperto nel 1988, raccoglie, conserva e valorizza patrimonio archeologico e paleobotanico dell’Anglona. SardegnaCultura sottolinea che il percorso, dal Paleolitico al Medioevo, espone reperti provenienti da tutto il territorio anglonese — non solo dal comune di Perfugas.",
+      "Tra i materiali documentati: fossili della foresta pietrificata (circa 18 milioni di anni), manufatti del Paleolitico inferiore, la Dea Madre con Bambino del Neolitico medio, reperti nuragici, testimonianze di contatti tardo nuragici con ambiti fenicio-punici e romani, maioliche medievali anche da chiese di altri comuni (Chiaramonti, Martis, Santa Maria Coghinas). L’allestimento «Il territorio, l’uomo, la memoria» dedica vetrine a più paesi dell’Anglona e oltre.",
     ],
+    traditionsHeading: "Predio Canopoli e il sacro dell’acqua",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Preistoria e paese d’Anglona. Le date precise cambiano ogni anno: controlla il calendario eventi a Perfugas su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Pozzo sacro nel paese",
+        body: "Il Pozzo sacro del Predio Canopoli è un monumento visitabile all’interno dell’abitato di Perfugas. Il MAP lo presenta come pozzo sacro nuragico in opera isodoma di pietra calcarea, confrontabile tipologicamente — non come «copia» — con altri pozzi noti dell’isola. Non inventiamo orari né tariffe: si confermano sul museo e sulle fonti pubbliche.",
       },
       {
-        title: "Il Anglona intorno",
-        body: `Perfugas si legge meglio insieme ai comuni vicini del Anglona: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Museo e sito, due livelli",
+        body: "Il museo spiega l’area; Predio Canopoli è il sito specifico di Perfugas. Altri pozzi o fonti citati negli allestimenti (ad esempio a Nulvi) non appartengono a questo comune: vanno tenuti distinti.",
       },
     ],
+    visitHeading: "Anglona e rete",
     visit: [
       {
-        name: "Centro di Perfugas",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "In paese",
+        body: "MAP e Predio Canopoli stanno a Perfugas. Informazioni aggiornate su aperture e visite si trovano sul sito del museo e su SardegnaCultura.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Museo archeologico e centro. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Collegamenti culturali",
+        body: "Sedini documenta un’altra esperienza anglonese (La Rocca). Serri, già su EVERAS, racconta un santuario con pozzo sacro di altro tipo e territorio. Qui la tesi resta MAP + Predio Canopoli.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Perfugas?",
-        answer: "Museo archeologico e centro. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è il MAP?",
+        answer:
+          "È il Museo Archeologico e Paleobotanico di Perfugas, aperto nel 1988, con percorso dal Paleolitico al Medioevo e allestimenti sul territorio dell’Anglona.",
       },
       {
-        question: "Dove trovo gli eventi a Perfugas?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Perfugas su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Perché il museo è definito territoriale?",
+        answer:
+          "Perché espone reperti e racconti provenienti da più comuni dell’Anglona (e oltre), non solo da Perfugas. SardegnaCultura e il sito del museo lo dichiarano esplicitamente.",
+      },
+      {
+        question: "Che cos’è il Pozzo sacro Predio Canopoli?",
+        answer:
+          "È un pozzo sacro nuragico situato nel centro di Perfugas, in opera isodoma di calcare, documentato dal MAP come monumento visitabile nel paese.",
+      },
+      {
+        question: "Qual è il rapporto tra Perfugas e l’archeologia dell’Anglona?",
+        answer:
+          "Perfugas ospita il museo che legge l’area e conserva un pozzo sacro nel proprio abitato. Il patrimonio anglonese resta distribuito su più comuni: il MAP lo rende leggibile senza attribuirlo tutto a Perfugas.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Perfugas, Museo Archeologico e Paleobotanico",
+        href: "https://www.sardegnacultura.it/articolo/perfugas-museo-archeologico-e-paleobotanico",
+      },
+      {
+        label: "MAP Museo Perfugas",
+        href: "https://mapmuseoperfugas.it/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Altra Anglona e quadro archeologico — senza confondere i siti.",
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/sedini", label: "Guida Sedini" },
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ploaghe",
@@ -3404,9 +3653,10 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Sedini",
     province: "Sassari",
     area: "Anglona",
-    title: "Sedini: domus de janas e Anglona",
+    title: "Sedini: Domus La Rocca",
     h1: "Sedini",
-    description: "Sedini in Sardegna: guida al comune del Anglona, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Sedini e La Rocca: domus de janas nel tessuto urbano, riusi storici e museo etnografico-archeologico.",
     hero: {
       src: "/images/cultura/sedini-panorama.webp",
       alt: "Veduta di Sedini in Sardegna",
@@ -3417,42 +3667,75 @@ export const NORD_REMAINING_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Sedini_panorama.jpg",
       },
     },
-    intro: `Sedini è paese scavato nella roccia in provincia di Sassari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Sedini su EVERAS.`,
+    intro:
+      "A Sedini la domus non sta in campagna isolata: La Rocca è un masso calcareo scavato sul bordo del vallone di Baldana, alla periferia meridionale del paese, oggi sede museale. Conta il rapporto tra abitato, ipogeo e riusi secolari.",
+    historyHeading: "Domus nell’abitato",
     history: [
-      `Sedini è un comune italiano di 1 181 abitanti della città metropolitana di Sassari in Sardegna.`,
-      `Oggi Sedini resta un punto della directory Cultura sarda del Nord: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Sedini, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura colloca l’esposizione in via Nazionale 35, in un monumento articolato su tre piani dentro un grosso masso calcareo, sul bordo del vallone di Baldana. Al piano inferiore resta una domus de janas del Neolitico finale (3200-2800 a.C.), descritta come praticamente intatta. La struttura fu modificata a più riprese dal medioevo — probabilmente anche con funzioni di carcere — e abitata fino a tempi recenti.",
+      "Non è una necropoli rurale distaccata dal paese: è un monumento urbano, accessibile nel tessuto di Sedini. La scheda regionale la indica tra le domus più vaste dell’isola; qui ci interessa soprattutto la continuità d’uso fino al museo.",
     ],
+    traditionsHeading: "Dal carcere al museo",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Anglona di pietra e festa. Le date precise cambiano ogni anno: controlla il calendario eventi a Sedini su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Allestimenti",
+        body: "Oltre alla domus, il museo ospita una mostra fotografica permanente sul territorio dell’Anglona, una collezione di fossili del Miocene medio legati a Sedini, ricostruzioni di ambienti domestici (casa signorile dei primi del Novecento e casa contadina anglonese) e oggetti etnografici recuperati in paese — dal telaio con tappeto fiammato sedinese a gioielli e amuleti donati da famiglie locali. Scale e focolare scavati nella roccia conservano la struttura medievale dell’edificio.",
       },
       {
-        title: "Il Anglona intorno",
-        body: `Sedini si legge meglio insieme ai comuni vicini del Anglona: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Nord Sardegna per spostarti paese per paese.`,
+        title: "Monumento e museo, stesso luogo",
+        body: "La Rocca è insieme sito archeologico e contenitore museale. Non va confusa con le necropoli a domus disperse nel paesaggio (come Sant’Andrea Priu a Bonorva): qui preistoria e vita di paese condividono lo stesso masso.",
       },
     ],
+    visitHeading: "Anglona e collegamenti",
     visit: [
       {
-        name: "Centro di Sedini",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "In paese",
+        body: "L’indirizzo istituzionale è via Nazionale. Orari e biglietti si confermano sulle fonti ufficiali: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Domus de janas urbane e centro. Se cerchi spiagge, nuraghi o santuari, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Rete culturale",
+        body: "Perfugas legge l’Anglona dal MAP; Bonorva documenta una necropoli a domus di altro tipo. Sedini resta il caso della domus-museo nell’abitato.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Sedini?",
-        answer: "Domus de janas urbane e centro. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è La Rocca?",
+        answer:
+          "È il monumento-museo di Sedini scavato in un masso calcareo: al piano inferiore una domus de janas neolitica; ai piani superiori allestimenti etnografici, fotografici e paleontologici.",
       },
       {
-        question: "Dove trovo gli eventi a Sedini?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Sedini su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Perché questa domus è particolare rispetto ad altre?",
+        answer:
+          "Perché è inserita nel tessuto urbano e ha avuto riusi continui fino all’età contemporanea, prima di diventare museo. Non è una necropoli isolata in campagna.",
+      },
+      {
+        question: "Come è stata riutilizzata nel tempo?",
+        answer:
+          "SardegnaCultura documenta modifiche dal medioevo, probabile uso come carcere, e abitazione fino a pochi anni fa, oltre agli allestimenti museali attuali.",
+      },
+      {
+        question: "Che rapporto c’è tra La Rocca e il museo?",
+        answer:
+          "Sono lo stesso luogo: la domus e gli ambienti scavati nella roccia ospitano l’esposizione permanente. Il museo non è un edificio separato distante dal sito.",
       },
     ],
-    publishedAt: "2026-09-11",
+    sources: [
+      {
+        label: "SardegnaCultura — Sedini, Museo Domu De Janas La Rocca",
+        href: "https://www.sardegnacultura.it/articolo/sedini-museo-domu-de-janas-la-rocca",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Altra Anglona e altro caso di domus — tesi diverse.",
+    relatedLinks: [
+      { href: "/cultura-sarda/nord-sardegna/perfugas", label: "Guida Perfugas" },
+      { href: "/cultura-sarda/nord-sardegna/bonorva", label: "Guida Bonorva" },
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "semestene",

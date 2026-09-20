@@ -1388,10 +1388,11 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     area: "Medio Campidano",
     title: "Guspini: Medio Campidano e Montevecchio",
     h1: "Guspini",
-    description: "Guspini in Sardegna: guida al comune del Medio Campidano, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Guspini e Montevecchio: patrimonio minerario, archeologia industriale e memoria del lavoro nel paesaggio storico della Sardegna.",
     hero: {
       src: "/images/cultura/guspini-panorama.webp",
-      alt: "Veduta di Guspini in Sardegna",
+      alt: "Panorama di Guspini, paese del Medio Campidano legato a Montevecchio",
       credit: {
         author: "Chefinho",
         license: "CC BY-SA 3.0",
@@ -1399,42 +1400,91 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Guspini.jpg",
       },
     },
-    intro: `Guspini è paese verso le miniere di Montevecchio in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Guspini su EVERAS.`,
+    intro:
+      "Guspini si legge attraverso Montevecchio. La Grande Miniera, nell’area guspinese-arburese, è il fatto culturale che tiene insieme paese, lavoro e paesaggio industriale. Non è una guida al Medio Campidano né alla Costa Verde: qui conta la memoria mineraria.",
+    historyHeading: "Montevecchio e il territorio di Guspini",
     history: [
-      `Guspini è un comune italiano di 10 513 abitanti della provincia del Medio Campidano. Si trova nell'antica subregione storica del Monreale.`,
-      `Oggi Guspini resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Guspini, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Parco Geominerario colloca la Grande Miniera di Montevecchio nell’area guspinese-arburese. Il centro visite ufficiale indica Piazzale Rolandi, località Montevecchio, Guspini: il complesso appartiene al contesto culturale e territoriale di questo comune, non a un’attrazione generica «da qualche parte» nell’Iglesiente.",
+      "SardegnaTurismo e il Parco descrivono una lunga attività estrattiva su filoni di piombo e zinco (e altri minerali), con concessioni, impianti e villaggi di lavoro, fino alla chiusura in epoca contemporanea. Non elenchiamo tonnellaggi né cronologie da scheda industriale: il punto è la memoria del lavoro e la trasformazione del territorio.",
     ],
+    traditionsHeading: "Patrimonio industriale e Parco Geominerario",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Memoria mineraria e Campidano. Le date precise cambiano ogni anno: controlla il calendario eventi a Guspini su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Strutture e percorsi",
+        body: "Il sito ufficiale delle visite documenta un patrimonio stratificato: Palazzo della Direzione (sede storica della direzione mineraria), galleria Anglosarda, area Sant’Antonio, Officine, Piccalinna e altri ambienti del complesso. Non è un monumento unico: è un sistema di edifici e infrastrutture. Orari e biglietti stanno sul gestore ufficiale (minieradimontevecchio.it); qui non li copiamo.",
       },
       {
-        title: "Il Medio Campidano intorno",
-        body: `Guspini si legge meglio insieme ai comuni vicini del Medio Campidano: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Nel Parco Geominerario",
+        body: "Montevecchio rientra nel Parco Geominerario Storico e Ambientale della Sardegna. Il Parco, sul proprio sito istituzionale, ricorda di essere stato dichiarato dall’UNESCO nel 1998 primo parco geominerario al mondo. Non è Patrimonio mondiale Unesco come Su Nuraxi: riconoscimento diverso, riferito al Parco, non a un’iscrizione di Montevecchio nella Lista del patrimonio mondiale.",
       },
     ],
+    visitHeading: "Costa Verde e rete mineraria",
     visit: [
       {
-        name: "Centro di Guspini",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Entroterra e costa",
+        body: "Il territorio di Guspini si collega anche alla Costa Verde e alle dune di Piscinas: entroterra minerario e costa appartengono allo stesso orizzonte geografico. Questa scheda resta su Montevecchio; la costa è contesto, non seconda guida alle spiagge.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro e territorio minerario. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Un capitolo della Sardegna mineraria",
+        body: "Su EVERAS, Carbonia racconta la città nata dal carbone di Serbariu; Iglesias la città e l’archivio delle miniere. Montevecchio è un altro capitolo — piombo, zinco, villaggio industriale nel Medio Campidano — non una «versione» di Carbonia. La guida ai musei colloca il Parco geominerario senza rifare qui l’elenco dei siti.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Guspini?",
-        answer: "Centro e territorio minerario. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che rapporto c’è tra Guspini e Montevecchio?",
+        answer:
+          "La Grande Miniera sta nell’area guspinese-arburese; il centro visite ufficiale è a Piazzale Rolandi, località Montevecchio, Guspini. Il paese e il complesso minerario condividono lo stesso contesto territoriale e culturale.",
       },
       {
-        question: "Dove trovo gli eventi a Guspini?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Guspini su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cos’è la Grande Miniera di Montevecchio?",
+        answer:
+          "È il grande complesso minerario dell’area guspinese-arburese, storico centro di estrazione di piombo e zinco, oggi patrimonio di archeologia industriale visitabile. Ne parla il Parco Geominerario della Sardegna.",
+      },
+      {
+        question: "Quali strutture minerarie si possono visitare?",
+        answer:
+          "Tra quelle documentate dal sito ufficiale: Palazzo della Direzione, galleria Anglosarda, area Sant’Antonio, Officine, Piccalinna e altri percorsi del complesso. Programma e aperture si confermano sul gestore.",
+      },
+      {
+        question: "Montevecchio fa parte del Parco Geominerario?",
+        answer:
+          "Sì. Rientra nel Parco Geominerario Storico e Ambientale della Sardegna. Il riconoscimento Unesco riguarda il Parco (dichiarato primo parco geominerario al mondo), non un’iscrizione di Montevecchio come Patrimonio mondiale.",
+      },
+      {
+        question: "Guspini è collegata alla Costa Verde?",
+        answer:
+          "Geograficamente sì: dall’entroterra minerario si arriva alla Costa Verde e a Piscinas. Questa guida culturale resta su Montevecchio; non è una scheda balneare.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "Parco Geominerario — Grande Miniera di Montevecchio",
+        href: "https://parcogeominerario.sardegna.it/en/the-great-montevecchio-mine",
+      },
+      {
+        label: "Centro visite Miniera Montevecchio",
+        href: "https://minieradimontevecchio.it/",
+      },
+      {
+        label: "SardegnaTurismo — Montevecchio",
+        href: "https://www.sardegnaturismo.it/en/explore/montevecchio",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Carbonia e Iglesias per altri capitoli della Sardegna mineraria; i musei per il quadro del Parco geominerario — senza gerarchia tra i territori.",
+    relatedLinks: [
+      {
+        href: "/cultura-sarda/sud-sardegna/carbonia",
+        label: "Guida Carbonia",
+      },
+      {
+        href: "/cultura-sarda/sud-sardegna/iglesias",
+        label: "Guida Iglesias",
+      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "isili",
@@ -1442,9 +1492,10 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Isili",
     province: "Cagliari",
     area: "Sarcidano",
-    title: "Isili: storia, tradizioni e cosa visitare",
+    title: "Isili: Nuraghe Is Paras",
     h1: "Isili",
-    description: "Isili in Sardegna: guida al comune del Sarcidano, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Isili e il Nuraghe Is Paras: torre in calcare, tholos e area archeologica all’uscita del paese, nel Sarcidano.",
     hero: {
       src: "/images/cultura/isili-panorama.webp",
       alt: "Veduta di Isili in Sardegna",
@@ -1455,42 +1506,79 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Isili-Villacidro.png",
       },
     },
-    intro: `Isili è comune del Sarcidano in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Isili su EVERAS.`,
+    intro:
+      "All’uscita di Isili, su un piccolo colle di roccia calcarea, sorge Is Paras. Il monumento conta per la torre in calcare bianco e per la camera a tholos: non per un elenco generico di «cose da vedere» nel Sarcidano.",
+    historyHeading: "Torre, calcare, fasi costruttive",
     history: [
-      `Isili è un comune italiano di 2 414 abitanti della città metropolitana di Cagliari. Situato nella regione storica del Sarcidano, che dista circa 71 chilometri a nord di percorso stradale dal capoluogo regionale, 105 da Nuoro, 66 da Oristano e 162 da Sassari. La casa comunale è ubicata a 523 metri sul livello del mare.`,
-      `Oggi Isili resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Isili, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura e il Ministero della Cultura collocano il nuraghe in territorio di Isili (via Grazia Deledda / località Is Paras). È costituito da una torre centrale parzialmente racchiusa da un bastione trilobato con cortile; intorno, almeno sul lato est, è documentato un antemurale. La torre principale è in blocchi di calcare bianco; la scheda regionale ne indica un’altezza residua di circa 12,70 metri e una camera inferiore a tholos.",
+      "Secondo SardegnaCultura, la tholos interna — con elevato di circa 11,80 metri e 33 filari — è la più alta della Sardegna tra quelle documentate in quella scheda. La torre risale al XV-XIV sec. a.C.; in fasi successive (XIII-XII e XII-XI sec. a.C.) il nuraghe semplice fu trasformato con l’aggiunta di torri, cortile e bastione. Intorno si estendeva un villaggio di capanne circolari ancora da scavare.",
     ],
+    traditionsHeading: "Scavi e fruizione",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Sarcidano. Le date precise cambiano ogni anno: controlla il calendario eventi ad Isili su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Storia degli studi",
+        body: "Il nuraghe è stato scavato nel 1974 da Maria Ausilia Fadda e nel 1975-77 da Alberto Moravetti; le indagini sono riprese in seguito a cura di Tatiana Cossu. Non inventiamo risultati di scavo oltre al quadro istituzionale.",
       },
       {
-        title: "Il Sarcidano intorno",
-        body: `Isili si legge meglio insieme ai comuni vicini del Sarcidano: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Accesso e restauro",
+        body: "SardegnaCultura segnala che le visite sono temporaneamente sospese per restauro; i riferimenti di fruibilità pubblicati riguardano la situazione precedente. Per aggiornamenti si consultano la scheda regionale, la pagina MiC e i contatti del territorio (tra cui il MARATE, Museo del Rame e del Tessuto di Isili, citato dalla stessa scheda). Orari e prezzi non li copiamo.",
       },
     ],
+    visitHeading: "Isili e Is Paras",
     visit: [
       {
-        name: "Centro di Isili",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Rapporto col paese",
+        body: "Il monumento sta subito fuori dall’abitato, lungo la strada verso Nurallao. Isili e Is Paras condividono lo stesso territorio comunale: il nuraghe non è un’attrazione «di passaggio» slegata dal comune.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Isili e il territorio comunale. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Nella rete nuragica",
+        body: "Serri, nello stesso Sarcidano, racconta un santuario cultuale; Barumini un complesso Unesco. Is Paras resta il fatto di Isili: calcare, tholos e fasi del bastione. La guida ai nuraghi colloca i siti senza gerarchia.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Isili?",
-        answer: "il centro di Isili e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è il Nuraghe Is Paras?",
+        answer:
+          "È il monumento nuragico nel territorio di Isili: torre centrale in calcare, bastione trilobato con cortile e tracce di antemurale e villaggio. Lo documentano SardegnaCultura e il Ministero della Cultura.",
       },
       {
-        question: "Dove trovo gli eventi ad Isili?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Isili su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Cosa distingue Is Paras sul piano architettonico?",
+        answer:
+          "L’uso del calcare bianco e la camera a tholos della torre principale. SardegnaCultura indica per quella tholos un elevato particolarmente alto rispetto ad altre camere documentate nella stessa scheda.",
+      },
+      {
+        question: "Quando è stato scavato?",
+        answer:
+          "Campagne documentate nel 1974 (Fadda) e nel 1975-77 (Moravetti); indagini riprese in seguito (Cossu). Il villaggio circostante risulta ancora da scavare.",
+      },
+      {
+        question: "Si può visitare ora?",
+        answer:
+          "SardegnaCultura segnala sospensione temporanea delle visite per restauro. Lo stato aggiornato si verifica sulle pagine istituzionali e presso i contatti locali indicati dalle stesse fonti.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "SardegnaCultura — Isili, Nuraghe Is Paras",
+        href: "https://www.sardegnacultura.it/articolo/isili-nuraghe-is-paras",
+      },
+      {
+        label: "Ministero della Cultura — Area di Is Paras",
+        href: "https://cultura.gov.it/luogo/area-di-is-paras",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Il quadro nuragico e due comuni già documentati su EVERAS, senza sostituire Isili.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura-sarda/sud-sardegna/serri", label: "Guida Serri" },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "mandas",
@@ -2058,12 +2146,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Orroli",
     province: "Cagliari",
     area: "Sarcidano",
-    title: "Orroli: storia, tradizioni e cosa visitare",
+    title: "Orroli: Nuraghe Arrubiu",
     h1: "Orroli",
-    description: "Orroli in Sardegna: guida al comune del Sarcidano, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Orroli e il Nuraghe Arrubiu: complesso nuragico pentalobato a Su Pranu, sul basalto del Sarcidano.",
     hero: {
       src: "/images/cultura/orroli-panorama.webp",
-      alt: "Veduta di Orroli in Sardegna",
+      alt: "Nuraghe Arrubiu nel territorio di Orroli",
       credit: {
         author: "Wikimedia Commons",
         license: "CC BY-SA 3.0",
@@ -2071,42 +2160,84 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Sardinien_Orroli_Nuraghe_Arrubiu.jpg",
       },
     },
-    intro: `Orroli è comune del Sarcidano in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Orroli su EVERAS.`,
+    intro:
+      "Il nome Arrubiu — «rosso», dal colore del basalto — indica il complesso nuragico che dà peso culturale a Orroli. Non è una guida al Sarcidano né un catalogo di monumenti: qui conta un’architettura a cinque torri sul bastione, documentata a Su Pranu.",
+    historyHeading: "Su Pranu e il complesso pentalobato",
     history: [
-      `Orroli è un comune italiano di 1 907 abitanti della città metropolitana di Cagliari, situato nella subregione storica del Sarcidano.`,
-      `Oggi Orroli resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento ad Orroli, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura colloca l’area archeologica al centro dell’altopiano basaltico di Pranemuru, in posizione dominante sul corso del Flumendosa, nel Sarcidano. L’indirizzo pubblico è SP 10, località Su Pranu, comune di Orroli. Il sito è gestito dalla Fondazione Petrass, che pubblica informazioni di visita sul proprio canale ufficiale.",
+      "Secondo la stessa scheda regionale, Arrubiu è l’unico nuraghe pentalobato finora conosciuto: un mastio (torre centrale) circondato da un bastione di cinque torri e da un antemurale di sette torri che delimita cortili interni. La costruzione usa grossi blocchi di basalto alla base, poi filari più regolari con zeppe e malta di fango. Il mastio conserva la tholos inferiore; l’altezza residua indicata è di circa 14 metri, con stima originaria più elevata. Non riprendiamo qui ogni misura delle torri: il punto è la forma del complesso.",
     ],
+    traditionsHeading: "Fasi, scavi, territorio",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Sarcidano. Le date precise cambiano ogni anno: controlla il calendario eventi ad Orroli su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Insediamento e riusi",
+        body: "I dati di scavo, ancora parziali secondo SardegnaCultura, datano l’insediamento tra le fasi finali del Bronzo medio e il Bronzo finale; all’inizio dell’età del Ferro la vita si interruppe bruscamente. Sul crollo di alcuni cortili sorsero, tra II sec. a.C. e V sec. d.C., vani legati a vinificazione e attività agricole. Intorno all’antemurale è documentato un villaggio, con poche capanne scavate. A circa 800 m a nord-ovest si trova una piccola tomba di giganti.",
       },
       {
-        title: "Il Sarcidano intorno",
-        body: `Orroli si legge meglio insieme ai comuni vicini del Sarcidano: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Storia degli studi",
+        body: "Dal 1981 il sito è stato oggetto di scavo e consolidamento, con interventi legati a Fulvia Lo Schiavo e Mario Sanges; le indagini sono ancora in corso. La bibliografia istituzionale cita anche contributi precedenti (tra cui Contu) e guide monografiche. Non inventiamo scoperte oltre a quanto le fonti pubbliche riassumono.",
       },
     ],
+    visitHeading: "Orroli e Arrubiu",
     visit: [
       {
-        name: "Centro di Orroli",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Dal paese al sito",
+        body: "Il complesso sta fuori dal centro abitato, lungo la provinciale verso Escalaplano, in località Su Pranu. Orari, biglietti e modalità di accesso si confermano sul gestore (Fondazione Petrass) e sulla scheda SardegnaCultura: qui non li copiamo perché cambiano.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Orroli e il territorio comunale. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Nella rete nuragica",
+        body: "Su EVERAS, Barumini e Serri raccontano altri aspetti della civiltà nuragica. Arrubiu resta il fatto di Orroli: la forma pentalobata e il rapporto col basalto di Pranemuru. La guida ai nuraghi colloca il sito nel quadro isolano senza classifica tra monumenti.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare ad Orroli?",
-        answer: "il centro di Orroli e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è il Nuraghe Arrubiu?",
+        answer:
+          "È il complesso nuragico nel territorio di Orroli, in località Su Pranu. SardegnaCultura lo descrive come un mastio circondato da un bastione a cinque torri e da un antemurale, e lo indica come unico pentalobato finora conosciuto.",
       },
       {
-        question: "Dove trovo gli eventi ad Orroli?",
-        answer: "In fondo a questa guida e sulla pagina Eventi ad Orroli su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Dove si trova Arrubiu rispetto a Orroli?",
+        answer:
+          "Nell’altopiano basaltico di Pranemuru / Su Pranu, raggiungibile dalla SP 10 nel comune di Orroli, fuori dal centro del paese.",
+      },
+      {
+        question: "Cosa significa «Arrubiu»?",
+        answer:
+          "In sardo arrubiu indica il «rosso», riferito al colore del basalto con cui è costruito il complesso, secondo la scheda di SardegnaCultura.",
+      },
+      {
+        question: "Quando è stato studiato il sito?",
+        answer:
+          "Dal 1981 sono documentati interventi di scavo e consolidamento (Lo Schiavo, Sanges); le indagini sono ancora in corso. Esistono anche studi precedenti sul monumento.",
+      },
+      {
+        question: "Dove trovo informazioni ufficiali per la visita?",
+        answer:
+          "Sulla scheda SardegnaCultura del complesso e sul sito della Fondazione Petrass, gestore indicato dai contatti istituzionali. Orari e tariffe non li fissiamo in questa guida.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "SardegnaCultura — Orroli, Complesso Su Nuraxi Arrubiu",
+        href: "https://www.sardegnacultura.it/articolo/orroli-complesso-su-nuraxi-arrubiu",
+      },
+      {
+        label: "Fondazione Petrass — Nuraghe Arrubiu",
+        href: "https://www.fondazionepetrass.it/en/nuraghe-arrubiu/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Il quadro nuragico isolano e due altri luoghi già documentati su EVERAS — senza gerarchia tra i siti.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+      { href: "/cultura-sarda/sud-sardegna/serri", label: "Guida Serri" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "ortacesus",
@@ -3007,10 +3138,11 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     area: "Campidano di Cagliari",
     title: "Selargius: matrimonio selargino",
     h1: "Selargius",
-    description: "Selargius in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Selargius e l’Antico Sposalizio Selargino: rito nuziale campidanese, costumi, luoghi e partecipazione della comunità.",
     hero: {
       src: "/images/cultura/selargius-panorama.webp",
-      alt: "Veduta di Selargius in Sardegna",
+      alt: "Abiti tradizionali selargini: il costume come segno del rito nuziale",
       credit: {
         author: "Gianni Careddu",
         license: "CC BY-SA 4.0",
@@ -3018,42 +3150,86 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Selargius_-_Costume_tradizionale_(36).JPG",
       },
     },
-    intro: `Selargius è paese del matrimonio selargino in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Selargius su EVERAS.`,
+    intro:
+      "Selargius si legge attraverso un fatto culturale preciso: l’Antico Sposalizio Selargino — in sardo Sa Coja Antiga Cerexina. Non è una guida all’hinterland di Cagliari né un elenco di attrazioni. Qui conta il rito nuziale campidanese che la comunità ripete, con costumi, fede, musica e gesti riconosciuti.",
+    historyHeading: "L’Antico Sposalizio Selargino",
     history: [
-      `Selargius è un comune italiano di 28 283 abitanti della città metropolitana di Cagliari, situato nella parte meridionale della Sardegna e conurbato col capoluogo.`,
-      `Oggi Selargius resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Selargius, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaTurismo (Regione Sardegna) presenta l’Antico Sposalizio Selargino come festa di folklore religioso che ricostruisce lo storico matrimonio campidanese: storia, fede, costumi, musica, gesti e simboli si intrecciano in una celebrazione che la comunità riconosce come propria. Non è uno spettacolo da brochure: è un rito di paese, in cui Selargius diventa protagonista rispetto al Capoluogo vicino.",
+      "Il Comune di Selargius, tramite l’Assessorato alla Cultura, è istituzionalmente coinvolto nell’organizzazione, insieme alle associazioni del territorio. La Pro Loco Selargius è il soggetto operativo citato anche dalla Regione per informazioni e programma. Ruoli più stretti di questi non li attribuiamo senza fonte.",
     ],
+    traditionsHeading: "Il rito e i suoi luoghi",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Matrimonio tradizionale e festa. Le date precise cambiano ogni anno: controlla il calendario eventi a Selargius su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Sequenza documentata",
+        body: "Le fonti regionali descrivono una sequenza ricorrente: vestizione dello sposo e della sposa; corteo con gruppi folk; celebrazione nella chiesa della Santissima Vergine Assunta; scambio degli anelli e sa cadena (la catena nuziale); passaggio alla chiesetta di San Giuliano; momenti comunitari come su cumbidu e sa razia. Non è un copione fisso di ogni edizione futura: è la grammatica del rito che le fonti pubbliche documentano. Orari e nomi dell’anno stanno sull’hub EVERAS e sulle locandine, non in questa guida.",
       },
       {
-        title: "Il Campidano di Cagliari intorno",
-        body: `Selargius si legge meglio insieme ai comuni vicini del Campidano di Cagliari: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Luoghi del rito",
+        body: "Tra i luoghi ricorrenti nelle descrizioni istituzionali: Casa Cara e Casa Canonico Putzu (vestizione e momenti preparatori), piazza Assunta e Si’e Boi (piazze della festa), la chiesa della Santissima Vergine Assunta e San Giuliano. Servono a capire dove il paese ospita il rito; non li presentiamo come itinerario turistico obbligato né come percorso identico di ogni edizione.",
       },
     ],
+    visitHeading: "Costumi, settembre, Campidano",
     visit: [
       {
-        name: "Centro di Selargius",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Abiti e comunità",
+        body: "Gli abiti tradizionali e i gruppi folk sono parte documentata della manifestazione: il costume non è un accessorio, è il segno visibile del matrimonio campidanese in strada e in chiesa. Non elenchiamo formazioni legate a una sola edizione. La guida EVERAS ai costumi colloca gli abiti nel quadro isolano; qui il punto è il loro uso in questo rito.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro storico e chiesa. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Settembre e il calendario EVERAS",
+        body: "Il periodo tradizionale è settembre, su più giorni. Questa scheda spiega il fenomeno; le date dell’edizione corrente stanno sull’hub Antico Sposalizio Selargino in Eventi in Sardegna. Sotto, quando pubblicati, compaiono anche gli appuntamenti del comune. Cagliari è il capoluogo vicino; Assemini, nello stesso Campidano, racconta un altro fatto culturale (la ceramica): non sono sostituti di Selargius.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Selargius?",
-        answer: "Centro storico e chiesa. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è l’Antico Sposalizio Selargino?",
+        answer:
+          "È la festa-rito di Selargius che ricostruisce e celebra il matrimonio tradizionale campidanese — anche Sa Coja Antiga Cerexina — con costumi, fede, musica e gesti documentati dalle fonti regionali. Non è uno spettacolo generico né «la» festa di tutta la Sardegna.",
       },
       {
-        question: "Dove trovo gli eventi a Selargius?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Selargius su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando si svolge tradizionalmente?",
+        answer:
+          "Nel mese di settembre, su più giorni. Il giorno e il programma dell’edizione corrente stanno sull’hub EVERAS dello Sposalizio e sulle comunicazioni di Comune e Pro Loco.",
+      },
+      {
+        question: "Quali elementi caratterizzano il rito?",
+        answer:
+          "Tra quelli descritti dalle fonti pubbliche: vestizione degli sposi, corteo con gruppi folk, celebrazione all’Assunta, scambio degli anelli e sa cadena, passaggio a San Giuliano, momenti comunitari come su cumbidu e sa razia.",
+      },
+      {
+        question: "Quali luoghi sono legati alla celebrazione?",
+        answer:
+          "Nelle descrizioni istituzionali ricorrono, tra gli altri, Casa Cara, Casa Canonico Putzu, piazza Assunta, Si’e Boi, la chiesa della Santissima Vergine Assunta e San Giuliano. Il percorso preciso di un’edizione si conferma sul programma dell’anno.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "SardegnaTurismo — Antico Sposalizio Selargino",
+        href: "https://www.sardegnaturismo.it/it/eventi/antico-sposalizio-selargino-2026",
+      },
+      {
+        label: "Comune di Selargius — Antico Sposalizio Selargino",
+        href: "https://www.comune.selargius.ca.it/area_letturaNotizia/571046/pagsistema.html/",
+      },
+      {
+        label: "Pro Loco Selargius",
+        href: "https://prolocoselargius.it/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "L’hub tiene le date dell’edizione; costumi e grandi feste il quadro isolano; Cagliari e Assemini il Campidano vicino, senza sostituire Selargius.",
+    relatedLinks: [
+      {
+        href: "/eventi-sardegna/sposalizio-selargino",
+        label: "Hub Antico Sposalizio Selargino",
+      },
+      { href: "/cultura/costumi-sardi", label: "Costumi tradizionali" },
+      { href: "/cultura/grandi-feste-sarde", label: "Grandi feste sarde" },
+      { href: "/cultura-sarda/sud-sardegna/cagliari", label: "Guida Cagliari" },
+      { href: "/cultura-sarda/sud-sardegna/assemini", label: "Guida Assemini" },
+      { href: "/eventi/selargius", label: "Eventi a Selargius" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "selegas",
@@ -3229,12 +3405,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Serri",
     province: "Cagliari",
     area: "Sarcidano",
-    title: "Serri: storia, tradizioni e cosa visitare",
+    title: "Serri: Santuario nuragico di Santa Vittoria",
     h1: "Serri",
-    description: "Serri in Sardegna: guida al comune del Sarcidano, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Serri e il Santuario nuragico di Santa Vittoria: archeologia, luoghi del culto e stratificazioni storiche sulla Giara di Serri.",
     hero: {
       src: "/images/cultura/serri-panorama.webp",
-      alt: "Veduta di Serri in Sardegna",
+      alt: "Panorama dalla Giara di Serri verso l’area archeologica di Santa Vittoria",
       credit: {
         author: "Aga Khan (IT)",
         license: "CC BY-SA 4.0",
@@ -3242,42 +3419,87 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Santa_Vittoria_di_Serri_Panorama_dalla_giara_DSC_7900.jpg",
       },
     },
-    intro: `Serri è comune del Sarcidano in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Serri su EVERAS.`,
+    intro:
+      "Serri si legge attraverso un fatto culturale preciso: il Santuario nuragico di Santa Vittoria — anche Area archeologica Santa Vittoria — sul ciglio sud-occidentale della Giara di Serri. Non è una guida al Sarcidano né un elenco di attrazioni. Qui conta un complesso cultuale nuragico che dà identità al comune.",
+    historyHeading: "Il Santuario nuragico di Santa Vittoria",
     history: [
-      `Serri è un comune italiano di 588 abitanti della città metropolitana di Cagliari.`,
-      `Oggi Serri resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Serri, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Comune di Serri, SardegnaCultura e Ministero della Cultura presentano Santa Vittoria come uno dei grandi complessi cultuali della Sardegna nuragica: non un singolo nuraghe, ma un’area con pozzo sacro, tempio ipetrale, recinto delle feste, capanne e strutture legate alla vita comunitaria del santuario. Il carattere è religioso e assembleare; non inventiamo funzioni rituali oltre a quanto le fonti istituzionali documentano.",
+      "Le prime importanti campagne di scavo risalgono agli inizi del Novecento e sono legate anche agli studi di Antonio Taramelli. Le date delle campagne variano tra le fonti: qui basta il rapporto tra ricerca e sito, senza fissare un anno unico.",
     ],
+    traditionsHeading: "Giara di Serri e stratificazioni",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Sarcidano. Le date precise cambiano ogni anno: controlla il calendario eventi a Serri su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "La Giara di Serri",
+        body: "Il complesso sta sul ciglio sud-occidentale della Giara di Serri, altopiano basaltico nel territorio comunale. Non è la Giara di Gesturi/Tuili: sono due altopiani distinti, spesso confusi nel linguaggio comune. Il rapporto da tenere è Serri → Giara di Serri → Santuario di Santa Vittoria. Questa scheda non è una guida naturalistica all’altopiano.",
       },
       {
-        title: "Il Sarcidano intorno",
-        body: `Serri si legge meglio insieme ai comuni vicini del Sarcidano: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Fasi e continuità",
+        body: "Le fonti istituzionali datano la fase del pozzo sacro al Bronzo finale / prima età del Ferro. Il santuario ebbe poi uso e rifacimenti, comprese fasi punico-romane. Sul luogo sorse la chiesa di Santa Maria della Vittoria, riferita all’età bizantina e successivamente rimaneggiata. È una stratificazione lunga: non un catalogo di ogni ambiente scavato.",
       },
     ],
+    visitHeading: "Nella rete nuragica e in visita",
     visit: [
       {
-        name: "Centro di Serri",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Serri e la civiltà nuragica",
+        body: "Su EVERAS, Barumini racconta Su Nuraxi e il riconoscimento Unesco; Serri racconta un santuario cultuale sulla propria Giara. Sono due luoghi diversi che documentano aspetti differenti della civiltà nuragica — non una versione minore dell’altro. La guida ai nuraghi e all’archeologia colloca entrambi nel quadro isolano senza classifica tra siti.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Serri e il territorio comunale. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Località Santa Vittoria",
+        body: "L’area archeologica si raggiunge in località Santa Vittoria, a pochi chilometri dal paese, ed è visitabile secondo le modalità pubbliche. Orari, biglietti e gestore possono cambiare: per informazioni aggiornate si consultano le pagine ufficiali del Comune, di SardegnaCultura e del Ministero della Cultura. Qui non li copiamo.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Serri?",
-        answer: "il centro di Serri e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è il Santuario nuragico di Santa Vittoria?",
+        answer:
+          "È il complesso cultuale nuragico nel territorio di Serri — anche Area archeologica Santa Vittoria — con pozzo sacro, templi, recinto delle feste e strutture associate alla vita del santuario. Non è Su Nuraxi di Barumini.",
       },
       {
-        question: "Dove trovo gli eventi a Serri?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Serri su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Dove si trova Santa Vittoria di Serri?",
+        answer:
+          "Sul ciglio sud-occidentale della Giara di Serri, in località Santa Vittoria, a pochi chilometri dal centro comunale.",
+      },
+      {
+        question: "La Giara di Serri è la stessa Giara di Gesturi?",
+        answer:
+          "No. La Giara di Serri e la Giara di Gesturi/Tuili sono altopiani distinti. Il santuario appartiene alla Giara di Serri.",
+      },
+      {
+        question: "Quali sono le principali strutture del santuario?",
+        answer:
+          "Tra quelle documentate dalle fonti istituzionali: il pozzo sacro, il tempio ipetrale, il recinto delle feste, capanne e ambienti legati alle attività comunitarie del complesso, oltre alla chiesa di Santa Maria della Vittoria.",
+      },
+      {
+        question: "Dove trovo informazioni ufficiali per la visita?",
+        answer:
+          "Sulle pagine istituzionali del Comune di Serri, di SardegnaCultura e del Ministero della Cultura (Area archeologica Santa Vittoria). Orari e tariffe non li fissiamo in questa guida perché possono cambiare.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "Comune di Serri — Santuario nuragico",
+        href: "https://www.comune.serri.su.it/vivere-il-comune/luoghi/il-santuario-nuragico/",
+      },
+      {
+        label: "SardegnaCultura — Serri, Santuario di Santa Vittoria",
+        href: "https://www.sardegnacultura.it/articolo/serri-santuario-di-santa-vittoria",
+      },
+      {
+        label: "Ministero della Cultura — Area archeologica Santa Vittoria",
+        href: "https://cultura.gov.it/luogo/area-archeologica-santa-vittoria",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "I nuraghi nel quadro isolano; Barumini per un altro aspetto della civiltà nuragica — senza gerarchia tra i due siti.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "sestu",
@@ -4204,9 +4426,10 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Villanovaforru",
     province: "Sud Sardegna",
     area: "Marmilla",
-    title: "Villanovaforru: storia, tradizioni e cosa visitare",
+    title: "Villanovaforru: Genna Maria",
     h1: "Villanovaforru",
-    description: "Villanovaforru in Sardegna: guida al comune della Marmilla, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Villanovaforru e Genna Maria: complesso nuragico, riusi storici e museo civico nella Marmilla.",
     hero: {
       src: "/images/cultura/villanovaforru-panorama.webp",
       alt: "Veduta di Villanovaforru in Sardegna",
@@ -4217,42 +4440,88 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Villanovaforru_-_Panorama_(03).jpg",
       },
     },
-    intro: `Villanovaforru è comune della Marmilla in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Villanovaforru su EVERAS.`,
+    intro:
+      "A Villanovaforru il fatto culturale è Genna Maria: un complesso sulla collina e un museo in paese che conserva i materiali di scavo. Sito e museo si spiegano insieme; non come due attrazioni separate né come guida generica alla Marmilla.",
+    historyHeading: "Il complesso sulla collina",
     history: [
-      `Villanovaforru è un comune italiano di 801 abitanti della provincia del Medio Campidano.`,
-      `Oggi Villanovaforru resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Villanovaforru, la scheda evento su EVERAS rimanda a questa guida.`,
+      "SardegnaCultura colloca il complesso sulla sommità della collina di Genna Maria, in territorio di Villanovaforru. La struttura riunisce una torre originaria (forse Bronzo medio), un bastione a torri (Bronzo recente), un antemurale esagonale (Bronzo finale) e un villaggio che, nella prima età del Ferro (IX-VIII sec. a.C.), occupò lo spazio tra bastione e antemurale. Le abitazioni a corte centrale restituiscono un quadro domestico e produttivo documentato dagli scavi.",
+      "Abbandonato l’insediamento nell’VIII sec. a.C., intorno al IV sec. a.C. mastio e cortile furono riutilizzati a scopo religioso: materiali votivi (tra cui numerose lucerne) e tracce di sacrificio nel cortile. Il culto, di caratterizzazione indigena e collegato alla sfera agraria, sembra protrarsi a lungo. Gli scavi, non ancora completati, partono dal 1969 sotto la direzione di Enrico Atzeni, con Ubaldo Badas e Mauro Perra.",
     ],
+    traditionsHeading: "Il Museo Genna Maria",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `feste patronali e vita di paese nel Marmilla. Le date precise cambiano ogni anno: controlla il calendario eventi a Villanovaforru su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Primo museo civico e materiali del sito",
+        body: "Inaugurato nel 1982 nel Monte di Soccorso, il Museo Civico Archeologico Genna Maria è presentato da SardegnaCultura come primo museo civico della Sardegna. Al piano terra espone reperti dallo scavo del complesso vicino, in particolare il corredo della casa a corte centrale del villaggio dell’Età del Ferro, abbandonato dopo un incendio. Nella sala punico-romana compare il corredo votivo del riuso cultuale del nuraghe.",
       },
       {
-        title: "La Marmilla intorno",
-        body: `Villanovaforru si legge meglio insieme ai comuni vicini della Marmilla: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Marmilla e altri territori",
+        body: "Il piano superiore include sale sul territorio della Marmilla: vetrine con materiali da siti di altri comuni (ad esempio Gesturi, Lunamatrona, Siddi), oltre a sezioni su Pinn’e Maiolu, nella periferia di Villanovaforru. Non attribuiamo a questo comune ciò che le fonti dichiarano proveniente da altrove: il museo è anche un nodo di lettura dell’area.",
       },
     ],
+    visitHeading: "Parco, museo, rete",
     visit: [
       {
-        name: "Centro di Villanovaforru",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Come si visitano sito e museo",
+        body: "Il Comune e SardegnaCultura indicano che l’accesso al nuraghe passa dal Museo Archeologico Genna Maria (piazza Costituzione). Orari e biglietti si confermano sulle pagine ufficiali: qui non li copiamo.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: il centro di Villanovaforru e il territorio comunale. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Nella rete nuragica",
+        body: "Barumini e Serri documentano altri aspetti della civiltà nuragica. Genna Maria resta il rapporto Villanovaforru tra collina scavata e museo. La guida ai nuraghi e quella ai musei colloca il caso senza classifica.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Villanovaforru?",
-        answer: "il centro di Villanovaforru e il territorio comunale. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Che cos’è Genna Maria?",
+        answer:
+          "È il complesso nuragico sulla collina omonima nel territorio di Villanovaforru, con torre, bastione, antemurale e villaggio, poi riusato a scopo religioso. I materiali di scavo sono esposti nel museo civico del paese.",
       },
       {
-        question: "Dove trovo gli eventi a Villanovaforru?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Villanovaforru su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Quando sono iniziati gli scavi?",
+        answer:
+          "Dal 1969, con direzione di Enrico Atzeni e collaborazione di Ubaldo Badas e Mauro Perra. Gli scavi non sono ancora completati, secondo SardegnaCultura.",
+      },
+      {
+        question: "Cosa documenta il villaggio dell’Età del Ferro?",
+        answer:
+          "Abitazioni complesse a pianta centrale, attività domestiche e artigianali, ceramiche e resti di pasto. SardegnaCultura descrive un abbandono nell’VIII sec. a.C. dopo un incendio devastante, senza ripopolamento.",
+      },
+      {
+        question: "Il museo espone solo reperti di Villanovaforru?",
+        answer:
+          "No. Accanto ai materiali di Genna Maria e di Pinn’e Maiolu, le sale sulla Marmilla presentano anche reperti da altri comuni dell’area. Le fonti istituzionali lo dichiarano esplicitamente.",
+      },
+      {
+        question: "Dove trovo informazioni ufficiali per la visita?",
+        answer:
+          "Sulle schede SardegnaCultura di complesso e museo e sulle pagine del Comune di Villanovaforru. Orari e tariffe non li fissiamo in questa guida.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "SardegnaCultura — Villanovaforru, Complesso di Genna Maria",
+        href: "https://www.sardegnacultura.it/articolo/villanovaforru-complesso-di-genna-maria",
+      },
+      {
+        label: "SardegnaCultura — Museo Archeologico Genna Maria",
+        href: "https://www.sardegnacultura.it/articolo/villanovaforru-parco-e-museo-genna-maria",
+      },
+      {
+        label: "Comune di Villanovaforru — Museo Genna Maria",
+        href: "https://www.comune.villanovaforru.su.it/vivere-il-comune/luoghi/museo-civico-archeologico-genna-maria/",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Archeologia e musei nel quadro isolano; Barumini per un altro capitolo nuragico della Marmilla ampia.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      { href: "/cultura-sarda/sud-sardegna/barumini", label: "Guida Barumini" },
+    ],
+    publishedAt: "2026-09-20",
   },
   {
     slug: "villaputzu",
@@ -4974,12 +5243,13 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Sant'Antioco",
     province: "Sud Sardegna",
     area: "Sulcis",
-    title: "Sant'Antioco: isola e storia",
+    title: "Sant'Antioco: Sulki, archeologia e tradizione",
     h1: "Sant'Antioco",
-    description: "Sant'Antioco in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
+    description:
+      "Sant’Antioco e l’antica Sulki/Sulci: archeologia fenicio-punica, patrimonio cristiano e tradizioni legate al culto del santo.",
     hero: {
       src: "/images/cultura/sant-antioco-panorama.webp",
-      alt: "Veduta di Sant'Antioco in Sardegna",
+      alt: "Panorama di Sant’Antioco sul Sulcis, territorio dell’antica Sulki",
       credit: {
         author: "Alex10",
         license: "CC BY-SA 4.0",
@@ -4987,41 +5257,98 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Sant'Antioco.jpg",
       },
     },
-    intro: `Sant'Antioco è isola collegata alla terraferma del Sulcis in provincia di Sud Sardegna. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Sant'Antioco su EVERAS.`,
+    intro:
+      "Sant’Antioco si legge per stratificazione. Sulle sponde orientali dell’isola sorse Sulky (Sulci in età romana): insediamento fenicio, città fenicio-punica, trasformazioni romane e cristiane, fino al culto di Sant’Antioco che ancora tiene insieme basilica e festa. Non è una somma di monumenti: è un territorio in cui fasi diverse restano leggibili una sull’altra.",
+    historyHeading: "Sulki/Sulci e le origini antiche",
     history: [
-      `Sant'Antìoco è un comune italiano di 10 344 abitanti della provincia del Sulcis Iglesiente, nel Sulcis. Il comune sorge sui resti di Sulki, una delle città più antiche del Mediterraneo occidentale.`,
-      `Oggi Sant'Antioco resta un punto della directory Cultura sarda del Sud: da qui colleghi musei, sagre e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Sant'Antioco, la scheda evento su EVERAS rimanda a questa guida.`,
+      "Il Museo Archeologico Ferruccio Barreca (MAB) e il Ministero della Cultura collegano l’abitato moderno all’insediamento urbano sorto all’inizio dell’VIII secolo a.C. e conosciuto come Sulky/Sulci: caposaldo portuale del Sulcis sud-occidentale. Non è una guida alla sola «isola»: è la continuità tra porto antico, città e comunità che ancora abita lo stesso spazio.",
+      "Il percorso museale del MAB organizza abitato, necropoli e tofet: tre componenti dell’insediamento, esposte per topografia e cronologia. Il Parco Storico Archeologico tiene insieme i luoghi sul territorio. Qui non apriamo una cronologia scolastica secolo per secolo: conta il passaggio da insediamento antico a città fenicio-punica e alle trasformazioni successive.",
     ],
+    traditionsHeading: "Fenicio-punico, cristianesimo, festa",
     traditions: [
       {
-        title: "Feste e identità locale",
-        body: `Festa di Sant’Antioco e mare del Sulcis. Le date precise cambiano ogni anno: controlla il calendario eventi a Sant'Antioco su EVERAS per sagre, concerti e appuntamenti pubblicati da Comuni, Pro Loco e organizzatori.`,
+        title: "Museo, necropoli e tofet",
+        body: "Il MAB conserva reperti dell’isola e, nelle sale, contesti di abitato e funerari. Il tofet — nelle fonti istituzionali un’area con funzione cultuale e funeraria fenicio-punica — conserva urne e stele ed è parte essenziale del patrimonio di Sulky. La necropoli punica, vasta e articolata, documenta lo stesso orizzonte urbano. Non aggiungiamo interpretazioni religiose oltre a quanto le fonti pubbliche descrivono; non è materiale da sensazione.",
       },
       {
-        title: "Il Sulcis intorno",
-        body: `Sant'Antioco si legge meglio insieme ai comuni vicini del Sulcis: stesse strade, spesso stesse famiglie di feste e stessi paesaggi. Usa la guida dell’area Sud Sardegna per spostarti paese per paese.`,
+        title: "Riuso e testimonianze cristiane",
+        body: "Il Ministero della Cultura indica che in età cristiana alcune tombe ipogeiche della necropoli furono collegate tra loro, formando catacombe: caso particolarmente significativo in Sardegna, da leggere come riuso e stratificazione, non come cancellazione dell’epoca precedente. Sopra e intorno a quel tessuto si leggono basilica e culto di Sant’Antioco: il santo, la comunità e lo spazio sacro condividono lo stesso suolo antico.",
+      },
+      {
+        title: "Sa Festa Manna e la tradizione",
+        body: "Il Comune presenta la Festa di Sant’Antioco Martire — Patrono di Sardegna — come appuntamento identitario di fede, tradizione e partecipazione comunitaria. Tra gli elementi ricorrenti nelle comunicazioni ufficiali: Sa Festa Manna, processione solenne dalla Basilica, processione de Is Coccois, traccas, gruppi folkloristici e cori. Le date dell’edizione cambiano: questa scheda spiega il significato culturale; il programma dell’anno sta sul Comune e, quando pubblicato, sul calendario EVERAS.",
       },
     ],
+    visitHeading: "Visitare il patrimonio culturale",
     visit: [
       {
-        name: "Centro di Sant'Antioco",
-        body: `Parti dal centro: chiese, piazza e servizi. In paesi piccoli gli orari di musei e uffici turistici cambiano: conferma sul sito del Comune prima di partire.`,
+        name: "Luoghi della stratificazione",
+        body: "Il patrimonio è articolato: Museo Archeologico Ferruccio Barreca, tofet, necropoli, area delle catacombe e basilica, altri spazi del Parco Storico Archeologico. Orari e biglietti non li fissiamo qui — vanno confermati sulle pagine ufficiali di museo e parco.",
       },
       {
-        name: "Cosa vedere nel territorio",
-        body: `Nel territorio comunale conta soprattutto: Centro storico, tophet e costa. Se cerchi spiagge, nuraghi o siti archeologici, verifica accessi e stagione. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.`,
+        name: "Cosa non confondere",
+        body: "Calasetta e Carloforte, nello stesso arcipelago, raccontano altre storie (tra cui la comunità tabarchina di Carloforte): non sono l’identità di Sant’Antioco. Carbonia e Iglesias appartengono al capitolo minerario del Sulcis-Iglesiente, un altro piano. Qui restano Sulki, le stratificazioni archeologiche e il culto del santo.",
       },
     ],
     faqs: [
       {
-        question: "Cosa visitare a Sant'Antioco?",
-        answer: "Centro storico, tophet e costa. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+        question: "Perché Sant’Antioco è importante dal punto di vista archeologico?",
+        answer:
+          "Perché conserva, nello stesso territorio urbano, le tracce dell’antica Sulky/Sulci: abitato, necropoli e tofet fenicio-punici, con riusi cristiani successivi documentati dalle fonti istituzionali.",
       },
       {
-        question: "Dove trovo gli eventi a Sant'Antioco?",
-        answer: "In fondo a questa guida e sulla pagina Eventi a Sant'Antioco su EVERAS, con data, luogo e locandina quando disponibili.",
+        question: "Che cosa era l’antica Sulki/Sulci?",
+        answer:
+          "L’insediamento urbano sorto all’inizio dell’VIII secolo a.C. sulle sponde orientali dell’isola, poi noto come Sulci in età romana: centro portuale del Sulcis sud-occidentale, secondo MAB e Ministero della Cultura.",
+      },
+      {
+        question: "Che cos’è il tofet di Sant’Antioco?",
+        answer:
+          "Un’area cultuale e funeraria fenicio-punica, parte del complesso di Sulky, con urne e stele. È documentata dal MAB e dalle schede istituzionali del patrimonio archeologico; non la trattiamo come curiosità sensationalistica.",
+      },
+      {
+        question: "Qual è il rapporto tra Sant’Antioco e la tradizione cristiana dell’isola?",
+        answer:
+          "Sullo stesso suolo antico si leggono riusi di spazi funerari (catacombe da tombe puniche, secondo il MiC), la basilica e il culto di Sant’Antioco Martire, Patrono di Sardegna nella comunicazione del Comune.",
+      },
+      {
+        question: "Che cosa rappresenta la Festa di Sant’Antioco per la comunità?",
+        answer:
+          "Per il Comune è l’appuntamento più sentito e identitario: fede, processioni (tra cui Is Coccois e Sa Festa Manna), folklore e partecipazione collettiva intorno al santo. Non è soltanto un cartellone di spettacoli.",
       },
     ],
-    publishedAt: "2026-09-14",
+    sources: [
+      {
+        label: "Museo Archeologico Ferruccio Barreca (MAB)",
+        href: "https://mabsantantioco.it/il-museo/",
+      },
+      {
+        label: "Ministero della Cultura — Complesso archeologico di Sant’Antioco",
+        href: "https://musei.beniculturali.it/musei?mid=437",
+      },
+      {
+        label: "Parco Storico Archeologico di Sant’Antioco",
+        href: "https://parcostoricoarcheologicosantantioco.it/",
+      },
+      {
+        label: "Comune di Sant’Antioco — Festa di S. Antioco Martire",
+        href: "https://comune.santantioco.su.it/portal/web/guest/w/comunicato-667%C2%B0-festa-di-s.antioco-martire-dal-16-al-20-ecco-il-programma",
+      },
+    ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "Archeologia e musei per il quadro isolano; Carloforte per un’altra identità dell’arcipelago sulcitano — senza confonderla con Sulki e Sant’Antioco.",
+    relatedLinks: [
+      {
+        href: "/cultura/nuraghi-archeologia-sardegna",
+        label: "Nuraghi e archeologia",
+      },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
+      {
+        href: "/cultura-sarda/sud-sardegna/carloforte",
+        label: "Guida Carloforte",
+      },
+    ],
+    publishedAt: "2026-09-20",
   },
 ];
