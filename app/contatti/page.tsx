@@ -6,7 +6,9 @@ import Header from "@/src/components/home/Header";
 
 export const metadata: Metadata = {
   title: "Contatti",
-  description: "Contatta il team EVERAS per informazioni, supporto o collaborazioni.",
+  description:
+    "Contatta EVERAS per informazioni, supporto o collaborazioni: form o info@everas.it.",
+  alternates: { canonical: "/contatti" },
 };
 
 export default function ContattiPage() {

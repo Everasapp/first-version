@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
 
 const legalLinks = [
+  { href: "/chi-siamo", label: "Chi siamo" },
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/cookie", label: "Cookie Policy" },
   { href: "/termini", label: "Termini di utilizzo" },

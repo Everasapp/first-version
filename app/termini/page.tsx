@@ -5,6 +5,7 @@ import LegalPage from "@/src/components/home/LegalPage";
 export const metadata: Metadata = {
   title: "Termini di utilizzo",
   description: "Termini di utilizzo della piattaforma EVERAS.",
+  alternates: { canonical: "/termini" },
 };
 
 export default function TerminiPage() {
