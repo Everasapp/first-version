@@ -207,14 +207,9 @@ export const CULTURA_PILLAR_SECTIONS: CulturaPillarSection[] = [
     href: "/cultura/artigianato-sardo",
     hrefLabel: "Artigianato sardo",
     image: {
-      src: "/images/cultura/pattada-coltellinaio.webp",
-      alt: "Il coltellinaio Gianmario Fogarizzu al lavoro nella bottega di Pattada",
-      credit: {
-        author: "Mbarrieau",
-        ...CC_BY_3,
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Fogarizzu_knifemaker.jpg",
-      },
+      src: "/images/cultura/cultura-artigianato-sardo-hero.webp",
+      alt: "Bottega di artigianato sardo: telaio, tappeto, resolza, sughero, corallo e intreccio",
+      credit: everasPhoto("/cultura/artigianato-sardo"),
     },
   },
   {
