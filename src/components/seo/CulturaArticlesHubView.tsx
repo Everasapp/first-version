@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import type { EventCardData } from "@/src/components/home/EventCard";
 import EventCard from "@/src/components/home/EventCard";
@@ -8,6 +9,7 @@ import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import CulturaArticlesFeaturedGrid from "@/src/components/seo/CulturaArticlesFeaturedGrid";
 import CulturaSources from "@/src/components/seo/CulturaSources";
 import JsonLd from "@/src/components/seo/JsonLd";
+import PhotoCredit from "@/src/components/seo/PhotoCredit";
 import type { CulturaArticle } from "@/src/lib/seo/cultura-articles";
 import { CULTURA_ARTICLES_HUB } from "@/src/lib/seo/cultura-articles";
 import {
@@ -83,31 +85,61 @@ export default function CulturaArticlesHubView({
               priority
             />
 
-            {CULTURA_PILLAR_SECTIONS.map((section) => (
-              <section key={section.title} className="mt-12">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  {section.title}
-                </h2>
-                {section.paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph.slice(0, 48)}
-                    className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-                {section.href ? (
-                  <p className="mt-4">
-                    <Link
-                      href={section.href}
-                      className="text-sm font-bold text-[#075EAE] hover:underline"
+            {CULTURA_PILLAR_SECTIONS.map((section, index) => {
+              const imageFirst = index % 2 === 0;
+              return (
+                <section
+                  key={section.title}
+                  className="mt-14 border-t border-slate-200 pt-12"
+                >
+                  <div className="grid items-start gap-8 md:grid-cols-2 md:gap-10">
+                    <figure
+                      className={`min-w-0 ${imageFirst ? "" : "md:order-2"}`}
                     >
-                      {section.hrefLabel ?? "Apri la guida"} →
-                    </Link>
-                  </p>
-                ) : null}
-              </section>
-            ))}
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-slate-100">
+                        <Image
+                          src={section.image.src}
+                          alt={section.image.alt}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 40vw"
+                          unoptimized
+                          className="object-cover"
+                        />
+                      </div>
+                      <figcaption>
+                        <PhotoCredit credit={section.image.credit} />
+                      </figcaption>
+                    </figure>
+
+                    <div
+                      className={`min-w-0 ${imageFirst ? "" : "md:order-1"}`}
+                    >
+                      <h2 className="text-2xl font-bold text-slate-900">
+                        {section.title}
+                      </h2>
+                      {section.paragraphs.map((paragraph) => (
+                        <p
+                          key={paragraph.slice(0, 48)}
+                          className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg"
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                      {section.href ? (
+                        <p className="mt-5">
+                          <Link
+                            href={section.href}
+                            className="text-sm font-bold text-[#075EAE] hover:underline"
+                          >
+                            {section.hrefLabel ?? "Apri la guida"} →
+                          </Link>
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
 
             <section className="mt-12 border-t border-slate-200 pt-10">
               <h2 className="text-2xl font-bold text-slate-900">

@@ -1,4 +1,38 @@
 import type { CulturaSource } from "@/src/lib/seo/cultura-articles";
+import {
+  wikiCommonsPhoto,
+  type CulturePhoto,
+  type PhotoCredit,
+} from "@/src/lib/seo/cultura-towns";
+
+function everasPhoto(
+  path: string,
+  license = "Illustrazione originale",
+): PhotoCredit {
+  return {
+    author: "EVERAS",
+    license,
+    licenseUrl: `https://www.everas.it${path}`,
+    sourceUrl: "https://www.everas.it/cultura",
+    sourceLabel: "Cultura sarda",
+    creditPrefix: license.startsWith("Foto") ? "Foto" : "Illustrazione",
+  };
+}
+
+const CC_BY_SA_4 = {
+  license: "CC BY-SA 4.0",
+  licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
+} as const;
+
+const CC_BY_3 = {
+  license: "CC BY 3.0",
+  licenseUrl: "https://creativecommons.org/licenses/by/3.0/deed.it",
+} as const;
+
+const PUBLIC_DOMAIN = {
+  license: "Public domain",
+  licenseUrl: "https://creativecommons.org/publicdomain/mark/1.0/deed.it",
+} as const;
 
 export type CulturaGuideIndexItem = {
   href: string;
@@ -95,18 +129,26 @@ export const CULTURA_GUIDE_INDEX: CulturaGuideIndexItem[] = [
   },
 ];
 
-export const CULTURA_PILLAR_SECTIONS: Array<{
+export type CulturaPillarSection = {
   title: string;
   paragraphs: string[];
+  image: CulturePhoto;
   href?: string;
   hrefLabel?: string;
-}> = [
+};
+
+export const CULTURA_PILLAR_SECTIONS: CulturaPillarSection[] = [
   {
     title: "Una cultura diversa da paese a paese",
     paragraphs: [
       "Chi attraversa l’isola nota presto che i calendari non coincidono. Un rito di Settimana Santa a Castelsardo non è quello di un paese del Campidano; il carnevale di Mamoiada non è la giostra di Oristano. Non è «folklore sardo» al singolare: sono pratiche locali, spesso tenute da gremi, confraternite, Pro Loco e famiglie, con regole e abiti propri.",
       "Per questo EVERAS tiene insieme due livelli. Le guide di questa sezione spiegano i temi. Le schede dei comuni, in Scopri la Sardegna, restano il posto in cui un territorio ha nome, piazza e calendario. Un evento pubblicato da un organizzatore non sostituisce la storia del paese: la rende visibile in una data precisa.",
     ],
+    image: {
+      src: "/images/cultura/cultura-sarda-tradizioni-hero.webp",
+      alt: "Nuraghe, abito tradizionale e maschere del carnevale sardo in un paesaggio mediterraneo",
+      credit: everasPhoto("/cultura"),
+    },
   },
   {
     title: "La storia della Sardegna in breve",
@@ -116,6 +158,13 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/storia-sardegna",
     hrefLabel: "Storia della Sardegna",
+    image: wikiCommonsPhoto({
+      src: "/images/cultura/cultura-storia-castello-hero.webp",
+      alt: "Il quartiere di Castello a Cagliari in una xilografia storica: il colle pisano e aragonese",
+      author: "Giuseppe Barberis",
+      commonsFile: "Cagliari Panorama del Quartiere di Castello.jpg",
+      ...PUBLIC_DOMAIN,
+    }),
   },
   {
     title: "Le lingue e le varietà linguistiche della Sardegna",
@@ -125,6 +174,13 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/lingue-sardegna",
     hrefLabel: "Lingue della Sardegna",
+    image: wikiCommonsPhoto({
+      src: "/images/cultura/cultura-lingue-alghero-hero.webp",
+      alt: "Piazza Civica ad Alghero: lo spazio pubblico della città catalana",
+      author: "Tatyana Peshkova",
+      commonsFile: "Alghero,_Piazza_Civica.jpg",
+      ...CC_BY_SA_4,
+    }),
   },
   {
     title: "Feste, riti e tradizioni",
@@ -134,6 +190,13 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/tradizioni-sarde",
     hrefLabel: "Tradizioni sarde",
+    image: wikiCommonsPhoto({
+      src: "/images/cultura/cultura-tradizioni-mamuthones-hero.webp",
+      alt: "Mamuthone di Mamoiada: maschera nera, pelle di pecora e campanacci",
+      author: "Alice Grussu",
+      commonsFile: "Mamuthones.jpg",
+      ...CC_BY_SA_4,
+    }),
   },
   {
     title: "Artigianato e mestieri tradizionali",
@@ -143,6 +206,16 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/artigianato-sardo",
     hrefLabel: "Artigianato sardo",
+    image: {
+      src: "/images/cultura/pattada-coltellinaio.webp",
+      alt: "Il coltellinaio Gianmario Fogarizzu al lavoro nella bottega di Pattada",
+      credit: {
+        author: "Mbarrieau",
+        ...CC_BY_3,
+        sourceUrl:
+          "https://commons.wikimedia.org/wiki/File:Fogarizzu_knifemaker.jpg",
+      },
+    },
   },
   {
     title: "Musica, canto e poesia",
@@ -152,6 +225,11 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/musica-canto-poesia-sarda",
     hrefLabel: "Musica, canto e poesia",
+    image: {
+      src: "/images/cultura/maria-carta-ritratto.webp",
+      alt: "Maria Carta, cantante di Siligo: una voce che ha portato repertori sardi fuori dall’isola",
+      credit: everasPhoto("/cultura/maria-carta-siligo"),
+    },
   },
   {
     title: "Cucina e prodotti della tradizione",
@@ -161,6 +239,11 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/cucina-sarda",
     hrefLabel: "Cucina tradizionale",
+    image: {
+      src: "/images/seo/sagre-sardegna-cover.webp",
+      alt: "Sagra di paese in Sardegna: stand gastronomici in piazza",
+      credit: everasPhoto("/cultura/cucina-sarda", "Fotografia originale"),
+    },
   },
   {
     title: "Paesi, musei e luoghi della cultura",
@@ -170,6 +253,13 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/musei-sardegna",
     hrefLabel: "Musei della Sardegna",
+    image: wikiCommonsPhoto({
+      src: "/images/cultura/cultura-museo-sanna-hero.webp",
+      alt: "Facciata del Museo nazionale Giovanni Antonio Sanna a Sassari",
+      author: "Dr. Thomas Liptak",
+      commonsFile: "Sardinia,_Sassari,_Museo_Nazionale_G._A._Sanna.jpg",
+      ...CC_BY_SA_4,
+    }),
   },
   {
     title: "La cultura sarda oggi",
@@ -179,6 +269,14 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/tradizioni-sarde-oggi",
     hrefLabel: "Tradizioni che cambiano",
+    image: wikiCommonsPhoto({
+      src: "/images/cultura/cultura-tradizioni-oggi-isre-hero.webp",
+      alt: "Sala delle maschere al museo etnografico ISRE di Nuoro: mamuthones e issohadores in vetrina",
+      author: "Sailko",
+      commonsFile:
+        "Nuoro,_museo_etnografico_sardo,_interno,_sala_delle_maschere,_mamuthones_e_issocadores_di_mamoiada,_01.jpg",
+      ...CC_BY_3,
+    }),
   },
   {
     title: "Scopri la Sardegna attraverso gli eventi",
@@ -188,6 +286,14 @@ export const CULTURA_PILLAR_SECTIONS: Array<{
     ],
     href: "/cultura/scopri-sardegna-eventi",
     hrefLabel: "Scoprire l’isola dagli eventi",
+    image: {
+      src: "/images/seo/eventi-sardegna-cover.webp",
+      alt: "Una piazza in festa in Sardegna: l’evento come accesso al territorio",
+      credit: everasPhoto(
+        "/cultura/scopri-sardegna-eventi",
+        "Fotografia originale",
+      ),
+    },
   },
 ];
 
