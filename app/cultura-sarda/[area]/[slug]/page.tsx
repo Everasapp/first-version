@@ -15,6 +15,7 @@ import {
 import {
   CULTURE_TOWNS,
   findCultureTown,
+  isEditorialCultureTown,
 } from "@/src/lib/seo/cultura-towns";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import { findCityBySlug } from "@/src/lib/seo/paths";
@@ -58,6 +59,9 @@ export async function generateMetadata({
       title: article.title,
       description: article.description,
       alternates: { canonical: article.path },
+      ...(isEditorialCultureTown(article)
+        ? {}
+        : { robots: { index: false, follow: true } }),
       openGraph: {
         title: `${article.title} | EVERAS`,
         description: article.description,

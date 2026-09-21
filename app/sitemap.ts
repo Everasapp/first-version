@@ -7,7 +7,11 @@ import { eventCategorySlugs } from "@/src/lib/event-categories";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { cityToSlug, cityCategoryEventsPath } from "@/src/lib/seo/paths";
 import { upcomingCalendarMonths, calendarYears } from "@/src/lib/seo/calendar";
-import { CULTURE_HUB_PATH, CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
+import {
+  CULTURE_HUB_PATH,
+  CULTURE_TOWNS,
+  isEditorialCultureTown,
+} from "@/src/lib/seo/cultura-towns";
 import {
   CULTURA_ARTICLES,
   CULTURA_ARTICLES_HUB_PATH,
@@ -148,7 +152,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly" as const,
       priority: 0.78,
     })),
-    ...CULTURE_TOWNS.map((article) => ({
+    ...CULTURE_TOWNS.filter(isEditorialCultureTown).map((article) => ({
       url: `${SITE_URL}${article.path}`,
       lastModified: new Date(article.publishedAt),
       changeFrequency: "monthly" as const,

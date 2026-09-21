@@ -8,7 +8,7 @@ import {
   CULTURE_HUB_PATH,
   findCultureArea,
 } from "@/src/lib/seo/cultura-areas";
-import { CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
+import { CULTURE_TOWNS, isEditorialCultureTown } from "@/src/lib/seo/cultura-towns";
 import { NORD_REMAINING_CULTURE_TOWNS } from "@/src/lib/seo/cultura-nord-remaining";
 import {
   CENTRO_CULTURE_TOWNS,
@@ -105,7 +105,8 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
                 article.town.toLocaleLowerCase("it"),
             );
           })
-  ).filter((article): article is NonNullable<typeof article> => Boolean(article));
+  ).filter((article): article is NonNullable<typeof article> => Boolean(article))
+    .filter(isEditorialCultureTown);
 
   return (
     <CultureAreaView

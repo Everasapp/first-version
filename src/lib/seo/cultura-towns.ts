@@ -240,6 +240,11 @@ export function findCultureTown(slug: string) {
   return CULTURE_TOWNS.find((article) => article.slug === slug);
 }
 
+/** Town guides with cited sources are indexable; directory stamp pages are not. */
+export function isEditorialCultureTown(article: CultureTownArticle) {
+  return (article.sources?.length ?? 0) > 0;
+}
+
 function normalizeTownName(value: string) {
   return value
     .normalize("NFD")
