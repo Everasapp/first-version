@@ -145,9 +145,9 @@ export const CULTURA_PILLAR_SECTIONS: CulturaPillarSection[] = [
       "Per questo EVERAS tiene insieme due livelli. Le guide di questa sezione spiegano i temi. Le schede dei comuni, in Scopri la Sardegna, restano il posto in cui un territorio ha nome, piazza e calendario. Un evento pubblicato da un organizzatore non sostituisce la storia del paese: la rende visibile in una data precisa.",
     ],
     image: {
-      src: "/images/cultura/cultura-sarda-tradizioni-hero.webp",
-      alt: "Nuraghe, abito tradizionale e maschere del carnevale sardo in un paesaggio mediterraneo",
-      credit: everasPhoto("/cultura"),
+      src: "/images/cultura/cavalcata-sarda-hero.webp",
+      alt: "Gruppi in abito tradizionale alla Cavalcata Sarda a Sassari: ogni paese con le proprie regole",
+      credit: everasPhoto("/cultura/costumi-sardi"),
     },
   },
   {
