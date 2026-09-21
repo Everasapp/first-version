@@ -1,9 +1,9 @@
 import { cities } from "@/src/data/cities";
+import { findCultureAreaByName } from "@/src/lib/seo/cultura-areas";
 import {
-  cultureTownPathForCity,
-  findCultureAreaByName,
-} from "@/src/lib/seo/cultura-areas";
-import { CULTURE_TOWNS } from "@/src/lib/seo/cultura-towns";
+  CULTURE_TOWNS,
+  isEditorialCultureTown,
+} from "@/src/lib/seo/cultura-towns";
 
 export type WeeklyTownGuideCard = {
   town: string;
@@ -72,11 +72,12 @@ function findCity(municipality: string) {
   );
 }
 
-function findGuide(townName: string) {
+/** Solo guide CULTURE_TOWNS editoriali (sources > 0); le D non entrano in homepage. */
+function findEditorialGuide(townName: string) {
   return CULTURE_TOWNS.find(
     (article) =>
       article.town.localeCompare(townName, "it", { sensitivity: "base" }) ===
-      0,
+        0 && isEditorialCultureTown(article),
   );
 }
 
@@ -88,7 +89,7 @@ type TownCandidate = {
 
 /**
  * Tre comuni con almeno 2 eventi nella settimana corrente, ruotati ogni lunedì.
- * Preferisce comuni con guida Cultura (hero), altrimenti immagine dell’area.
+ * Solo comuni con guida Cultura editoriale (non schede directory D).
  */
 export function pickWeeklyTownGuides(
   weekEvents: WeekEventLike[],
@@ -120,10 +121,8 @@ export function pickWeeklyTownGuides(
 
   const candidates = [...byTown.values()]
     .filter((candidate) => candidate.eventCount >= 2)
+    .filter((candidate) => findEditorialGuide(candidate.town))
     .sort((a, b) => {
-      const aGuide = findGuide(a.town) ? 1 : 0;
-      const bGuide = findGuide(b.town) ? 1 : 0;
-      if (bGuide !== aGuide) return bGuide - aGuide;
       if (b.eventCount !== a.eventCount) return b.eventCount - a.eventCount;
       return a.town.localeCompare(b.town, "it");
     });
@@ -153,20 +152,13 @@ export function pickWeeklyTownGuides(
   }
 
   return picked.slice(0, 3).map((candidate) => {
-    const city = findCity(candidate.town)!;
-    const guide = findGuide(candidate.town);
-    const area = findCultureAreaByName(city.area)!;
-
-    const imageSrc = guide?.hero.src ?? area.image;
-
-    const imageAlt =
-      guide?.hero.alt ?? `Guida a ${candidate.town}, ${candidate.areaLabel}`;
+    const guide = findEditorialGuide(candidate.town)!;
 
     return {
       town: candidate.town,
-      href: cultureTownPathForCity(city),
-      imageSrc,
-      imageAlt,
+      href: guide.path,
+      imageSrc: guide.hero.src,
+      imageAlt: guide.hero.alt,
       eventCount: candidate.eventCount,
       areaLabel: candidate.areaLabel,
     };

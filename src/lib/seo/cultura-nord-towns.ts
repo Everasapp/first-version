@@ -1078,10 +1078,10 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Palau",
     province: "Sassari",
     area: "Gallura",
-    title: "Palau: porto per La Maddalena e Capo d’Orso",
+    title: "Palau: Roccia dell’Orso, Monte Altura e museo etnografico",
     h1: "Palau",
     description:
-      "Palau: porto per La Maddalena, Capo d’Orso e Punta Sardegna. Non solo lo scalo dei traghetti.",
+      "Palau, Gallura: Roccia dell’Orso monumento naturale, Fortezza di Monte Altura e Museo etnografico. Non solo lo scalo per La Maddalena.",
     hero: {
       src: "/images/cultura/palau-panorama.webp",
       alt: "Panorama di Palau sul golfo, tra case e mare della Gallura",
@@ -1095,7 +1095,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     },
     visitPhoto: {
       src: "/images/cultura/palau-capo-orso.webp",
-      alt: "La roccia dell’Orso a Capo d’Orso, sopra Palau",
+      alt: "La Roccia dell’Orso a Capo d’Orso, sopra Palau",
       credit: {
         author: "Discanto",
         license: "CC BY-SA 4.0",
@@ -1105,65 +1105,113 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       },
     },
     intro:
-      "Palau è il molo della Gallura verso La Maddalena: traghetti, porto turistico, Punta Sardegna. Chi cerca solo lo scalo perde Capo d’Orso e il paese granitico sul golfo. Questa scheda tiene porto, roccia e costa, senza ridurla a coda al biglietto.",
+      "Palau si legge dal granito e dalla Roccia dell’Orso: monumento naturale, simbolo del comune, punto di riferimento della costa di fronte a La Maddalena. Chi la riduce al molo dei traghetti perde le fortificazioni di fine Ottocento e il Museo etnografico, dove la Gallura degli stazzi e dei mestieri sta senza mare. Il porto collega l’arcipelago; non è la tesi di questa scheda.",
+    historyHeading: "Comune e costa fortificata",
     history: [
-      "Il nome parla di un riparo: Palau (in gallurese) è abitato stabile soprattutto dal Settecento–Ottocento, quando il porto serve l’arcipelago e la costa di fronte a Caprera. Prima ci sono torri, forti e la memoria militare che guarda lo Stretto. Comune autonomo dal 1959, staccato da Tempio: cresce col turismo e coi collegamenti marittimi.",
-      "Il granito governa tutto: scogliere, cave, ville a Porto Rafael, il profilo di Capo d’Orso. La ferrovia Tempio–Palau (oggi legata al Trenino Verde in tratti e stagioni) ha tenuto il paese agganciato all’interno gallurese. Oggi l’identità resta quella di snodo: chi va all’arcipelago passa da qui; chi resta cammina il lungomare e sale alla roccia.",
+      "Il Comune documenta la nascita di Palau come ente autonomo con la legge regionale n. 2 del 6 febbraio 1959: la frazione omonima si stacca da Tempio Pausania. Il territorio confina con Arzachena, Tempio Pausania e Santa Teresa Gallura, e guarda il mare verso l’arcipelago di La Maddalena. Prima di quella data Palau non è ancora comune: è frazione gallurese legata a Tempio.",
+      "Alla fine dell’Ottocento, sulla costa nord-orientale prospiciente La Maddalena, nasce il sistema delle «Grandi Fortificazioni». SardegnaCultura colloca sul territorio di Palau tre grandi batterie — Monte Altura, Capo d’Orso e Baragge — concepite insieme alle opere sulle isole per la difesa del Mediterraneo occidentale. Il rapporto con La Maddalena è dunque anche militare e architettonico, non solo di collegamento marittimo. La Batteria di Capo d’Orso, documentata dal Ministero della Cultura tra i beni abbandonati, non è oggi fruibile come sito di visita: dopo la Seconda guerra mondiale le fortificazioni di Palau persero importanza e furono lasciate; lo stato di conservazione risulta cattivo. Resta patrimonio storico del sistema, distinto dalla Fortezza di Monte Altura, visitabile.",
     ],
     language: [
-      "Si parla gallurese, accanto all’italiano. È la stessa area di Tempio e Arzachena, distinta dal sardo. In porto, d’estate, si mescolano lingue di passaggio. La guida alle lingue tiene gallurese e sardo distinti.",
+      "Si parla gallurese, accanto all’italiano. È la stessa area di Tempio e Arzachena, distinta dal sardo. La guida alle lingue tiene gallurese e sardo distinti.",
     ],
+    traditionsHeading: "Roccia dell’Orso",
     traditions: [
       {
-        title: "Porto e arcipelago",
-        body: "I traghetti per La Maddalena partono dal porto commerciale. Fuori stagione Palau torna paese: chiese, mercato, bar sul molo. Se cerchi il traghetto, arriva con margine in alta stagione: code e vento spostano gli orari. Date di feste: Comune, ogni anno.",
+        title: "Monumento naturale e simbolo",
+        body: "SardegnaCultura descrive la Roccia dell’Orso come formazione granitica su un rilievo di circa 120 metri, modellata da vento e agenti atmosferici fino alla sagoma di un orso sul braccio di mare tra Palau e La Maddalena. La scheda regionale ne indica frequentazione fin da tempi preistorici e presenza negli scritti dei geografi antichi: Tolomeo (II secolo d.C.) la richiama come «Areti Promontorium»; la prima illustrazione grafica compare nell’Itinerario di Alberto La Marmora. Nel 1993 la Regione Sardegna la dichiara monumento naturale; l’immagine dell’orso è nel gonfalone del comune. ISPRA la classifica come museo in situ di interesse geologico e paesaggistico: nicchie e tafoni nel granito; sul sito sono documentati materiali prenuragici e nuragici (ceramica e litica). Non è un belvedere generico: è il fatto culturale che tiene insieme paesaggio, memoria di navigazione e identità civica.",
       },
     ],
+    crafts: [
+      {
+        title: "Museo etnografico",
+        body: "SardegnaCultura colloca il Museo etnografico in via Nazionale 111, località Montiggia: due saloni e sei sezioni — ambiente domestico, viticoltura e vinicoltura, agricoltura, allevamento, mezzi di trasporto, mestieri. Gli oggetti vengono da stazzi e dalle prime botteghe artigiane: arredi e utensili di panificazione e caseificazione, torchi e botti, aratri, campanacci, carro a buoi, attrezzi del fabbro, del falegname e del calzolaio. La scheda regionale lo presenta come strumento per leggere le origini del paese gallurese attraverso la vita agro-pastorale. È la Gallura senza mare: non un’appendice del porto.",
+      },
+    ],
+    visitHeading: "Roccia, fortezza, museo",
     visit: [
       {
-        name: "Capo d’Orso",
-        body: "A ovest del paese, la roccia a forma di orso seduto è il simbolo più fotografato. Si raggiunge in auto e breve cammino; il granito è scivoloso col vento. Da lassù il golfo e, con aria limpida, Caprera. Non è un parco giochi: resta sul sentiero segnato.",
+        name: "Roccia dell’Orso",
+        body: "Il sito è documentato da SardegnaCultura come monumento naturale visitabile a Capo d’Orso. Orari, biglietti e modalità di accesso si confermano sul gestore e sulla scheda regionale: qui non li copiamo. Si distingue dalla Batteria di Capo d’Orso, che resta fuori dalla visita ordinaria.",
       },
       {
-        name: "Porto, Punta Sardegna, arcipelago",
-        body: "Il centro è il porto e la stazione marittima. Punta Sardegna, a nord, ha faro e spiagge verso Porto Rafael. Per La Maddalena e Caprera parti dal molo: biglietti in biglietteria o online, veicolo o solo passeggeri. In paese restano chiese e il tessuto basso tipico della costa gallurese.",
+        name: "Fortezza di Monte Altura",
+        body: "Costruita tra il 1887 e il 1889 in granito locale, la batteria di Monte Altura doveva battere lo specchio d’acqua a ovest, con vista dalle isole alla Corsica. SardegnaCultura la descrive come cittadella militare — alloggi, magazzini, scuderie, officine — e come uno dei più grandi forti edificati in Italia nel XIX secolo; dal 1990, con il passaggio alla Soprintendenza, è valorizzata in chiave culturale e aperta alle visite guidate. Accesso e aperture: scheda regionale e gestore. Non inventiamo orari.",
+      },
+      {
+        name: "Museo etnografico e collegamento con La Maddalena",
+        body: "Il museo a Montiggia completa il percorso culturale: stazzi e mestieri, non spiagge. Il porto resta infrastruttura di collegamento con l’arcipelago di La Maddalena; su EVERAS la scheda dell’arcipelago racconta Caprera e il Compendio garibaldino. Qui il punto è Palau: orso, fortezza, museo.",
       },
     ],
     faqs: [
       {
-        question: "Da Palau si va a La Maddalena?",
+        question: "Perché la Roccia dell’Orso è importante per Palau?",
         answer:
-          "Sì: i traghetti partono dal porto di Palau. In estate prenota o arriva presto; il vento può ritardare le corse.",
+          "Perché è monumento naturale dal 1993, simbolo sul gonfalone comunale e formazione granitica documentata da SardegnaCultura e ISPRA come luogo di navigazione antica e di frequentazione preistorica. Non è solo un punto panoramico.",
       },
       {
-        question: "Cosa vedere a Palau oltre il porto?",
+        question: "Che cos’è la Fortezza di Monte Altura?",
         answer:
-          "Capo d’Orso e Punta Sardegna. Poi il paese e, se hai tempo, una corsa all’arcipelago. Le spiagge non sono la storia del comune.",
+          "È la batteria di fine Ottocento (1887–1889) sul territorio di Palau, parte delle Grandi Fortificazioni a difesa della costa verso La Maddalena. SardegnaCultura la indica come sito visitabile, distinto dalla Batteria di Capo d’Orso.",
       },
       {
-        question: "Si parla sardo a Palau?",
+        question:
+          "Qual è il rapporto tra Palau e il sistema difensivo di La Maddalena?",
         answer:
-          "Si parla gallurese, distinto dal sardo. L’italiano è ovunque. Dettagli nella guida alle lingue.",
+          "Sul territorio di Palau sorsero tre grandi batterie — Monte Altura, Capo d’Orso e Baragge — concepite insieme alle fortificazioni dell’arcipelago. Il rapporto è militare e architettonico, oltre che di collegamento marittimo.",
+      },
+      {
+        question: "Cosa racconta il Museo etnografico di Palau?",
+        answer:
+          "Stazzi, agricoltura, viticoltura, allevamento e mestieri della Gallura, attraverso oggetti recuperati negli stazzi e nelle prime botteghe. SardegnaCultura lo presenta come lettura delle origini del paese senza ridurlo al porto.",
+      },
+      {
+        question: "Palau appartiene alla cultura gallurese?",
+        answer:
+          "Sì: si parla gallurese, distinto dal sardo, e il Museo etnografico documenta la vita agro-pastorale gallurese. La guida alle lingue colloca gallurese e sardo su piani distinti.",
       },
     ],
     sources: [
       {
-        label: "Comune di Palau",
-        href: "https://comune.palau.ss.it/",
+        label: "SardegnaCultura — Palau, Roccia dell’Orso",
+        href: "https://www.sardegnacultura.it/articolo/palau-roccia-dell-orso",
+      },
+      {
+        label: "SardegnaCultura — Palau, Fortezza di Monte Altura",
+        href: "https://www.sardegnacultura.it/articolo/palau-fortezza-di-monte-altura",
+      },
+      {
+        label: "SardegnaCultura — Palau, Museo etnografico",
+        href: "https://www.sardegnacultura.it/articolo/palau-museo-etnografico",
+      },
+      {
+        label: "ISPRA — L’Orso di Palau",
+        href: "https://www.isprambiente.gov.it/it/attivita/museo/regioni/musei/l2019orso-di-palau",
+      },
+      {
+        label: "MiC — Batteria Capo d’Orso (beni abbandonati)",
+        href: "https://beniabbandonati.cultura.gov.it/beni/batteria-capo-dorso-fabbricati-interni-allopera/",
+      },
+      {
+        label: "Comune di Palau — costituzione del Comune",
+        href: "https://comune.palau.ss.it/luoghi/2908617/comune-palau",
       },
     ],
+    relatedLinksHeading: "Scopri anche",
+    relatedLinksIntro:
+      "La Maddalena per l’arcipelago e il sistema difensivo; Aggius per l’etnografia gallurese di entroterra; Arzachena e Santa Teresa per la Gallura costiera e settentrionale.",
     relatedLinks: [
-      { href: "/cultura", label: "Cultura sarda" },
       { href: "/cultura/lingue-sardegna", label: "Lingue: gallurese" },
       { href: "/cultura/territori-sardegna", label: "Territori: Gallura" },
+      { href: "/cultura/musei-sardegna", label: "Musei" },
       { href: "/cultura-sarda/nord-sardegna/la-maddalena", label: "Guida La Maddalena" },
+      { href: "/cultura-sarda/nord-sardegna/arzachena", label: "Guida Arzachena" },
       {
         href: "/cultura-sarda/nord-sardegna/santa-teresa-gallura",
         label: "Guida Santa Teresa Gallura",
       },
-      { href: "/pubblica", label: "Pubblica un evento" },
+      { href: "/cultura-sarda/nord-sardegna/aggius", label: "Guida Aggius" },
     ],
-    publishedAt: "2026-09-11",
+    publishedAt: "2026-09-21",
   },
   {
     slug: "santa-teresa-gallura",
