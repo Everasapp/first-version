@@ -209,6 +209,7 @@ export const cities: City[] = [
   { id: 146, city: "San Nicolò Gerrei", province: "CA", area: "Sud Sardegna" },
   { id: 147, city: "San Sperate", province: "CA", area: "Sud Sardegna" },
   { id: 148, city: "San Vito", province: "CA", area: "Sud Sardegna" },
+  { id: 224, city: "Sanluri", province: "SU", area: "Sud Sardegna" },
   { id: 149, city: "Sant'Andrea Frius", province: "CA", area: "Sud Sardegna" },
   { id: 150, city: "Sarroch", province: "CA", area: "Sud Sardegna" },
   { id: 151, city: "Selargius", province: "CA", area: "Sud Sardegna" },
