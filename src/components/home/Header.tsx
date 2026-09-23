@@ -112,8 +112,8 @@ export default function Header() {
             alt="EVERAS"
             width={480}
             height={176}
-            priority
             unoptimized
+            loading="eager"
             className="h-9 w-auto sm:h-12 md:h-14"
           />
         </Link>

@@ -1,23 +1,35 @@
-import Image from "next/image";
+import { preload } from "react-dom";
+import dynamic from "next/dynamic";
 
-import EventSearchForm from "@/src/components/home/EventSearchForm";
 import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 
-export default function Hero() {
-  return (
-    <section className="relative isolate overflow-hidden">
-      {/* Static optimized asset (~70KB): skip /_next/image so mobile LCP
-          does not request a 3840w derivative. */}
-      <Image
-        src="/images/concert.webp"
-        alt=""
-        fill
-        priority
-        fetchPriority="high"
-        unoptimized
-        sizes="100vw"
-        className="-z-20 object-cover object-[60%_center]"
+const EventSearchForm = dynamic(
+  () => import("@/src/components/home/EventSearchForm"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="mt-6 h-40 animate-pulse rounded-2xl bg-white/15 sm:mt-8 sm:h-44"
+        aria-hidden
       />
+    ),
+  },
+);
+
+export default function Hero() {
+  // Decorative background: keep out of the LCP element tree so mobile LCP
+  // can be the H1 text (paints with CSS). Still preload for visual quality.
+  preload("/images/concert.webp", { as: "image", fetchPriority: "high" });
+
+  return (
+    <section
+      className="relative isolate overflow-hidden bg-cover bg-no-repeat"
+      style={{
+        backgroundImage: "url('/images/concert.webp')",
+        backgroundPosition: "60% center",
+        backgroundSize: "cover",
+      }}
+    >
       <div
         className="absolute inset-0 -z-10"
         style={{
@@ -26,7 +38,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-5 py-12 sm:min-h-[700px] sm:px-8 sm:py-20">
+      <div className="mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-5 py-12 sm:min-h-[700px] sm:px-8 sm:py-20">
         <p className="text-sm font-bold uppercase tracking-[0.18em] text-orange-200">
           EVERAS · Eventi in Sardegna
         </p>

@@ -137,6 +137,10 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
 
 export default async function Home() {
   const supabase = await createClient();
+  const now = new Date();
+  // Bound the query so homepage SSR does not pull the entire events table.
+  const lookback = new Date(now);
+  lookback.setUTCDate(lookback.getUTCDate() - 120);
 
   const [{ data, error }, favoriteIds] = await Promise.all([
     supabase
@@ -145,7 +149,9 @@ export default async function Home() {
         "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
-      .order("start_at", { ascending: true }),
+      .gte("start_at", lookback.toISOString())
+      .order("start_at", { ascending: true })
+      .limit(120),
     getCurrentUserFavoriteIds(),
   ]);
 
@@ -153,7 +159,6 @@ export default async function Home() {
     console.error("Errore nel caricamento della homepage:", error);
   }
 
-  const now = new Date();
   const rows = (data ?? []) as EventRow[];
 
   const events = rows
@@ -190,18 +195,18 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekEvents = interleaveByArea(weekCandidates).slice(0, 12);
+  const weekEvents = interleaveByArea(weekCandidates).slice(0, 8);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
   const nordEvents = events
     .filter((event) => event.area === "Nord Sardegna")
-    .slice(0, 10);
+    .slice(0, 6);
   const centroEvents = events
     .filter((event) => event.area === "Centro Sardegna")
-    .slice(0, 10);
+    .slice(0, 6);
   const sudEvents = events
     .filter((event) => event.area === "Sud Sardegna")
-    .slice(0, 10);
+    .slice(0, 6);
 
   return (
     <>
