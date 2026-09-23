@@ -153,7 +153,7 @@ export default async function EventiGratuitiPage() {
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
-        { name: "Eventi", href: "/eventi" },
+        { name: "Eventi in Sardegna", href: "/eventi-sardegna" },
         { name: "Gratuiti" },
       ]}
       faqs={faqs}
@@ -181,7 +181,7 @@ export default async function EventiGratuitiPage() {
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Eventi", path: "/eventi" },
+          { name: "Eventi in Sardegna", path: "/eventi-sardegna" },
           { name: "Gratuiti", path: PATH },
         ]),
         faqPageSchema(faqs),

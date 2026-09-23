@@ -695,6 +695,14 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     </Link>
                   </>
                 ) : null}
+                {" "}
+                ·{" "}
+                <Link
+                  href="/eventi-sardegna"
+                  className="font-semibold text-[#075EAE] hover:underline"
+                >
+                  Tutti gli eventi in Sardegna
+                </Link>
                 .
               </p>
             </div>

@@ -92,7 +92,7 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
-        { name: "Eventi", href: "/eventi" },
+        { name: "Eventi in Sardegna", href: "/eventi-sardegna" },
         { name: h1 },
       ]}
       faqs={faqs}
@@ -115,7 +115,7 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Eventi", path: "/eventi" },
+          { name: "Eventi in Sardegna", path: "/eventi-sardegna" },
           { name: h1, path: meta.path },
         ]),
         faqPageSchema(faqs),

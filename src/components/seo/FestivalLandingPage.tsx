@@ -14,6 +14,7 @@ import {
   festivalHubLinks,
   type FestivalHub,
 } from "@/src/lib/seo/festival-hubs";
+import { dedupeLinks } from "@/src/lib/seo/internal-links";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
@@ -151,12 +152,16 @@ export default async function FestivalLandingPage({ hub }: { hub: FestivalHub })
           ? "Calendario tappe 2026"
           : "Date e appuntamenti"
       }
-      relatedLinks={[
+      relatedLinks={dedupeLinks([
+        {
+          href: "/eventi-sardegna",
+          label: "Calendario eventi in Sardegna",
+        },
         ...uniqueCulturaLinks.slice(0, 8),
         ...sagreExploreLinks(),
         ...weekendExploreLinks(),
         ...festivalHubLinks(),
-      ].filter((link) => link.href !== hub.path)}
+      ]).filter((link) => link.href !== hub.path)}
       jsonLd={[
         collectionPageSchema({
           name: hub.h1,
