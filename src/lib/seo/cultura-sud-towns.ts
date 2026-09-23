@@ -112,14 +112,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Assemini nel Campidano: strexiaius, su strexu e socio AiCC. Mostra permanente della ceramica, con fonti del Comune e dell’associazione delle Città della Ceramica.",
     hero: {
-      src: "/images/cultura/assemini-panorama.webp",
-      alt: "Costume tradizionale di Assemini",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Assemini_-_Costume_tradizionale_(11).JPG",
-      },
+      src: "/images/cultura/assemini-panorama-everas.webp",
+      alt: "Assemini nel Campidano di Cagliari, vista sul paese",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/assemini"),
     },
     intro:
       "Ad Assemini il mestiere visibile è il tornio. Il Comune si presenta come paese della ceramica; il municipio è socio dell’Associazione Italiana Città della Ceramica. Cagliari è vicina: qui il punto non è l’hinterland, è su strexu.",
@@ -362,7 +357,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Cagliari: quartieri storici, Sant’Efisio, Museo archeologico nazionale in Cittadella. Nora è a Pula.",
     hero: {
-      src: "/images/cultura/cagliari-panorama-everas.png",
+      src: "/images/cultura/cagliari-panorama-everas.webp",
       alt: "Cagliari vista dalla darsena, con il colle di Castello sul golfo",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/cagliari"),
     },
@@ -446,14 +441,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Capoterra",
     description: "Capoterra in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/capoterra-panorama.webp",
+      src: "/images/cultura/capoterra-panorama-everas.webp",
       alt: "Veduta di Capoterra in Sardegna",
-      credit: {
-        author: "Sistow",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Capoterra_parco_urbano.JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/capoterra"),
     },
     intro: `Capoterra è comune tra laguna e costa a ovest di Cagliari in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Capoterra su EVERAS.`,
     history: [
@@ -558,14 +548,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Decimomannu",
     description: "Decimomannu in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/decimomannu-panorama.webp",
+      src: "/images/cultura/decimomannu-panorama-everas.webp",
       alt: "Veduta di Decimomannu in Sardegna",
-      credit: {
-        author: "Nicola Secci",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Foto_Aerea_Decimomannu_Ott_2019.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/decimomannu"),
     },
     intro: `Decimomannu è comune del Campidano di Cagliari in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Decimomannu su EVERAS.`,
     history: [
@@ -726,7 +711,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Domus de Maria",
     description: "Domus de Maria in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/domus-de-maria-panorama-everas.png",
+      src: "/images/cultura/domus-de-maria-panorama-everas.webp",
       alt: "Spiaggia e torre di Chia nel comune di Domus de Maria",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/domus-de-maria"),
     },
@@ -1394,14 +1379,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Guspini e Montevecchio: patrimonio minerario, archeologia industriale e memoria del lavoro nel paesaggio storico della Sardegna.",
     hero: {
-      src: "/images/cultura/guspini-panorama.webp",
+      src: "/images/cultura/guspini-panorama-everas.webp",
       alt: "Panorama di Guspini, paese del Medio Campidano legato a Montevecchio",
-      credit: {
-        author: "Chefinho",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Guspini.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/guspini"),
     },
     intro:
       "Guspini si legge attraverso Montevecchio. La Grande Miniera, nell’area guspinese-arburese, è il fatto culturale che tiene insieme paese, lavoro e paesaggio industriale. Non è una guida al Medio Campidano né alla Costa Verde: qui conta la memoria mineraria.",
@@ -1873,14 +1853,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Muravera",
     description: "Muravera in Sardegna: guida al comune del Sarrabus, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/muravera-panorama.webp",
+      src: "/images/cultura/muravera-panorama-everas.webp",
       alt: "Veduta di Muravera in Sardegna",
-      credit: {
-        author: "MatteoNL97",
-        license: "CC BY 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Un_panorama_di_Muravera_e_del_villaggio_di_Villaputzu_in_distanza_di_sera_2019.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/muravera"),
     },
     intro: `Muravera è paese del Sarrabus e degli agrumi in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Muravera su EVERAS.`,
     history: [
@@ -2365,7 +2340,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Nora nel comune di Pula: sito MiC, chiesa di Sant’Efisio e PulArchàios. Guida culturale sul rapporto tra paese e città antica, senza spiagge e senza orari copiati.",
     hero: {
-      src: "/images/cultura/pula-panorama-everas.png",
+      src: "/images/cultura/pula-panorama-everas.webp",
       alt: "Panorama di Pula, Cagliari",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/pula"),
     },
@@ -2460,7 +2435,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Quartu Sant'Elena",
     description: "Quartu Sant'Elena in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/quartu-sant-elena-panorama-everas.png",
+      src: "/images/cultura/quartu-sant-elena-panorama-everas.webp",
       alt: "Quartu Sant’Elena verso il Poetto e il golfo di Cagliari",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/quartu-sant-elena"),
     },
@@ -2870,15 +2845,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "San Sperate nel Campidano: gli anni della calce del 1968, il paese museo come fatto comunitario e il Giardino Sonoro. Distinto da Orgosolo.",
     hero: {
-      src: "/images/cultura/san-sperate-panorama.webp",
-      alt: "Pietre sonore tra gli agrumi nel Giardino Sonoro di Pinuccio Sciola a San Sperate",
-      credit: {
-        author: "D.cupini",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:San_Sperate_-_Associazione_PS_Museum_-_2026-09-02_18-02-30_001.jpg",
-      },
+      src: "/images/cultura/san-sperate-panorama-everas.webp",
+      alt: "San Sperate nel Campidano, paese dei murales e degli agrumi",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/san-sperate"),
     },
     intro:
       "A San Sperate l’arte non è arrivata come decoro su un borgo già «pittoresco». Nel 1968, documenta il Comune, Pinuccio Sciola e la comunità imbiancano i muri di fango con la calce, in concomitanza con il Corpus Domini. Il muro, da confine tra casa e strada, diventa un supporto collettivo. Il Giardino Sonoro, nell’agrumeto di famiglia, è un secondo strato di quella stessa storia: pietre che suonano, museo dal 2014. Orgosolo, in Barbagia, ha un altro muralismo: un’altra scheda.",
@@ -3134,14 +3103,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Selargius e l’Antico Sposalizio Selargino: rito nuziale campidanese, costumi, luoghi e partecipazione della comunità.",
     hero: {
-      src: "/images/cultura/selargius-panorama.webp",
-      alt: "Abiti tradizionali selargini: il costume come segno del rito nuziale",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Selargius_-_Costume_tradizionale_(36).JPG",
-      },
+      src: "/images/cultura/selargius-panorama-everas.webp",
+      alt: "Selargius nel Campidano, con il centro e le case verso Cagliari",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/selargius"),
     },
     intro:
       "Selargius si legge attraverso un fatto culturale preciso: l’Antico Sposalizio Selargino — in sardo Sa Coja Antiga Cerexina. Non è una guida all’hinterland di Cagliari né un elenco di attrazioni. Qui conta il rito nuziale campidanese che la comunità ripete, con costumi, fede, musica e gesti riconosciuti.",
@@ -3784,14 +3748,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Sinnai",
     description: "Sinnai in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/sinnai-panorama.webp",
+      src: "/images/cultura/sinnai-panorama-everas.webp",
       alt: "Veduta di Sinnai in Sardegna",
-      credit: {
-        author: "antonio.cristini",
-        license: "CC BY 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Villaggio_delle_Mimose_-_panoramio.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/sinnai"),
     },
     intro: `Sinnai è paese sulle colline a est della città in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Sinnai su EVERAS.`,
     history: [
@@ -4289,7 +4248,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Barumini Su Nuraxi è Patrimonio mondiale Unesco dal 1997: scavi di Giovanni Lilliu e sistema Fondazione con Casa Zapata e Centro Lilliu.",
     hero: {
-      src: "/images/cultura/barumini-panorama-everas.png",
+      src: "/images/cultura/barumini-panorama-everas.webp",
       alt: "Il complesso nuragico Su Nuraxi a Barumini, con torre centrale e villaggio",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/barumini"),
     },
@@ -4632,7 +4591,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Villasimius",
     description: "Villasimius in Sardegna: guida al comune del Sarrabus, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/villasimius-panorama-everas.png",
+      src: "/images/cultura/villasimius-panorama-everas.webp",
       alt: "Veduta di Villasimius in Sardegna",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/villasimius"),
     },
@@ -4796,7 +4755,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Carbonia città di fondazione del 1938: piano urbanistico, gerarchia delle case, Grande Miniera di Serbariu e Museo del Carbone. Distinta da Iglesias.",
     hero: {
-      src: "/images/cultura/carbonia-panorama-everas.png",
+      src: "/images/cultura/carbonia-panorama-everas.webp",
       alt: "Piazza Roma a Carbonia, con il municipio e la chiesa di San Ponziano",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/carbonia"),
     },
@@ -4878,7 +4837,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Carloforte sull’isola di San Pietro: comunità tabarchina, lingua ligure, Polo linguistico e Museo civico Casa del Duca.",
     hero: {
-      src: "/images/cultura/carloforte-panorama-everas.png",
+      src: "/images/cultura/carloforte-panorama-everas.webp",
       alt: "Carloforte sull’isola di San Pietro, con il lungomare e le case sul porto",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/carloforte"),
     },
@@ -5015,7 +4974,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Iglesias: cattedrale di Santa Chiara, Istituto Asproni e Archivio Storico Minerario IGEA a Monteponi. Cultura del lavoro come scuola e documento, distinta da Carbonia.",
     hero: {
-      src: "/images/cultura/iglesias-panorama-everas.png",
+      src: "/images/cultura/iglesias-panorama-everas.webp",
       alt: "Facciata e campanile trecentesco della cattedrale di Santa Chiara a Iglesias",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/iglesias"),
     },
@@ -5215,7 +5174,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Sant’Antioco e l’antica Sulki/Sulci: archeologia fenicio-punica, patrimonio cristiano e tradizioni legate al culto del santo.",
     hero: {
-      src: "/images/cultura/sant-antioco-panorama-everas.png",
+      src: "/images/cultura/sant-antioco-panorama-everas.webp",
       alt: "Panorama di Sant’Antioco sul Sulcis, territorio dell’antica Sulki",
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/sant-antioco"),
     },

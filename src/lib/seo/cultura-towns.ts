@@ -131,14 +131,15 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
       },
     },
     traditionPhoto: {
-      src: "/images/cultura/pattada-coltellinaio.webp",
-      alt: "Il coltellinaio Gianmario Fogarizzu al lavoro nella bottega di Pattada",
+      src: "/images/cultura/pattada-coltellinaio-everas.webp",
+      alt: "Artigiano al lavoro sulla resolza pattadese in bottega a Pattada",
       credit: {
-        author: "Mbarrieau",
-        license: "CC BY 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Fogarizzu_knifemaker.jpg",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura-sarda/nord-sardegna/pattada",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     visitPhoto: {

@@ -489,14 +489,9 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
     excerpt:
       "Da Pattada ad Aggius, da Castelsardo ad Alghero: mestieri legati a un territorio, non a un souvenir generico.",
     hero: {
-      src: "/images/cultura/pattada-coltellinaio.webp",
-      alt: "Il coltellinaio Gianmario Fogarizzu al lavoro nella bottega di Pattada",
-      credit: {
-        author: "Mbarrieau",
-        ...CC_BY_3,
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Fogarizzu_knifemaker.jpg",
-      },
+      src: "/images/cultura/pattada-coltellinaio-everas.webp",
+      alt: "Artigiano al lavoro sulla resolza pattadese in bottega a Pattada",
+      credit: everasPhoto("/cultura-sarda/nord-sardegna/pattada"),
     },
     sections: [
       {

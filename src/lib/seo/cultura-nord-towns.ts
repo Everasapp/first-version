@@ -28,7 +28,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Sassari: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e centro.",
     hero: {
-      src: "/images/cultura/sassari-panorama-everas.png",
+      src: "/images/cultura/sassari-panorama-everas.webp",
       alt: "Panorama di Sassari sul colle, tra il centro storico e i quartieri nuovi",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/sassari"),
     },
@@ -138,7 +138,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Alghero: storia catalana, Museo del Corallo a Villa Costantino, Focs de Sant Joan e bastioni.",
     hero: {
-      src: "/images/cultura/alghero-panorama-everas.png",
+      src: "/images/cultura/alghero-panorama-everas.webp",
       alt: "Alghero vista dal mare, con le mura e il porto sul golfo",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/alghero"),
     },
@@ -228,7 +228,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Olbia, Gallura: Museo archeologico Isola Peddone, basilica di San Simplicio e festa di Mesu Maju.",
     hero: {
-      src: "/images/cultura/olbia-marina-everas.png",
+      src: "/images/cultura/olbia-marina-everas.webp",
       alt: "La marina di Olbia sul golfo, con barche e lungomare",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/olbia"),
     },
@@ -323,7 +323,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Porto Torres: basilica di San Gavino, Antiquarium Turritano, Turris Libisonis, Festha Manna e ponte romano.",
     hero: {
-      src: "/images/cultura/porto-torres-panorama-everas.png",
+      src: "/images/cultura/porto-torres-panorama-everas.webp",
       alt: "Porto Torres vista dal mare, con il porto e il golfo dell’Asinara",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/porto-torres"),
     },
@@ -418,7 +418,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "La Maddalena: Compendio Garibaldino di Caprera, Memoriale di Forte Arbuticci, porto e parco dell’arcipelago.",
     hero: {
-      src: "/images/cultura/la-maddalena-panorama-everas.png",
+      src: "/images/cultura/la-maddalena-panorama-everas.webp",
       alt: "La Maddalena vista dal mare, con il paese sull’isola",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/la-maddalena"),
     },
@@ -511,7 +511,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Arzachena, Gallura: Museo Ruzittu, necropoli di Li Muri, nuraghe Albucciu. La Costa Smeralda è un altro pezzo del comune.",
     hero: {
-      src: "/images/cultura/arzachena-panorama-everas.png",
+      src: "/images/cultura/arzachena-panorama-everas.webp",
       alt: "Panorama di Arzachena tra i graniti della Gallura",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/arzachena"),
     },
@@ -597,7 +597,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Castelsardo il MIM documenta l’intreccio di fibre vegetali; il Lunissanti è il rito della Confraternita di Santa Croce verso Tergu. Non una guida al borgo.",
     hero: {
-      src: "/images/cultura/castelsardo-panorama-everas.png",
+      src: "/images/cultura/castelsardo-panorama-everas.webp",
       alt: "Castelsardo sul promontorio, con il castello dei Doria sul mare dell’Asinara",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/castelsardo"),
     },
@@ -681,15 +681,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Aggius, Gallura: Museo etnografico MEOC, Museo del Banditismo, tappeti, coro e Valle della Luna.",
     hero: {
-      src: "/images/cultura/aggius-panorama.webp",
+      src: "/images/cultura/aggius-panorama-everas.webp",
       alt: "Panorama di Aggius ai piedi dei monti di granito, in Gallura",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Aggius,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/aggius"),
     },
     visitPhoto: {
       src: "/images/cultura/aggius-valle-luna.webp",
@@ -776,7 +770,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Tempio Pausania: centro in granito, Museo Bernardo De Muro, macchine del sughero, carnevale timpiesu e Limbara.",
     hero: {
-      src: "/images/cultura/tempio-panorama-everas.png",
+      src: "/images/cultura/tempio-panorama-everas.webp",
       alt: "Panorama di Tempio Pausania, la città di granito ai piedi del Limbara",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/tempio-pausania"),
     },
@@ -864,15 +858,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Ozieri, Logudoro: Civico Museo Archeologico, cultura di Ozieri, basilica di Bisarcio, altane e Premio Ozieri.",
     hero: {
-      src: "/images/cultura/ozieri-panorama.webp",
+      src: "/images/cultura/ozieri-panorama-everas.webp",
       alt: "Panorama di Ozieri sull’anfiteatro del Logudoro",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Ozieri_-_Panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/ozieri"),
     },
     visitPhoto: {
       src: "/images/cultura/ozieri-chilivani.webp",
@@ -958,7 +946,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Stintino: pescatori dell’Asinara, MUT Museo della Tonnara e Tonnara Saline. La Pelosa è costa, non il paese.",
     hero: {
-      src: "/images/cultura/stintino-panorama-everas.png",
+      src: "/images/cultura/stintino-panorama-everas.webp",
       alt: "Stintino visto dal mare, con la lingua di terra della Nurra",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/stintino"),
     },
@@ -1043,7 +1031,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Palau, Gallura: Roccia dell’Orso monumento naturale, Fortezza di Monte Altura e Museo etnografico. Non solo lo scalo per La Maddalena.",
     hero: {
-      src: "/images/cultura/palau-panorama-everas.png",
+      src: "/images/cultura/palau-panorama-everas.webp",
       alt: "Panorama di Palau sul golfo, tra case e mare della Gallura",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/palau"),
     },
@@ -1178,15 +1166,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Santa Teresa Gallura: Torre di Longonsardo, Capo Testa e Stretto di Bonifacio.",
     hero: {
-      src: "/images/cultura/santa-teresa-panorama.webp",
+      src: "/images/cultura/santa-teresa-panorama-everas.webp",
       alt: "Panorama di Santa Teresa Gallura sulla costa dello Stretto",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Santa_Teresa_Gallura_-_Panorama_(01).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/santa-teresa-gallura"),
     },
     visitPhoto: {
       src: "/images/cultura/santa-teresa-torre.webp",
@@ -1274,15 +1256,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Sorso, Romangia: chiesa Noli Me Tollere, vino e Carnevale. Platamona è la costa del comune.",
     hero: {
-      src: "/images/cultura/sorso-panorama.webp",
+      src: "/images/cultura/sorso-panorama-everas.webp",
       alt: "Panorama di Sorso sulla piana della Romangia",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Sorso_-_Panorama_(01).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/sorso"),
     },
     visitPhoto: {
       src: "/images/cultura/sorso-arboriamar.webp",
@@ -1370,15 +1346,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Ittiri, Logudoro: costume tradizionale, chiese e paese alto tra Sassari e l’interno.",
     hero: {
-      src: "/images/cultura/ittiri-panorama.webp",
+      src: "/images/cultura/ittiri-panorama-everas.webp",
       alt: "Panorama di Ittiri sul colle del Logudoro",
-      credit: {
-        author: "Giovanniittiri",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_di_Ittiri.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/ittiri"),
     },
     traditionPhoto: {
       src: "/images/cultura/ittiri-costume.webp",
@@ -1467,15 +1437,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Calangianus, Gallura interna: Museo del Sughero, filiera del sughero e paese granitico.",
     hero: {
-      src: "/images/cultura/calangianus-panorama.webp",
+      src: "/images/cultura/calangianus-panorama-everas.webp",
       alt: "Panorama di Calangianus tra sugherete e granito della Gallura",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Calangianus_-_Panorama_(01).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/calangianus"),
     },
     visitPhoto: {
       src: "/images/cultura/calangianus-museo-sughero.webp",
@@ -1565,15 +1529,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Valledoria, Anglona: foce del Coghinas. San Pietro a Mare è la frazione-spiaggia, non il comune.",
     hero: {
-      src: "/images/cultura/valledoria-panorama.webp",
+      src: "/images/cultura/valledoria-panorama-everas.webp",
       alt: "Panorama di Valledoria sulla piana verso il mare",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Valledoria_-_Panorama_(01).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/valledoria"),
     },
     visitPhoto: {
       src: "/images/cultura/valledoria-san-pietro.webp",

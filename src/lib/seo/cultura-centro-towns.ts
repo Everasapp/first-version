@@ -55,14 +55,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Aritzo",
     description: "Aritzo in Sardegna: guida al comune del Mandrolisai, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/aritzo-panorama.webp",
+      src: "/images/cultura/aritzo-panorama-everas.webp",
       alt: "Veduta di Aritzo in Sardegna",
-      credit: {
-        author: "Autore sconosciuto",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Aritzo_(xilografia).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/aritzo"),
     },
     intro: `Aritzo è paese delle castagne in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Aritzo su EVERAS.`,
     history: [
@@ -223,7 +218,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Baunei",
     description: "Baunei in Sardegna: guida al comune dell'Ogliastra, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/baunei-panorama-everas.png",
+      src: "/images/cultura/baunei-panorama-everas.webp",
       alt: "Veduta di Baunei in Sardegna",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/baunei"),
     },
@@ -492,7 +487,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Bosa sul Temo: centro storico, Castello di Serravalle e Museo delle Conce. Fondazione Bosa, Casa Deriu. Malvasia nella guida alla cucina, non in questa scheda.",
     hero: {
-      src: "/images/cultura/bosa-panorama-everas.png",
+      src: "/images/cultura/bosa-panorama-everas.webp",
       alt: "Bosa sul Temo, con le case colorate e il castello di Serravalle sul colle",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/bosa"),
     },
@@ -574,7 +569,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Tharros a Capo San Marco, Corsa degli Scalzi, bottarga di muggine e stagni del Sinis: Cabras come ingresso territoriale, con fonti comunali e hub EVERAS.",
     hero: {
-      src: "/images/cultura/cabras-panorama-everas.png",
+      src: "/images/cultura/cabras-panorama-everas.webp",
       alt: "Panorama di Cabras, Oristano",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/cabras"),
     },
@@ -736,7 +731,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Dorgali il museo civico e il villaggio nuragico di Serra Orrios. Cala Gonone è frazione: questa scheda non è una guida alle calette.",
     hero: {
-      src: "/images/cultura/dorgali-panorama-everas.png",
+      src: "/images/cultura/dorgali-panorama-everas.webp",
       alt: "Panorama di Cala Gonone, frazione di Dorgali",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/dorgali"),
     },
@@ -808,14 +803,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Fonni",
     description: "Fonni in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/fonni-panorama.webp",
+      src: "/images/cultura/fonni-panorama-everas.webp",
       alt: "Veduta di Fonni in Sardegna",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Fonni_-_Urthos_e_Buttudos_(05).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/fonni"),
     },
     intro: `Fonni è il comune più alto dell’isola in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Fonni su EVERAS.`,
     history: [
@@ -920,14 +910,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Gavoi",
     description: "Gavoi in Sardegna: guida al comune della Barbagia, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/gavoi-panorama.webp",
+      src: "/images/cultura/gavoi-panorama-everas.webp",
       alt: "Veduta di Gavoi in Sardegna",
-      credit: {
-        author: "Leontetudan",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Lucian_Dan_Teodorovici_at_Gavoi_(Sardegna).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/gavoi"),
     },
     intro: `Gavoi è paese del festival Isola delle Storie in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Gavoi su EVERAS.`,
     history: [
@@ -1032,14 +1017,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Lanusei",
     description: "Lanusei in Sardegna: guida al comune dell'Ogliastra, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/lanusei-panorama.webp",
+      src: "/images/cultura/lanusei-panorama-everas.webp",
       alt: "Veduta di Lanusei in Sardegna",
-      credit: {
-        author: "Autore sconosciuto",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Lanusei_(xilografia).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/lanusei"),
     },
     intro: `Lanusei è città vescovile dell’Ogliastra in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Lanusei su EVERAS.`,
     history: [
@@ -1256,14 +1236,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Macomer",
     description: "Macomer in Sardegna: guida al comune del Marghine, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/macomer-panorama.webp",
+      src: "/images/cultura/macomer-panorama-everas.webp",
       alt: "Veduta di Macomer in Sardegna",
-      credit: {
-        author: "Japs 88",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_from_macomer.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/macomer"),
     },
     intro: `Macomer è crocevia del Marghine in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Macomer su EVERAS.`,
     history: [
@@ -1313,7 +1288,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Mamoiada, Barbagia: carnevale dei mamuthones e issohadores e Museo delle Maschere Mediterranee.",
     hero: {
-      src: "/images/cultura/mamoiada-panorama-everas.png",
+      src: "/images/cultura/mamoiada-panorama-everas.webp",
       alt: "Panorama di Mamoiada nella Barbagia di Ollolai",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/mamoiada"),
     },
@@ -1462,7 +1437,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Nuoro: Museo ISRE, MAN, casa Deledda e sagra del Redentore sul monte Ortobene.",
     hero: {
-      src: "/images/cultura/nuoro-panorama-everas.png",
+      src: "/images/cultura/nuoro-panorama-everas.webp",
       alt: "Nuoro vista dal parco di colle Sant’Onofrio, verso il monte Ortobene",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/nuoro"),
     },
@@ -1557,7 +1532,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Oliena tra Supramonte e Valle di Lanaittu: archeologia nuragica e paleolitica, patrimonio del paese e tradizioni della comunità.",
     hero: {
-      src: "/images/cultura/oliena-panorama-everas.png",
+      src: "/images/cultura/oliena-panorama-everas.webp",
       alt: "Panorama di Oliena ai piedi del Supramonte",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/oliena"),
     },
@@ -1973,7 +1948,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Orgosolo in Barbagia: sistema museale Miradas, Sonos e Radichinas, murales e sguardi sul paese. Il canto a tenore sta nella guida alla musica.",
     hero: {
-      src: "/images/cultura/orgosolo-panorama-everas.png",
+      src: "/images/cultura/orgosolo-panorama-everas.webp",
       alt: "Panorama di Orgosolo, Nuoro",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/orgosolo"),
     },
@@ -2041,7 +2016,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Oristano: Sa Sartiglia, giudicato d’Arborea, Antiquarium arborense e torre di Mariano.",
     hero: {
-      src: "/images/cultura/oristano-panorama-everas.png",
+      src: "/images/cultura/oristano-panorama-everas.webp",
       alt: "La torre di Mariano II a Oristano, in piazza Roma",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/oristano"),
     },
@@ -2126,7 +2101,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Orosei",
     description: "Orosei in Sardegna: guida al comune della Baronia, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/orosei-panorama-everas.png",
+      src: "/images/cultura/orosei-panorama-everas.webp",
       alt: "Veduta di Orosei in Sardegna",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/orosei"),
     },
@@ -2727,14 +2702,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Siniscola",
     description: "Siniscola in Sardegna: guida al comune della Baronia, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/siniscola-panorama.webp",
+      src: "/images/cultura/siniscola-panorama-everas.webp",
       alt: "Veduta di Siniscola in Sardegna",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Siniscola_-_Chiesa_di_Sant'Efisio_(03).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/siniscola"),
     },
     intro: `Siniscola è comune della Baronia verso Capo Comino in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Siniscola su EVERAS.`,
     history: [
@@ -2895,14 +2865,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Tonara",
     description: "Tonara in Sardegna: guida al comune della Barbagia di Belvì, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/tonara-panorama.webp",
+      src: "/images/cultura/tonara-panorama-everas.webp",
       alt: "Veduta di Tonara in Sardegna",
-      credit: {
-        author: "Ferrero della Marmora, Alberto, conte, 1789-1863 Meneghini, Giuseppe, 1811-1889 Studiati, Cesare",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Voyage_en_Sardaigne,_de_1819_à_1825;_ou,_Description_statistique,_physique_et_politique_de_cette_île,_avec_des_recherches_sur_ses_productions_naturelles_et_ses_antiquités;_(IA_voyageensardaign31ferr).pdf",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/tonara"),
     },
     intro: `Tonara è paese del torrone in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Tonara su EVERAS.`,
     history: [
@@ -2951,14 +2916,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Tortolì",
     description: "Tortolì in Sardegna: guida al comune dell'Ogliastra, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/tortoli-panorama.webp",
+      src: "/images/cultura/tortoli-panorama-everas.webp",
       alt: "Veduta di Tortolì in Sardegna",
-      credit: {
-        author: "Autore sconosciuto",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Tortolì_(xilografia).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/tortoli"),
     },
     intro: `Tortolì è capoluogo dell’Ogliastra verso Arbatax in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Tortolì su EVERAS.`,
     history: [
@@ -3008,7 +2968,7 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Zeddiani in Sardegna: guida al comune del Campidano di Oristano, chiesa di San Pietro, sagra del pomodoro e eventi su EVERAS.",
     hero: {
-      src: "/images/cultura/zeddiani-panorama-everas.png",
+      src: "/images/cultura/zeddiani-panorama-everas.webp",
       alt: "Zeddiani nel Campidano di Oristano, tra campi coltivati e case della pianura",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/zeddiani"),
     },
