@@ -15,6 +15,7 @@ import {
   type ImportTriggeredBy,
 } from "@/src/lib/cron/import-runs";
 import { normalizeEventCategories } from "@/src/lib/event-categories";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import {
   normalizeEventDescription,
@@ -61,13 +62,15 @@ function buildStartAt(date: string, time: string) {
   return `${date}T${t}:00${offset}`;
 }
 
-function isUpcoming(startAt: string | null) {
-  if (!startAt) return true;
+/** Solo eventi ancora attivi sul sito pubblico (giornata Rome / end_at). */
+function isImportableSchedule(
+  startAt: string | null | undefined,
+  endAt: string | null | undefined = null,
+) {
+  if (!startAt?.trim()) return false;
   const parsed = new Date(startAt);
-  if (Number.isNaN(parsed.getTime())) return true;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return parsed >= today;
+  if (Number.isNaN(parsed.getTime())) return false;
+  return isPublicEventActive(startAt, endAt ?? null);
 }
 
 const MIN_DESCRIPTION_CHARS = 280;
@@ -230,19 +233,19 @@ function datesOverlap(
   return a0 <= b1 && b0 <= a1;
 }
 
-async function loadExistingUpcomingEvents(supabase: SupabaseClient) {
+async function loadExistingEventsForDedupe(supabase: SupabaseClient) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const fromDate = new Date(today);
-  fromDate.setDate(fromDate.getDate() - 40);
+  fromDate.setDate(fromDate.getDate() - 120);
   const { data, error } = await supabase
     .from("events")
     .select("title, municipality, start_at, end_at")
-    .in("status", ["published", "pending"])
+    .in("status", ["published", "pending", "draft"])
     .or(
-      `end_at.gte.${today.toISOString()},start_at.gte.${fromDate.toISOString()}`,
+      `end_at.gte.${fromDate.toISOString()},start_at.gte.${fromDate.toISOString()}`,
     )
-    .limit(3000);
+    .limit(5000);
 
   if (error) throw new Error(error.message);
   return (data || []) as ExistingEventRow[];
@@ -259,7 +262,9 @@ function isDuplicateOfExisting(
   const startIso = `${startDate}T00:00:00`;
   const endIso = endDate ? `${endDate}T23:59:59` : startIso;
   return existing.some((row) => {
-    if (row.municipality.trim().toLocaleLowerCase("it") !== city) return false;
+    const rowCity = (row.municipality || "").trim().toLocaleLowerCase("it");
+    // Se entrambi i comuni sono noti e diversi → non è lo stesso evento.
+    if (city && rowCity && rowCity !== city) return false;
     if (!titlesLookAlike(title, row.title)) return false;
     return datesOverlap(startIso, endIso, row.start_at, row.end_at);
   });
@@ -486,7 +491,10 @@ async function fetchListingCandidates(
   for (const item of result.listing.candidates) {
     const urlKey = normalizeSourceUrl(item.url);
     if (existingUrls.has(urlKey) || seen.has(urlKey)) continue;
-    if (!isUpcoming(item.startAt)) continue;
+    // Data nota e già scaduta → salta. Senza data: si valuta dopo l'extract.
+    if (item.startAt && !isImportableSchedule(item.startAt, item.endAt)) {
+      continue;
+    }
     seen.add(urlKey);
     candidates.push({ ...item, listingLabel: source.label });
   }
@@ -503,6 +511,7 @@ async function importOneCandidate(
   adminUserId: string,
   candidate: ListingCandidate,
   existingEvents: ExistingEventRow[],
+  existingUrls: Set<string>,
   publish: boolean,
 ): Promise<
   | { kind: "created"; row: ExistingEventRow & { id: string; slug: string; source_url: string } }
@@ -511,6 +520,11 @@ async function importOneCandidate(
   | { kind: "error"; error: string }
 > {
   try {
+    const candidateUrlKey = normalizeSourceUrl(candidate.url);
+    if (existingUrls.has(candidateUrlKey)) {
+      return { kind: "duplicate" };
+    }
+
     const extracted = await extractEventFromUrl(candidate.url);
     if (!extracted.ok || !extracted.draft) {
       return {
@@ -532,6 +546,16 @@ async function importOneCandidate(
     if (!editable.sourceName.trim()) {
       editable.sourceName = candidate.listingLabel;
     }
+    if (!editable.sourceUrl.trim()) {
+      editable.sourceUrl = candidate.url;
+    }
+
+    const sourceUrlKey = normalizeSourceUrl(
+      editable.sourceUrl.trim() || candidate.url,
+    );
+    if (existingUrls.has(sourceUrlKey)) {
+      return { kind: "duplicate" };
+    }
 
     if (
       !editable.title.trim() ||
@@ -539,6 +563,24 @@ async function importOneCandidate(
       !editable.startDate.trim()
     ) {
       return { kind: "skipped", reason: "titolo, comune o data mancanti" };
+    }
+
+    const startAt = buildStartAt(
+      editable.startDate.trim(),
+      editable.startTime.trim(),
+    );
+    let endAt: string | null = null;
+    if (editable.endDate.trim()) {
+      endAt = buildStartAt(
+        editable.endDate.trim(),
+        editable.endTime.trim() || "23:59",
+      );
+    } else if (editable.endTime.trim() && editable.startTime.trim()) {
+      endAt = buildStartAt(editable.startDate.trim(), editable.endTime.trim());
+    }
+
+    if (!isImportableSchedule(startAt, endAt)) {
+      return { kind: "skipped", reason: "evento scaduto" };
     }
 
     const mediaReason = missingMediaReason(editable);
@@ -567,8 +609,8 @@ async function importOneCandidate(
         title: row.title as string,
         municipality: row.municipality as string,
         start_at: row.start_at as string,
-        end_at: null,
-        source_url: candidate.url,
+        end_at: endAt,
+        source_url: editable.sourceUrl.trim() || candidate.url,
       },
     };
   } catch (error) {
@@ -714,7 +756,7 @@ export async function discoverAndImportEventDrafts({
       )
     : LISTING_SOURCES;
   const existingUrls = await loadExistingSourceUrls(supabase);
-  const existingEvents = await loadExistingUpcomingEvents(supabase);
+  const existingEvents = await loadExistingEventsForDedupe(supabase);
   const resolvedBatchId = batchId || crypto.randomUUID();
   const globalLimit = Math.max(0, limit);
 
@@ -834,6 +876,7 @@ export async function discoverAndImportEventDrafts({
       adminUserId,
       candidate,
       existingEvents,
+      existingUrls,
       publish,
     );
     queue.cursor += 1;
@@ -841,6 +884,7 @@ export async function discoverAndImportEventDrafts({
     if (outcome.kind === "created") {
       queue.imported.push(outcome.row);
       existingUrls.add(normalizeSourceUrl(outcome.row.source_url));
+      existingUrls.add(normalizeSourceUrl(candidate.url));
       existingEvents.push({
         title: outcome.row.title,
         municipality: outcome.row.municipality,
