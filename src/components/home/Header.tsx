@@ -110,8 +110,8 @@ export default function Header() {
           <Image
             src="/images/everas-logo-v2.webp"
             alt="EVERAS"
-            width={180}
-            height={66}
+            width={480}
+            height={176}
             priority
             unoptimized
             className="h-9 w-auto sm:h-12 md:h-14"

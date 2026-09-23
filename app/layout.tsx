@@ -6,6 +6,7 @@ import Script from "next/script";
 import Footer from "@/src/components/home/Footer";
 import PWAInstallBanner from "@/src/components/PWAInstallBanner";
 import PWARegister from "@/src/components/PWARegister";
+import GoogleConsentDefaults from "@/src/components/seo/GoogleConsentDefaults";
 import JsonLd from "@/src/components/seo/JsonLd";
 import {
   organizationSchema,
@@ -94,11 +95,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full min-w-0 flex-col">
+        <GoogleConsentDefaults />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5513319548780658"
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />

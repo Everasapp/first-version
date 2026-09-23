@@ -5,13 +5,13 @@ import LegalPage from "@/src/components/home/LegalPage";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "Cookie e tecnologie simili su EVERAS: tecnici, Analytics e pubblicità Google AdSense.",
+    "Cookie e tecnologie simili su EVERAS: tecnici, Analytics, AdSense e consenso Privacy & messaging.",
   alternates: { canonical: "/cookie" },
 };
 
 export default function CookiePage() {
   return (
-    <LegalPage title="Cookie Policy" updatedAt="21 settembre 2026">
+    <LegalPage title="Cookie Policy" updatedAt="22 settembre 2026">
       <p>
         EVERAS utilizza cookie e tecnologie simili per garantire il
         funzionamento del sito, mantenere la sessione di accesso e migliorare
@@ -22,23 +22,25 @@ export default function CookiePage() {
         autenticazione e preferenze di navigazione).
       </p>
       <p>
-        In produzione è attivo Google Analytics, che può impostare cookie o
-        tecnologie analoghe per misurare in forma aggregata come viene usato il
-        sito. È inoltre presente Google AdSense, che può usare cookie o
-        tecnologie analoghe per finalità pubblicitarie, secondo le policy di
-        Google e dei suoi partner.
+        In produzione sono presenti Google Analytics e Google AdSense, che
+        possono impostare cookie o tecnologie analoghe per misurazione
+        aggregata e finalità pubblicitarie, secondo le policy di Google e dei
+        suoi partner.
       </p>
       <p>
-        EVERAS non offre un pannello di gestione cookie proprio. Puoi
-        controllare o disabilitare i cookie dalle impostazioni del browser e,
-        per gli annunci Google, dalle{" "}
+        Per UE, Regno Unito e Svizzera, quando è attivo, EVERAS mostra il
+        messaggio di consenso Privacy &amp; messaging di Google (CMP
+        certificato). Fino al consenso, cookie analitici e pubblicitari restano
+        non abilitati di default (Google Consent Mode). Puoi accettare,
+        rifiutare o gestire le opzioni dal banner; in seguito puoi tornare sulle
+        preferenze quando il messaggio lo consente. Impostazioni annunci Google:{" "}
         <a
           href="https://adssettings.google.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-[#075EAE] hover:underline"
         >
-          Impostazioni annunci Google
+          adssettings.google.com
         </a>
         . Informativa privacy di Google:{" "}
         <a

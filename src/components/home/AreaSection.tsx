@@ -26,14 +26,6 @@ const AREA_CITY_HUBS: Record<City["area"], string[]> = {
 
 const AUTOPLAY_MS = 4500;
 
-function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
-  return (
-    card.getBoundingClientRect().left -
-    scroller.getBoundingClientRect().left +
-    scroller.scrollLeft
-  );
-}
-
 export default function AreaSection({
   title,
   area,
@@ -59,11 +51,17 @@ export default function AreaSection({
     );
     if (cards.length === 0) return;
 
-    const current = scroller.scrollLeft;
-    let activeIndex = 0;
+    // Batch geometry reads before any style writes (avoids layout thrashing).
+    const scrollLeft = scroller.scrollLeft;
+    const scrollerLeft = scroller.getBoundingClientRect().left;
+    const offsets = cards.map(
+      (card) =>
+        card.getBoundingClientRect().left - scrollerLeft + scrollLeft,
+    );
 
-    for (let i = 0; i < cards.length; i += 1) {
-      if (cardOffsetLeft(cards[i], scroller) <= current + 12) {
+    let activeIndex = 0;
+    for (let i = 0; i < offsets.length; i += 1) {
+      if (offsets[i] <= scrollLeft + 12) {
         activeIndex = i;
       }
     }
@@ -76,7 +74,7 @@ export default function AreaSection({
       nextIndex = Math.max(0, Math.min(cards.length - 1, nextIndex));
     }
 
-    const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
+    const targetLeft = offsets[nextIndex];
 
     if (snapRestoreTimerRef.current !== null) {
       window.clearTimeout(snapRestoreTimerRef.current);
@@ -122,9 +120,9 @@ export default function AreaSection({
             alt={title}
             title={title}
             fill
-            sizes="(max-width: 1280px) 100vw, 1280px"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1280px"
+            quality={70}
             className="object-cover"
-            priority
           />
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />

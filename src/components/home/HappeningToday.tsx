@@ -54,14 +54,6 @@ function interleaveByArea(events: EventCardData[]): EventCardData[] {
   return [...result, ...other];
 }
 
-function cardOffsetLeft(card: HTMLElement, scroller: HTMLElement) {
-  return (
-    card.getBoundingClientRect().left -
-    scroller.getBoundingClientRect().left +
-    scroller.scrollLeft
-  );
-}
-
 export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
@@ -84,11 +76,17 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     );
     if (cards.length === 0) return;
 
-    const current = scroller.scrollLeft;
-    let activeIndex = 0;
+    // Batch geometry reads before any style writes (avoids layout thrashing).
+    const scrollLeft = scroller.scrollLeft;
+    const scrollerLeft = scroller.getBoundingClientRect().left;
+    const offsets = cards.map(
+      (card) =>
+        card.getBoundingClientRect().left - scrollerLeft + scrollLeft,
+    );
 
-    for (let i = 0; i < cards.length; i += 1) {
-      if (cardOffsetLeft(cards[i], scroller) <= current + 12) {
+    let activeIndex = 0;
+    for (let i = 0; i < offsets.length; i += 1) {
+      if (offsets[i] <= scrollLeft + 12) {
         activeIndex = i;
       }
     }
@@ -101,7 +99,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
       nextIndex = Math.max(0, Math.min(cards.length - 1, nextIndex));
     }
 
-    const targetLeft = cardOffsetLeft(cards[nextIndex], scroller);
+    const targetLeft = offsets[nextIndex];
 
     if (snapRestoreTimerRef.current !== null) {
       window.clearTimeout(snapRestoreTimerRef.current);
@@ -192,13 +190,13 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {orderedEvents.map((event) => (
+              {orderedEvents.map((event, index) => (
                 <div
                   key={event.eventId}
                   data-today-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  <EventCard event={event} />
+                  <EventCard event={event} priority={index === 0} />
                 </div>
               ))}
             </div>

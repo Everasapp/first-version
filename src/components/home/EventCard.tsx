@@ -50,6 +50,8 @@ export type EventCardData = {
 
 type EventCardProps = {
   event: EventCardData;
+  /** First above-the-fold card: eager load + fetchpriority=high for LCP. */
+  priority?: boolean;
 };
 
 function formatEventPlace(event: EventCardData): string {
@@ -67,7 +69,10 @@ function formatEventPlace(event: EventCardData): string {
   return city || venue || "";
 }
 
-export default function EventCard({ event }: EventCardProps) {
+export default function EventCard({
+  event,
+  priority = false,
+}: EventCardProps) {
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
   const categoryLabels =
     event.categories?.length ? event.categories : [event.category];
@@ -82,6 +87,8 @@ export default function EventCard({ event }: EventCardProps) {
           title={event.title}
           fill
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 352px"
+          quality={55}
+          priority={priority}
           className="object-cover transition duration-500 group-hover:scale-105"
           unoptimized={
             !(

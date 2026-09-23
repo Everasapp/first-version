@@ -5,13 +5,13 @@ import LegalPage from "@/src/components/home/LegalPage";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Come EVERAS tratta i dati personali, inclusa l’uso di Google Analytics e Google AdSense.",
+    "Come EVERAS tratta i dati personali, inclusa l’uso di Google Analytics, Google AdSense e il consenso cookie.",
   alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updatedAt="21 settembre 2026">
+    <LegalPage title="Privacy Policy" updatedAt="22 settembre 2026">
       <p>
         EVERAS tratta i dati personali degli utenti per erogare il servizio di
         scoperta e pubblicazione eventi in Sardegna, gestire gli account e
@@ -50,6 +50,25 @@ export default function PrivacyPage() {
         dichiara il rapporto con Google AdSense.
       </p>
       <p>
+        Per gli utenti nello Spazio economico europeo, nel Regno Unito e in
+        Svizzera, EVERAS utilizza Google Consent Mode e il messaggio di consenso
+        Privacy &amp; messaging di Google (CMP certificato, framework IAB TCF)
+        quando è attivo sul sito. In assenza di consenso, cookie analitici e
+        pubblicitari restano disattivati di default; dopo la scelta, Analytics e
+        AdSense ricevono gli stati aggiornati. Puoi modificare le preferenze dal
+        banner di consenso quando viene mostrato. Per le impostazioni annunci
+        Google:{" "}
+        <a
+          href="https://adssettings.google.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-[#075EAE] hover:underline"
+        >
+          adssettings.google.com
+        </a>
+        .
+      </p>
+      <p>
         Per maggiori dettagli su come Google tratta i dati:{" "}
         <a
           href="https://policies.google.com/privacy"
@@ -59,22 +78,8 @@ export default function PrivacyPage() {
         >
           Privacy Policy di Google
         </a>
-        . Per le impostazioni relative agli annunci:{" "}
-        <a
-          href="https://adssettings.google.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-[#075EAE] hover:underline"
-        >
-          Impostazioni annunci Google
-        </a>
-        .
-      </p>
-      <p>
-        EVERAS non implementa un banner di consenso cookie dedicato. Puoi
-        gestire o limitare cookie e tecnologie simili anche dalle impostazioni
-        del browser. Per esercitare i tuoi diritti o ricevere maggiori
-        informazioni puoi scriverci a{" "}
+        . Per esercitare i tuoi diritti o ricevere maggiori informazioni puoi
+        scriverci a{" "}
         <a
           href="mailto:info@everas.it"
           className="font-semibold text-[#075EAE] hover:underline"
