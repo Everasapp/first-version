@@ -92,14 +92,7 @@ export type EventListFilters = {
   slugs?: string[];
 };
 
-export const loadFilteredPublishedEvents = cache(
-  async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
-  const supabase = await createClient();
-  const [{ data, error }, favoriteIds] = await Promise.all([
-    supabase
-      .from("events")
-      .select(
-        `
+const PUBLISHED_EVENT_SELECT = `
         id,
         title,
         description,
@@ -121,14 +114,44 @@ export const loadFilteredPublishedEvents = cache(
         views_count,
         favorites_count,
         shares_count
-      `,
-      )
+      `;
+
+/** PostgREST caps a single response; page until we have every published row. */
+async function fetchAllPublishedEventRows(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) {
+  const pageSize = 1000;
+  const rows: PublishedEventRow[] = [];
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("events")
+      .select(PUBLISHED_EVENT_SELECT)
       .eq("status", "published")
-      .order("start_at", { ascending: true }),
+      .order("start_at", { ascending: true })
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      return { rows, error };
+    }
+    const chunk = (data ?? []) as PublishedEventRow[];
+    rows.push(...chunk);
+    if (chunk.length < pageSize) {
+      return { rows, error: null };
+    }
+    from += pageSize;
+  }
+}
+
+export const loadFilteredPublishedEvents = cache(
+  async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
+  const supabase = await createClient();
+  const [{ rows, error }, favoriteIds] = await Promise.all([
+    fetchAllPublishedEventRows(supabase),
     getCurrentUserFavoriteIds(),
   ]);
 
-  const rows = (data ?? []) as PublishedEventRow[];
   const now = new Date();
   const dateRange = filters.date ? getDateRange(filters.date) : null;
 

@@ -208,9 +208,13 @@ export default async function EventsPage({
   const dateRange = getDateRange(selectedDate);
 
   const supabase = await createClient();
+  const pageSize = 1000;
+  const databaseEvents: DatabaseEvent[] = [];
+  let from = 0;
+  let error: { message: string } | null = null;
 
-  const [{ data, error }, favoriteIds] = await Promise.all([
-    supabase
+  while (true) {
+    const page = await supabase
       .from("events")
       .select(
         `
@@ -238,11 +242,20 @@ export default async function EventsPage({
       `,
       )
       .eq("status", "published")
-      .order("start_at", { ascending: true }),
-    getCurrentUserFavoriteIds(),
-  ]);
+      .order("start_at", { ascending: true })
+      .range(from, from + pageSize - 1);
 
-  const databaseEvents = (data ?? []) as DatabaseEvent[];
+    if (page.error) {
+      error = page.error;
+      break;
+    }
+    const chunk = (page.data ?? []) as DatabaseEvent[];
+    databaseEvents.push(...chunk);
+    if (chunk.length < pageSize) break;
+    from += pageSize;
+  }
+
+  const favoriteIds = await getCurrentUserFavoriteIds();
   const now = new Date();
 
   const filteredEvents = databaseEvents

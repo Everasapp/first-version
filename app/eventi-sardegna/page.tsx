@@ -168,16 +168,16 @@ export default async function EventiSardegnaHubPage() {
   const sagreTake = takeMatching(
     pool,
     (event) => eventMatchesSlugs(event, SAGRE_CATEGORY_SLUGS),
-    9,
+    pool.length,
   );
   pool = sagreTake.remaining;
   const concertiTake = takeMatching(
     pool,
     (event) => eventMatchesSlugs(event, CONCERTI_CATEGORY_SLUGS),
-    9,
+    pool.length,
   );
   pool = concertiTake.remaining;
-  const freeTake = takeMatching(pool, (event) => event.isFree, 9);
+  const freeTake = takeMatching(pool, (event) => event.isFree, pool.length);
   pool = freeTake.remaining;
 
   const sections = [
@@ -231,7 +231,7 @@ export default async function EventiSardegnaHubPage() {
           {
             id: "prossimi",
             title: "Altri prossimi eventi",
-            events: pool.slice(0, 12),
+            events: pool,
           },
         ]
       : []),
@@ -239,7 +239,7 @@ export default async function EventiSardegnaHubPage() {
 
   const listedInSections = sections.flatMap((section) => section.events);
   const upcoming =
-    listedInSections.length > 0 ? listedInSections.slice(0, 36) : events.slice(0, 24);
+    listedInSections.length > 0 ? listedInSections : events;
 
   const faqs = [
     {

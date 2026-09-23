@@ -6,6 +6,11 @@ export const MAX_EVENT_CATEGORIES = 3;
 const LEGACY_CATEGORY_ALIASES: Record<string, string> = {
   spettacoli: "musica-concerti",
   "musica e concerti": "musica-concerti",
+  teatro: "musica-concerti",
+  enogastronomia: "food-drink",
+  "outdoor-natura": "sport-competizioni",
+  outdoor: "sport-competizioni",
+  natura: "sport-competizioni",
 };
 
 const validSlugs = new Set(categories.map((category) => category.slug));

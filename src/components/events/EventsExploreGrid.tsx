@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalendarDays, LocateFixed, MapPin } from "lucide-react";
 
 import EventCard, {
@@ -14,16 +14,30 @@ import {
 
 type EventsExploreGridProps = {
   events: EventCardData[];
+  /** Card renderizzate al primo paint (sopra la piega). */
+  initialCount?: number;
+  /** Quante card aggiungere a ogni “pagina” allo scroll. */
+  batchSize?: number;
 };
+
+const DEFAULT_INITIAL = 9;
+const DEFAULT_BATCH = 9;
 
 /**
  * Griglia Esplora / ricerca:
  * - di default → per data (dal più vicino a oggi)
  * - «Ordina vicino a me» → prima i più vicini (opt-in)
+ * - render progressivo: altre card solo quando il sentinello entra in viewport
  */
-export default function EventsExploreGrid({ events }: EventsExploreGridProps) {
+export default function EventsExploreGrid({
+  events,
+  initialCount = DEFAULT_INITIAL,
+  batchSize = DEFAULT_BATCH,
+}: EventsExploreGridProps) {
   const { coords, hasLocation, status, requestLocation } = useUserLocation();
   const [sortByNearby, setSortByNearby] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(initialCount);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const useNearby =
     sortByNearby &&
@@ -38,11 +52,49 @@ export default function EventsExploreGrid({ events }: EventsExploreGridProps) {
     return sortEventsByUpcomingDate(events);
   }, [coords, events, useNearby]);
 
+  // Reset window when the list or sort mode changes.
+  useEffect(() => {
+    setVisibleCount(Math.min(initialCount, orderedEvents.length || initialCount));
+  }, [orderedEvents, initialCount, useNearby]);
+
+  const visibleEvents = orderedEvents.slice(0, visibleCount);
+  const hasMore = visibleCount < orderedEvents.length;
+  const remaining = orderedEvents.length - visibleCount;
+
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setVisibleCount((current) =>
+          Math.min(current + batchSize, orderedEvents.length),
+        );
+      },
+      {
+        root: null,
+        rootMargin: "400px 0px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, batchSize, orderedEvents.length, visibleCount]);
+
   function handleSortNearby() {
     setSortByNearby(true);
     if (!hasLocation) {
       requestLocation();
     }
+  }
+
+  function loadMore() {
+    setVisibleCount((current) =>
+      Math.min(current + batchSize, orderedEvents.length),
+    );
   }
 
   return (
@@ -57,6 +109,13 @@ export default function EventsExploreGrid({ events }: EventsExploreGridProps) {
           ) : (
             "Ordinati per data (dal più vicino a oggi)"
           )}
+          {orderedEvents.length > initialCount ? (
+            <span className="text-slate-400">
+              {" "}
+              · {Math.min(visibleCount, orderedEvents.length)} di{" "}
+              {orderedEvents.length}
+            </span>
+          ) : null}
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -86,10 +145,29 @@ export default function EventsExploreGrid({ events }: EventsExploreGridProps) {
       </div>
 
       <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {orderedEvents.map((event) => (
-          <EventCard key={event.eventId || event.id} event={event} />
+        {visibleEvents.map((event, index) => (
+          <EventCard
+            key={event.eventId || event.id}
+            event={event}
+            priority={index < 3}
+          />
         ))}
       </div>
+
+      {hasMore ? (
+        <div ref={sentinelRef} className="mt-8 flex flex-col items-center gap-3">
+          <p className="text-sm text-slate-500" aria-live="polite">
+            Altri {remaining} eventi in caricamento…
+          </p>
+          <button
+            type="button"
+            onClick={loadMore}
+            className="inline-flex rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE]"
+          >
+            Mostra altri eventi
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

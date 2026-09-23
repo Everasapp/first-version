@@ -13,8 +13,8 @@ import {
 type GeoStatus = "idle" | "ready" | "denied" | "unavailable" | "prompting";
 
 /**
- * Rileva (o riusa) la posizione utente per ordinare eventi vicini.
- * Non riprompta automaticamente se l'utente ha già negato il permesso.
+ * Riusa la posizione in cache, oppure la richiede solo su gesto utente
+ * (`requestLocation`), così il browser non chiede il permesso al page load.
  */
 export function useUserLocation() {
   const [coords, setCoords] = useState<GeoCoords | null>(null);
@@ -65,28 +65,18 @@ export function useUserLocation() {
     if (cached) {
       setCoords(cached);
       setStatus("ready");
+      return;
     }
 
     if (isGeoDenied()) {
-      setStatus(cached ? "ready" : "denied");
+      setStatus("denied");
       return;
     }
 
     if (!navigator.geolocation) {
-      setStatus(cached ? "ready" : "unavailable");
-      return;
+      setStatus("unavailable");
     }
-
-    navigator.geolocation.getCurrentPosition(
-      applySuccess,
-      (error) => applyError(error, cached),
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 30 * 60 * 1000,
-      },
-    );
-  }, [applyError, applySuccess]);
+  }, []);
 
   return {
     coords,
