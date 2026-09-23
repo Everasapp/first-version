@@ -121,7 +121,7 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
       "Pattada, Monteacuto: sa resolza, museo del coltello, feste di paese e lago Lerno.",
     hero: {
       src: "/images/cultura/pattada-panorama-everas.webp",
-      alt: "Panorama di Pattada sul colle del Monteacuto, tra sugherete e pascoli",
+      alt: "Vista aerea di Pattada sul Monteacuto, con i tetti in cotto e il lago Lerno sullo sfondo",
       credit: {
         author: "EVERAS",
         license: "Illustrazione originale",
