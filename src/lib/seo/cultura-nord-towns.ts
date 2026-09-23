@@ -29,7 +29,7 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
       "Sassari: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e centro.",
     hero: {
       src: "/images/cultura/sassari-panorama-everas.webp",
-      alt: "Panorama di Sassari sul colle, tra il centro storico e i quartieri nuovi",
+      alt: "Piazza d’Italia a Sassari, con il Palazzo della Provincia e le palme",
       credit: everasHeroCredit("/cultura-sarda/nord-sardegna/sassari"),
     },
     traditionPhoto: {

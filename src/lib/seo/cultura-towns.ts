@@ -120,14 +120,15 @@ export const CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Pattada, Monteacuto: sa resolza, museo del coltello, feste di paese e lago Lerno.",
     hero: {
-      src: "/images/cultura/pattada-panorama.webp",
+      src: "/images/cultura/pattada-panorama-everas.webp",
       alt: "Panorama di Pattada sul colle del Monteacuto, tra sugherete e pascoli",
       credit: {
-        ...GIANNI_CAREEDDU,
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Pattada_-_Panorama_(01).JPG",
+        author: "EVERAS",
+        license: "Illustrazione originale",
+        licenseUrl: "https://www.everas.it/cultura-sarda/nord-sardegna/pattada",
+        sourceUrl: "https://www.everas.it/cultura",
+        sourceLabel: "Cultura sarda",
+        creditPrefix: "Illustrazione",
       },
     },
     traditionPhoto: {
