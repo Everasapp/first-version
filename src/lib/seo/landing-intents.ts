@@ -57,7 +57,7 @@ export const EVENTI_SARDEGNA_HUB_INTENT = {
   ],
   searchIntent: "Hub editoriale: panoramica di cosa fare sull’isola.",
   h1: "Eventi in Sardegna",
-  seoTitle: "Eventi in Sardegna: oggi, weekend e prossimi eventi",
+  seoTitle: "Eventi in Sardegna: calendario sagre, concerti e attività",
   metaDescription:
     "Scopri eventi, sagre, concerti, festival e attività in Sardegna. Trova cosa fare oggi, questo weekend e nelle prossime settimane su EVERAS.",
   canonical: "/eventi-sardegna",

@@ -178,7 +178,6 @@ export function sagreExploreLinks() {
     { href: "/eventi-weekend", label: "Weekend" },
     { href: "/eventi-domenica", label: "Domenica" },
     { href: "/eventi-sud-sardegna-oggi", label: "Sud oggi" },
-    { href: "/eventi/sagre-tradizioni", label: "Sagre e tradizioni" },
     ...months.map((month) => ({
       href: month.path,
       label: `${month.name} ${month.year}`,

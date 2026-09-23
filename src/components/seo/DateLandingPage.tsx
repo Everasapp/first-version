@@ -84,6 +84,7 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
 
   return (
     <EventLandingView
+      eyebrow={dateKey === "oggi" ? "Eventi di oggi" : undefined}
       h1={h1}
       subtitle={editorial.subtitle}
       intro={editorial.intro}

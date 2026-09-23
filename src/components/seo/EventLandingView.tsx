@@ -53,6 +53,11 @@ type EventLandingViewProps = {
   scheduleTitle?: string;
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
+  /**
+   * Cards rendered in the initial SSR HTML per EventsExploreGrid.
+   * Omit to keep the grid default (9). Hub pages may raise this for crawlability.
+   */
+  eventsGridInitialCount?: number;
 };
 
 export default function EventLandingView({
@@ -75,6 +80,7 @@ export default function EventLandingView({
   scheduleTitle = "Calendario tappe",
   relatedLinks = [],
   cover,
+  eventsGridInitialCount,
 }: EventLandingViewProps) {
   const hasSections = Boolean(sections && sections.length > 0);
   const listedCount = resultCount ?? events.length;
@@ -274,7 +280,10 @@ export default function EventLandingView({
                     </h2>
                     {section.events.length > 0 ? (
                       <div className="mt-5">
-                        <EventsExploreGrid events={section.events} />
+                        <EventsExploreGrid
+                          events={section.events}
+                          initialCount={eventsGridInitialCount}
+                        />
                       </div>
                     ) : (
                       <p className="mt-3 text-sm text-slate-600">
@@ -285,7 +294,10 @@ export default function EventLandingView({
                   </section>
                 ))
               ) : events.length > 0 ? (
-                <EventsExploreGrid events={events} />
+                <EventsExploreGrid
+                  events={events}
+                  initialCount={eventsGridInitialCount}
+                />
               ) : (
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-14 text-center">
                   <h2 className="text-xl font-bold text-slate-900">

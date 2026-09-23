@@ -358,12 +358,13 @@ export default async function EventiSardegnaHubPage() {
     <EventLandingView
         eyebrow="Guida eventi"
         h1={HUB_H1}
-        subtitle="Cosa fare in Sardegna oggi e nei prossimi giorni"
+        subtitle="Il calendario degli eventi in Sardegna, per data, tipologia e località"
         intro={editorial.intro}
         paragraphs={editorial.paragraphs}
         events={upcoming}
         resultCount={stats.total}
         sections={sections.length > 0 ? sections : undefined}
+        eventsGridInitialCount={20}
         errorMessage={error?.message}
         cover={HUB_COVER}
         breadcrumbs={[
