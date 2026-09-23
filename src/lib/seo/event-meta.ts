@@ -251,12 +251,19 @@ export function eventSeoDescription(
   ]);
 
   const priceSuffix = formatSeoPriceSuffix(isFree, priceFrom);
+  const body = excerpt ? `${lead} ${excerpt}` : lead;
 
-  const parts = [lead];
-  if (excerpt) parts.push(excerpt);
-  if (priceSuffix) parts.push(priceSuffix);
+  if (!priceSuffix) {
+    return truncateSeoText(body);
+  }
 
-  return truncateSeoText(parts.join(" "));
+  // Keep the full price/free suffix; truncate only lead+excerpt to fit.
+  const reserved = 1 + priceSuffix.length; // leading space + suffix
+  const bodyMax = Math.max(24, META_MAX_LENGTH - reserved);
+  const truncatedBody =
+    body.length <= bodyMax ? body : truncateSeoText(body, bodyMax);
+
+  return `${truncatedBody} ${priceSuffix}`.replace(/\s+/g, " ").trim();
 }
 
 export function eventDetailRobots(
