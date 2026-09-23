@@ -46,12 +46,12 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
               Scopri la Sardegna
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-              Dove succede qualcosa questa settimana
+              Tre luoghi da scoprire questa settimana
             </h2>
             <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
-              Tre comuni con almeno due eventi in programma: apri la guida per
-              storia, tradizioni e cosa visitare. La selezione cambia ogni
-              lunedì.
+              Parti dagli eventi per conoscere tre comuni della Sardegna:
+              scopri le loro storie, le tradizioni e i luoghi da visitare. La
+              selezione cambia ogni lunedì.
             </p>
           </div>
 
