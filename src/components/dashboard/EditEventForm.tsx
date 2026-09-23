@@ -171,15 +171,10 @@ export default function EditEventForm({
   const [isSaving, setIsSaving] = useState(false);
   const isDraft = event.status !== "published";
 
-  const availableCities = useMemo(() => {
-    const filteredCities = area
-      ? cities.filter((item) => item.area === area)
-      : cities;
-
-    return [...filteredCities].sort((a, b) =>
-      a.city.localeCompare(b.city, "it"),
-    );
-  }, [area]);
+  const availableCities = useMemo(
+    () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
+    [],
+  );
 
   function clearError(field: string) {
     setErrors((currentErrors) => {
@@ -668,9 +663,7 @@ export default function EditEventForm({
                 value={area}
                 onChange={(changeEvent) => {
                   setArea(changeEvent.target.value);
-                  setCity("");
                   clearError("area");
-                  clearError("city");
                 }}
                 className={`${fieldClassName} ${
                   errors.area ? "border-red-400" : "border-slate-300"
@@ -692,6 +685,11 @@ export default function EditEventForm({
                 value={city}
                 onChange={(nextCity) => {
                   setCity(nextCity);
+                  const match = cities.find((item) => item.city === nextCity);
+                  if (match) {
+                    setArea(match.area);
+                    clearError("area");
+                  }
                   clearError("city");
                 }}
                 cities={availableCities}

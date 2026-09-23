@@ -153,15 +153,10 @@ export default function PublishEventPage() {
     };
   }, [supabase]);
 
-  const availableCities = useMemo(() => {
-    const filteredCities = area
-      ? cities.filter((item) => item.area === area)
-      : cities;
-
-    return [...filteredCities].sort((a, b) =>
-      a.city.localeCompare(b.city, "it"),
-    );
-  }, [area]);
+  const availableCities = useMemo(
+    () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
+    [],
+  );
 
   const selectedCategoryLabels = useMemo(
     () => resolveCategoryLabels({ categories: categorySlugs }),
@@ -773,9 +768,7 @@ export default function PublishEventPage() {
                         value={area}
                         onChange={(event) => {
                           setArea(event.target.value);
-                          setCity("");
                           clearError("area");
-                          clearError("city");
                         }}
                         aria-invalid={Boolean(errors.area)}
                         className={`mt-2 w-full rounded-2xl border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
@@ -807,6 +800,13 @@ export default function PublishEventPage() {
                         value={city}
                         onChange={(nextCity) => {
                           setCity(nextCity);
+                          const match = cities.find(
+                            (item) => item.city === nextCity,
+                          );
+                          if (match) {
+                            setArea(match.area);
+                            clearError("area");
+                          }
                           clearError("city");
                         }}
                         cities={availableCities}
