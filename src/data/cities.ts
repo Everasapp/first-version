@@ -157,6 +157,7 @@ export const cities: City[] = [
   { id: 206, city: "Tiana", province: "NU", area: "Centro Sardegna" },
   { id: 207, city: "Tonara", province: "NU", area: "Centro Sardegna" },
   { id: 103, city: "Tortolì", province: "NU", area: "Centro Sardegna" },
+  { id: 225, city: "Zeddiani", province: "OR", area: "Centro Sardegna" },
 
   // =========================
   // SUD SARDEGNA — Città metropolitana di Cagliari

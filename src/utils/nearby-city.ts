@@ -147,6 +147,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   Tiana: { lat: 40.0681, lng: 9.1486 },
   Tonara: { lat: 40.0247, lng: 9.1714 },
   Tortolì: { lat: 39.9264, lng: 9.6556 },
+  Zeddiani: { lat: 39.9894, lng: 8.5956 },
 
   // Sud — Città metropolitana di Cagliari
   Armungia: { lat: 39.5217, lng: 9.3818 },

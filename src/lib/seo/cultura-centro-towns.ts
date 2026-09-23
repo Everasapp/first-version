@@ -43,7 +43,7 @@ function everasHeroCredit(path: string): PhotoCredit {
   };
 }
 
-/** Guide Cultura generate per i 46 comuni del Centro Sardegna. */
+/** Guide Cultura generate per i 47 comuni del Centro Sardegna. */
 export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
   {
     slug: "aritzo",
@@ -2996,5 +2996,75 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
       },
     ],
     publishedAt: "2026-09-13",
+  },
+  {
+    slug: "zeddiani",
+    path: "/cultura-sarda/centro-sardegna/zeddiani",
+    town: "Zeddiani",
+    province: "Oristano",
+    area: "Campidano di Oristano",
+    title: "Zeddiani: Campidano, pomodoro e Vernaccia",
+    h1: "Zeddiani",
+    description:
+      "Zeddiani in Sardegna: guida al comune del Campidano di Oristano, chiesa di San Pietro, sagra del pomodoro e eventi su EVERAS.",
+    hero: {
+      src: "/images/cultura/zeddiani-panorama-everas.png",
+      alt: "Zeddiani nel Campidano di Oristano, tra campi coltivati e case della pianura",
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/zeddiani"),
+    },
+    intro:
+      "Zeddiani è un comune della pianura a nord di Oristano, nel Campidano settentrionale. Piccolo paese agricolo tra pomodori, vigneti e Vernaccia: questa scheda tiene storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Zeddiani su EVERAS.",
+    history: [
+      "Zeddiani è un comune italiano di circa 1 100 abitanti della provincia di Oristano in Sardegna, nella regione del Campidano di Oristano. Il territorio è pianeggiante, su un terrazzo di sedimenti fluviali presso il fiume Cispiri, a pochi chilometri da Oristano.",
+      "Oggi Zeddiani resta un punto della directory Cultura sarda del Centro: da qui colleghi il paese, le feste locali e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Zeddiani, la scheda evento su EVERAS rimanda a questa guida.",
+    ],
+    traditions: [
+      {
+        title: "Sagra del pomodoro",
+        body:
+          "La Sagra del pomodoro è l’appuntamento più noto del paese, di solito all’inizio di agosto. Le date precise cambiano ogni anno: controlla il calendario eventi a Zeddiani su EVERAS per sagre, concerti e appuntamenti pubblicati da Comune, Pro Loco e organizzatori.",
+      },
+      {
+        title: "Il Campidano intorno",
+        body:
+          "Zeddiani si legge meglio insieme ai comuni vicini del Campidano di Oristano — Baratili San Pietro, Tramatza, Siamaggiore, San Vero Milis — e al capoluogo. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.",
+      },
+    ],
+    visit: [
+      {
+        name: "Centro di Zeddiani",
+        body:
+          "Parti dal centro: chiesa di San Pietro Apostolo (patrono, con elementi gotico-aragonesi), piazza e servizi. In paesi piccoli gli orari di uffici e luoghi aperti cambiano: conferma sul sito del Comune prima di partire.",
+      },
+      {
+        name: "Cosa vedere nel territorio",
+        body:
+          "Nel territorio comunale contano soprattutto la pianura coltivata, le architetture rurali in ladiri e il paesaggio agricolo verso Oristano. Se cerchi musei o siti archeologici più ampi, parti da Oristano e Cabras. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Cosa visitare a Zeddiani?",
+        answer:
+          "Centro, chiesa di San Pietro e il paesaggio agricolo del Campidano. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+      },
+      {
+        question: "Dove trovo gli eventi a Zeddiani?",
+        answer:
+          "In fondo a questa guida e sulla pagina Eventi a Zeddiani su EVERAS, con data, luogo e locandina quando disponibili.",
+      },
+    ],
+    sources: [
+      {
+        label: "Comune di Zeddiani",
+        href: "https://www.comune.zeddiani.or.it/",
+      },
+    ],
+    relatedLinks: [
+      { href: "/cultura-sarda/centro-sardegna/oristano", label: "Guida Oristano" },
+      { href: "/cultura-sarda/centro-sardegna/cabras", label: "Guida Cabras" },
+      { href: "/cultura-sarda/centro-sardegna", label: "Centro Sardegna" },
+    ],
+    publishedAt: "2026-09-23",
   },
 ];

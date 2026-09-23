@@ -58,7 +58,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord, sui 46 del Centro e sugli 84 del Sud.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord, sui 47 del Centro e sugli 84 del Sud.",
       },
     ],
   },
@@ -86,7 +86,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 46 comuni del Centro. In evidenza trovi 18 paesi tra Barbagia, costa e capoluoghi; gli altri restano nell’elenco A–Z.",
+          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 47 comuni del Centro. In evidenza trovi 18 paesi tra Barbagia, costa e capoluoghi; gli altri restano nell’elenco A–Z.",
       },
     ],
   },
