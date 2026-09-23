@@ -39,6 +39,8 @@ type EventLandingViewProps = {
   intro: string;
   paragraphs?: string[];
   events: EventCardData[];
+  /** When the grid is capped, pass the full matching total so the badge stays truthful. */
+  resultCount?: number;
   sections?: EventLandingSection[];
   errorMessage?: string | null;
   breadcrumbs: BreadcrumbItem[];
@@ -60,6 +62,7 @@ export default function EventLandingView({
   intro,
   paragraphs = [],
   events,
+  resultCount,
   sections,
   errorMessage,
   breadcrumbs,
@@ -74,6 +77,7 @@ export default function EventLandingView({
   cover,
 }: EventLandingViewProps) {
   const hasSections = Boolean(sections && sections.length > 0);
+  const listedCount = resultCount ?? events.length;
 
   return (
     <>
@@ -141,8 +145,11 @@ export default function EventLandingView({
                 </p>
               ))}
               <p className="mt-3 text-sm font-semibold text-slate-500">
-                {events.length}{" "}
-                {events.length === 1 ? "evento trovato" : "eventi trovati"}
+                {listedCount}{" "}
+                {listedCount === 1 ? "evento trovato" : "eventi trovati"}
+                {resultCount !== undefined && resultCount > events.length
+                  ? ` · ${events.length} in evidenza qui sotto`
+                  : null}
               </p>
             </div>
           </div>

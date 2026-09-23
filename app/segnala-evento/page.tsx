@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Segnala un evento",
   description:
     "Hai visto un evento in Sardegna che manca su EVERAS? Incolla il link e segnalacelo.",
+  alternates: { canonical: "/segnala-evento" },
 };
 
 export default function SegnalaEventoPage() {

@@ -231,6 +231,7 @@ export default async function EventiSardegnaHubPage() {
         intro={editorial.intro}
         paragraphs={editorial.paragraphs}
         events={upcoming}
+        resultCount={stats.total}
         errorMessage={error?.message}
         cover={HUB_COVER}
         breadcrumbs={[

@@ -24,15 +24,18 @@ import {
   defaultOgImages,
   landingRobots,
 } from "@/src/lib/seo/site";
+import { GRATUITI_INTENT } from "@/src/lib/seo/landing-intents";
 
-const PATH = "/eventi-gratuiti";
-const H1 = "Eventi gratuiti in Sardegna";
-const TITLE = "Eventi gratuiti in Sardegna";
+const PATH = GRATUITI_INTENT.path;
+const H1 = GRATUITI_INTENT.h1;
+const TITLE = GRATUITI_INTENT.seoTitle;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { events } = await loadFilteredPublishedEvents({ freeOnly: true });
   const description =
-    "Eventi gratuiti e a ingresso libero in Sardegna: concerti, sagre, culture e appuntamenti aggiornati su EVERAS.";
+    events.length > 0
+      ? `Eventi gratuiti e a ingresso libero in Sardegna: ${events.length} appuntamenti aggiornati su EVERAS.`
+      : GRATUITI_INTENT.metaDescription;
   return {
     title: TITLE,
     description,

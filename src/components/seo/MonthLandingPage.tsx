@@ -65,8 +65,8 @@ export default async function MonthLandingPage({
 
   const dynamicIntro =
     stats.total === 0
-      ? `Per ${month.name.toLocaleLowerCase("it")} ${month.year} non ci sono ancora eventi pubblicati su EVERAS. Torna tra poco oppure esplora il weekend e le sagre.`
-      : `A ${month.name.toLocaleLowerCase("it")} ${month.year} in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} pubblicati${
+      ? `Per ${month.name.toLocaleLowerCase("it")} ${month.year} non ci sono ancora eventi in programma su EVERAS. Torna tra poco oppure esplora il weekend e le sagre.`
+      : `A ${month.name.toLocaleLowerCase("it")} ${month.year} in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} ancora in programma${
           stats.topCities.length > 0
             ? `, con più presenza a ${stats.topCities
                 .slice(0, 3)
@@ -97,7 +97,7 @@ export default async function MonthLandingPage({
       answer:
         stats.total > 0
           ? `In questa pagina: ${stats.total} appuntamenti a ${month.name} ${month.year}. Apri la scheda per orario, comune e ingresso.`
-          : `Quando sono pubblicati compaiono qui. Intanto guarda weekend, oggi e le categorie su EVERAS.`,
+          : `Quando sono in calendario compaiono qui. Intanto guarda weekend, oggi e le categorie su EVERAS.`,
     },
     {
       question: "Come è organizzato il calendario?",
@@ -128,6 +128,7 @@ export default async function MonthLandingPage({
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi e sagre", href: "/eventi-sardegna" },
+        { name: `Calendario ${month.year}`, href: year.path },
         { name: `${month.name} ${month.year}` },
       ]}
       faqs={faqs}
@@ -155,6 +156,7 @@ export default async function MonthLandingPage({
         breadcrumbListSchema([
           { name: "Home", path: "/" },
           { name: "Eventi e sagre", path: "/eventi-sardegna" },
+          { name: `Calendario ${month.year}`, path: year.path },
           { name: `${month.name} ${month.year}`, path: month.path },
         ]),
         faqPageSchema(faqs),

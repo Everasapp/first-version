@@ -16,6 +16,7 @@ import {
   defaultOgImages,
   filteredListingRobots,
 } from "@/src/lib/seo/site";
+import { eventMatchesCategoryFilter } from "@/src/lib/event-categories";
 
 type CategoriesPageProps = {
   searchParams: Promise<{
@@ -66,6 +67,7 @@ type EventRow = {
   slug: string;
   title: string;
   category: string;
+  categories?: string[] | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -139,7 +141,7 @@ export default async function CategoriesPage({
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
       .order("start_at", { ascending: true }),
@@ -156,12 +158,7 @@ export default async function CategoriesPage({
         return true;
       }
 
-      const normalized = event.category?.toLocaleLowerCase("it") ?? "";
-      return (
-        normalized === selectedCategory.toLocaleLowerCase("it") ||
-        normalized ===
-          selectedCategoryMeta?.name.toLocaleLowerCase("it")
-      );
+      return eventMatchesCategoryFilter(event, selectedCategory);
     })
     .map((event) => mapEvent(event, favoriteIds.has(event.id)));
 
@@ -178,7 +175,7 @@ export default async function CategoriesPage({
             <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
               {selectedCategoryMeta
                 ? selectedCategoryMeta.name
-                : "Eventi per categoria"}
+                : "Categorie eventi in Sardegna"}
             </h1>
             <p className="mt-3 max-w-2xl text-lg text-slate-600">
               {selectedCategoryMeta

@@ -78,8 +78,8 @@ export default async function YearLandingPage({
 
   const dynamicIntro =
     stats.total === 0
-      ? `Per il ${year.year} non ci sono ancora eventi pubblicati su EVERAS. Torna tra poco oppure esplora il weekend, le sagre e i singoli mesi.`
-      : `Nel calendario ${year.year} in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} pubblicati${
+      ? `Per il ${year.year} non ci sono ancora eventi in programma su EVERAS. Torna tra poco oppure esplora il weekend, le sagre e i singoli mesi.`
+      : `Nel calendario ${year.year} in Sardegna trovi ${stats.total} ${stats.total === 1 ? "evento" : "eventi"} ancora in programma${
           stats.topCities.length > 0
             ? `, con più presenza a ${stats.topCities
                 .slice(0, 3)
@@ -109,8 +109,8 @@ export default async function YearLandingPage({
       question: `Dov’è il calendario eventi in Sardegna ${year.year}?`,
       answer:
         stats.total > 0
-          ? `È questa pagina: ${stats.total} appuntamenti pubblicati nel ${year.year}, raggruppati per mese. Apri il mese o la scheda per orario, comune e ingresso.`
-          : `Quando sono pubblicati compaiono qui, mese per mese. Intanto guarda weekend, oggi e le sagre su EVERAS.`,
+          ? `È questa pagina: ${stats.total} appuntamenti ancora in programma nel ${year.year}, raggruppati per mese. Apri il mese o la scheda per orario, comune e ingresso.`
+          : `Quando sono in calendario compaiono qui, mese per mese. Intanto guarda weekend, oggi e le sagre su EVERAS.`,
     },
     {
       question: "Come è organizzato il calendario?",

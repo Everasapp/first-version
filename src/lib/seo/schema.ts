@@ -81,17 +81,20 @@ export function eventSchema(input: {
   city: string;
   province?: string | null;
   organizerName?: string | null;
+  /** Past events stay noindex; do not advertise InStock offers. */
+  isExpired?: boolean;
 }) {
   const offers =
-    input.ticketUrl || input.isFree || input.priceFrom !== undefined
-      ? {
+    input.isExpired ||
+    !(input.ticketUrl || input.isFree || input.priceFrom !== undefined)
+      ? undefined
+      : {
           "@type": "Offer",
           url: input.ticketUrl || input.url,
           price: input.isFree ? 0 : input.priceFrom,
           priceCurrency: "EUR",
           availability: "https://schema.org/InStock",
-        }
-      : undefined;
+        };
 
   return {
     "@context": "https://schema.org",

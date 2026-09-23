@@ -1,20 +1,7 @@
 import { preload } from "react-dom";
-import dynamic from "next/dynamic";
 
 import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
-
-const EventSearchForm = dynamic(
-  () => import("@/src/components/home/EventSearchForm"),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        className="mt-6 h-40 animate-pulse rounded-2xl bg-white/15 sm:mt-8 sm:h-44"
-        aria-hidden
-      />
-    ),
-  },
-);
+import HeroSearchLazy from "@/src/components/home/HeroSearchLazy";
 
 export default function Hero() {
   // Decorative background: keep out of the LCP element tree so mobile LCP
@@ -54,7 +41,7 @@ export default function Hero() {
 
         <HomeNewsletterSignup />
 
-        <EventSearchForm />
+        <HeroSearchLazy />
       </div>
     </section>
   );

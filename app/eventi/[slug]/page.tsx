@@ -454,6 +454,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
           city: event.municipality,
           province: event.province,
           organizerName,
+          isExpired: !isPublicEventActive(event.start_at, event.end_at),
         })}
       />
       <JsonLd
