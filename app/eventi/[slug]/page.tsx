@@ -174,7 +174,9 @@ export async function generateMetadata({
 
   const { data } = await supabase
     .from("events")
-    .select("title, description, image_url, municipality, start_at, end_at")
+    .select(
+      "title, description, image_url, municipality, start_at, end_at, is_free, price_from",
+    )
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
@@ -188,12 +190,16 @@ export async function generateMetadata({
     data.title,
     data.municipality,
     data.start_at,
+    data.end_at,
   );
   const description = eventSeoDescription(
     data.title,
     data.municipality,
     data.start_at,
     data.description,
+    data.end_at,
+    data.is_free,
+    data.price_from,
   );
 
   return {
