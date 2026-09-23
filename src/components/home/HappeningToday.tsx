@@ -197,14 +197,13 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {orderedEvents.map((event, index) => (
+              {orderedEvents.map((event) => (
                 <div
                   key={event.eventId}
                   data-today-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  {/* First ~3 cards are above the fold on desktop; LCP may be any of them. */}
-                  <EventCard event={event} priority={index < 3} />
+                  <EventCard event={event} />
                 </div>
               ))}
             </div>

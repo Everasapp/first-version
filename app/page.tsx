@@ -190,17 +190,27 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekEvents = interleaveByArea(weekCandidates);
+  const weekEvents = interleaveByArea(weekCandidates).slice(0, 12);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
+
+  const nordEvents = events
+    .filter((event) => event.area === "Nord Sardegna")
+    .slice(0, 10);
+  const centroEvents = events
+    .filter((event) => event.area === "Centro Sardegna")
+    .slice(0, 10);
+  const sudEvents = events
+    .filter((event) => event.area === "Sud Sardegna")
+    .slice(0, 10);
 
   return (
     <>
       <Header />
 
       <main className="min-w-0 max-w-full">
-        <HappeningToday events={weekEvents} />
-
         <Hero />
+
+        <HappeningToday events={weekEvents} />
 
         <TownGuidesPreview towns={weeklyTownGuides} />
 
@@ -209,7 +219,7 @@ export default async function Home() {
           area="Nord Sardegna"
           description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
           image="/images/nord-sardegna.webp"
-          events={events}
+          events={nordEvents}
         />
 
         <AreaSection
@@ -217,7 +227,7 @@ export default async function Home() {
           area="Centro Sardegna"
           description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
           image="/images/centro-sardegna.webp"
-          events={events}
+          events={centroEvents}
         />
 
         <AreaSection
@@ -225,7 +235,7 @@ export default async function Home() {
           area="Sud Sardegna"
           description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
           image="/images/sud-sardegna.webp"
-          events={events}
+          events={sudEvents}
         />
 
         <CategoriesSection />

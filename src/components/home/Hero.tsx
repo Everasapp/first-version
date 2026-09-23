@@ -1,16 +1,20 @@
+import Image from "next/image";
+
 import EventSearchForm from "@/src/components/home/EventSearchForm";
 import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 
 export default function Hero() {
   return (
-    <section
-      className="relative isolate overflow-hidden bg-cover bg-no-repeat"
-      style={{
-        backgroundImage: "url('/images/concert.webp')",
-        backgroundPosition: "60% center",
-        backgroundSize: "cover",
-      }}
-    >
+    <section className="relative isolate overflow-hidden">
+      <Image
+        src="/images/concert.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        quality={70}
+        className="-z-20 object-cover object-[60%_center]"
+      />
       <div
         className="absolute inset-0 -z-10"
         style={{
