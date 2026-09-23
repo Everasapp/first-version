@@ -24,7 +24,15 @@ const AREA_CITY_HUBS: Record<City["area"], string[]> = {
   "Sud Sardegna": ["Cagliari", "Quartu Sant'Elena"],
 };
 
+const AREA_EXPLORE_HREF: Record<City["area"], string> = {
+  "Nord Sardegna": "/eventi?area=nord-sardegna",
+  "Centro Sardegna": "/eventi?area=centro-sardegna",
+  "Sud Sardegna": "/eventi?area=sud-sardegna",
+};
+
 const AUTOPLAY_MS = 4500;
+const INITIAL_CARDS = 6;
+const BATCH_CARDS = 6;
 
 export default function AreaSection({
   title,
@@ -34,13 +42,45 @@ export default function AreaSection({
   events = [],
 }: AreaSectionProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
 
   const areaEvents = useMemo(() => {
     const filtered = events.filter((event) => event.area === area);
     return sortEventsByUpcomingDate(filtered);
   }, [area, events]);
+
+  useEffect(() => {
+    setVisibleCount(Math.min(INITIAL_CARDS, areaEvents.length || INITIAL_CARDS));
+  }, [areaEvents]);
+
+  const visibleEvents = areaEvents.slice(0, visibleCount);
+  const hasMore = visibleCount < areaEvents.length;
+
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setVisibleCount((current) =>
+          Math.min(current + BATCH_CARDS, areaEvents.length),
+        );
+      },
+      {
+        root: scrollerRef.current,
+        rootMargin: "0px 320px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, areaEvents.length, visibleCount]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
@@ -109,7 +149,8 @@ export default function AreaSection({
 
   const hubCities = AREA_CITY_HUBS[area] ?? [];
   const primaryCity = hubCities[0];
-  const areaHref = primaryCity ? cityEventsPath(primaryCity) : "/eventi";
+  const areaHref = AREA_EXPLORE_HREF[area] ?? "/eventi";
+  const cityHref = primaryCity ? cityEventsPath(primaryCity) : areaHref;
 
   return (
     <section className="overflow-x-hidden bg-white py-14 sm:py-16">
@@ -140,12 +181,22 @@ export default function AreaSection({
               {description}
             </p>
 
-            <Link
-              href={areaHref}
-              className="mt-5 inline-flex w-fit rounded-2xl bg-white px-5 py-3 font-bold text-[#075EAE] transition hover:bg-slate-100"
-            >
-              {primaryCity ? `Eventi a ${primaryCity} →` : "Scopri tutti →"}
-            </Link>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={areaHref}
+                className="inline-flex w-fit rounded-2xl bg-white px-5 py-3 font-bold text-[#075EAE] transition hover:bg-slate-100"
+              >
+                Tutti gli eventi →
+              </Link>
+              {primaryCity ? (
+                <Link
+                  href={cityHref}
+                  className="inline-flex w-fit rounded-2xl border border-white/40 bg-white/10 px-5 py-3 font-bold text-white backdrop-blur-sm transition hover:bg-white/20"
+                >
+                  Eventi a {primaryCity}
+                </Link>
+              ) : null}
+            </div>
             {hubCities.length > 1 ? (
               <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-white">
                 {hubCities.slice(1).map((city) => (
@@ -166,6 +217,12 @@ export default function AreaSection({
           <p className="text-sm font-semibold text-slate-500">
             {areaEvents.length}{" "}
             {areaEvents.length === 1 ? "evento" : "eventi"}
+            {hasMore ? (
+              <span className="font-medium text-slate-400">
+                {" "}
+                · scorri per vederli tutti
+              </span>
+            ) : null}
           </p>
 
           <div className="flex shrink-0 items-center gap-2">
@@ -201,15 +258,22 @@ export default function AreaSection({
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {areaEvents.map((event) => (
+              {visibleEvents.map((event, index) => (
                 <div
                   key={event.eventId || event.id}
                   data-area-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  <EventCard event={event} />
+                  <EventCard event={event} priority={index < 2} />
                 </div>
               ))}
+              {hasMore ? (
+                <div
+                  ref={sentinelRef}
+                  className="flex w-12 shrink-0 items-center justify-center"
+                  aria-hidden="true"
+                />
+              ) : null}
             </div>
           </div>
         </div>

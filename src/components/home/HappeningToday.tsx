@@ -11,11 +11,45 @@ type HappeningTodayProps = {
 };
 
 const AUTOPLAY_MS = 4500;
+const INITIAL_CARDS = 6;
+const BATCH_CARDS = 6;
 
 export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
+
+  useEffect(() => {
+    setVisibleCount(Math.min(INITIAL_CARDS, events.length || INITIAL_CARDS));
+  }, [events]);
+
+  const visibleEvents = events.slice(0, visibleCount);
+  const hasMore = visibleCount < events.length;
+
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setVisibleCount((current) =>
+          Math.min(current + BATCH_CARDS, events.length),
+        );
+      },
+      {
+        root: scrollerRef.current,
+        rootMargin: "0px 320px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, events.length, visibleCount]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
@@ -103,6 +137,13 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             <p className="mt-2 max-w-xl text-slate-600">
               Prima le novità appena pubblicate, bilanciate tra Nord, Centro e
               Sud Sardegna.
+              {events.length > INITIAL_CARDS ? (
+                <span className="text-slate-500">
+                  {" "}
+                  · {events.length} eventi questa settimana — scorri per
+                  vederli tutti
+                </span>
+              ) : null}
             </p>
           </div>
 
@@ -139,15 +180,22 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {events.map((event) => (
+              {visibleEvents.map((event, index) => (
                 <div
                   key={event.eventId}
                   data-today-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  <EventCard event={event} />
+                  <EventCard event={event} priority={index < 2} />
                 </div>
               ))}
+              {hasMore ? (
+                <div
+                  ref={sentinelRef}
+                  className="flex w-12 shrink-0 items-center justify-center"
+                  aria-hidden="true"
+                />
+              ) : null}
             </div>
           </div>
         </div>

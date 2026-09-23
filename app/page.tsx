@@ -139,12 +139,17 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
 export default async function Home() {
   const supabase = await createClient();
   const now = new Date();
-  // Bound the query so homepage SSR does not pull the entire events table.
+  // Bound the query so homepage SSR does not pull ancient expired rows.
   const lookback = new Date(now);
   lookback.setUTCDate(lookback.getUTCDate() - 120);
 
-  const [{ data, error }, favoriteIds] = await Promise.all([
-    supabase
+  const pageSize = 1000;
+  const rows: EventRow[] = [];
+  let from = 0;
+  let error: { message: string } | null = null;
+
+  while (true) {
+    const page = await supabase
       .from("events")
       .select(
         "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
@@ -152,15 +157,23 @@ export default async function Home() {
       .eq("status", "published")
       .gte("start_at", lookback.toISOString())
       .order("start_at", { ascending: true })
-      .limit(120),
-    getCurrentUserFavoriteIds(),
-  ]);
+      .range(from, from + pageSize - 1);
+
+    if (page.error) {
+      error = page.error;
+      break;
+    }
+    const chunk = (page.data ?? []) as EventRow[];
+    rows.push(...chunk);
+    if (chunk.length < pageSize) break;
+    from += pageSize;
+  }
+
+  const favoriteIds = await getCurrentUserFavoriteIds();
 
   if (error) {
     console.error("Errore nel caricamento della homepage:", error);
   }
-
-  const rows = (data ?? []) as EventRow[];
 
   const events = rows
     .filter((event) =>
@@ -200,18 +213,8 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekEvents = interleaveByArea(weekCandidates).slice(0, 10);
+  const weekEvents = interleaveByArea(weekCandidates);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
-
-  const nordEvents = events
-    .filter((event) => event.area === "Nord Sardegna")
-    .slice(0, 6);
-  const centroEvents = events
-    .filter((event) => event.area === "Centro Sardegna")
-    .slice(0, 6);
-  const sudEvents = events
-    .filter((event) => event.area === "Sud Sardegna")
-    .slice(0, 6);
 
   return (
     <>
@@ -229,7 +232,7 @@ export default async function Home() {
           area="Nord Sardegna"
           description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
           image="/images/nord-sardegna.webp"
-          events={nordEvents}
+          events={events}
         />
 
         <AreaSection
@@ -237,7 +240,7 @@ export default async function Home() {
           area="Centro Sardegna"
           description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
           image="/images/centro-sardegna.webp"
-          events={centroEvents}
+          events={events}
         />
 
         <AreaSection
@@ -245,7 +248,7 @@ export default async function Home() {
           area="Sud Sardegna"
           description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
           image="/images/sud-sardegna.webp"
-          events={sudEvents}
+          events={events}
         />
 
         <CategoriesSection />
