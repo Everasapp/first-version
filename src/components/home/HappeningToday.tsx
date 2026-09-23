@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
-import { useUserLocation } from "@/src/hooks/useUserLocation";
-import { sortEventsByProximity } from "@/src/utils/nearby-city";
 
 type HappeningTodayProps = {
   events: EventCardData[];
@@ -14,58 +12,10 @@ type HappeningTodayProps = {
 
 const AUTOPLAY_MS = 4500;
 
-const AREA_ORDER = [
-  "Nord Sardegna",
-  "Centro Sardegna",
-  "Sud Sardegna",
-] as const;
-
-/** Alterna le tre aree dopo il ranking (data / distanza). */
-function interleaveByArea(events: EventCardData[]): EventCardData[] {
-  const buckets: Record<string, EventCardData[]> = {
-    "Nord Sardegna": [],
-    "Centro Sardegna": [],
-    "Sud Sardegna": [],
-  };
-  const other: EventCardData[] = [];
-
-  for (const event of events) {
-    const area = event.area;
-    if (area && area in buckets) {
-      buckets[area].push(event);
-    } else {
-      other.push(event);
-    }
-  }
-
-  const result: EventCardData[] = [];
-  const maxLen = Math.max(
-    ...AREA_ORDER.map((area) => buckets[area].length),
-    0,
-  );
-
-  for (let i = 0; i < maxLen; i += 1) {
-    for (const area of AREA_ORDER) {
-      const next = buckets[area][i];
-      if (next) result.push(next);
-    }
-  }
-
-  return [...result, ...other];
-}
-
 export default function HappeningToday({ events }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const { coords, hasLocation } = useUserLocation();
-
-  const orderedEvents = useMemo(() => {
-    const ranked = coords
-      ? sortEventsByProximity(events, coords.lat, coords.lng)
-      : events;
-    return interleaveByArea(ranked);
-  }, [coords, events]);
 
   function scrollByCard(direction: -1 | 1, { loop = false } = {}) {
     const scroller = scrollerRef.current;
@@ -114,7 +64,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   }
 
   useEffect(() => {
-    if (orderedEvents.length < 2 || isPaused) return;
+    if (events.length < 2 || isPaused) return;
 
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -133,16 +83,9 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
       window.clearTimeout(startId);
       if (timer !== null) window.clearInterval(timer);
     };
-  }, [orderedEvents.length, isPaused]);
+  }, [events.length, isPaused]);
 
-  // Torna all'inizio quando cambia l'ordine per distanza.
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || !hasLocation) return;
-    scroller.scrollTo({ left: 0, behavior: "auto" });
-  }, [hasLocation, orderedEvents]);
-
-  if (orderedEvents.length === 0) {
+  if (events.length === 0) {
     return null;
   }
 
@@ -158,9 +101,8 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
               Hot this week
             </h2>
             <p className="mt-2 max-w-xl text-slate-600">
-              {hasLocation
-                ? "Prima gli eventi vicino a te, bilanciati tra Nord, Centro e Sud Sardegna."
-                : "Gli eventi della settimana in tutta la Sardegna: Nord, Centro e Sud."}
+              Prima le novità appena pubblicate, bilanciate tra Nord, Centro e
+              Sud Sardegna.
             </p>
           </div>
 
@@ -197,7 +139,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {orderedEvents.map((event) => (
+              {events.map((event) => (
                 <div
                   key={event.eventId}
                   data-today-card

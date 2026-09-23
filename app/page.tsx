@@ -34,6 +34,7 @@ type EventRow = {
   is_free: boolean;
   price_from: number | string | null;
   is_featured: boolean;
+  created_at?: string | null;
   views_count?: number | null;
   favorites_count?: number | null;
   shares_count?: number | null;
@@ -146,7 +147,7 @@ export default async function Home() {
     supabase
       .from("events")
       .select(
-        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count",
+        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
       )
       .eq("status", "published")
       .gte("start_at", lookback.toISOString())
@@ -186,6 +187,10 @@ export default async function Home() {
       const bRank = bStatus.happeningNow ? 0 : bStatus.isActiveEvent ? 1 : 2;
       if (aRank !== bRank) return aRank - bRank;
       if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
+      // Newest listings first so returning visitors see fresh cards.
+      const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (aCreated !== bCreated) return bCreated - aCreated;
       return (
         new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
       );
@@ -195,7 +200,7 @@ export default async function Home() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
-  const weekEvents = interleaveByArea(weekCandidates).slice(0, 8);
+  const weekEvents = interleaveByArea(weekCandidates).slice(0, 10);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
   const nordEvents = events
