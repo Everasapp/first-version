@@ -121,11 +121,18 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     ).matches;
     if (reduceMotion) return;
 
-    const timer = window.setInterval(() => {
-      scrollByCard(1, { loop: true });
-    }, AUTOPLAY_MS);
+    // Delay autoplay so LCP can settle on the first cards (PSI ~LCP window).
+    let timer: number | null = null;
+    const startId = window.setTimeout(() => {
+      timer = window.setInterval(() => {
+        scrollByCard(1, { loop: true });
+      }, AUTOPLAY_MS);
+    }, 8000);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearTimeout(startId);
+      if (timer !== null) window.clearInterval(timer);
+    };
   }, [orderedEvents.length, isPaused]);
 
   // Torna all'inizio quando cambia l'ordine per distanza.
@@ -196,7 +203,8 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
                   data-today-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  <EventCard event={event} priority={index === 0} />
+                  {/* First ~3 cards are above the fold on desktop; LCP may be any of them. */}
+                  <EventCard event={event} priority={index < 3} />
                 </div>
               ))}
             </div>

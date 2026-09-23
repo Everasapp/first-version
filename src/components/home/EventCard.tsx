@@ -89,6 +89,7 @@ export default function EventCard({
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 352px"
           quality={55}
           priority={priority}
+          fetchPriority={priority ? "high" : "auto"}
           className="object-cover transition duration-500 group-hover:scale-105"
           unoptimized={
             !(
