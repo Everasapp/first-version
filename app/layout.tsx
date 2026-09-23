@@ -100,7 +100,7 @@ export default function RootLayout({
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5513319548780658"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />

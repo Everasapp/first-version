@@ -6,13 +6,16 @@ import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 export default function Hero() {
   return (
     <section className="relative isolate overflow-hidden">
+      {/* Static optimized asset (~70KB): skip /_next/image so mobile LCP
+          does not request a 3840w derivative. */}
       <Image
         src="/images/concert.webp"
         alt=""
         fill
         priority
+        fetchPriority="high"
+        unoptimized
         sizes="100vw"
-        quality={70}
         className="-z-20 object-cover object-[60%_center]"
       />
       <div
