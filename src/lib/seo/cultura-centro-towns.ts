@@ -1,4 +1,7 @@
-import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
+import type {
+  CultureTownArticle,
+  PhotoCredit,
+} from "@/src/lib/seo/cultura-towns";
 
 /**
  * 18 guide “in evidenza” sul Centro (stesso ruolo delle schede editoriali del Nord).
@@ -28,6 +31,17 @@ export const CENTRO_FEATURED_CULTURE_SLUGS = [
 export const CENTRO_FEATURED_SLUG_SET = new Set<string>(
   CENTRO_FEATURED_CULTURE_SLUGS,
 );
+
+function everasHeroCredit(path: string): PhotoCredit {
+  return {
+    author: "EVERAS",
+    license: "Illustrazione originale",
+    licenseUrl: `https://www.everas.it${path}`,
+    sourceUrl: "https://www.everas.it/cultura",
+    sourceLabel: "Cultura sarda",
+    creditPrefix: "Illustrazione",
+  };
+}
 
 /** Guide Cultura generate per i 46 comuni del Centro Sardegna. */
 export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
@@ -209,14 +223,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Baunei",
     description: "Baunei in Sardegna: guida al comune dell'Ogliastra, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/baunei-panorama.webp",
+      src: "/images/cultura/baunei-panorama-everas.png",
       alt: "Veduta di Baunei in Sardegna",
-      credit: {
-        author: "fotografia di Rosanna C.",
-        license: "CC BY 2.5",
-        licenseUrl: "https://creativecommons.org/licenses/by/2.5",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Sardegna-Baunei-costa_sarda.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/baunei"),
     },
     intro: `Baunei è altopiano del Golgo e calette del golfo in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Baunei su EVERAS.`,
     history: [
@@ -483,14 +492,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Bosa sul Temo: centro storico, Castello di Serravalle e Museo delle Conce. Fondazione Bosa, Casa Deriu. Malvasia nella guida alla cucina, non in questa scheda.",
     hero: {
-      src: "/images/cultura/bosa-panorama.webp",
-      alt: "Xilografia con panorama di Bosa",
-      credit: {
-        author: "Calc",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Bosa_(xilografia).jpg",
-      },
+      src: "/images/cultura/bosa-panorama-everas.png",
+      alt: "Bosa sul Temo, con le case colorate e il castello di Serravalle sul colle",
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/bosa"),
     },
     intro:
       "Bosa si legge dal fiume. SardegnaCultura descrive l’abitato sulle rive del Temo, che sale al rione Sa Costa e al castello di Serravalle. Il Comune ha istituito la Fondazione Bosa per gestire quel patrimonio: castello, Casa Deriu, Pinacoteca Atza, Museo delle Concerie, Teatro. Questa scheda tiene insieme città fluviale, fortificazione e memoria delle conce.",
@@ -570,14 +574,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Tharros a Capo San Marco, Corsa degli Scalzi, bottarga di muggine e stagni del Sinis: Cabras come ingresso territoriale, con fonti comunali e hub EVERAS.",
     hero: {
-      src: "/images/cultura/cabras-panorama.webp",
+      src: "/images/cultura/cabras-panorama-everas.png",
       alt: "Panorama di Cabras, Oristano",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Cabras_-_Panorama_(02).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/cabras"),
     },
     intro:
       "Cabras sta sulla riva dello stagno e amministra la parte meridionale del Sinis: costa, lagune, Capo San Marco e i resti di Tharros. Questa pagina è l’ingresso territoriale a quei nessi — pesca, rito, archeologia — e rimanda alle guide e agli hub EVERAS dove ogni tema è già trattato per esteso.",
@@ -737,14 +736,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Dorgali il museo civico e il villaggio nuragico di Serra Orrios. Cala Gonone è frazione: questa scheda non è una guida alle calette.",
     hero: {
-      src: "/images/cultura/dorgali-panorama.webp",
+      src: "/images/cultura/dorgali-panorama-everas.png",
       alt: "Panorama di Cala Gonone, frazione di Dorgali",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Dorgali_-_Cala_Gonone_-_Panorama_(08).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/dorgali"),
     },
     intro:
       "Chi scende a Cala Gonone arriva al porto. Il comune ha il suo centro culturale a Dorgali, nell’entroterra: museo archeologico in via Lamarmora e, nel territorio, il villaggio nuragico di Serra Orrios. Le calette del golfo stanno nella guida alle spiagge; qui restano i reperti e il villaggio.",
@@ -1319,14 +1313,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Mamoiada, Barbagia: carnevale dei mamuthones e issohadores e Museo delle Maschere Mediterranee.",
     hero: {
-      src: "/images/cultura/mamoiada-panorama.webp",
+      src: "/images/cultura/mamoiada-panorama-everas.png",
       alt: "Panorama di Mamoiada nella Barbagia di Ollolai",
-      credit: {
-        author: "Raffaele Graziano Ballore",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Mamoiada_Panorama.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/mamoiada"),
     },
     intro:
       "Mamoiada è il paese dei mamuthones e degli issohadores. Non è un set fotografico: è una comunità della Barbagia di Ollolai che tiene il carnevale e tre musei civici. Questa scheda distingue ciò che si vede in piazza da ciò che resta interpretazione.",
@@ -1473,15 +1462,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Nuoro: Museo ISRE, MAN, casa Deledda e sagra del Redentore sul monte Ortobene.",
     hero: {
-      src: "/images/cultura/nuoro-panorama.webp",
+      src: "/images/cultura/nuoro-panorama-everas.png",
       alt: "Nuoro vista dal parco di colle Sant’Onofrio, verso il monte Ortobene",
-      credit: {
-        author: "Herbert wie",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_Parco_di_Colle_Sant'Onofrio_Nuoro_Sardinien.JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/nuoro"),
     },
     intro:
       "Nuoro è capoluogo di Barbagia: musei ISRE e MAN, casa Deledda, il Redentore sul monte Ortobene. Chi la cerca per la letteratura trova anche una piazza di città. Questa scheda tiene istituti e feste, senza chiamarla «Atene sarda».",
@@ -1574,14 +1557,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Oliena tra Supramonte e Valle di Lanaittu: archeologia nuragica e paleolitica, patrimonio del paese e tradizioni della comunità.",
     hero: {
-      src: "/images/cultura/oliena-panorama.webp",
+      src: "/images/cultura/oliena-panorama-everas.png",
       alt: "Panorama di Oliena ai piedi del Supramonte",
-      credit: {
-        author: "Olianese",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Oliena_dal_Monte_Ortobene.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/oliena"),
     },
     intro:
       "Oliena si legge nel rapporto tra paese e paesaggio calcareo del Supramonte. Monte Corrasi, la Valle di Lanaittu e una lunga presenza umana — dalla Grotta Corbeddu a Sa Sedda ’e Sos Carros — tengono insieme ambiente, archeologia e comunità. Non è una guida al trekking: qui conta come il territorio e le pratiche culturali si sono intrecciati.",
@@ -1995,14 +1973,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Orgosolo in Barbagia: sistema museale Miradas, Sonos e Radichinas, murales e sguardi sul paese. Il canto a tenore sta nella guida alla musica.",
     hero: {
-      src: "/images/cultura/orgosolo-panorama.webp",
+      src: "/images/cultura/orgosolo-panorama-everas.png",
       alt: "Panorama di Orgosolo, Nuoro",
-      credit: {
-        author: "Lamberto Zannotti",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Orgosolo_Panorama_-_panoramio.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/orgosolo"),
     },
     intro:
       "I muri dipinti sono la prima cosa che si cerca. Il Comune, dal 2026, tiene anche tre musei — Miradas, Sonos, Radichinas — nati dal progetto PNRR «Attrattività dei borghi» del Ministero della Cultura. L’identità documentata non è un catalogo di dipinti: è il modo in cui Orgosolo è stata osservata, e il modo in cui il paese ha imparato a guardarsi. I murales restano in strada; i musei spiegano lo sguardo.",
@@ -2068,15 +2041,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Oristano: Sa Sartiglia, giudicato d’Arborea, Antiquarium arborense e torre di Mariano.",
     hero: {
-      src: "/images/cultura/oristano-panorama.webp",
+      src: "/images/cultura/oristano-panorama-everas.png",
       alt: "La torre di Mariano II a Oristano, in piazza Roma",
-      credit: {
-        author: "Giorgio Galeotti",
-        license: "CC BY 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Torre_di_San_Cristoforo_o_di_Mariano_II_-_Oristano,_Italia_-_15_Agosto_2020.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/oristano"),
     },
     intro:
       "Oristano è la città della Sartiglia e l’erede visibile del giudicato d’Arborea. Chi arriva per Carnevale trova anche l’Antiquarium e la torre di Mariano. Questa scheda tiene giostra, storia giudicale e visite, senza spingerla sul mare di Torre Grande.",
@@ -2159,14 +2126,9 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Orosei",
     description: "Orosei in Sardegna: guida al comune della Baronia, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/orosei-panorama.webp",
+      src: "/images/cultura/orosei-panorama-everas.png",
       alt: "Veduta di Orosei in Sardegna",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Orosei_-_Panorama_(04).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/orosei"),
     },
     intro: `Orosei è paese della Baronia sul Cedrino in provincia di Nuoro. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma ad Orosei su EVERAS.`,
     history: [

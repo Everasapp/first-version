@@ -1,4 +1,7 @@
-import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
+import type {
+  CultureTownArticle,
+  PhotoCredit,
+} from "@/src/lib/seo/cultura-towns";
 
 /**
  * 18 guide “in evidenza” sul Sud (stesso ruolo delle schede editoriali del Nord).
@@ -28,6 +31,17 @@ export const SUD_FEATURED_CULTURE_SLUGS = [
 export const SUD_FEATURED_SLUG_SET = new Set<string>(
   SUD_FEATURED_CULTURE_SLUGS,
 );
+
+function everasHeroCredit(path: string): PhotoCredit {
+  return {
+    author: "EVERAS",
+    license: "Illustrazione originale",
+    licenseUrl: `https://www.everas.it${path}`,
+    sourceUrl: "https://www.everas.it/cultura",
+    sourceLabel: "Cultura sarda",
+    creditPrefix: "Illustrazione",
+  };
+}
 
 /** Guide Cultura generate per i 84 comuni del Sud Sardegna. */
 export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
@@ -348,15 +362,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Cagliari: quartieri storici, Sant’Efisio, Museo archeologico nazionale in Cittadella. Nora è a Pula.",
     hero: {
-      src: "/images/cultura/cagliari-panorama.webp",
+      src: "/images/cultura/cagliari-panorama-everas.png",
       alt: "Cagliari vista dalla darsena, con il colle di Castello sul golfo",
-      credit: {
-        author: "Autore ignoto",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/publicdomain/mark/1.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Panorama_di_Cagliari_dalla_Darsena_(xilografia).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/cagliari"),
     },
     intro:
       "Cagliari è il capoluogo: Castello sul colle, quattro quartieri, Sant’Efisio il 1° maggio. Chi la cerca per il mare trova anche la Cittadella dei Musei. Questa scheda tiene città, voto e visite, senza ridurla a tramonto sul Poetto.",
@@ -718,14 +726,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Domus de Maria",
     description: "Domus de Maria in Sardegna: guida al comune del Sulcis, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/domus-de-maria-panorama.webp",
-      alt: "Veduta di Domus de Maria in Sardegna",
-      credit: {
-        author: "gian luca bucci",
-        license: "CC BY 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Spiaggia_di_Torre_di_Chia_-_Domus_de_Maria_(CA)_-_panoramio.jpg",
-      },
+      src: "/images/cultura/domus-de-maria-panorama-everas.png",
+      alt: "Spiaggia e torre di Chia nel comune di Domus de Maria",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/domus-de-maria"),
     },
     intro: `Domus de Maria è comune delle spiagge di Chia in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Domus de Maria su EVERAS.`,
     history: [
@@ -2362,14 +2365,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Nora nel comune di Pula: sito MiC, chiesa di Sant’Efisio e PulArchàios. Guida culturale sul rapporto tra paese e città antica, senza spiagge e senza orari copiati.",
     hero: {
-      src: "/images/cultura/pula-panorama.webp",
+      src: "/images/cultura/pula-panorama-everas.png",
       alt: "Panorama di Pula, Cagliari",
-      credit: {
-        author: "Dirgela",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Pula_panorama.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/pula"),
     },
     intro:
       "Pula e Nora non coincidono. Nora è la città antica sul Capo di Pula; Pula è il comune contemporaneo, erede territoriale di quel promontorio ma non la stessa città. Questa pagina serve a non confondere il sito MiC, il paese, il golfo di Cagliari e le spiagge — queste ultime restano fuori, perché qui il tema è il patrimonio.",
@@ -2462,14 +2460,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Quartu Sant'Elena",
     description: "Quartu Sant'Elena in Sardegna: guida al comune del Campidano di Cagliari, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/quartu-sant-elena-panorama.webp",
-      alt: "Veduta di Quartu Sant'Elena in Sardegna",
-      credit: {
-        author: "Gianni Careddu",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Quartu_Sant'Elena_-_Costume_tradizionale_(09).JPG",
-      },
+      src: "/images/cultura/quartu-sant-elena-panorama-everas.png",
+      alt: "Quartu Sant’Elena verso il Poetto e il golfo di Cagliari",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/quartu-sant-elena"),
     },
     intro: `Quartu Sant'Elena è città sul Poetto a nord di Cagliari in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Quartu Sant'Elena su EVERAS.`,
     history: [
@@ -4296,15 +4289,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Barumini Su Nuraxi è Patrimonio mondiale Unesco dal 1997: scavi di Giovanni Lilliu e sistema Fondazione con Casa Zapata e Centro Lilliu.",
     hero: {
-      src: "/images/cultura/barumini-panorama.webp",
+      src: "/images/cultura/barumini-panorama-everas.png",
       alt: "Il complesso nuragico Su Nuraxi a Barumini, con torre centrale e villaggio",
-      credit: {
-        author: "Norbert Nagel",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Nuraghe_Su_Nuraxi_-_Barumini_-_Sardinia_-_Italy_-_29.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/barumini"),
     },
     intro:
       "Barumini è il comune della Marmilla in cui Su Nuraxi — nuraghe complesso con villaggio — è iscritto nella Lista del patrimonio mondiale Unesco dal 1997. Gli scavi di Giovanni Lilliu, dagli anni Cinquanta, ne hanno fatto il caso più noto della civiltà nuragica; la Fondazione Barumini gestisce oggi il sito insieme a Casa Zapata e al Centro Giovanni Lilliu. Questa scheda racconta quel sistema culturale, non un monumento isolato e non un itinerario turistico.",
@@ -4645,14 +4632,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     h1: "Villasimius",
     description: "Villasimius in Sardegna: guida al comune del Sarrabus, cosa visitare e eventi in programma su EVERAS.",
     hero: {
-      src: "/images/cultura/villasimius-panorama.webp",
+      src: "/images/cultura/villasimius-panorama-everas.png",
       alt: "Veduta di Villasimius in Sardegna",
-      credit: {
-        author: "Giamas",
-        license: "CC BY-SA 3.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Villasimius3.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/villasimius"),
     },
     intro: `Villasimius è porta sull’area marina di Capo Carbonara in provincia di Cagliari. Questa scheda raccoglie storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Villasimius su EVERAS.`,
     history: [
@@ -4814,14 +4796,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Carbonia città di fondazione del 1938: piano urbanistico, gerarchia delle case, Grande Miniera di Serbariu e Museo del Carbone. Distinta da Iglesias.",
     hero: {
-      src: "/images/cultura/carbonia-panorama.webp",
+      src: "/images/cultura/carbonia-panorama-everas.png",
       alt: "Piazza Roma a Carbonia, con il municipio e la chiesa di San Ponziano",
-      credit: {
-        author: "Alex10",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Carbonia,_Piazza_Roma.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/carbonia"),
     },
     intro:
       "Carbonia non è una città che ha accanto una miniera. È una città che la miniera ha fatto esistere. Il Comune data la fondazione al regio decreto n. 2189 del 5 novembre 1937 e l’inaugurazione al 18 dicembre 1938: company town dell’Azienda Carboni Italiani, a bocca di miniera. Il Museo del Carbone, nella Grande Miniera di Serbariu, è quella miniera diventata memoria. Iglesias è un’altra città, con un’altra storia.",
@@ -4901,14 +4878,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Carloforte sull’isola di San Pietro: comunità tabarchina, lingua ligure, Polo linguistico e Museo civico Casa del Duca.",
     hero: {
-      src: "/images/cultura/carloforte-panorama.webp",
-      alt: "Xilografia con panorama di Carloforte",
-      credit: {
-        author: "Unknown authorUnknown author",
-        license: "Public domain",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_di_Carloforte_(xilografia).jpg",
-      },
+      src: "/images/cultura/carloforte-panorama-everas.png",
+      alt: "Carloforte sull’isola di San Pietro, con il lungomare e le case sul porto",
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/carloforte"),
     },
     intro:
       "Carloforte è l’unico abitato dell’isola di San Pietro. Ciò che lo distingue da un comune costiero del Sulcis è la comunità tabarchina: una storia di migrazione ligure, una lingua che non è sardo, un ufficio comunale che la insegna. La guida EVERAS alle lingue colloca il tabarchino accanto ad alguerès e sassarese. Qui resta il rapporto tra quella lingua e questo paese.",
@@ -5043,14 +5015,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Iglesias: cattedrale di Santa Chiara, Istituto Asproni e Archivio Storico Minerario IGEA a Monteponi. Cultura del lavoro come scuola e documento, distinta da Carbonia.",
     hero: {
-      src: "/images/cultura/iglesias-panorama.webp",
+      src: "/images/cultura/iglesias-panorama-everas.png",
       alt: "Facciata e campanile trecentesco della cattedrale di Santa Chiara a Iglesias",
-      credit: {
-        author: "Misterflame2001",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:FacciataCattedraleIglesias.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/iglesias"),
     },
     intro:
       "Iglesias è città prima di essere un itinerario in miniera. La cattedrale di Santa Chiara sta in piazza con il Municipio e il Palazzo vescovile; sotto l’Istituto Asproni c’è un museo nato da una scuola; a Monteponi l’archivio IGEA conserva la memoria scritta del lavoro. Carbonia, a pochi chilometri, è la città nata nel 1938 per il carbone. Il Parco geominerario ha sede legale qui e operativa a Serbariu: è cornice regionale, non l’identità di questo comune.",
@@ -5248,14 +5215,9 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Sant’Antioco e l’antica Sulki/Sulci: archeologia fenicio-punica, patrimonio cristiano e tradizioni legate al culto del santo.",
     hero: {
-      src: "/images/cultura/sant-antioco-panorama.webp",
+      src: "/images/cultura/sant-antioco-panorama-everas.png",
       alt: "Panorama di Sant’Antioco sul Sulcis, territorio dell’antica Sulki",
-      credit: {
-        author: "Alex10",
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl: "https://commons.wikimedia.org/wiki/File:Panorama_Sant'Antioco.jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/sud-sardegna/sant-antioco"),
     },
     intro:
       "Sant’Antioco si legge per stratificazione. Sulle sponde orientali dell’isola sorse Sulky (Sulci in età romana): insediamento fenicio, città fenicio-punica, trasformazioni romane e cristiane, fino al culto di Sant’Antioco che ancora tiene insieme basilica e festa. Non è una somma di monumenti: è un territorio in cui fasi diverse restano leggibili una sull’altra.",

@@ -1,6 +1,20 @@
-import type { CultureTownArticle } from "@/src/lib/seo/cultura-towns";
+import type {
+  CultureTownArticle,
+  PhotoCredit,
+} from "@/src/lib/seo/cultura-towns";
 
 const GIANNI = { author: "Gianni Careddu" } as const;
+
+function everasHeroCredit(path: string): PhotoCredit {
+  return {
+    author: "EVERAS",
+    license: "Illustrazione originale",
+    licenseUrl: `https://www.everas.it${path}`,
+    sourceUrl: "https://www.everas.it/cultura",
+    sourceLabel: "Cultura sarda",
+    creditPrefix: "Illustrazione",
+  };
+}
 
 export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
   {
@@ -14,15 +28,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Sassari: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e centro.",
     hero: {
-      src: "/images/cultura/sassari-panorama.webp",
+      src: "/images/cultura/sassari-panorama-everas.png",
       alt: "Panorama di Sassari sul colle, tra il centro storico e i quartieri nuovi",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Sassari,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/sassari"),
     },
     traditionPhoto: {
       src: "/images/cultura/sassari-candelieri.webp",
@@ -130,15 +138,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Alghero: storia catalana, Museo del Corallo a Villa Costantino, Focs de Sant Joan e bastioni.",
     hero: {
-      src: "/images/cultura/alghero-panorama.webp",
+      src: "/images/cultura/alghero-panorama-everas.png",
       alt: "Alghero vista dal mare, con le mura e il porto sul golfo",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Alghero_-_Panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/alghero"),
     },
     visitPhoto: {
       src: "/images/cultura/alghero-visit.webp",
@@ -226,15 +228,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Olbia, Gallura: Museo archeologico Isola Peddone, basilica di San Simplicio e festa di Mesu Maju.",
     hero: {
-      src: "/images/cultura/olbia-marina.webp",
+      src: "/images/cultura/olbia-marina-everas.png",
       alt: "La marina di Olbia sul golfo, con barche e lungomare",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Olbia,_marina_di_Olbia_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/olbia"),
     },
     visitPhoto: {
       src: "/images/cultura/olbia-san-simplicio.webp",
@@ -327,15 +323,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Porto Torres: basilica di San Gavino, Antiquarium Turritano, Turris Libisonis, Festha Manna e ponte romano.",
     hero: {
-      src: "/images/cultura/porto-torres-panorama.webp",
+      src: "/images/cultura/porto-torres-panorama-everas.png",
       alt: "Porto Torres vista dal mare, con il porto e il golfo dell’Asinara",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Porto_Torres,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/porto-torres"),
     },
     visitPhoto: {
       src: "/images/cultura/porto-torres-san-gavino.webp",
@@ -428,15 +418,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "La Maddalena: Compendio Garibaldino di Caprera, Memoriale di Forte Arbuticci, porto e parco dell’arcipelago.",
     hero: {
-      src: "/images/cultura/la-maddalena-panorama.webp",
+      src: "/images/cultura/la-maddalena-panorama-everas.png",
       alt: "La Maddalena vista dal mare, con il paese sull’isola",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:La_Maddalena,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/la-maddalena"),
     },
     visitPhoto: {
       src: "/images/cultura/la-maddalena-caprera.webp",
@@ -527,15 +511,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Arzachena, Gallura: Museo Ruzittu, necropoli di Li Muri, nuraghe Albucciu. La Costa Smeralda è un altro pezzo del comune.",
     hero: {
-      src: "/images/cultura/arzachena-panorama.webp",
+      src: "/images/cultura/arzachena-panorama-everas.png",
       alt: "Panorama di Arzachena tra i graniti della Gallura",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Arzachena,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/arzachena"),
     },
     visitPhoto: {
       src: "/images/cultura/arzachena-li-muri.webp",
@@ -619,15 +597,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "A Castelsardo il MIM documenta l’intreccio di fibre vegetali; il Lunissanti è il rito della Confraternita di Santa Croce verso Tergu. Non una guida al borgo.",
     hero: {
-      src: "/images/cultura/castelsardo-panorama.webp",
+      src: "/images/cultura/castelsardo-panorama-everas.png",
       alt: "Castelsardo sul promontorio, con il castello dei Doria sul mare dell’Asinara",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Castelsardo_(01).JPG",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/castelsardo"),
     },
     intro:
       "Castelsardo si legge meglio attraverso due fatti culturali, non attraverso una lista di attrazioni. Il primo è l’intreccio di fibre vegetali: mestiere ancora visibile in paese e documentato dal MIM, Museo dell’intreccio mediterraneo, nella fortezza dei Doria. Il secondo è il Lunissanti: rito di Settimana Santa della Confraternita dell’Oratorio di Santa Croce, con percorso verso l’abbazia di Tergu.",
@@ -804,15 +776,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Tempio Pausania: centro in granito, Museo Bernardo De Muro, macchine del sughero, carnevale timpiesu e Limbara.",
     hero: {
-      src: "/images/cultura/tempio-panorama.webp",
+      src: "/images/cultura/tempio-panorama-everas.png",
       alt: "Panorama di Tempio Pausania, la città di granito ai piedi del Limbara",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Tempio_Pausania,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/tempio-pausania"),
     },
     visitPhoto: {
       src: "/images/cultura/tempio-centro.webp",
@@ -992,15 +958,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Stintino: pescatori dell’Asinara, MUT Museo della Tonnara e Tonnara Saline. La Pelosa è costa, non il paese.",
     hero: {
-      src: "/images/cultura/stintino-panorama.webp",
+      src: "/images/cultura/stintino-panorama-everas.png",
       alt: "Stintino visto dal mare, con la lingua di terra della Nurra",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Stintino_-_Panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/stintino"),
     },
     visitPhoto: {
       src: "/images/cultura/stintino-tonnare.webp",
@@ -1083,15 +1043,9 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Palau, Gallura: Roccia dell’Orso monumento naturale, Fortezza di Monte Altura e Museo etnografico. Non solo lo scalo per La Maddalena.",
     hero: {
-      src: "/images/cultura/palau-panorama.webp",
+      src: "/images/cultura/palau-panorama-everas.png",
       alt: "Panorama di Palau sul golfo, tra case e mare della Gallura",
-      credit: {
-        ...GIANNI,
-        license: "CC BY-SA 4.0",
-        licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
-        sourceUrl:
-          "https://commons.wikimedia.org/wiki/File:Palau,_panorama_(01).jpg",
-      },
+      credit: everasHeroCredit("/cultura-sarda/nord-sardegna/palau"),
     },
     visitPhoto: {
       src: "/images/cultura/palau-capo-orso.webp",
