@@ -3,10 +3,10 @@ import Script from "next/script";
 /**
  * Consent Mode v2 defaults must run before AdSense / Analytics tags.
  *
- * Defaults stay denied until a real CMP updates them via
- * gtag('consent', 'update', …). This repo has no in-app consent banner
- * and no code that calls consent update — only Google Privacy & messaging
- * (AdSense) can do that if a message is published in the Google UI.
+ * TEMPORARY: analytics_storage is 'granted' so GA4 can collect page_view /
+ * sessions / users while we set up a real CMP. Ads consents stay denied.
+ * Revert analytics_storage to 'denied' once Privacy & messaging (or another
+ * CMP) calls gtag('consent', 'update', …) after user choice.
  *
  * @see https://developers.google.com/tag-platform/security/guides/consent
  */
@@ -19,7 +19,7 @@ gtag('consent', 'default', {
   ad_storage: 'denied',
   ad_user_data: 'denied',
   ad_personalization: 'denied',
-  analytics_storage: 'denied',
+  analytics_storage: 'granted',
   wait_for_update: 500
 });
 gtag('set', 'ads_data_redaction', true);
