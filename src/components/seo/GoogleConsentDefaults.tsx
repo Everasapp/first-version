@@ -2,7 +2,12 @@ import Script from "next/script";
 
 /**
  * Consent Mode v2 defaults must run before AdSense / Analytics tags.
- * Google Privacy & messaging (CMP certificato) aggiorna questi stati dopo la scelta utente.
+ *
+ * Defaults stay denied until a real CMP updates them via
+ * gtag('consent', 'update', …). This repo has no in-app consent banner
+ * and no code that calls consent update — only Google Privacy & messaging
+ * (AdSense) can do that if a message is published in the Google UI.
+ *
  * @see https://developers.google.com/tag-platform/security/guides/consent
  */
 export default function GoogleConsentDefaults() {

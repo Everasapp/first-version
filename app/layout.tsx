@@ -110,6 +110,13 @@ export default function RootLayout({
         </div>
         <PWARegister />
         <PWAInstallBanner />
+        {/*
+          Single GA4 source: @next/third-parties GoogleAnalytics.
+          Initial page_view comes from gtag('config', gaId).
+          Client navigations rely on GA4 Enhanced Measurement
+          ("Page changes based on browser history events") — do not
+          also send manual page_view events or they will duplicate.
+        */}
         {process.env.NODE_ENV === "production" ? (
           <GoogleAnalytics gaId={gaMeasurementId} />
         ) : null}
