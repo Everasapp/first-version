@@ -155,7 +155,7 @@ export default function AreaSection({
   return (
     <section className="overflow-x-hidden bg-white py-14 sm:py-16">
       <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
-        <div className="relative h-56 overflow-hidden rounded-[32px] sm:h-72">
+        <div className="relative isolate min-h-56 overflow-hidden rounded-[32px] sm:min-h-72">
           <Image
             src={image}
             alt={title}
@@ -168,7 +168,7 @@ export default function AreaSection({
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />
 
-          <div className="absolute inset-0 flex max-w-2xl flex-col justify-end p-6 sm:p-10">
+          <div className="relative z-10 flex max-w-2xl flex-col justify-end p-6 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/80">
               Esplora il territorio
             </p>
