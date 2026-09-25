@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import MonsteraHotWeekAd from "@/src/components/ads/MonsteraHotWeekAd";
 import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
 
 type HappeningTodayProps = {
@@ -124,17 +125,17 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
   }
 
   return (
-    <section className="overflow-x-hidden border-b border-slate-200 bg-slate-50 py-14 sm:py-16">
-      <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
-        <div className="flex items-end justify-between gap-4">
-          <div className="min-w-0">
+    <section className="relative overflow-x-clip border-b border-slate-200 bg-slate-50 py-8 sm:py-10 xl:overflow-visible">
+      <div className="relative mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
+        <div className="flex items-start justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1 pr-[7.75rem] sm:pr-[9.25rem] xl:pr-0">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#E67E22]">
               Lunedì – domenica
             </p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+            <h2 className="mt-1.5 text-2xl font-bold text-slate-900 sm:mt-2 sm:text-3xl">
               Hot this week
             </h2>
-            <p className="mt-2 max-w-xl text-slate-600">
+            <p className="mt-1.5 max-w-xl text-sm text-slate-600 sm:mt-2 sm:text-base">
               Prima le novità appena pubblicate, bilanciate tra Nord, Centro e
               Sud Sardegna.
               {events.length > INITIAL_CARDS ? (
@@ -145,9 +146,28 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
                 </span>
               ) : null}
             </p>
+
+            <div className="mt-3 flex items-center gap-2 xl:hidden">
+              <button
+                type="button"
+                onClick={() => scrollByCard(-1)}
+                aria-label="Eventi precedenti"
+                className="grid h-10 w-10 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] active:scale-95"
+              >
+                <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollByCard(1)}
+                aria-label="Eventi successivi"
+                className="grid h-10 w-10 place-items-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE] active:scale-95"
+              >
+                <ChevronRight aria-hidden="true" className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="relative z-10 hidden shrink-0 items-start gap-2 xl:flex">
             <button
               type="button"
               onClick={() => scrollByCard(-1)}
@@ -167,7 +187,9 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
           </div>
         </div>
 
-        <div className="relative mt-8 min-w-0">
+        <MonsteraHotWeekAd />
+
+        <div className="relative mt-5 min-w-0 sm:mt-6">
           <div
             ref={scrollerRef}
             onMouseEnter={() => setIsPaused(true)}

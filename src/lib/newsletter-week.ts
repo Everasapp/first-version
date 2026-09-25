@@ -165,7 +165,16 @@ function rankEvent(
   if (sameCity(event.municipality, geo.city)) score += 100;
   if (geo.area && eventArea(event) === geo.area) score += 40;
   if (event.is_featured) score += 12;
-  if (category && eventMatchesCategoryFilter(event, category)) score += 18;
+  const preferred = (category ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  if (
+    preferred.length > 0 &&
+    preferred.some((slug) => eventMatchesCategoryFilter(event, slug))
+  ) {
+    score += 18;
+  }
   return score;
 }
 

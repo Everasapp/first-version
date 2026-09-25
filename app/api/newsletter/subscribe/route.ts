@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -9,7 +8,6 @@ export const runtime = "nodejs";
 type SubscribeBody = {
   email?: unknown;
   city?: unknown;
-  category?: unknown;
 };
 
 function asTrimmedString(value: unknown) {
@@ -30,7 +28,6 @@ export async function POST(request: Request) {
 
   const email = asTrimmedString(body.email).toLowerCase();
   const city = asTrimmedString(body.city);
-  const category = asTrimmedString(body.category);
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json(
@@ -47,19 +44,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const categoryExists = categories.some((item) => item.slug === category);
-  if (!categoryExists) {
-    return NextResponse.json(
-      { error: "Seleziona una categoria dalla lista." },
-      { status: 400 },
-    );
-  }
-
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("subscribe_newsletter", {
     p_email: email,
     p_city: city,
-    p_category: category,
+    p_category: "",
   });
 
   if (error) {

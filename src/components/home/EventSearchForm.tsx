@@ -229,55 +229,55 @@ export default function EventSearchForm() {
     "flex items-center gap-2 whitespace-nowrap text-sm font-bold text-slate-900";
 
   const fieldClass =
-    "flex min-w-0 flex-col justify-end rounded-2xl border-t border-slate-100 px-4 py-3.5 md:border-l md:border-t-0 md:px-5";
+    "flex min-w-0 flex-col justify-end rounded-xl border-t border-slate-100 px-3 py-2.5 md:border-l md:border-t-0 md:px-4";
 
   const firstFieldClass =
-    "flex min-w-0 flex-col justify-end rounded-2xl px-4 py-3.5 md:px-5";
+    "flex min-w-0 flex-col justify-end rounded-xl px-3 py-2.5 md:px-4";
 
   const inputClass =
-    "mt-2 w-full min-w-0 bg-transparent text-base font-medium text-slate-800 outline-none placeholder:text-slate-400";
+    "mt-1.5 w-full min-w-0 bg-transparent text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:text-base";
 
   return (
     <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
-      <div className="mt-5 min-w-0 max-w-7xl sm:mt-8">
-        <div className="flex min-w-0 flex-nowrap items-center gap-2 overflow-x-auto pb-1 touch-pan-x">
+      <div className="mt-3 min-w-0 max-w-7xl sm:mt-4">
+        <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1 touch-pan-x sm:gap-2">
           <button
             type="button"
             onClick={handleNearMe}
             disabled={isLocating}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#E67E22] px-4 py-2 text-sm font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#E67E22] px-3 py-1.5 text-xs font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm"
           >
-            <LocateFixed aria-hidden="true" className="h-4 w-4" />
+            <LocateFixed aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             {isLocating ? "Rilevo posizione…" : "Vicino a me"}
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=nord-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm"
           >
-            <Compass aria-hidden="true" className="h-4 w-4" />
+            <Compass aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Nord Sardegna
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=centro-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm"
           >
-            <MapPin aria-hidden="true" className="h-4 w-4" />
+            <MapPin aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Centro Sardegna
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=sud-sardegna")}
-            className="flex shrink-0 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
+            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm"
           >
-            <Sun aria-hidden="true" className="h-4 w-4" />
+            <Sun aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Sud Sardegna
           </button>
         </div>
 
         {geoMessage ? (
-          <p className="mt-2 text-sm font-medium text-orange-100">{geoMessage}</p>
+          <p className="mt-1.5 text-xs font-medium text-orange-100 sm:text-sm">{geoMessage}</p>
         ) : null}
       </div>
 
@@ -286,7 +286,7 @@ export default function EventSearchForm() {
         id="hero-search-form"
         action="/eventi"
         method="GET"
-        className="mt-3 w-full max-w-7xl rounded-2xl border border-white/80 bg-white p-3 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 sm:mt-4 sm:p-4 md:hidden"
+        className="mt-2.5 w-full max-w-7xl rounded-xl border border-white/80 bg-white p-2.5 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 sm:mt-3 sm:rounded-2xl sm:p-3 md:hidden"
       >
         <input type="hidden" name="area" value={selectedArea} />
         <input type="hidden" name="city" value={selectedCity} />
@@ -435,7 +435,7 @@ export default function EventSearchForm() {
 
         <button
           type="submit"
-          className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] text-base font-bold text-white transition hover:bg-[#C96A1A]"
+          className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] text-sm font-bold text-white transition hover:bg-[#C96A1A] sm:text-base"
         >
           <Search aria-hidden="true" className="h-5 w-5" />
           Cerca
@@ -446,7 +446,7 @@ export default function EventSearchForm() {
       <form
         action="/eventi"
         method="GET"
-        className="mt-4 hidden w-full max-w-7xl gap-2 rounded-[1.75rem] border border-white/80 bg-white p-4 shadow-[0_25px_80px_-12px_rgba(0,0,0,0.55)] ring-1 ring-black/5 md:grid md:grid-cols-2 md:p-5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
+        className="mt-3 hidden w-full max-w-7xl gap-1.5 rounded-2xl border border-white/80 bg-white p-2.5 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 md:grid md:grid-cols-2 md:p-3 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
       >
         <label className={firstFieldClass}>
           <span className={labelClass}>
@@ -563,9 +563,9 @@ export default function EventSearchForm() {
 
         <button
           type="submit"
-          className="flex min-h-[4.5rem] items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-8 py-5 text-lg font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
+          className="flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-6 py-3 text-base font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
         >
-          <Search aria-hidden="true" className="h-6 w-6" />
+          <Search aria-hidden="true" className="h-5 w-5" />
           Cerca
         </button>
       </form>

@@ -16,7 +16,6 @@ export default function MonsteraPromoBanner({
 }: MonsteraPromoBannerProps) {
   return (
     <aside className={`${styles.root} ${styles.slot}`} aria-label="Pubblicità">
-      <p className={styles.label}>Pubblicità</p>
       <a
         className={styles.banner}
         href={href}

@@ -1,10 +1,10 @@
-import { categories } from "@/src/data/categories";
 import { escapeHtml } from "@/src/lib/notifications/format";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import type { GeoArea } from "@/src/lib/geo-area";
 import { areaExplorePath } from "@/src/lib/geo-area";
+import { formatNewsletterCategoryLabels } from "@/src/lib/newsletter-categories";
 
 export type NewsletterEvent = {
   id: string;
@@ -23,8 +23,7 @@ export type NewsletterEvent = {
 };
 
 export function getCategoryLabel(slug: string | null | undefined) {
-  if (!slug) return "Tutte le categorie";
-  return categories.find((category) => category.slug === slug)?.name ?? slug;
+  return formatNewsletterCategoryLabels(slug);
 }
 
 export function formatNewsletterEventDate(startAt: string, endAt?: string | null) {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
 
 const legalLinks = [
@@ -123,7 +124,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-[#c5d8ec] pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="mt-8 border-t border-[#c5d8ec] pt-8">
+          <HomeNewsletterSignup />
+        </div>
+
+        <div className="mt-8 flex flex-col gap-4 border-t border-[#c5d8ec] pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <div className="space-y-1 text-sm text-slate-600">
             <p>© {year} EVERAS. Tutti i diritti riservati.</p>
             <p>

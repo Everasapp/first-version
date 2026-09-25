@@ -1,6 +1,5 @@
 import { preload } from "react-dom";
 
-import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
 import HeroSearchLazy from "@/src/components/home/HeroSearchLazy";
 
 export default function Hero() {
@@ -25,21 +24,19 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto flex min-h-[520px] max-w-7xl flex-col justify-center px-5 py-12 sm:min-h-[700px] sm:px-8 sm:py-20">
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-orange-200">
+      <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 sm:py-8">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-200 sm:text-xs">
           EVERAS · Eventi in Sardegna
         </p>
 
-        <h1 className="mt-3 max-w-4xl text-4xl font-black leading-[1.05] text-white sm:mt-4 sm:text-6xl lg:text-7xl">
+        <h1 className="mt-1.5 max-w-3xl text-2xl font-black leading-[1.12] text-white sm:mt-2 sm:text-3xl lg:text-4xl">
           EVERAS: scopri eventi e cose da fare in Sardegna
         </h1>
 
-        <p className="mt-4 max-w-2xl text-base leading-7 text-blue-50 sm:mt-6 sm:text-xl sm:leading-8">
+        <p className="mt-2 max-w-2xl text-sm leading-5 text-blue-50 sm:text-base sm:leading-6">
           Eventi, sagre, concerti, workshop e attività in tutta l’isola — cerca
           per giorno, città o interesse.
         </p>
-
-        <HomeNewsletterSignup />
 
         <HeroSearchLazy />
       </div>

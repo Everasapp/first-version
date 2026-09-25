@@ -3,7 +3,6 @@
 import { FormEvent, useMemo, useState } from "react";
 import { LoaderCircle, Mail } from "lucide-react";
 
-import { categories } from "@/src/data/categories";
 import { cities } from "@/src/data/cities";
 
 export default function HomeNewsletterSignup() {
@@ -14,7 +13,6 @@ export default function HomeNewsletterSignup() {
 
   const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
-  const [category, setCategory] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +27,7 @@ export default function HomeNewsletterSignup() {
       const response = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, city, category }),
+        body: JSON.stringify({ email, city }),
       });
       const payload = (await response.json()) as {
         error?: string;
@@ -47,7 +45,6 @@ export default function HomeNewsletterSignup() {
       );
       setEmail("");
       setCity("");
-      setCategory("");
     } catch {
       setErrorMessage("Iscrizione non riuscita. Riprova.");
     } finally {
@@ -56,19 +53,19 @@ export default function HomeNewsletterSignup() {
   }
 
   const fieldClassName =
-    "h-11 w-full rounded-xl border border-white/25 bg-white/95 px-3 text-sm text-slate-900 outline-none transition focus:border-white focus:ring-2 focus:ring-white/40";
+    "h-11 w-full rounded-xl border border-[#c5d8ec] bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-[#075EAE] focus:ring-2 focus:ring-[#075EAE]/25";
 
   return (
-    <div className="mt-6 w-full rounded-2xl border border-white/20 bg-black/25 p-4 backdrop-blur-sm sm:mt-8 sm:p-5">
+    <div className="rounded-2xl border border-[#c5d8ec] bg-white/70 p-4 sm:p-5">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E67E22] text-white">
           <Mail aria-hidden="true" className="h-4 w-4" />
         </span>
         <div className="min-w-0">
-          <h2 className="text-base font-bold text-white sm:text-lg">
+          <h2 className="text-base font-bold text-slate-900 sm:text-lg">
             Iscriviti alla newsletter
           </h2>
-          <p className="mt-1 text-sm leading-6 text-blue-50/90">
+          <p className="mt-1 text-sm leading-6 text-slate-600">
             Una volta a settimana, eventi vicino a te. Solo email, senza
             account.
           </p>
@@ -76,8 +73,8 @@ export default function HomeNewsletterSignup() {
       </div>
 
       <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
-          <label className="sm:col-span-2 lg:col-span-1">
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto]">
+          <label>
             <span className="sr-only">Email</span>
             <input
               type="email"
@@ -107,27 +104,10 @@ export default function HomeNewsletterSignup() {
             </select>
           </label>
 
-          <label>
-            <span className="sr-only">Categoria</span>
-            <select
-              required
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-              className={fieldClassName}
-            >
-              <option value="">Categoria</option>
-              {categories.map((item) => (
-                <option key={item.id} value={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
           <button
             type="submit"
             disabled={isLoading}
-            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2 lg:col-span-1 lg:w-auto lg:min-w-[8.5rem]"
+            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[8.5rem]"
           >
             {isLoading ? (
               <>
@@ -144,13 +124,13 @@ export default function HomeNewsletterSignup() {
         </div>
 
         {errorMessage ? (
-          <p className="rounded-xl bg-red-500/90 px-3 py-2 text-sm font-medium text-white">
+          <p className="rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-700 ring-1 ring-red-200">
             {errorMessage}
           </p>
         ) : null}
 
         {successMessage ? (
-          <p className="rounded-xl bg-emerald-500/90 px-3 py-2 text-sm font-medium text-white">
+          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 ring-1 ring-emerald-200">
             {successMessage}
           </p>
         ) : null}
