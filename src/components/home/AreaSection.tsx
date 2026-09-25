@@ -162,8 +162,9 @@ export default function AreaSection({
             title={title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1280px"
-            quality={70}
+            quality={55}
             className="object-cover"
+            unoptimized
           />
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" />

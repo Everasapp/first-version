@@ -91,13 +91,8 @@ export default function EventCard({
           priority={priority}
           fetchPriority={priority ? "high" : "auto"}
           className="object-cover transition duration-500 group-hover:scale-105"
-          unoptimized={
-            !(
-              event.imageUrl.startsWith("/") ||
-              event.imageUrl.includes("supabase.co") ||
-              event.imageUrl.includes("unsplash.com")
-            )
-          }
+          // Already WebP/~JPEG from our upload pipeline / CDN — skip Vercel Image Optimization quota.
+          unoptimized
         />
 
         <div className="absolute left-4 top-4 z-[1] flex flex-wrap gap-2">

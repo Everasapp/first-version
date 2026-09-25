@@ -45,6 +45,7 @@ export default function CulturaArticlesFeaturedGrid({
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
+                unoptimized
               />
             </div>
             <div className="border-t border-slate-100 px-4 py-4 sm:px-5">

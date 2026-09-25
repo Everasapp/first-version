@@ -70,6 +70,7 @@ export default function Footer() {
             width={120}
             height={44}
             className="h-auto w-28"
+            unoptimized
           />
         </Link>
 

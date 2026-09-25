@@ -31,6 +31,7 @@ import {
   buildCityLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
+import { filterWorkshopRelevantEvents } from "@/src/lib/seo/workshop-relevance";
 import {
   eventCategorySlugs,
   resolveCategoryLabels,
@@ -167,6 +168,12 @@ export async function generateMetadata({
     const { events } = await loadFilteredPublishedEvents({
       categorySlug: category.slug,
     });
+    if (category.slug === "workshop-corsi") {
+      return buildCategoryLandingMetadata(
+        category,
+        filterWorkshopRelevantEvents(events).length,
+      );
+    }
     return buildCategoryLandingMetadata(category, events.length);
   }
 

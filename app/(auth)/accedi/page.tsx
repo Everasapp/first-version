@@ -98,6 +98,7 @@ export default function AccediPage({ searchParams }: AccediPageProps) {
   width={144}
   height={53}
   priority
+  unoptimized
   className="h-auto w-[144px]"
 />
 </Link>

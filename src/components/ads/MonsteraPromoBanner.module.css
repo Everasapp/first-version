@@ -1,0 +1,265 @@
+.root {
+  --cream: #fdfbf7;
+  --ink: #1a2e22;
+  --green: #3b5a45;
+  --leaf: #c4e4b5;
+  --border: #efeae2;
+  --cycle: 12s;
+}
+
+.slot {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .slot {
+    padding: 0 2rem;
+  }
+}
+
+.label {
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--cream);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 12px 28px rgba(26, 46, 34, 0.1);
+}
+
+@media (min-width: 640px) {
+  .banner {
+    flex-direction: row;
+    aspect-ratio: 1200 / 300;
+  }
+}
+
+.copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--cream);
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .copy {
+    width: 42%;
+    gap: clamp(10px, 1.6vw, 18px);
+    padding: clamp(14px, 2.4vw, 28px) clamp(18px, 3.2vw, 40px);
+  }
+}
+
+.copy::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  right: -18%;
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--leaf);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  width: clamp(120px, 40vw, 168px);
+  height: auto;
+  max-height: 64px;
+  object-fit: contain;
+  object-position: left center;
+  display: block;
+  flex-shrink: 0;
+}
+
+.lead {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: 22em;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
+  font-size: clamp(0.9rem, 2.8vw, 1.125rem);
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.cta {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  margin: 0;
+  padding-bottom: 3px;
+  border-bottom: 2.5px solid var(--green);
+  color: var(--ink);
+  font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.banner:hover .cta {
+  color: var(--green);
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  min-height: 9.5rem;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .media {
+    width: 58%;
+    min-height: 0;
+    height: auto;
+  }
+}
+
+.slides {
+  position: absolute;
+  inset: 0;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: slideFade var(--cycle) infinite;
+  will-change: opacity;
+}
+
+.slide:nth-child(1) {
+  background-image: url("/images/monstera/slide-1.webp");
+  animation-delay: 0s;
+}
+
+.slide:nth-child(2) {
+  background-image: url("/images/monstera/slide-2.webp");
+  animation-delay: calc(var(--cycle) / 3);
+}
+
+.slide:nth-child(3) {
+  background-image: url("/images/monstera/slide-3.webp");
+  animation-delay: calc(var(--cycle) * 2 / 3);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--cream) 0%,
+    rgba(253, 251, 247, 0.35) 14%,
+    rgba(253, 251, 247, 0) 40%
+  );
+}
+
+@media (max-width: 639px) {
+  .overlay {
+    background: linear-gradient(
+      180deg,
+      var(--cream) 0%,
+      rgba(253, 251, 247, 0.2) 18%,
+      rgba(253, 251, 247, 0) 45%
+    );
+  }
+}
+
+.dots {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 4;
+  display: flex;
+  gap: 7px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(253, 251, 247, 0.55);
+  box-shadow: 0 0 0 1px rgba(26, 46, 34, 0.15);
+  animation: dotPulse var(--cycle) infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: calc(var(--cycle) / 3);
+}
+
+.dot:nth-child(3) {
+  animation-delay: calc(var(--cycle) * 2 / 3);
+}
+
+@keyframes slideFade {
+  0% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  35.9%,
+  100% {
+    background: rgba(253, 251, 247, 0.45);
+    transform: scale(1);
+  }
+  6%,
+  30% {
+    background: #fdfbf7;
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .dot {
+    animation: none;
+  }
+
+  .slide:nth-child(1) {
+    opacity: 1;
+  }
+}

@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import EventLandingView from "@/src/components/seo/EventLandingView";
+import MonsteraPromoBanner from "@/src/components/ads/MonsteraPromoBanner";
+import {
+  WorkshopCorsiLandingPage,
+  buildWorkshopCorsiLandingMetadata,
+} from "@/src/components/seo/WorkshopCorsiLandingPage";
 import type { Category } from "@/src/data/categories";
 import type { City } from "@/src/data/cities";
 import { categories } from "@/src/data/categories";
@@ -84,6 +89,10 @@ export function buildCategoryLandingMetadata(
   category: Category,
   eventCount?: number,
 ): Metadata {
+  if (category.slug === "workshop-corsi") {
+    return buildWorkshopCorsiLandingMetadata(eventCount);
+  }
+
   const year = romeYear();
   const title = `${category.name} in Sardegna ${year}`;
   const description = `${category.name} in Sardegna: calendario aggiornato di date, città e dettagli. Cosa fare oggi e nel weekend su EVERAS.`;
@@ -235,6 +244,9 @@ export async function CityLandingPage({ city }: { city: City }) {
       events={upcoming}
       sections={sections}
       errorMessage={error?.message}
+      promo={
+        city.city === "Sassari" ? <MonsteraPromoBanner /> : undefined
+      }
       breadcrumbs={[
         { name: "Home", href: "/" },
         { name: "Eventi", href: "/eventi" },
@@ -283,6 +295,10 @@ export async function CategoryLandingPage({
 }: {
   category: Category;
 }) {
+  if (category.slug === "workshop-corsi") {
+    return <WorkshopCorsiLandingPage />;
+  }
+
   const { events, error } = await loadFilteredPublishedEvents({
     categorySlug: category.slug,
   });

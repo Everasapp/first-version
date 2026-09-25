@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
+import type { ReactNode } from "react";
 
 import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -58,6 +59,8 @@ type EventLandingViewProps = {
    * Omit to keep the grid default (9). Hub pages may raise this for crawlability.
    */
   eventsGridInitialCount?: number;
+  /** Optional mid-page promo (e.g. sponsored banner under intro). */
+  promo?: ReactNode;
 };
 
 export default function EventLandingView({
@@ -81,6 +84,7 @@ export default function EventLandingView({
   relatedLinks = [],
   cover,
   eventsGridInitialCount,
+  promo,
 }: EventLandingViewProps) {
   const hasSections = Boolean(sections && sections.length > 0);
   const listedCount = resultCount ?? events.length;
@@ -160,6 +164,12 @@ export default function EventLandingView({
             </div>
           </div>
         </section>
+
+        {promo ? (
+          <div className="border-b border-slate-200 bg-white py-8 sm:py-10">
+            {promo}
+          </div>
+        ) : null}
 
         <section className="py-10 sm:py-14">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">

@@ -305,6 +305,11 @@ export default async function EventiSardegnaHubPage() {
       meta: "Calendario feste di paese",
     },
     {
+      href: "/eventi/workshop-corsi",
+      label: "Corsi e workshop in Sardegna",
+      meta: "Laboratori e attività formative",
+    },
+    {
       href: "/eventi/musica-concerti",
       label: "Concerti e spettacoli",
       meta: "Musica live sull’isola",

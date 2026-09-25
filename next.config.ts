@@ -2,7 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [55, 65, 70, 75],
+    // Hobby free tier: cut transformation variants hard.
+    // Event photos are already compressed WebP in Supabase; most UI assets skip optimizer via `unoptimized`.
+    formats: ["image/webp"],
+    qualities: [55],
+    minimumCacheTTL: 2678400, // 31 days
+    deviceSizes: [640, 828, 1200],
+    imageSizes: [128, 256, 384],
     remotePatterns: [
       {
         protocol: "https",
