@@ -6,18 +6,18 @@ import { X } from "lucide-react";
 
 import styles from "./HotWeekSideAds.module.css";
 
-const STORAGE_KEY = "everas-monstera-hotweek-dismissed";
+const STORAGE_KEY = "everas-zoe-hotweek-dismissed";
 
-type MonsteraHotWeekAdProps = {
+type ZoeHotWeekAdProps = {
   href?: string;
 };
 
 /**
- * Sponsored Monstera ad, aligned with Hot this week event cards.
+ * Sponsored Zoe Academy ad, aligned with Nord Sardegna event cards.
  */
-export default function MonsteraHotWeekAd({
-  href = "https://www.google.com/maps/search/?api=1&query=Monstera%20Via%20Predda%20Niedda%2037f%20Sassari",
-}: MonsteraHotWeekAdProps) {
+export default function ZoeHotWeekAd({
+  href = "https://www.facebook.com/Zoe.talenti.corsi.eventi.progetti",
+}: ZoeHotWeekAdProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function MonsteraHotWeekAd({
   if (!visible) return null;
 
   return (
-    <aside className={styles.stack} aria-label="Pubblicità Monstera">
+    <aside className={styles.stack} aria-label="Pubblicità Zoe Academy">
       <div className={styles.card}>
         <button
           type="button"
@@ -56,16 +56,15 @@ export default function MonsteraHotWeekAd({
           href={href}
           target="_blank"
           rel="noopener noreferrer sponsored"
-          aria-label="Monstera — Sala per feste, eventi e workshop a Sassari"
+          aria-label="Laboratori ZOE — corsi e eventi per bambini a Sassari"
         >
           <Image
-            src="/images/monstera/monstera-stairs.gif"
-            alt="Monstera — Sala per Feste, Eventi e Workshop. Via Predda Niedda 37/f, Sassari. Tel. 339 542 2343"
-            width={747}
-            height={1000}
+            src="/images/zoe/zoe-robot.gif"
+            alt="Laboratori ZOE — robot LEGO per bambini. Corsi e workshop a Sassari"
+            width={1080}
+            height={1350}
             className={styles.image}
             unoptimized
-            priority
           />
         </a>
       </div>

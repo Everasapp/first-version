@@ -187,9 +187,8 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
           </div>
         </div>
 
-        <MonsteraHotWeekAd />
-
         <div className="relative mt-5 min-w-0 sm:mt-6">
+          <MonsteraHotWeekAd />
           <div
             ref={scrollerRef}
             onMouseEnter={() => setIsPaused(true)}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "./EventCard";
+import ZoeHotWeekAd from "@/src/components/ads/ZoeHotWeekAd";
 import type { City } from "@/src/data/cities";
 import { cityEventsPath } from "@/src/lib/seo/paths";
 import { sortEventsByUpcomingDate } from "@/src/utils/nearby-city";
@@ -153,8 +154,8 @@ export default function AreaSection({
   const cityHref = primaryCity ? cityEventsPath(primaryCity) : areaHref;
 
   return (
-    <section className="overflow-x-hidden bg-white py-14 sm:py-16">
-      <div className="mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
+    <section className="relative overflow-x-clip bg-white py-14 sm:py-16 xl:overflow-visible">
+      <div className="relative mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="relative isolate min-h-56 overflow-hidden rounded-[32px] sm:min-h-72">
           <Image
             src={image}
@@ -247,6 +248,7 @@ export default function AreaSection({
         </div>
 
         <div className="relative mt-5 min-w-0">
+          {area === "Nord Sardegna" ? <ZoeHotWeekAd /> : null}
           <div
             ref={scrollerRef}
             onMouseEnter={() => setIsPaused(true)}
