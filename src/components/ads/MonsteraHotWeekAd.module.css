@@ -1,5 +1,5 @@
 .root {
-  --ad-width: 13.5rem;
+  --ad-width: 16.6rem;
   z-index: 25;
   width: var(--ad-width);
   flex-shrink: 0;
@@ -86,7 +86,7 @@
 
 @media (min-width: 1536px) {
   .root {
-    --ad-width: 14.5rem;
+    --ad-width: 16.6rem;
     left: calc(100% + 1.25rem);
   }
 }
