@@ -24,7 +24,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 sm:py-8">
+      <div className="mx-auto max-w-7xl px-5 pb-6 pt-10 sm:px-8 sm:pb-8 sm:pt-14">
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-200 sm:text-xs">
           EVERAS · Eventi in Sardegna
         </p>

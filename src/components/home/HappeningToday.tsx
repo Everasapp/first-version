@@ -128,7 +128,7 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
     <section className="relative overflow-x-clip border-b border-slate-200 bg-slate-50 py-8 sm:py-10 xl:overflow-visible">
       <div className="relative mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
-          <div className="min-w-0 flex-1 pr-[7.75rem] sm:pr-[9.25rem] xl:pr-0">
+          <div className="min-w-0 flex-1">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#E67E22]">
               Lunedì – domenica
             </p>
