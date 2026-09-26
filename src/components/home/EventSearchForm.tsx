@@ -65,25 +65,25 @@ function AccordionRow({
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={isOpen}
-        className="flex w-full items-center gap-3 px-1 py-3 text-left"
+        className="flex w-full items-center gap-2.5 px-1 py-2 text-left"
       >
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#075EAE]/10 text-[#075EAE]">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#075EAE]/10 text-[#075EAE]">
           {icon}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+          <span className="block text-[9px] font-bold uppercase tracking-[0.12em] text-slate-500">
             {title}
           </span>
-          <span className="mt-0.5 block truncate text-xs font-semibold text-slate-900">
+          <span className="mt-0.5 block truncate text-[11px] font-semibold text-slate-900">
             {summary}
           </span>
         </span>
         <ChevronDown
           aria-hidden="true"
-          className={`h-4 w-4 shrink-0 text-slate-400 transition ${isOpen ? "rotate-180" : ""}`}
+          className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
-      {isOpen ? <div className="pb-3 pl-12 pr-1">{children}</div> : null}
+      {isOpen ? <div className="pb-2.5 pl-10 pr-1">{children}</div> : null}
     </div>
   );
 }
@@ -226,58 +226,58 @@ export default function EventSearchForm() {
   }
 
   const labelClass =
-    "flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-slate-900";
+    "flex items-center gap-1 whitespace-nowrap text-[11px] font-bold text-slate-900";
 
   const fieldClass =
-    "flex min-w-0 flex-col justify-end rounded-xl border-t border-slate-100 px-3 py-2 md:border-l md:border-t-0 md:px-3.5";
+    "flex min-w-0 flex-col justify-end rounded-xl border-t border-slate-100 px-2.5 py-1.5 md:border-l md:border-t-0 md:px-3";
 
   const firstFieldClass =
-    "flex min-w-0 flex-col justify-end rounded-xl px-3 py-2 md:px-3.5";
+    "flex min-w-0 flex-col justify-end rounded-xl px-2.5 py-1.5 md:px-3";
 
   const inputClass =
-    "mt-1 w-full min-w-0 bg-transparent text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:text-sm";
+    "mt-0.5 w-full min-w-0 bg-transparent text-[11px] font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:text-xs";
 
   return (
     <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
-      <div className="mt-6 min-w-0 max-w-7xl sm:mt-8">
-        <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto pb-1 touch-pan-x sm:gap-2">
+      <div className="mt-5 min-w-0 max-w-7xl sm:mt-6">
+        <div className="flex min-w-0 flex-nowrap items-center gap-1 overflow-x-auto pb-1 touch-pan-x sm:gap-1.5">
           <button
             type="button"
             onClick={handleNearMe}
             disabled={isLocating}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#E67E22] px-2.5 py-1.5 text-[11px] font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#E67E22] px-2 py-1 text-[10px] font-bold text-white shadow-lg shadow-orange-950/30 transition hover:bg-[#C96A1A] active:scale-[0.98] disabled:opacity-60 sm:gap-1 sm:px-2.5 sm:py-1 sm:text-[11px]"
           >
-            <LocateFixed aria-hidden="true" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <LocateFixed aria-hidden="true" className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             {isLocating ? "Rilevo posizione…" : "Vicino a me"}
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=nord-sardegna")}
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            className="flex shrink-0 items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1 sm:px-2.5 sm:py-1 sm:text-[11px]"
           >
-            <Compass aria-hidden="true" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <Compass aria-hidden="true" className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             Nord Sardegna
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=centro-sardegna")}
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            className="flex shrink-0 items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1 sm:px-2.5 sm:py-1 sm:text-[11px]"
           >
-            <MapPin aria-hidden="true" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <MapPin aria-hidden="true" className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             Centro Sardegna
           </button>
           <button
             type="button"
             onClick={() => router.push("/eventi?area=sud-sardegna")}
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            className="flex shrink-0 items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:gap-1 sm:px-2.5 sm:py-1 sm:text-[11px]"
           >
-            <Sun aria-hidden="true" className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <Sun aria-hidden="true" className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             Sud Sardegna
           </button>
         </div>
 
         {geoMessage ? (
-          <p className="mt-1.5 text-[11px] font-medium text-orange-100 sm:text-xs">{geoMessage}</p>
+          <p className="mt-1 text-[10px] font-medium text-orange-100 sm:text-[11px]">{geoMessage}</p>
         ) : null}
       </div>
 
@@ -286,7 +286,7 @@ export default function EventSearchForm() {
         id="hero-search-form"
         action="/eventi"
         method="GET"
-        className="mt-2.5 w-full max-w-7xl rounded-xl border border-white/80 bg-white p-2.5 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 sm:mt-3 sm:rounded-2xl sm:p-3 md:hidden"
+        className="mt-2 w-full max-w-7xl rounded-xl border border-white/80 bg-white p-2 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 sm:mt-2.5 sm:rounded-2xl sm:p-2.5 md:hidden"
       >
         <input type="hidden" name="area" value={selectedArea} />
         <input type="hidden" name="city" value={selectedCity} />
@@ -300,7 +300,7 @@ export default function EventSearchForm() {
           summary={
             selectedArea ? areaLabels[selectedArea] || selectedArea : "Tutta la Sardegna"
           }
-          icon={<MapPin aria-hidden="true" className="h-4 w-4" />}
+          icon={<MapPin aria-hidden="true" className="h-3.5 w-3.5" />}
           isOpen={openPanel === "area"}
           onToggle={togglePanel}
         >
@@ -311,7 +311,7 @@ export default function EventSearchForm() {
               setSelectedCity("");
               setOpenPanel("city");
             }}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
           >
             <option value="">Tutta la Sardegna</option>
             <option value="nord-sardegna">Nord Sardegna</option>
@@ -324,7 +324,7 @@ export default function EventSearchForm() {
           id="city"
           title="Città"
           summary={selectedCity || "Tutte le città"}
-          icon={<Building2 aria-hidden="true" className="h-4 w-4" />}
+          icon={<Building2 aria-hidden="true" className="h-3.5 w-3.5" />}
           isOpen={openPanel === "city"}
           onToggle={togglePanel}
         >
@@ -337,7 +337,7 @@ export default function EventSearchForm() {
             cities={availableCities}
             emptyLabel="Tutte le città"
             includeSulcisShortcut
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
           />
         </AccordionRow>
 
@@ -345,7 +345,7 @@ export default function EventSearchForm() {
           id="category"
           title="Categoria"
           summary={categoryLabel || "Tutte le categorie"}
-          icon={<Compass aria-hidden="true" className="h-4 w-4" />}
+          icon={<Compass aria-hidden="true" className="h-3.5 w-3.5" />}
           isOpen={openPanel === "category"}
           onToggle={togglePanel}
         >
@@ -355,7 +355,7 @@ export default function EventSearchForm() {
               setSelectedCategory(event.target.value);
               setOpenPanel("date");
             }}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
           >
             <option value="">Tutte le categorie</option>
             {categories.map((category) => (
@@ -370,7 +370,7 @@ export default function EventSearchForm() {
           id="date"
           title="Data"
           summary={dateSummary}
-          icon={<CalendarDays aria-hidden="true" className="h-4 w-4" />}
+          icon={<CalendarDays aria-hidden="true" className="h-3.5 w-3.5" />}
           isOpen={openPanel === "date"}
           onToggle={togglePanel}
         >
@@ -386,7 +386,7 @@ export default function EventSearchForm() {
                   setOpenPanel("text");
                 }
               }}
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
             >
               <option value="">Tutte le date</option>
               <option value="oggi">Oggi</option>
@@ -397,7 +397,7 @@ export default function EventSearchForm() {
             </select>
             {showPrecisePicker ? (
               <label className="block">
-                <span className="mb-1.5 block text-[10px] font-semibold text-slate-500">
+                <span className="mb-1 block text-[9px] font-semibold text-slate-500">
                   Data precisa
                 </span>
                 <input
@@ -408,7 +408,7 @@ export default function EventSearchForm() {
                     handlePreciseDateChange(event.target.value);
                     if (event.target.value) setOpenPanel("text");
                   }}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
                 />
               </label>
             ) : null}
@@ -419,7 +419,7 @@ export default function EventSearchForm() {
           id="text"
           title="Testo"
           summary={query.trim() || "Parola chiave (opzionale)"}
-          icon={<Search aria-hidden="true" className="h-4 w-4" />}
+          icon={<Search aria-hidden="true" className="h-3.5 w-3.5" />}
           isOpen={openPanel === "text"}
           onToggle={togglePanel}
         >
@@ -428,16 +428,16 @@ export default function EventSearchForm() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Es. jazz, sagre, teatro…"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#075EAE]"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none placeholder:text-slate-400 focus:border-[#075EAE]"
             autoComplete="off"
           />
         </AccordionRow>
 
         <button
           type="submit"
-          className="mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] text-xs font-bold text-white transition hover:bg-[#C96A1A] sm:text-sm"
+          className="mt-1.5 flex h-9 w-full items-center justify-center gap-1.5 rounded-xl bg-[#E67E22] text-[11px] font-bold text-white transition hover:bg-[#C96A1A] sm:text-xs"
         >
-          <Search aria-hidden="true" className="h-4 w-4" />
+          <Search aria-hidden="true" className="h-3.5 w-3.5" />
           Cerca
         </button>
       </form>
@@ -446,11 +446,11 @@ export default function EventSearchForm() {
       <form
         action="/eventi"
         method="GET"
-        className="mt-3 hidden w-full max-w-7xl gap-1.5 rounded-2xl border border-white/80 bg-white p-2.5 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 md:grid md:grid-cols-2 md:p-3 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
+        className="mt-2.5 hidden w-full max-w-7xl gap-1 rounded-2xl border border-white/80 bg-white p-2 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.5)] ring-1 ring-black/5 md:grid md:grid-cols-2 md:p-2.5 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] xl:items-stretch"
       >
         <label className={firstFieldClass}>
           <span className={labelClass}>
-            <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 text-[#075EAE]" />
+            <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#075EAE]" />
             Area
           </span>
           <select
@@ -473,7 +473,7 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <Building2
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className="h-3.5 w-3.5 shrink-0 text-[#075EAE]"
             />
             Città
           </span>
@@ -493,7 +493,7 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <Compass
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className="h-3.5 w-3.5 shrink-0 text-[#075EAE]"
             />
             Categoria
           </span>
@@ -516,7 +516,7 @@ export default function EventSearchForm() {
           <span className={labelClass}>
             <CalendarDays
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[#075EAE]"
+              className="h-3.5 w-3.5 shrink-0 text-[#075EAE]"
             />
             Quando?
           </span>
@@ -540,14 +540,14 @@ export default function EventSearchForm() {
               min={minDate}
               onChange={(event) => handlePreciseDateChange(event.target.value)}
               aria-label="Data precisa"
-              className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#075EAE]"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-medium text-slate-800 outline-none focus:border-[#075EAE]"
             />
           ) : null}
         </label>
 
         <label className={fieldClass}>
           <span className={labelClass}>
-            <Search aria-hidden="true" className="h-4 w-4 shrink-0 text-[#075EAE]" />
+            <Search aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#075EAE]" />
             Cerca per testo
           </span>
           <input
@@ -563,9 +563,9 @@ export default function EventSearchForm() {
 
         <button
           type="submit"
-          className="flex min-h-[2.75rem] items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
+          className="flex min-h-[2.5rem] items-center justify-center gap-1.5 rounded-xl bg-[#E67E22] px-4 py-2 text-xs font-bold text-white shadow-lg shadow-orange-900/20 transition hover:bg-[#C96A1A] xl:min-h-full"
         >
-          <Search aria-hidden="true" className="h-4 w-4" />
+          <Search aria-hidden="true" className="h-3.5 w-3.5" />
           Cerca
         </button>
       </form>

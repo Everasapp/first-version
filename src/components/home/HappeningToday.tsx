@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import MonsteraHotWeekAd from "@/src/components/ads/MonsteraHotWeekAd";
 import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
 
 type HappeningTodayProps = {
@@ -188,7 +187,6 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         </div>
 
         <div className="relative mt-5 min-w-0 sm:mt-6">
-          <MonsteraHotWeekAd />
           <div
             ref={scrollerRef}
             onMouseEnter={() => setIsPaused(true)}

@@ -8,7 +8,7 @@ const EventSearchForm = dynamic(
     ssr: false,
     loading: () => (
       <div
-        className="mt-6 h-28 animate-pulse rounded-2xl bg-white/15 sm:mt-8 sm:h-32"
+        className="mt-5 h-24 animate-pulse rounded-2xl bg-white/15 sm:mt-6 sm:h-28"
         aria-hidden
       />
     ),

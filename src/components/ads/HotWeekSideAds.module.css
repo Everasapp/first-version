@@ -1,12 +1,16 @@
-.stack {
+.item {
   --ad-width: 16.6rem;
-  z-index: 25;
+  --ad-height: 22rem;
   width: var(--ad-width);
+  height: var(--ad-height);
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .card {
   position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   border-radius: 0.85rem;
   background: #fff;
@@ -42,41 +46,13 @@
 }
 
 .link {
+  position: relative;
   display: block;
-  line-height: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/*
- * Align with the event-card row (parent must be the cards wrapper).
- * Tablet + mobile: overlay on the right; desktop: right gutter.
- */
-@media (max-width: 1279px) {
-  .stack {
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-    width: var(--ad-width);
-  }
-}
-
-@media (min-width: 1280px) {
-  .stack {
-    position: absolute;
-    top: 0.5rem;
-    left: calc(100% + 1rem);
-    right: auto;
-    width: var(--ad-width);
-  }
-}
-
-@media (min-width: 1536px) {
-  .stack {
-    left: calc(100% + 1.25rem);
-  }
+  object-fit: cover;
+  object-position: center;
 }

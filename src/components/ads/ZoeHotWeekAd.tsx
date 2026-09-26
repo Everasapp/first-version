@@ -13,7 +13,7 @@ type ZoeHotWeekAdProps = {
 };
 
 /**
- * Sponsored Zoe Academy ad, aligned with Nord Sardegna event cards.
+ * Sponsored Zoe Academy ad for the home partners strip.
  */
 export default function ZoeHotWeekAd({
   href = "https://www.facebook.com/Zoe.talenti.corsi.eventi.progetti",
@@ -41,7 +41,7 @@ export default function ZoeHotWeekAd({
   if (!visible) return null;
 
   return (
-    <aside className={styles.stack} aria-label="Pubblicità Zoe Academy">
+    <aside className={styles.item} data-ad-card aria-label="Pubblicità Zoe Academy">
       <div className={styles.card}>
         <button
           type="button"
@@ -61,8 +61,8 @@ export default function ZoeHotWeekAd({
           <Image
             src="/images/zoe/zoe-robot.gif"
             alt="Laboratori ZOE — robot LEGO per bambini. Corsi e workshop a Sassari"
-            width={1080}
-            height={1350}
+            fill
+            sizes="16.6rem"
             className={styles.image}
             unoptimized
           />

@@ -2,6 +2,7 @@ import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
 import TownGuidesPreview from "@/src/components/home/TownGuidesPreview";
+import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -224,6 +225,8 @@ export default async function Home() {
         <Hero />
 
         <HappeningToday events={weekEvents} />
+
+        <HomeSponsoredSection />
 
         <TownGuidesPreview towns={weeklyTownGuides} />
 

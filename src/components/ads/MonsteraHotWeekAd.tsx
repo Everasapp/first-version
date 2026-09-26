@@ -13,7 +13,7 @@ type MonsteraHotWeekAdProps = {
 };
 
 /**
- * Sponsored Monstera ad, aligned with Hot this week event cards.
+ * Sponsored Monstera ad for the home partners strip.
  */
 export default function MonsteraHotWeekAd({
   href = "https://www.google.com/maps/search/?api=1&query=Monstera%20Via%20Predda%20Niedda%2037f%20Sassari",
@@ -41,7 +41,7 @@ export default function MonsteraHotWeekAd({
   if (!visible) return null;
 
   return (
-    <aside className={styles.stack} aria-label="Pubblicità Monstera">
+    <aside className={styles.item} data-ad-card aria-label="Pubblicità Monstera">
       <div className={styles.card}>
         <button
           type="button"
@@ -61,11 +61,10 @@ export default function MonsteraHotWeekAd({
           <Image
             src="/images/monstera/monstera-stairs.gif"
             alt="Monstera — Sala per Feste, Eventi e Workshop. Via Predda Niedda 37/f, Sassari. Tel. 339 542 2343"
-            width={747}
-            height={1000}
+            fill
+            sizes="16.6rem"
             className={styles.image}
             unoptimized
-            priority
           />
         </a>
       </div>

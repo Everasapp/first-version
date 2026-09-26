@@ -24,16 +24,16 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto max-w-7xl px-5 pb-6 pt-10 sm:px-8 sm:pb-8 sm:pt-14">
+      <div className="mx-auto max-w-7xl px-5 pb-9 pt-14 sm:px-8 sm:pb-12 sm:pt-18">
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-200 sm:text-xs">
           EVERAS · Eventi in Sardegna
         </p>
 
-        <h1 className="mt-1.5 max-w-3xl text-2xl font-black leading-[1.12] text-white sm:mt-2 sm:text-3xl lg:text-4xl">
+        <h1 className="mt-3 max-w-3xl text-2xl font-black leading-[1.12] text-white sm:mt-4 sm:text-3xl lg:text-4xl">
           EVERAS: scopri eventi e cose da fare in Sardegna
         </h1>
 
-        <p className="mt-2 max-w-2xl text-sm leading-5 text-blue-50 sm:text-base sm:leading-6">
+        <p className="mt-3 max-w-2xl text-sm leading-5 text-blue-50 sm:mt-4 sm:text-base sm:leading-6">
           Eventi, sagre, concerti, workshop e attività in tutta l’isola — cerca
           per giorno, città o interesse.
         </p>
