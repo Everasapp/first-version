@@ -46,6 +46,8 @@ export type EventCardData = {
   likesCount?: number;
   viewsCount?: number;
   sharesCount?: number;
+  /** Data di creazione (per ordinare i più recenti per primi). */
+  createdAt?: string;
 };
 
 type EventCardProps = {

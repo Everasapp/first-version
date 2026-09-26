@@ -8,7 +8,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import EventCard, { type EventCardData } from "./EventCard";
 import type { City } from "@/src/data/cities";
 import { cityEventsPath } from "@/src/lib/seo/paths";
-import { sortEventsByUpcomingDate } from "@/src/utils/nearby-city";
 
 type AreaSectionProps = {
   title: string;
@@ -34,6 +33,17 @@ const AUTOPLAY_MS = 4500;
 const INITIAL_CARDS = 6;
 const BATCH_CARDS = 6;
 
+function sortByNewestCreated(events: EventCardData[]) {
+  return [...events].sort((a, b) => {
+    const aCreated = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bCreated = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    if (aCreated !== bCreated) return bCreated - aCreated;
+    const aStart = a.startDate ? new Date(a.startDate).getTime() : 0;
+    const bStart = b.startDate ? new Date(b.startDate).getTime() : 0;
+    return aStart - bStart;
+  });
+}
+
 export default function AreaSection({
   title,
   area,
@@ -49,7 +59,7 @@ export default function AreaSection({
 
   const areaEvents = useMemo(() => {
     const filtered = events.filter((event) => event.area === area);
-    return sortEventsByUpcomingDate(filtered);
+    return sortByNewestCreated(filtered);
   }, [area, events]);
 
   useEffect(() => {

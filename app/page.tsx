@@ -95,6 +95,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    createdAt: event.created_at ?? undefined,
     ...engagementFromRow(event),
   };
 }
