@@ -103,71 +103,103 @@ function PromoBanner({ promo }: { promo: LaunchPromoState }) {
   return (
     <section className="relative overflow-hidden border-b border-[#E67E22]/25 bg-gradient-to-br from-[#075EAE] via-[#0a6bc4] to-[#E67E22]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
-      <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-white/85">
-          🚀 {LAUNCH_CAMPAIGN.name}
-        </p>
-        <h1 className="mt-3 max-w-3xl text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
-          {LAUNCH_CAMPAIGN.eyebrow}
-        </h1>
-        <p className="mt-3 text-lg font-semibold text-white sm:text-xl">
-          {promo.active
-            ? LAUNCH_CAMPAIGN.headlineActive
-            : LAUNCH_CAMPAIGN.headlineEnded}
-        </p>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/90">
-          Promuovi la tua attività su EVERAS e raggiungi persone interessate a
-          eventi, esperienze e attività in Sardegna.
-        </p>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/90">
-          Fai conoscere la tua attività a chi cerca eventi, esperienze e cose da
-          fare in Sardegna.
-        </p>
+      <div className="relative mx-auto grid max-w-7xl items-stretch gap-8 px-5 py-12 sm:px-8 sm:py-16 md:grid-cols-2 md:gap-8 lg:gap-12">
+        <div className="min-w-0">
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-white/85">
+            🚀 {LAUNCH_CAMPAIGN.name}
+          </p>
+          <h1 className="mt-3 max-w-xl text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
+            {LAUNCH_CAMPAIGN.eyebrow}
+          </h1>
+          <p className="mt-3 text-lg font-semibold text-white sm:text-xl">
+            {promo.active
+              ? LAUNCH_CAMPAIGN.headlineActive
+              : LAUNCH_CAMPAIGN.headlineEnded}
+          </p>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/90">
+            Promuovi la tua attività su EVERAS e raggiungi persone interessate a
+            eventi, esperienze e attività in Sardegna.
+          </p>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-white/90">
+            Fai conoscere la tua attività a chi cerca eventi, esperienze e cose
+            da fare in Sardegna.
+          </p>
 
-        {promo.active ? (
-          <div className="mt-8 w-full max-w-md rounded-2xl border-2 border-[#E67E22] bg-white p-5 shadow-lg shadow-black/20 sm:p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#C96A1A]">
-              Offerta limitata
-            </p>
-            <p className="mt-2 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
-              Solo per i primi {promo.limit} clienti
-            </p>
-            <p className="mt-3 text-base font-semibold text-slate-700">
-              {promo.used} / {promo.limit} promozioni utilizzate
-            </p>
-            <div
-              className="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-200"
-              role="progressbar"
-              aria-valuenow={promo.used}
-              aria-valuemin={0}
-              aria-valuemax={promo.limit}
-              aria-label={`${promo.used} su ${promo.limit} promozioni utilizzate`}
-            >
+          {promo.active ? (
+            <div className="mt-8 w-full max-w-md rounded-2xl border-2 border-[#E67E22] bg-white p-5 shadow-lg shadow-black/20 sm:p-6">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#C96A1A]">
+                Offerta limitata
+              </p>
+              <p className="mt-2 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
+                Solo per i primi {promo.limit} clienti
+              </p>
+              <p className="mt-3 text-base font-semibold text-slate-700">
+                {promo.used} / {promo.limit} promozioni utilizzate
+              </p>
               <div
-                className="h-full rounded-full bg-[#E67E22] transition-[width]"
-                style={{
-                  width: `${Math.min(100, (promo.used / promo.limit) * 100)}%`,
-                }}
+                className="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-200"
+                role="progressbar"
+                aria-valuenow={promo.used}
+                aria-valuemin={0}
+                aria-valuemax={promo.limit}
+                aria-label={`${promo.used} su ${promo.limit} promozioni utilizzate`}
+              >
+                <div
+                  className="h-full rounded-full bg-[#E67E22] transition-[width]"
+                  style={{
+                    width: `${Math.min(100, (promo.used / promo.limit) * 100)}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-3 text-lg font-black text-[#E67E22]">
+                Restano {promo.remaining}{" "}
+                {promo.remaining === 1 ? "promozione" : "promozioni"}
+              </p>
+            </div>
+          ) : (
+            <div className="mt-8 inline-flex rounded-2xl border-2 border-white/40 bg-white/15 px-5 py-4 text-base font-bold text-white backdrop-blur-sm">
+              {LAUNCH_CAMPAIGN.headlineEnded}
+            </div>
+          )}
+
+          <div className="mt-10">
+            <a
+              href="#pacchetti"
+              className="inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-6 text-sm font-bold text-[#075EAE] transition hover:bg-slate-100"
+            >
+              Scopri i pacchetti
+            </a>
+          </div>
+        </div>
+
+        {/* Solo mobile: sotto al testo */}
+        <div className="relative mx-auto w-full max-w-sm md:hidden">
+          <Image
+            src="/images/ads/pubblicita-hero.png"
+            alt="Scegli il pacchetto più adatto a te — Banner Home e Banner pagine interne su EVERAS"
+            width={1084}
+            height={1451}
+            className="h-auto w-full drop-shadow-2xl"
+            priority
+            unoptimized
+          />
+        </div>
+
+        {/* Tablet + desktop: a destra, altezza = colonna testo; su tablet più piccola */}
+        <div className="relative hidden min-h-full md:block md:h-0 md:min-h-full">
+          <div className="absolute inset-0 flex items-center justify-center md:p-2 lg:p-0">
+            <div className="relative h-full w-full max-w-[85%] lg:max-w-none">
+              <Image
+                src="/images/ads/pubblicita-hero.png"
+                alt="Scegli il pacchetto più adatto a te — Banner Home e Banner pagine interne su EVERAS"
+                fill
+                sizes="(min-width: 1024px) 40vw, (min-width: 768px) 38vw, 100vw"
+                className="object-contain object-center drop-shadow-2xl"
+                priority
+                unoptimized
               />
             </div>
-            <p className="mt-3 text-lg font-black text-[#E67E22]">
-              Restano {promo.remaining}{" "}
-              {promo.remaining === 1 ? "promozione" : "promozioni"}
-            </p>
           </div>
-        ) : (
-          <div className="mt-8 inline-flex rounded-2xl border-2 border-white/40 bg-white/15 px-5 py-4 text-base font-bold text-white backdrop-blur-sm">
-            {LAUNCH_CAMPAIGN.headlineEnded}
-          </div>
-        )}
-
-        <div className="mt-10">
-          <a
-            href="#pacchetti"
-            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-6 text-sm font-bold text-[#075EAE] transition hover:bg-slate-100"
-          >
-            Scopri i pacchetti
-          </a>
         </div>
       </div>
     </section>
@@ -206,22 +238,6 @@ export default async function PubblicitaPage() {
                 <p className="mt-2 max-w-2xl text-base text-slate-600">
                   {placement.description}
                 </p>
-
-                {placement.id === "home" ? (
-                  <figure className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <Image
-                      src="/images/ads/banner-home-reference.jpg"
-                      alt="Esempio di banner pubblicitari nella sezione Pubblicità della Home EVERAS, sotto Hot this week"
-                      width={963}
-                      height={1024}
-                      className="h-auto w-full"
-                      unoptimized
-                    />
-                    <figcaption className="border-t border-slate-100 px-4 py-3 text-sm text-slate-500 sm:px-5">
-                      Riferimento: così appare lo spazio Banner Home su EVERAS.
-                    </figcaption>
-                  </figure>
-                ) : null}
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
                   {placement.packages.map((pkg) => (

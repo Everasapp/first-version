@@ -2,7 +2,7 @@ import "server-only";
 
 import { Resend } from "resend";
 
-import { addCalendarMonths, LAUNCH_PROMO_LIMIT } from "@/src/lib/ads/advertising-packages";
+import { addCalendarMonths, LAUNCH_PROMO_LIMIT, LAUNCH_PROMO_USED_OFFSET } from "@/src/lib/ads/advertising-packages";
 import {
   getOrderChargeAmount,
   type AdvertisingOrderRow,
@@ -586,15 +586,19 @@ export type LaunchPromoState = {
 /**
  * Conta i clienti che hanno effettivamente pagato con prezzo promozionale.
  * Non include draft, awaiting_payment, cancelled, né ordini non pagati.
+ *
+ * Parte da LAUNCH_PROMO_USED_OFFSET (2/10): le promozioni disponibili
+ * vanno dalla 3ª alla 10ª; a 10 slot usati la promo si chiude.
  */
 export async function getLaunchPromoState(): Promise<LaunchPromoState> {
   const supabase = tryCreateAdminClient();
   if (!supabase) {
+    const used = LAUNCH_PROMO_USED_OFFSET;
     return {
       limit: LAUNCH_PROMO_LIMIT,
-      used: 0,
-      remaining: LAUNCH_PROMO_LIMIT,
-      active: true,
+      used,
+      remaining: Math.max(0, LAUNCH_PROMO_LIMIT - used),
+      active: used < LAUNCH_PROMO_LIMIT,
     };
   }
 
@@ -616,7 +620,10 @@ export async function getLaunchPromoState(): Promise<LaunchPromoState> {
     };
   }
 
-  const used = count ?? 0;
+  const used = Math.min(
+    LAUNCH_PROMO_LIMIT,
+    LAUNCH_PROMO_USED_OFFSET + (count ?? 0),
+  );
   const remaining = Math.max(0, LAUNCH_PROMO_LIMIT - used);
   return {
     limit: LAUNCH_PROMO_LIMIT,

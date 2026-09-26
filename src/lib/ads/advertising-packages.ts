@@ -43,6 +43,14 @@ export type AdvertisingPlacementGroup = {
 /** Limite clienti paganti con prezzo promozionale. */
 export const LAUNCH_PROMO_LIMIT = 10;
 
+/**
+ * Slot già considerati utilizzati all'avvio campagna
+ * (es. primi clienti gestiti fuori sistema).
+ * Il conteggio reale dei pagamenti si somma a questo valore.
+ * Display iniziale: 2/10 → restano 8 promozioni (dalla 3ª alla 10ª).
+ */
+export const LAUNCH_PROMO_USED_OFFSET = 2;
+
 export const LAUNCH_CAMPAIGN = {
   name: "EVERAS Banner Campaign",
   eyebrow: "Special Launch Price",
