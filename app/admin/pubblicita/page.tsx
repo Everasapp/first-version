@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import AdminAdvertisingDeleteButton from "@/src/components/admin/AdminAdvertisingDeleteButton";
 import { formatCtr } from "@/src/lib/ads/banner-stats";
 import { createAdminClient } from "@/src/lib/supabase/admin";
 import type { AdvertisingOrderRow } from "@/src/lib/ads/types";
@@ -71,13 +72,14 @@ export default async function AdminPubblicitaPage() {
               <th className="px-4 py-3 font-semibold">CTR</th>
               <th className="px-4 py-3 font-semibold">Stato</th>
               <th className="px-4 py-3 font-semibold">Scadenza</th>
+              <th className="px-4 py-3 font-semibold">Azioni</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {orders.length === 0 ? (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className="px-4 py-8 text-center text-slate-500"
                 >
                   Nessun ordine pubblicitario.
@@ -130,6 +132,12 @@ export default async function AdminPubblicitaPage() {
                     </td>
                     <td className="px-4 py-3 text-slate-700">
                       {formatDate(order.expiration_date)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <AdminAdvertisingDeleteButton
+                        orderId={order.id}
+                        companyName={order.company_name}
+                      />
                     </td>
                   </tr>
                 );

@@ -3,7 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import type { AdvertisingOrderRow } from "@/src/lib/ads/types";
+import {
+  EVERAS_SELF_PROMO_ORDER_ID,
+  type AdvertisingOrderRow,
+} from "@/src/lib/ads/types";
 
 export default function AdminAdvertisingActions({
   order,
@@ -29,6 +32,11 @@ export default function AdminAdvertisingActions({
       if (!response.ok) {
         throw new Error(data.error || "Operazione non riuscita.");
       }
+      if (path.includes("/delete")) {
+        router.push("/admin/pubblicita");
+        router.refresh();
+        return;
+      }
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore");
@@ -43,8 +51,14 @@ export default function AdminAdvertisingActions({
     "paid",
     "needs_changes",
   ].includes(order.status);
+  const canDelete = order.id !== EVERAS_SELF_PROMO_ORDER_ID;
 
-  if (!canModerate && order.status !== "active" && !awaitingPayment) {
+  if (
+    !canModerate &&
+    order.status !== "active" &&
+    !awaitingPayment &&
+    !canDelete
+  ) {
     return null;
   }
 
@@ -138,6 +152,25 @@ export default function AdminAdvertisingActions({
             className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-800 hover:bg-red-100 disabled:opacity-60"
           >
             Rifiuta
+          </button>
+        </div>
+      ) : null}
+
+      {canDelete ? (
+        <div className="border-t border-slate-100 pt-4">
+          <button
+            type="button"
+            disabled={Boolean(pending)}
+            onClick={() => {
+              const ok = window.confirm(
+                `Eliminare definitivamente il banner di “${order.company_name}”?\n\nQuesta azione non si può annullare.`,
+              );
+              if (!ok) return;
+              void call(`/api/admin/advertising/${order.id}/delete`);
+            }}
+            className="rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm font-bold text-red-800 hover:bg-red-100 disabled:opacity-60"
+          >
+            {pending?.includes("delete") ? "..." : "Cancella banner"}
           </button>
         </div>
       ) : null}

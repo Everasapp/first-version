@@ -6,6 +6,7 @@ import { addCalendarMonths, LAUNCH_PROMO_LIMIT, LAUNCH_PROMO_USED_OFFSET, saniti
 import {
   getOrderBannerUrls,
   getOrderChargeAmount,
+  EVERAS_SELF_PROMO_ORDER_ID,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
 import {
@@ -17,12 +18,8 @@ import { buildAdminEmailLayout } from "@/src/lib/notifications/email-layout";
 import { escapeHtml, formatItalianDateTime } from "@/src/lib/notifications/format";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
-/** Ordine fisso del banner istituzionale EVERAS (tracking views/click). */
-export const EVERAS_SELF_PROMO_ORDER_ID =
-  "e7e8a500-0000-4000-8000-000000000001";
-
 export type { AdvertisingOrderRow };
-export { getOrderChargeAmount };
+export { getOrderChargeAmount, EVERAS_SELF_PROMO_ORDER_ID };
 
 function getAdminEmail() {
   return (
@@ -541,6 +538,40 @@ export async function rejectAdvertisingOrder(
   const updated = data as AdvertisingOrderRow;
   await sendAdvertisingRejectedEmail(updated, reason);
   return updated;
+}
+
+/** Elimina definitivamente un ordine banner (e i file in storage). */
+export async function deleteAdvertisingOrder(order: AdvertisingOrderRow) {
+  if (order.id === EVERAS_SELF_PROMO_ORDER_ID) {
+    throw new Error(
+      "Il banner istituzionale EVERAS non può essere eliminato da qui.",
+    );
+  }
+
+  const supabase = createAdminClient();
+
+  const paths = new Set<string>();
+  if (order.banner_storage_path) paths.add(order.banner_storage_path);
+  for (const path of order.banner_storage_paths ?? []) {
+    if (typeof path === "string" && path.length > 0) paths.add(path);
+  }
+
+  if (paths.size > 0) {
+    const { error: storageError } = await supabase.storage
+      .from("advertising-banners")
+      .remove([...paths]);
+    if (storageError) {
+      console.error("[advertising] delete storage:", storageError);
+      // Continua comunque con l'eliminazione dell'ordine.
+    }
+  }
+
+  const { error } = await supabase
+    .from("advertising_orders")
+    .delete()
+    .eq("id", order.id);
+
+  if (error) throw error;
 }
 
 export async function expireAdvertisingOrders(now = new Date()) {

@@ -1,5 +1,9 @@
 import type { AdvertisingOrderStatus } from "@/src/lib/ads/advertising-packages";
 
+/** Ordine fisso del banner istituzionale EVERAS (tracking views/click). */
+export const EVERAS_SELF_PROMO_ORDER_ID =
+  "e7e8a500-0000-4000-8000-000000000001";
+
 export type AdvertisingOrderRow = {
   id: string;
   access_token: string;
