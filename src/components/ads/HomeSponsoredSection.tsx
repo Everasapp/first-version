@@ -19,6 +19,8 @@ type AdDef = {
   imageAlt: string;
   /** Se false, apre nella stessa tab (link interni EVERAS). Default: esterno. */
   external?: boolean;
+  /** Ordine pubblicitario pagato (per tracking). */
+  orderId?: string;
 };
 
 const STATIC_ADS: AdDef[] = [
@@ -57,6 +59,7 @@ const STATIC_ADS: AdDef[] = [
 
 export type PaidHomeAd = {
   id: string;
+  orderId: string;
   companyName: string;
   href: string;
   imageSrc: string;
@@ -71,7 +74,39 @@ function paidAdToDef(ad: PaidHomeAd): AdDef {
     linkLabel: ad.companyName,
     imageSrc: ad.imageSrc,
     imageAlt: ad.companyName,
+    orderId: ad.orderId,
   };
+}
+
+function trackAdEvent(orderId: string, event: "impression" | "click") {
+  const payload = JSON.stringify({ orderId, event });
+  try {
+    if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+      const blob = new Blob([payload], { type: "application/json" });
+      if (navigator.sendBeacon("/api/advertising/track", blob)) return;
+    }
+  } catch {
+    // fallback sotto
+  }
+  void fetch("/api/advertising/track", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: payload,
+    keepalive: true,
+  }).catch(() => {
+    // non bloccare UX
+  });
+}
+
+function markImpressionOnce(orderId: string, adId: string) {
+  const key = `everas-ad-imp-${adId}`;
+  try {
+    if (window.sessionStorage.getItem(key) === "1") return;
+    window.sessionStorage.setItem(key, "1");
+  } catch {
+    // se sessionStorage non è disponibile, conta comunque una volta in-memory
+  }
+  trackAdEvent(orderId, "impression");
 }
 
 function SponsoredAdSlide({
@@ -83,8 +118,33 @@ function SponsoredAdSlide({
   onDismiss: (id: string) => void;
   clone?: boolean;
 }) {
+  const rootRef = useRef<HTMLElement>(null);
+  const seenRef = useRef(false);
+
+  useEffect(() => {
+    if (clone || !ad.orderId || seenRef.current) return;
+    const node = rootRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting || entry.intersectionRatio < 0.5) return;
+        if (seenRef.current) return;
+        seenRef.current = true;
+        markImpressionOnce(ad.orderId!, ad.id);
+        observer.disconnect();
+      },
+      { threshold: 0.5 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [ad.id, ad.orderId, clone]);
+
   return (
     <aside
+      ref={rootRef}
       className={styles.item}
       data-ad-card
       data-ad-id={ad.id}
@@ -113,6 +173,11 @@ function SponsoredAdSlide({
               })}
           aria-label={ad.linkLabel}
           tabIndex={clone ? -1 : undefined}
+          onClick={() => {
+            if (!clone && ad.orderId) {
+              trackAdEvent(ad.orderId, "click");
+            }
+          }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- GIF/JPG promo assets must play/render without optimizer */}
           <img

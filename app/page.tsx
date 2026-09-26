@@ -222,6 +222,7 @@ export default async function Home() {
 
   let paidAds: Array<{
     id: string;
+    orderId: string;
     companyName: string;
     href: string;
     imageSrc: string;
@@ -232,8 +233,10 @@ export default async function Home() {
       const urls = getOrderBannerUrls(row);
       if (!href || urls.length === 0) return [];
       const companyName = (row.company_name as string) || "Partner";
+      const orderId = row.id as string;
       return urls.map((imageSrc, index) => ({
-        id: `${row.id as string}-${index}`,
+        id: `${orderId}-${index}`,
+        orderId,
         companyName,
         href,
         imageSrc,

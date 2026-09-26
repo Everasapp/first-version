@@ -28,6 +28,8 @@ export type AdvertisingOrderRow = {
   banner_storage_path: string | null;
   banner_urls: string[] | null;
   banner_storage_paths: string[] | null;
+  impressions_count: number;
+  clicks_count: number;
   paypal_order_id: string | null;
   paypal_capture_id: string | null;
   admin_notes: string | null;

@@ -115,6 +115,38 @@ export default function AdvertisingOrderClient({
           <p className="mt-2 text-sm leading-6 text-emerald-800">
             Il tuo banner è attivo su EVERAS.
           </p>
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            <div className="rounded-xl bg-white/80 px-3 py-3 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-800/70">
+                Views
+              </p>
+              <p className="mt-1 text-xl font-black text-emerald-950">
+                {Number(order.impressions_count ?? 0).toLocaleString("it-IT")}
+              </p>
+            </div>
+            <div className="rounded-xl bg-white/80 px-3 py-3 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-800/70">
+                Click
+              </p>
+              <p className="mt-1 text-xl font-black text-emerald-950">
+                {Number(order.clicks_count ?? 0).toLocaleString("it-IT")}
+              </p>
+            </div>
+            <div className="rounded-xl bg-white/80 px-3 py-3 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-emerald-800/70">
+                CTR
+              </p>
+              <p className="mt-1 text-xl font-black text-emerald-950">
+                {Number(order.impressions_count ?? 0) > 0
+                  ? `${(
+                      (Number(order.clicks_count ?? 0) /
+                        Number(order.impressions_count ?? 0)) *
+                      100
+                    ).toFixed(1)}%`
+                  : "—"}
+              </p>
+            </div>
+          </div>
         </div>
       ) : null}
 

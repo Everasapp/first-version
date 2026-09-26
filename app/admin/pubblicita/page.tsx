@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { formatCtr } from "@/src/lib/ads/banner-stats";
 import { createAdminClient } from "@/src/lib/supabase/admin";
 import type { AdvertisingOrderRow } from "@/src/lib/ads/types";
 
@@ -65,7 +66,9 @@ export default async function AdminPubblicitaPage() {
               <th className="px-4 py-3 font-semibold">Pacchetto</th>
               <th className="px-4 py-3 font-semibold">Posizione</th>
               <th className="px-4 py-3 font-semibold">Prezzo</th>
-              <th className="px-4 py-3 font-semibold">Data</th>
+              <th className="px-4 py-3 font-semibold">Views</th>
+              <th className="px-4 py-3 font-semibold">Click</th>
+              <th className="px-4 py-3 font-semibold">CTR</th>
               <th className="px-4 py-3 font-semibold">Stato</th>
               <th className="px-4 py-3 font-semibold">Scadenza</th>
             </tr>
@@ -74,50 +77,63 @@ export default async function AdminPubblicitaPage() {
             {orders.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={9}
                   className="px-4 py-8 text-center text-slate-500"
                 >
                   Nessun ordine pubblicitario.
                 </td>
               </tr>
             ) : (
-              orders.map((order) => (
-                <tr key={order.id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/admin/pubblicita/${order.id}`}
-                      className="font-semibold text-[#075EAE] hover:underline"
-                    >
-                      {order.company_name}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">
-                    {order.package_name}
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">
-                    {order.placement === "home" ? "Home" : "Interne"}
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">
-                    €{Number(order.final_price ?? order.price).toFixed(0)}
-                    {order.promo_applied ? (
-                      <span className="ml-1 text-xs font-semibold text-[#C96A1A]">
-                        promo
+              orders.map((order) => {
+                const impressions = Number(order.impressions_count ?? 0);
+                const clicks = Number(order.clicks_count ?? 0);
+                return (
+                  <tr key={order.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/admin/pubblicita/${order.id}`}
+                        className="font-semibold text-[#075EAE] hover:underline"
+                      >
+                        {order.company_name}
+                      </Link>
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        {formatDate(order.created_at)}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">
+                      {order.package_name}
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">
+                      {order.placement === "home" ? "Home" : "Interne"}
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">
+                      €{Number(order.final_price ?? order.price).toFixed(0)}
+                      {order.promo_applied ? (
+                        <span className="ml-1 text-xs font-semibold text-[#C96A1A]">
+                          promo
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-slate-900">
+                      {impressions.toLocaleString("it-IT")}
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-slate-900">
+                      {clicks.toLocaleString("it-IT")}
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">
+                      {formatCtr(impressions, clicks)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                        {STATUS_LABELS[order.status] || order.status}
                       </span>
-                    ) : null}
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">
-                    {formatDate(order.created_at)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                      {STATUS_LABELS[order.status] || order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">
-                    {formatDate(order.expiration_date)}
-                  </td>
-                </tr>
-              ))
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">
+                      {formatDate(order.expiration_date)}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

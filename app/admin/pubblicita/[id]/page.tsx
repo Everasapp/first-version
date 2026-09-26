@@ -3,6 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import AdminAdvertisingActions from "@/src/components/admin/AdminAdvertisingActions";
+import {
+  formatCtr,
+  getAdvertisingDailyStats,
+} from "@/src/lib/ads/banner-stats";
 import { getOrderById } from "@/src/lib/ads/orders";
 import { getOrderBannerUrls } from "@/src/lib/ads/types";
 
@@ -33,10 +37,22 @@ function formatDateTime(value: string | null) {
   }).format(new Date(value));
 }
 
+function formatDay(value: string) {
+  return new Intl.DateTimeFormat("it-IT", {
+    day: "2-digit",
+    month: "short",
+    timeZone: "Europe/Rome",
+  }).format(new Date(`${value}T12:00:00`));
+}
+
 export default async function AdminPubblicitaDetailPage({ params }: Props) {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) notFound();
+
+  const impressions = Number(order.impressions_count ?? 0);
+  const clicks = Number(order.clicks_count ?? 0);
+  const daily = await getAdvertisingDailyStats(order.id, 14);
 
   return (
     <div className="mx-auto max-w-4xl px-5 py-10 sm:px-8">
@@ -56,6 +72,66 @@ export default async function AdminPubblicitaDetailPage({ params }: Props) {
         {Number(order.final_price ?? order.price).toFixed(0)} ·{" "}
         <span className="font-semibold">{order.status}</span>
       </p>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Visualizzazioni
+          </p>
+          <p className="mt-2 text-3xl font-black text-slate-900">
+            {impressions.toLocaleString("it-IT")}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Click
+          </p>
+          <p className="mt-2 text-3xl font-black text-slate-900">
+            {clicks.toLocaleString("it-IT")}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            CTR
+          </p>
+          <p className="mt-2 text-3xl font-black text-slate-900">
+            {formatCtr(impressions, clicks)}
+          </p>
+        </div>
+      </div>
+
+      {daily.length > 0 ? (
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <table className="min-w-full text-left text-sm">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+              <tr>
+                <th className="px-4 py-3 font-semibold">Giorno</th>
+                <th className="px-4 py-3 font-semibold">Views</th>
+                <th className="px-4 py-3 font-semibold">Click</th>
+                <th className="px-4 py-3 font-semibold">CTR</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {daily.map((row) => (
+                <tr key={row.day}>
+                  <td className="px-4 py-2.5 text-slate-700">
+                    {formatDay(row.day)}
+                  </td>
+                  <td className="px-4 py-2.5 font-semibold text-slate-900">
+                    {row.impressions.toLocaleString("it-IT")}
+                  </td>
+                  <td className="px-4 py-2.5 font-semibold text-slate-900">
+                    {row.clicks.toLocaleString("it-IT")}
+                  </td>
+                  <td className="px-4 py-2.5 text-slate-700">
+                    {formatCtr(row.impressions, row.clicks)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_280px]">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
