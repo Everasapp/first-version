@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/ensure-recurring-events",
       "schedule": "15 5 * * *"
+    },
+    {
+      "path": "/api/cron/expire-advertising",
+      "schedule": "30 4 * * *"
     }
   ]
 }

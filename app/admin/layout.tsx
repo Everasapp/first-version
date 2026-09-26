@@ -30,6 +30,12 @@ export default async function AdminLayout({
           </div>
           <nav className="flex flex-wrap items-center gap-3 text-sm font-semibold">
             <Link
+              href="/admin/pubblicita"
+              className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
+            >
+              Pubblicità
+            </Link>
+            <Link
               href="/admin/importa-eventi"
               className="rounded-xl px-3 py-2 text-[#075EAE] transition hover:bg-sky-50"
             >

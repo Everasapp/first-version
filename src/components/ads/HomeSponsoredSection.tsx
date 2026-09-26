@@ -20,7 +20,7 @@ type AdDef = {
   imageAlt: string;
 };
 
-const ADS: AdDef[] = [
+const STATIC_ADS: AdDef[] = [
   {
     id: "monstera",
     storageKey: "everas-monstera-hotweek-dismissed",
@@ -42,6 +42,25 @@ const ADS: AdDef[] = [
       "Laboratori ZOE — robot LEGO per bambini. Corsi e workshop a Sassari",
   },
 ];
+
+export type PaidHomeAd = {
+  id: string;
+  companyName: string;
+  href: string;
+  imageSrc: string;
+};
+
+function paidAdToDef(ad: PaidHomeAd): AdDef {
+  return {
+    id: `paid-${ad.id}`,
+    storageKey: `everas-paid-ad-${ad.id}-dismissed`,
+    href: ad.href,
+    ariaLabel: `Pubblicità ${ad.companyName}`,
+    linkLabel: ad.companyName,
+    imageSrc: ad.imageSrc,
+    imageAlt: ad.companyName,
+  };
+}
 
 function SponsoredAdSlide({
   ad,
@@ -98,7 +117,12 @@ function SponsoredAdSlide({
  * - mobile: horizontal carousel + infinite loop autoplay
  * - tablet/desktop: static row if ads fit; carousel only when they overflow
  */
-export default function HomeSponsoredSection() {
+export default function HomeSponsoredSection({
+  paidAds = [],
+}: {
+  paidAds?: PaidHomeAd[];
+}) {
+  const ADS = [...paidAds.map(paidAdToDef), ...STATIC_ADS];
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(0);
@@ -119,7 +143,8 @@ export default function HomeSponsoredSection() {
       next.push(ad.id);
     }
     setVisibleIds(next);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ADS rebuilt from paidAds
+  }, [paidAds.map((a) => a.id).join("|")]);
 
   useEffect(() => {
     const mq = window.matchMedia(NARROW_MQ);

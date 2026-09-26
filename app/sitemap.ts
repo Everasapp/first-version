@@ -175,6 +175,11 @@ function alwaysIndexRoutes(): MetadataRoute.Sitemap {
       priority: 0.4,
     },
     {
+      url: `${SITE_URL}/pubblicita`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
       url: `${SITE_URL}/segnala-evento`,
       changeFrequency: "monthly",
       priority: 0.6,

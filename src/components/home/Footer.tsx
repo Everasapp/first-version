@@ -121,6 +121,13 @@ export default function Footer() {
             >
               Segnala un evento
             </Link>
+
+            <Link
+              href="/pubblicita"
+              className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
+            >
+              Pubblicizza su EVERAS
+            </Link>
           </div>
         </div>
 
