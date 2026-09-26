@@ -197,6 +197,7 @@ function SponsoredAdSlide({
  * Sponsored strip:
  * - mobile: horizontal carousel + infinite loop autoplay
  * - tablet/desktop: static row if ads fit; carousel only when they overflow
+ * - dismiss is in-memory only: after refresh the banners reappear
  */
 export default function HomeSponsoredSection({
   paidAds = [],
@@ -210,25 +211,13 @@ export default function HomeSponsoredSection({
   const indexRef = useRef(0);
   const animTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  // Mostra subito i banner (anche in SSR); poi filtra eventuali dismiss in sessionStorage.
-  const [visibleIds, setVisibleIds] = useState<string[]>(() =>
-    ADS.map((ad) => ad.id),
-  );
+  const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [isNarrow, setIsNarrow] = useState(false);
   const [desktopOverflows, setDesktopOverflows] = useState(false);
 
   useEffect(() => {
-    const next: string[] = [];
-    for (const ad of ADS) {
-      try {
-        if (window.sessionStorage.getItem(ad.storageKey) === "1") continue;
-      } catch {
-        // ignore
-      }
-      next.push(ad.id);
-    }
-    setVisibleIds(next);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when ad set changes
+    // Reset dismiss when the ad set changes (new creatives / orders).
+    setDismissedIds([]);
   }, [adsKey]);
 
   useEffect(() => {
@@ -240,20 +229,15 @@ export default function HomeSponsoredSection({
   }, []);
 
   function dismiss(id: string) {
-    const ad = ADS.find((item) => item.id === id);
-    if (!ad) return;
-    try {
-      window.sessionStorage.setItem(ad.storageKey, "1");
-    } catch {
-      // ignore
-    }
-    setVisibleIds((current) => current.filter((item) => item !== id));
+    setDismissedIds((current) =>
+      current.includes(id) ? current : [...current, id],
+    );
     indexRef.current = 0;
     const scroller = scrollerRef.current;
     if (scroller) scroller.scrollTo({ left: 0, behavior: "auto" });
   }
 
-  const ads = ADS.filter((ad) => visibleIds.includes(ad.id));
+  const ads = ADS.filter((ad) => !dismissedIds.includes(ad.id));
   const useCarousel = ads.length > 1 && (isNarrow || desktopOverflows);
   const slides = useCarousel ? [...ads, ...ads] : ads;
 
@@ -288,7 +272,7 @@ export default function HomeSponsoredSection({
     const ro = new ResizeObserver(measure);
     ro.observe(container);
     return () => ro.disconnect();
-  }, [isNarrow, ads.length, visibleIds.join("|")]);
+  }, [isNarrow, ads.length, dismissedIds.join("|")]);
 
   function cardOffsets() {
     const scroller = scrollerRef.current;
@@ -372,7 +356,7 @@ export default function HomeSponsoredSection({
     }
   }, [useCarousel]);
 
-  if (visibleIds.length === 0) {
+  if (ads.length === 0) {
     return null;
   }
 
