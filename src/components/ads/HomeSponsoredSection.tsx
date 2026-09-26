@@ -25,17 +25,6 @@ type AdDef = {
 
 const STATIC_ADS: AdDef[] = [
   {
-    id: "everas-advertise",
-    storageKey: "everas-advertise-promo-dismissed",
-    href: "/pubblicita",
-    ariaLabel: "Pubblicizza la tua attività su EVERAS",
-    linkLabel: "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio",
-    imageSrc: "/images/ads/everas-advertise-promo.gif",
-    imageAlt:
-      "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio.",
-    external: false,
-  },
-  {
     id: "monstera",
     storageKey: "everas-monstera-hotweek-dismissed",
     href: "https://www.google.com/maps/search/?api=1&query=Monstera%20Via%20Predda%20Niedda%2037f%20Sassari",
@@ -63,18 +52,28 @@ export type PaidHomeAd = {
   companyName: string;
   href: string;
   imageSrc: string;
+  external?: boolean;
 };
 
 function paidAdToDef(ad: PaidHomeAd): AdDef {
+  const isEveras =
+    ad.companyName === "EVERAS" || ad.href === "/pubblicita";
   return {
     id: `paid-${ad.id}`,
     storageKey: `everas-paid-ad-${ad.id}-dismissed`,
     href: ad.href,
-    ariaLabel: `Pubblicità ${ad.companyName}`,
-    linkLabel: ad.companyName,
+    ariaLabel: isEveras
+      ? "Pubblicizza la tua attività su EVERAS"
+      : `Pubblicità ${ad.companyName}`,
+    linkLabel: isEveras
+      ? "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio"
+      : ad.companyName,
     imageSrc: ad.imageSrc,
-    imageAlt: ad.companyName,
+    imageAlt: isEveras
+      ? "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio."
+      : ad.companyName,
     orderId: ad.orderId,
+    external: ad.external === false ? false : ad.href.startsWith("/") ? false : undefined,
   };
 }
 

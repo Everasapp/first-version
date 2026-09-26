@@ -17,6 +17,10 @@ import { buildAdminEmailLayout } from "@/src/lib/notifications/email-layout";
 import { escapeHtml, formatItalianDateTime } from "@/src/lib/notifications/format";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
+/** Ordine fisso del banner istituzionale EVERAS (tracking views/click). */
+export const EVERAS_SELF_PROMO_ORDER_ID =
+  "e7e8a500-0000-4000-8000-000000000001";
+
 export type { AdvertisingOrderRow };
 export { getOrderChargeAmount };
 
@@ -593,6 +597,7 @@ export type PaidHomeAdDisplay = {
   companyName: string;
   href: string;
   imageSrc: string;
+  external?: boolean;
 };
 
 /** Banner home attivi, espansi per creatività (fino a 3 per ordine). */
@@ -600,19 +605,30 @@ export async function getPaidHomeAdsForDisplay(
   now = new Date(),
 ): Promise<PaidHomeAdDisplay[]> {
   try {
-    return (await getActiveHomeBanners(now)).flatMap((row) => {
-      const href = sanitizeWebsiteUrl(row.website_url || "");
+    const ads = (await getActiveHomeBanners(now)).flatMap((row) => {
+      const orderId = row.id as string;
+      const isEverasSelfPromo = orderId === EVERAS_SELF_PROMO_ORDER_ID;
+      const href = isEverasSelfPromo
+        ? "/pubblicita"
+        : sanitizeWebsiteUrl(row.website_url || "");
       const urls = getOrderBannerUrls(row);
       if (!href || urls.length === 0) return [];
       const companyName = (row.company_name as string) || "Partner";
-      const orderId = row.id as string;
       return urls.map((imageSrc, index) => ({
         id: `${orderId}-${index}`,
         orderId,
         companyName,
         href,
         imageSrc,
+        external: isEverasSelfPromo ? false : true,
       }));
+    });
+
+    // Banner EVERAS sempre in testa alla striscia.
+    return ads.sort((a, b) => {
+      const aEveras = a.orderId === EVERAS_SELF_PROMO_ORDER_ID ? 0 : 1;
+      const bEveras = b.orderId === EVERAS_SELF_PROMO_ORDER_ID ? 0 : 1;
+      return aEveras - bEveras;
     });
   } catch (error) {
     console.error("[advertising] getPaidHomeAdsForDisplay:", error);
