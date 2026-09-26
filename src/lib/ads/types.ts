@@ -26,6 +26,8 @@ export type AdvertisingOrderRow = {
   website_url: string;
   banner_url: string | null;
   banner_storage_path: string | null;
+  banner_urls: string[] | null;
+  banner_storage_paths: string[] | null;
   paypal_order_id: string | null;
   paypal_capture_id: string | null;
   admin_notes: string | null;
@@ -49,4 +51,19 @@ export function getOrderChargeAmount(order: {
     return Number(order.final_price);
   }
   return Number(order.price);
+}
+
+/** Tutte le URL banner dell'ordine (fino a 3), con fallback sul campo legacy. */
+export function getOrderBannerUrls(order: {
+  banner_url?: string | null;
+  banner_urls?: string[] | null;
+}): string[] {
+  const fromArray = (order.banner_urls ?? []).filter(
+    (url): url is string => typeof url === "string" && url.length > 0,
+  );
+  if (fromArray.length > 0) return fromArray;
+  if (typeof order.banner_url === "string" && order.banner_url.length > 0) {
+    return [order.banner_url];
+  }
+  return [];
 }

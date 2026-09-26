@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import AdminAdvertisingActions from "@/src/components/admin/AdminAdvertisingActions";
 import { getOrderById } from "@/src/lib/ads/orders";
+import { getOrderBannerUrls } from "@/src/lib/ads/types";
 
 export const dynamic = "force-dynamic";
 
@@ -131,28 +132,32 @@ export default async function AdminPubblicitaDetailPage({ params }: Props) {
             />
           </dl>
 
-          {order.banner_url ? (
-            <div className="mt-6">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">
+          {getOrderBannerUrls(order).length > 0 ? (
+            <div className="mt-6 space-y-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                 Anteprima banner
               </p>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                <Image
-                  src={order.banner_url}
-                  alt={`Banner ${order.company_name}`}
-                  fill
-                  unoptimized
-                  className="object-contain"
-                />
-              </div>
-              <a
-                href={order.banner_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-block text-sm font-semibold text-[#075EAE] hover:underline"
-              >
-                Apri banner
-              </a>
+              {getOrderBannerUrls(order).map((url, index) => (
+                <div key={url}>
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                    <Image
+                      src={url}
+                      alt={`Banner ${order.company_name} ${index + 1}`}
+                      fill
+                      unoptimized
+                      className="object-contain"
+                    />
+                  </div>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-sm font-semibold text-[#075EAE] hover:underline"
+                  >
+                    Apri banner {index + 1}
+                  </a>
+                </div>
+              ))}
             </div>
           ) : null}
         </div>

@@ -6,8 +6,9 @@ import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
-import { getActiveHomeBanners } from "@/src/lib/ads/orders";
 import { sanitizeWebsiteUrl } from "@/src/lib/ads/advertising-packages";
+import { getActiveHomeBanners } from "@/src/lib/ads/orders";
+import { getOrderBannerUrls } from "@/src/lib/ads/types";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
@@ -226,18 +227,18 @@ export default async function Home() {
     imageSrc: string;
   }> = [];
   try {
-    paidAds = (await getActiveHomeBanners(now))
-      .map((row) => {
-        const href = sanitizeWebsiteUrl(row.website_url || "");
-        if (!href || !row.banner_url) return null;
-        return {
-          id: row.id as string,
-          companyName: (row.company_name as string) || "Partner",
-          href,
-          imageSrc: row.banner_url as string,
-        };
-      })
-      .filter((ad): ad is NonNullable<typeof ad> => ad !== null);
+    paidAds = (await getActiveHomeBanners(now)).flatMap((row) => {
+      const href = sanitizeWebsiteUrl(row.website_url || "");
+      const urls = getOrderBannerUrls(row);
+      if (!href || urls.length === 0) return [];
+      const companyName = (row.company_name as string) || "Partner";
+      return urls.map((imageSrc, index) => ({
+        id: `${row.id as string}-${index}`,
+        companyName,
+        href,
+        imageSrc,
+      }));
+    });
   } catch (error) {
     console.error("[home] active advertising banners:", error);
   }

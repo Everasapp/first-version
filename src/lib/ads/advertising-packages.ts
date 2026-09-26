@@ -204,7 +204,7 @@ export const ADVERTISING_STEPS = [
   },
   {
     title: "Compila i dati e carica il banner",
-    body: "Inserisci i dati dell'attività e il materiale pubblicitario.",
+    body: "Inserisci i dati della tua attività e carica fino a 3 immagini (JPG, PNG, WEBP o GIF).",
   },
   {
     title: "Paga e attendi la verifica",
@@ -262,9 +262,10 @@ export function sanitizeWebsiteUrl(raw: string): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
   try {
+    // Prefisso http:// se manca il protocollo (es. www.sito.com).
     const withProtocol = /^https?:\/\//i.test(trimmed)
       ? trimmed
-      : `https://${trimmed}`;
+      : `http://${trimmed}`;
     const url = new URL(withProtocol);
     if (url.protocol !== "http:" && url.protocol !== "https:") return null;
     return url.toString();

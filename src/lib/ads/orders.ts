@@ -201,7 +201,13 @@ export async function sendAdvertisingAdminReviewEmail(
       { label: "Importo", value: priceLabel(getOrderChargeAmount(order), order.currency) },
       { label: "Posizione", value: placementLabel(order.placement) },
       { label: "Sito", value: order.website_url },
-      { label: "Banner", value: order.banner_url || "—" },
+      {
+        label: "Banner",
+        value:
+          (order.banner_urls?.length
+            ? order.banner_urls.join("\n")
+            : order.banner_url) || "—",
+      },
     ],
     ctaLabel: "Apri nell'admin",
     ctaHref: adminOrderUrl(order),
@@ -559,7 +565,7 @@ export async function getActiveHomeBanners(now = new Date()) {
   const { data, error } = await supabase
     .from("advertising_orders")
     .select(
-      "id, company_name, website_url, banner_url, expiration_date, start_date",
+      "id, company_name, website_url, banner_url, banner_urls, expiration_date, start_date",
     )
     .eq("status", "active")
     .eq("placement", "home")
@@ -571,9 +577,13 @@ export async function getActiveHomeBanners(now = new Date()) {
     return [];
   }
 
-  return (data ?? []).filter(
-    (row) => typeof row.banner_url === "string" && row.banner_url.length > 0,
-  );
+  return (data ?? []).filter((row) => {
+    const urls = Array.isArray(row.banner_urls) ? row.banner_urls : [];
+    return (
+      urls.some((url) => typeof url === "string" && url.length > 0) ||
+      (typeof row.banner_url === "string" && row.banner_url.length > 0)
+    );
+  });
 }
 
 export type LaunchPromoState = {

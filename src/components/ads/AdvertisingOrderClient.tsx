@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import {
+  getOrderBannerUrls,
   getOrderChargeAmount,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
@@ -43,13 +44,16 @@ export default function AdvertisingOrderClient({
     }
   }
 
-  async function replaceBanner(file: File) {
+  async function replaceBanners(files: FileList | null) {
+    if (!files || files.length === 0) return;
     setReplaceMessage(null);
     setError(null);
     setReplacePending(true);
     try {
       const formData = new FormData();
-      formData.set("banner", file);
+      for (const file of Array.from(files).slice(0, 3)) {
+        formData.append("banner", file);
+      }
       const response = await fetch(
         `/api/advertising/orders/${order.access_token}/replace-banner`,
         { method: "POST", body: formData },
@@ -121,15 +125,15 @@ export default function AdvertisingOrderClient({
             {order.admin_notes || "Sono necessarie modifiche al materiale."}
           </p>
           <label className="mt-4 block text-sm font-semibold text-amber-950">
-            Carica un nuovo banner
+            Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF)
             <input
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept="image/jpeg,image/png,image/webp,image/gif,.gif"
+              multiple
               disabled={replacePending}
               className="mt-2 block w-full text-sm"
               onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void replaceBanner(file);
+                void replaceBanners(e.target.files);
               }}
             />
           </label>
@@ -199,15 +203,22 @@ export default function AdvertisingOrderClient({
           </div>
         </dl>
 
-        {order.banner_url ? (
-          <div className="relative mt-5 aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-            <Image
-              src={order.banner_url}
-              alt={`Banner ${order.company_name}`}
-              fill
-              unoptimized
-              className="object-contain"
-            />
+        {getOrderBannerUrls(order).length > 0 ? (
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {getOrderBannerUrls(order).map((url, index) => (
+              <div
+                key={url}
+                className="relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+              >
+                <Image
+                  src={url}
+                  alt={`Banner ${order.company_name} ${index + 1}`}
+                  fill
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+            ))}
           </div>
         ) : null}
 

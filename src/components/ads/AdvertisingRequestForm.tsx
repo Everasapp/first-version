@@ -12,7 +12,13 @@ import {
 } from "@/src/lib/ads/advertising-packages";
 
 const MAX_BANNER_BYTES = 5 * 1024 * 1024;
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_BANNER_FILES = 3;
+const ALLOWED_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
 
 export default function AdvertisingRequestForm({
   pkg,
@@ -23,28 +29,41 @@ export default function AdvertisingRequestForm({
 }) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  function onFileChange(file: File | null) {
+  function clearPreviews() {
+    for (const url of previewUrls) {
+      URL.revokeObjectURL(url);
+    }
+    setPreviewUrls([]);
+  }
+
+  function onFileChange(fileList: FileList | null) {
     setError(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
+    clearPreviews();
+    if (!fileList || fileList.length === 0) return;
+
+    const files = Array.from(fileList).slice(0, MAX_BANNER_FILES);
+    if (fileList.length > MAX_BANNER_FILES) {
+      setError(`Puoi caricare al massimo ${MAX_BANNER_FILES} immagini.`);
     }
-    if (!file) return;
-    if (!ALLOWED_TYPES.has(file.type)) {
-      setError("Formato non consentito. Usa JPG, PNG o WEBP.");
-      if (fileRef.current) fileRef.current.value = "";
-      return;
+
+    for (const file of files) {
+      if (!ALLOWED_TYPES.has(file.type)) {
+        setError("Formato non consentito. Usa JPG, PNG, WEBP o GIF.");
+        if (fileRef.current) fileRef.current.value = "";
+        return;
+      }
+      if (file.size > MAX_BANNER_BYTES) {
+        setError("Ogni banner non deve superare 5 MB.");
+        if (fileRef.current) fileRef.current.value = "";
+        return;
+      }
     }
-    if (file.size > MAX_BANNER_BYTES) {
-      setError("Il banner non deve superare 5 MB.");
-      if (fileRef.current) fileRef.current.value = "";
-      return;
-    }
-    setPreviewUrl(URL.createObjectURL(file));
+
+    setPreviewUrls(files.map((file) => URL.createObjectURL(file)));
   }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -56,6 +75,12 @@ export default function AdvertisingRequestForm({
       const form = event.currentTarget;
       const formData = new FormData(form);
       formData.set("package_id", pkg.id);
+
+      // Solo hostname: il server antepone http://
+      const websiteInput = formData.get("website_url");
+      if (typeof websiteInput === "string") {
+        formData.set("website_url", websiteInput.trim());
+      }
 
       const response = await fetch("/api/advertising/orders", {
         method: "POST",
@@ -224,40 +249,56 @@ export default function AdvertisingRequestForm({
           <span className="mb-1.5 block text-sm font-semibold text-slate-700">
             URL da collegare al banner *
           </span>
-          <input
-            name="website_url"
-            type="url"
-            required
-            placeholder="https://"
-            maxLength={500}
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none ring-[#075EAE] focus:ring-2"
-          />
+          <div className="flex overflow-hidden rounded-xl border border-slate-300 bg-white focus-within:ring-2 focus-within:ring-[#075EAE]">
+            <span className="flex shrink-0 items-center bg-slate-50 px-3 text-sm text-slate-500">
+              http://
+            </span>
+            <input
+              name="website_url"
+              type="text"
+              required
+              inputMode="url"
+              autoComplete="url"
+              placeholder="www.sito.com"
+              maxLength={500}
+              className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2.5 text-sm outline-none"
+            />
+          </div>
         </label>
       </fieldset>
 
       <fieldset className="space-y-4">
         <legend className="text-base font-bold text-slate-900">Banner</legend>
         <p className="text-sm text-slate-600">
-          Carica il tuo banner. Formati: JPG, PNG, WEBP. Max 5 MB.
+          Carica da 1 a 3 immagini. Formati: JPG, PNG, WEBP o GIF. Max 5 MB
+          ciascuna.
         </p>
         <input
           ref={fileRef}
           name="banner"
           type="file"
-          accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+          accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
+          multiple
           required
-          onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+          onChange={(e) => onFileChange(e.target.files)}
           className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-[#075EAE] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
         />
-        {previewUrl ? (
-          <div className="relative mt-2 aspect-[16/10] max-w-md overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-            <Image
-              src={previewUrl}
-              alt="Anteprima banner"
-              fill
-              unoptimized
-              className="object-contain"
-            />
+        {previewUrls.length > 0 ? (
+          <div className="mt-2 grid gap-3 sm:grid-cols-3">
+            {previewUrls.map((url, index) => (
+              <div
+                key={url}
+                className="relative aspect-[16/10] overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+              >
+                <Image
+                  src={url}
+                  alt={`Anteprima banner ${index + 1}`}
+                  fill
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+            ))}
           </div>
         ) : null}
       </fieldset>

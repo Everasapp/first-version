@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { uploadAdvertisingBanner } from "@/src/lib/ads/banner-upload";
+import {
+  collectBannerFiles,
+  uploadAdvertisingBanners,
+} from "@/src/lib/ads/banner-upload";
 import {
   getOrderByAccessToken,
   sendAdvertisingAdminReviewEmail,
@@ -38,24 +41,29 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Richiesta non valida." }, { status: 400 });
   }
 
-  const file = formData.get("banner");
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "File banner mancante." }, { status: 400 });
+  const files = collectBannerFiles(formData);
+  if (files.length < 1) {
+    return NextResponse.json(
+      { error: "Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF)." },
+      { status: 400 },
+    );
   }
 
   try {
     const supabase = createAdminClient();
-    const uploaded = await uploadAdvertisingBanner({
+    const uploaded = await uploadAdvertisingBanners({
       supabase,
-      file,
+      files,
       orderId: order.id,
     });
 
     const { data, error } = await supabase
       .from("advertising_orders")
       .update({
-        banner_url: uploaded.publicUrl,
-        banner_storage_path: uploaded.path,
+        banner_url: uploaded.publicUrls[0] ?? null,
+        banner_storage_path: uploaded.paths[0] ?? null,
+        banner_urls: uploaded.publicUrls,
+        banner_storage_paths: uploaded.paths,
         status: "awaiting_approval",
       })
       .eq("id", order.id)

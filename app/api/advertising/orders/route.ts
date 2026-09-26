@@ -5,7 +5,10 @@ import {
   resolvePackagePricing,
   sanitizeWebsiteUrl,
 } from "@/src/lib/ads/advertising-packages";
-import { uploadAdvertisingBanner } from "@/src/lib/ads/banner-upload";
+import {
+  collectBannerFiles,
+  uploadAdvertisingBanners,
+} from "@/src/lib/ads/banner-upload";
 import {
   getLaunchPromoState,
   sendAdvertisingRequestReceivedEmail,
@@ -88,10 +91,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "URL non valido." }, { status: 400 });
   }
 
-  const file = formData.get("banner");
-  if (!(file instanceof File)) {
+  const files = collectBannerFiles(formData);
+  if (files.length < 1) {
     return NextResponse.json(
-      { error: "Carica il tuo banner (JPG, PNG o WEBP)." },
+      { error: "Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF)." },
       { status: 400 },
     );
   }
@@ -138,17 +141,19 @@ export async function POST(request: Request) {
 
     const order = created as AdvertisingOrderRow;
 
-    const uploaded = await uploadAdvertisingBanner({
+    const uploaded = await uploadAdvertisingBanners({
       supabase,
-      file,
+      files,
       orderId: order.id,
     });
 
     const { data: updated, error: updateError } = await supabase
       .from("advertising_orders")
       .update({
-        banner_url: uploaded.publicUrl,
-        banner_storage_path: uploaded.path,
+        banner_url: uploaded.publicUrls[0] ?? null,
+        banner_storage_path: uploaded.paths[0] ?? null,
+        banner_urls: uploaded.publicUrls,
+        banner_storage_paths: uploaded.paths,
       })
       .eq("id", order.id)
       .select("*")
