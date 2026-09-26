@@ -96,7 +96,7 @@ export default function EventSearchForm() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [openPanel, setOpenPanel] = useState<AccordionKey>("area");
+  const [openPanel, setOpenPanel] = useState<AccordionKey>(null);
   const [geoMessage, setGeoMessage] = useState("");
   const [isLocating, setIsLocating] = useState(false);
 
