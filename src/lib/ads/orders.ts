@@ -399,6 +399,49 @@ export async function markOrderPaidFromPayPal({
   return updated;
 }
 
+/**
+ * Conferma pagamento manuale (es. dopo verifica ricevuta PayPal NCP).
+ * Usare solo dall'admin dopo aver controllato il pagamento.
+ */
+export async function markOrderPaidManually(
+  order: AdvertisingOrderRow,
+  note?: string,
+): Promise<AdvertisingOrderRow> {
+  if (order.status !== "awaiting_payment") {
+    throw new Error(
+      `Impossibile segnare come pagato un ordine in stato ${order.status}.`,
+    );
+  }
+
+  const supabase = createAdminClient();
+  const paidAt = new Date().toISOString();
+  const adminNotes = [order.admin_notes, note].filter(Boolean).join("\n") || null;
+
+  const { data, error } = await supabase
+    .from("advertising_orders")
+    .update({
+      status: "awaiting_approval",
+      paid_at: paidAt,
+      admin_notes: adminNotes,
+    })
+    .eq("id", order.id)
+    .eq("status", "awaiting_payment")
+    .select("*")
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) {
+    const refreshed = await getOrderById(order.id);
+    if (!refreshed) throw new Error("Ordine non trovato.");
+    return refreshed;
+  }
+
+  const updated = data as AdvertisingOrderRow;
+  await sendAdvertisingPaymentReceivedEmail(updated);
+  await sendAdvertisingAdminReviewEmail(updated);
+  return updated;
+}
+
 export async function approveAdvertisingOrder(order: AdvertisingOrderRow) {
   if (!["awaiting_approval", "needs_changes", "paid"].includes(order.status)) {
     throw new Error(`Impossibile approvare un ordine in stato ${order.status}.`);

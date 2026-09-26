@@ -13,16 +13,6 @@ import { createAdminClient } from "@/src/lib/supabase/admin";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  if (!isPayPalConfigured()) {
-    return NextResponse.json(
-      {
-        error:
-          "Pagamento PayPal non ancora configurato. Contatta EVERAS per completare l'ordine.",
-      },
-      { status: 503 },
-    );
-  }
-
   let body: { accessToken?: string };
   try {
     body = (await request.json()) as { accessToken?: string };
@@ -55,12 +45,31 @@ export async function POST(request: Request) {
     );
   }
 
-  // Importo ESATTAMENTE dal final_price bloccato sull'ordine (non dalla config corrente).
   const amount = getOrderChargeAmount(order);
   if (!(amount > 0)) {
     return NextResponse.json(
       { error: "Importo ordine non valido." },
       { status: 400 },
+    );
+  }
+
+  // 1) Link NCP del pacchetto (già creati su PayPal) — funziona senza API credentials.
+  if (pkg.paypalPaymentLink) {
+    return NextResponse.json({
+      ok: true,
+      approveUrl: pkg.paypalPaymentLink,
+      mode: "ncp",
+    });
+  }
+
+  // 2) Orders API (import dinamico = final_price dell'ordine).
+  if (!isPayPalConfigured()) {
+    return NextResponse.json(
+      {
+        error:
+          "Per questo pacchetto manca ancora il link PayPal. Contatta EVERAS oppure riprova più tardi.",
+      },
+      { status: 503 },
     );
   }
 
@@ -88,6 +97,7 @@ export async function POST(request: Request) {
       ok: true,
       paypalOrderId: paypal.orderId,
       approveUrl: paypal.approveUrl,
+      mode: "orders_api",
     });
   } catch (error) {
     console.error("[advertising] create paypal order:", error);

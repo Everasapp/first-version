@@ -126,7 +126,7 @@ export default function Footer() {
               href="/pubblicita"
               className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
             >
-              Pubblicizza su EVERAS
+              Pubblicità su EVERAS
             </Link>
           </div>
         </div>

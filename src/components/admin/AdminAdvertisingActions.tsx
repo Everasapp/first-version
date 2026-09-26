@@ -37,19 +37,39 @@ export default function AdminAdvertisingActions({
     }
   }
 
+  const awaitingPayment = order.status === "awaiting_payment";
   const canModerate = [
     "awaiting_approval",
     "paid",
     "needs_changes",
   ].includes(order.status);
 
-  if (!canModerate && order.status !== "active") {
+  if (!canModerate && order.status !== "active" && !awaitingPayment) {
     return null;
   }
 
   return (
     <div className="space-y-6 rounded-2xl border border-slate-200 bg-white p-5">
       <h2 className="text-lg font-bold text-slate-900">Azioni</h2>
+
+      {awaitingPayment ? (
+        <div className="space-y-2">
+          <p className="text-sm text-slate-600">
+            Se il cliente ha pagato con il link PayPal NCP, conferma qui dopo
+            aver verificato la ricevuta su PayPal.
+          </p>
+          <button
+            type="button"
+            disabled={Boolean(pending)}
+            onClick={() =>
+              void call(`/api/admin/advertising/${order.id}/mark-paid`)
+            }
+            className="rounded-xl bg-[#075EAE] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#064E91] disabled:opacity-60"
+          >
+            {pending?.includes("mark-paid") ? "..." : "Segna come pagato"}
+          </button>
+        </div>
+      ) : null}
 
       {canModerate || order.status === "active" ? (
         <div className="flex flex-wrap gap-3">
@@ -95,7 +115,7 @@ export default function AdminAdvertisingActions({
         </div>
       ) : null}
 
-      {(canModerate || order.status === "active") ? (
+      {canModerate || order.status === "active" ? (
         <div className="space-y-2">
           <label className="block text-sm font-semibold text-slate-700">
             Rifiuta — motivazione

@@ -63,12 +63,8 @@ export const ADVERTISING_PACKAGES: AdvertisingPackage[] = [
     currency: "EUR",
     description: "Presenza del tuo banner sulla Home di EVERAS per 3 mesi.",
     active: true,
-    /**
-     * HOME BANNER - 3 MESI
-     * Listino €78 · Lancio €60
-     * Link NCP opzionale (lascia null se usi solo API).
-     */
-    paypalPaymentLink: null,
+    // PayPal NCP: https://www.paypal.com/ncp/payment/JW4SJWAUCR8R2
+    paypalPaymentLink: "https://www.paypal.com/ncp/payment/JW4SJWAUCR8R2",
   },
   {
     id: "home-6m",
