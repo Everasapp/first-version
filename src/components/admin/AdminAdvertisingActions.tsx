@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
-  EVERAS_SELF_PROMO_ORDER_ID,
+  PROTECTED_AD_ORDER_IDS,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
 
@@ -51,7 +51,7 @@ export default function AdminAdvertisingActions({
     "paid",
     "needs_changes",
   ].includes(order.status);
-  const canDelete = order.id !== EVERAS_SELF_PROMO_ORDER_ID;
+  const canDelete = !PROTECTED_AD_ORDER_IDS.has(order.id);
 
   if (
     !canModerate &&

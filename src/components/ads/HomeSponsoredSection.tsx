@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
+import {
+  EVERAS_SELF_PROMO_ORDER_ID,
+  MONSTERA_PROMO_ORDER_ID,
+  ZOE_PROMO_ORDER_ID,
+} from "@/src/lib/ads/types";
 import styles from "./HotWeekSideAds.module.css";
 
 const AUTOPLAY_MS = 4500;
@@ -23,28 +28,30 @@ type AdDef = {
   orderId?: string;
 };
 
-const STATIC_ADS: AdDef[] = [
-  {
-    id: "monstera",
-    storageKey: "everas-monstera-hotweek-dismissed",
-    href: "https://www.google.com/maps/search/?api=1&query=Monstera%20Via%20Predda%20Niedda%2037f%20Sassari",
+const PARTNER_AD_COPY: Record<
+  string,
+  { ariaLabel: string; linkLabel: string; imageAlt: string }
+> = {
+  [EVERAS_SELF_PROMO_ORDER_ID]: {
+    ariaLabel: "Pubblicizza la tua attività su EVERAS",
+    linkLabel:
+      "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio",
+    imageAlt:
+      "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio.",
+  },
+  [MONSTERA_PROMO_ORDER_ID]: {
     ariaLabel: "Pubblicità Monstera",
     linkLabel: "Monstera — Sala per feste, eventi e workshop a Sassari",
-    imageSrc: "/images/monstera/monstera-stairs.gif",
     imageAlt:
       "Monstera — Sala per Feste, Eventi e Workshop. Via Predda Niedda 37/f, Sassari. Tel. 339 542 2343",
   },
-  {
-    id: "zoe",
-    storageKey: "everas-zoe-hotweek-dismissed",
-    href: "https://www.facebook.com/Zoe.talenti.corsi.eventi.progetti",
+  [ZOE_PROMO_ORDER_ID]: {
     ariaLabel: "Pubblicità Zoe Academy",
     linkLabel: "Laboratori ZOE — corsi e eventi per bambini a Sassari",
-    imageSrc: "/images/zoe/zoe-robot.gif",
     imageAlt:
       "Laboratori ZOE — robot LEGO per bambini. Corsi e workshop a Sassari",
   },
-];
+};
 
 export type PaidHomeAd = {
   id: string;
@@ -56,24 +63,22 @@ export type PaidHomeAd = {
 };
 
 function paidAdToDef(ad: PaidHomeAd): AdDef {
-  const isEveras =
-    ad.companyName === "EVERAS" || ad.href === "/pubblicita";
+  const copy = PARTNER_AD_COPY[ad.orderId];
   return {
     id: `paid-${ad.id}`,
     storageKey: `everas-paid-ad-${ad.id}-dismissed`,
     href: ad.href,
-    ariaLabel: isEveras
-      ? "Pubblicizza la tua attività su EVERAS"
-      : `Pubblicità ${ad.companyName}`,
-    linkLabel: isEveras
-      ? "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio"
-      : ad.companyName,
+    ariaLabel: copy?.ariaLabel ?? `Pubblicità ${ad.companyName}`,
+    linkLabel: copy?.linkLabel ?? ad.companyName,
     imageSrc: ad.imageSrc,
-    imageAlt: isEveras
-      ? "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio."
-      : ad.companyName,
+    imageAlt: copy?.imageAlt ?? ad.companyName,
     orderId: ad.orderId,
-    external: ad.external === false ? false : ad.href.startsWith("/") ? false : undefined,
+    external:
+      ad.external === false
+        ? false
+        : ad.href.startsWith("/")
+          ? false
+          : undefined,
   };
 }
 
@@ -203,7 +208,7 @@ export default function HomeSponsoredSection({
 }: {
   paidAds?: PaidHomeAd[];
 }) {
-  const ADS = [...paidAds.map(paidAdToDef), ...STATIC_ADS];
+  const ADS = paidAds.map(paidAdToDef);
   const adsKey = ADS.map((ad) => ad.id).join("|");
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);

@@ -7,6 +7,8 @@ import {
   getOrderBannerUrls,
   getOrderChargeAmount,
   EVERAS_SELF_PROMO_ORDER_ID,
+  HOME_AD_PIN_RANK,
+  PROTECTED_AD_ORDER_IDS,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
 import {
@@ -19,7 +21,11 @@ import { escapeHtml, formatItalianDateTime } from "@/src/lib/notifications/forma
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
 export type { AdvertisingOrderRow };
-export { getOrderChargeAmount, EVERAS_SELF_PROMO_ORDER_ID };
+export {
+  getOrderChargeAmount,
+  EVERAS_SELF_PROMO_ORDER_ID,
+  PROTECTED_AD_ORDER_IDS,
+};
 
 function getAdminEmail() {
   return (
@@ -542,9 +548,9 @@ export async function rejectAdvertisingOrder(
 
 /** Elimina definitivamente un ordine banner (e i file in storage). */
 export async function deleteAdvertisingOrder(order: AdvertisingOrderRow) {
-  if (order.id === EVERAS_SELF_PROMO_ORDER_ID) {
+  if (PROTECTED_AD_ORDER_IDS.has(order.id)) {
     throw new Error(
-      "Il banner istituzionale EVERAS non può essere eliminato da qui.",
+      "Questo banner partner/istituzionale non può essere eliminato da qui.",
     );
   }
 
@@ -655,11 +661,12 @@ export async function getPaidHomeAdsForDisplay(
       }));
     });
 
-    // Banner EVERAS sempre in testa alla striscia.
+    // EVERAS → Monstera → Zoe → altri banner a pagamento.
     return ads.sort((a, b) => {
-      const aEveras = a.orderId === EVERAS_SELF_PROMO_ORDER_ID ? 0 : 1;
-      const bEveras = b.orderId === EVERAS_SELF_PROMO_ORDER_ID ? 0 : 1;
-      return aEveras - bEveras;
+      const aRank = HOME_AD_PIN_RANK[a.orderId] ?? 100;
+      const bRank = HOME_AD_PIN_RANK[b.orderId] ?? 100;
+      if (aRank !== bRank) return aRank - bRank;
+      return 0;
     });
   } catch (error) {
     console.error("[advertising] getPaidHomeAdsForDisplay:", error);

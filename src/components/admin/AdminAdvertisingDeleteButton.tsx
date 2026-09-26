@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { EVERAS_SELF_PROMO_ORDER_ID } from "@/src/lib/ads/types";
+import { PROTECTED_AD_ORDER_IDS } from "@/src/lib/ads/types";
 
 export default function AdminAdvertisingDeleteButton({
   orderId,
@@ -16,9 +16,9 @@ export default function AdminAdvertisingDeleteButton({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (orderId === EVERAS_SELF_PROMO_ORDER_ID) {
+  if (PROTECTED_AD_ORDER_IDS.has(orderId)) {
     return (
-      <span className="text-xs text-slate-400" title="Banner istituzionale">
+      <span className="text-xs text-slate-400" title="Banner protetto">
         —
       </span>
     );
