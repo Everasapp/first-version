@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import CultureAreaView from "@/src/components/seo/CultureAreaView";
+import { getPaidHomeAdsForDisplay } from "@/src/lib/ads/orders";
 import {
   citiesForCultureArea,
   CULTURE_AREAS,
@@ -26,6 +27,8 @@ import {
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
+
+export const dynamic = "force-dynamic";
 
 type CulturaAreaPageProps = {
   params: Promise<{ area: string }>;
@@ -108,11 +111,15 @@ export default async function CulturaAreaPage({ params }: CulturaAreaPageProps) 
   ).filter((article): article is NonNullable<typeof article> => Boolean(article))
     .filter(isEditorialCultureTown);
 
+  const paidAds =
+    area.slug === "nord-sardegna" ? await getPaidHomeAdsForDisplay() : undefined;
+
   return (
     <CultureAreaView
       area={area}
       cities={cities}
       featured={featured}
+      paidAds={paidAds}
       jsonLd={[
         collectionPageSchema({
           name: area.h1,

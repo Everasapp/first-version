@@ -2,8 +2,9 @@ import "server-only";
 
 import { Resend } from "resend";
 
-import { addCalendarMonths, LAUNCH_PROMO_LIMIT, LAUNCH_PROMO_USED_OFFSET } from "@/src/lib/ads/advertising-packages";
+import { addCalendarMonths, LAUNCH_PROMO_LIMIT, LAUNCH_PROMO_USED_OFFSET, sanitizeWebsiteUrl } from "@/src/lib/ads/advertising-packages";
 import {
+  getOrderBannerUrls,
   getOrderChargeAmount,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
@@ -584,6 +585,39 @@ export async function getActiveHomeBanners(now = new Date()) {
       (typeof row.banner_url === "string" && row.banner_url.length > 0)
     );
   });
+}
+
+export type PaidHomeAdDisplay = {
+  id: string;
+  orderId: string;
+  companyName: string;
+  href: string;
+  imageSrc: string;
+};
+
+/** Banner home attivi, espansi per creatività (fino a 3 per ordine). */
+export async function getPaidHomeAdsForDisplay(
+  now = new Date(),
+): Promise<PaidHomeAdDisplay[]> {
+  try {
+    return (await getActiveHomeBanners(now)).flatMap((row) => {
+      const href = sanitizeWebsiteUrl(row.website_url || "");
+      const urls = getOrderBannerUrls(row);
+      if (!href || urls.length === 0) return [];
+      const companyName = (row.company_name as string) || "Partner";
+      const orderId = row.id as string;
+      return urls.map((imageSrc, index) => ({
+        id: `${orderId}-${index}`,
+        orderId,
+        companyName,
+        href,
+        imageSrc,
+      }));
+    });
+  } catch (error) {
+    console.error("[advertising] getPaidHomeAdsForDisplay:", error);
+    return [];
+  }
 }
 
 export type LaunchPromoState = {

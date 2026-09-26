@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+import HomeSponsoredSection, {
+  type PaidHomeAd,
+} from "@/src/components/ads/HomeSponsoredSection";
 import Header from "@/src/components/home/Header";
 import Breadcrumbs from "@/src/components/seo/Breadcrumbs";
 import CultureFeaturedGuidesGrid from "@/src/components/seo/CultureFeaturedGuidesGrid";
@@ -23,6 +26,8 @@ type CultureAreaViewProps = {
   cities: City[];
   featured: CultureTownArticle[];
   jsonLd: Array<Record<string, unknown>>;
+  /** Se impostato, mostra la stessa sezione pubblicità della home sotto le guide in evidenza. */
+  paidAds?: PaidHomeAd[];
 };
 
 export default function CultureAreaView({
@@ -30,9 +35,11 @@ export default function CultureAreaView({
   cities,
   featured,
   jsonLd,
+  paidAds,
 }: CultureAreaViewProps) {
   const grouped = groupCitiesByLetter(cities);
   const otherAreas = CULTURE_AREAS.filter((item) => item.slug !== area.slug);
+  const showSponsored = paidAds != null;
 
   return (
     <>
@@ -89,8 +96,20 @@ export default function CultureAreaView({
                 <CultureFeaturedGuidesGrid articles={featured} />
               </section>
             ) : null}
+          </div>
 
-            <section className={featured.length > 0 ? "mt-16" : undefined}>
+          {showSponsored ? (
+            <div className={featured.length > 0 ? "mt-10 sm:mt-14" : undefined}>
+              <HomeSponsoredSection paidAds={paidAds} />
+            </div>
+          ) : null}
+
+          <div
+            className={`mx-auto max-w-7xl px-5 sm:px-8 ${
+              featured.length > 0 || showSponsored ? "mt-16" : ""
+            }`}
+          >
+            <section>
               <p className="text-sm font-semibold text-slate-500">
                 {cities.length} {cities.length === 1 ? "comune" : "comuni"}
               </p>

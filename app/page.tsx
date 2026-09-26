@@ -6,9 +6,7 @@ import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
-import { sanitizeWebsiteUrl } from "@/src/lib/ads/advertising-packages";
-import { getActiveHomeBanners } from "@/src/lib/ads/orders";
-import { getOrderBannerUrls } from "@/src/lib/ads/types";
+import { getPaidHomeAdsForDisplay } from "@/src/lib/ads/orders";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
@@ -220,31 +218,7 @@ export default async function Home() {
   const weekEvents = interleaveByArea(weekCandidates);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
-  let paidAds: Array<{
-    id: string;
-    orderId: string;
-    companyName: string;
-    href: string;
-    imageSrc: string;
-  }> = [];
-  try {
-    paidAds = (await getActiveHomeBanners(now)).flatMap((row) => {
-      const href = sanitizeWebsiteUrl(row.website_url || "");
-      const urls = getOrderBannerUrls(row);
-      if (!href || urls.length === 0) return [];
-      const companyName = (row.company_name as string) || "Partner";
-      const orderId = row.id as string;
-      return urls.map((imageSrc, index) => ({
-        id: `${orderId}-${index}`,
-        orderId,
-        companyName,
-        href,
-        imageSrc,
-      }));
-    });
-  } catch (error) {
-    console.error("[home] active advertising banners:", error);
-  }
+  const paidAds = await getPaidHomeAdsForDisplay(now);
 
   return (
     <>
