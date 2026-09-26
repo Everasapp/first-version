@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
@@ -18,9 +17,22 @@ type AdDef = {
   linkLabel: string;
   imageSrc: string;
   imageAlt: string;
+  /** Se false, apre nella stessa tab (link interni EVERAS). Default: esterno. */
+  external?: boolean;
 };
 
 const STATIC_ADS: AdDef[] = [
+  {
+    id: "everas-advertise",
+    storageKey: "everas-advertise-promo-dismissed",
+    href: "/pubblicita",
+    ariaLabel: "Pubblicizza la tua attività su EVERAS",
+    linkLabel: "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio",
+    imageSrc: "/images/ads/everas-advertise-promo.gif",
+    imageAlt:
+      "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio.",
+    external: false,
+  },
   {
     id: "monstera",
     storageKey: "everas-monstera-hotweek-dismissed",
@@ -93,18 +105,22 @@ function SponsoredAdSlide({
         <a
           className={styles.link}
           href={ad.href}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
+          {...(ad.external === false
+            ? {}
+            : {
+                target: "_blank",
+                rel: "noopener noreferrer sponsored",
+              })}
           aria-label={ad.linkLabel}
           tabIndex={clone ? -1 : undefined}
         >
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element -- GIF/JPG promo assets must play/render without optimizer */}
+          <img
             src={ad.imageSrc}
             alt={clone ? "" : ad.imageAlt}
-            fill
-            sizes="16.6rem"
             className={styles.image}
-            unoptimized
+            decoding="async"
+            loading={clone ? "lazy" : "eager"}
           />
         </a>
       </div>
@@ -123,12 +139,16 @@ export default function HomeSponsoredSection({
   paidAds?: PaidHomeAd[];
 }) {
   const ADS = [...paidAds.map(paidAdToDef), ...STATIC_ADS];
+  const adsKey = ADS.map((ad) => ad.id).join("|");
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(0);
   const animTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [visibleIds, setVisibleIds] = useState<string[]>([]);
+  // Mostra subito i banner (anche in SSR); poi filtra eventuali dismiss in sessionStorage.
+  const [visibleIds, setVisibleIds] = useState<string[]>(() =>
+    ADS.map((ad) => ad.id),
+  );
   const [isNarrow, setIsNarrow] = useState(false);
   const [desktopOverflows, setDesktopOverflows] = useState(false);
 
@@ -143,8 +163,8 @@ export default function HomeSponsoredSection({
       next.push(ad.id);
     }
     setVisibleIds(next);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- ADS rebuilt from paidAds
-  }, [paidAds.map((a) => a.id).join("|")]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when ad set changes
+  }, [adsKey]);
 
   useEffect(() => {
     const mq = window.matchMedia(NARROW_MQ);
@@ -303,13 +323,7 @@ export default function HomeSponsoredSection({
         <p className="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-500">
           Pubblicità
         </p>
-        <div
-          className={
-            useCarousel && isNarrow
-              ? "relative min-w-0 max-w-[calc(16.6rem+7rem)] sm:max-w-[calc(16.6rem+8.5rem)]"
-              : "relative min-w-0"
-          }
-        >
+        <div className="relative w-full min-w-0">
           <div
             ref={scrollerRef}
             onMouseEnter={() => useCarousel && setIsPaused(true)}
@@ -321,15 +335,15 @@ export default function HomeSponsoredSection({
             onTouchEnd={() => setIsPaused(false)}
             className={
               useCarousel
-                ? "min-w-0 snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                : "min-w-0 overflow-visible py-2"
+                ? "w-full min-w-0 snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                : "w-full min-w-0 overflow-visible py-2"
             }
           >
             <div
               className={
                 useCarousel
-                  ? "flex w-max max-w-none items-stretch gap-4 pr-10 sm:gap-5 sm:pr-12"
-                  : "flex flex-wrap items-stretch justify-start gap-4 sm:gap-5"
+                  ? "flex h-full w-max max-w-none items-stretch gap-4 sm:gap-5"
+                  : "flex h-full flex-wrap items-stretch justify-start gap-4 sm:gap-5"
               }
             >
               {slides.map((ad, index) => (

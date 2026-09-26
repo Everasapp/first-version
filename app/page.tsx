@@ -219,18 +219,28 @@ export default async function Home() {
   const weekEvents = interleaveByArea(weekCandidates);
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
-  const paidAds = (await getActiveHomeBanners(now))
-    .map((row) => {
-      const href = sanitizeWebsiteUrl(row.website_url || "");
-      if (!href || !row.banner_url) return null;
-      return {
-        id: row.id as string,
-        companyName: (row.company_name as string) || "Partner",
-        href,
-        imageSrc: row.banner_url as string,
-      };
-    })
-    .filter((ad): ad is NonNullable<typeof ad> => ad !== null);
+  let paidAds: Array<{
+    id: string;
+    companyName: string;
+    href: string;
+    imageSrc: string;
+  }> = [];
+  try {
+    paidAds = (await getActiveHomeBanners(now))
+      .map((row) => {
+        const href = sanitizeWebsiteUrl(row.website_url || "");
+        if (!href || !row.banner_url) return null;
+        return {
+          id: row.id as string,
+          companyName: (row.company_name as string) || "Partner",
+          href,
+          imageSrc: row.banner_url as string,
+        };
+      })
+      .filter((ad): ad is NonNullable<typeof ad> => ad !== null);
+  } catch (error) {
+    console.error("[home] active advertising banners:", error);
+  }
 
   return (
     <>
