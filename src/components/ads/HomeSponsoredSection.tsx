@@ -243,7 +243,9 @@ export default function HomeSponsoredSection({
 
   const ads = ADS.filter((ad) => !dismissedIds.includes(ad.id));
   const useCarousel = ads.length > 1 && (isNarrow || desktopOverflows);
-  const slides = useCarousel ? [...ads, ...ads] : ads;
+  // Duplicati solo su mobile per il loop infinito; su desktop una sola copia di ciascun banner.
+  const loopWithClones = useCarousel && isNarrow;
+  const slides = loopWithClones ? [...ads, ...ads] : ads;
 
   useEffect(() => {
     if (isNarrow) {
@@ -307,27 +309,43 @@ export default function HomeSponsoredSection({
     }
 
     scroller.style.scrollSnapType = "none";
-    scroller.scrollTo({ left: offsets[next], behavior: "smooth" });
-    indexRef.current = next;
 
-    if (next >= realCount) {
-      animTimerRef.current = window.setTimeout(() => {
-        const resetTo = next - realCount;
-        const latest = cardOffsets();
-        scroller.scrollTo({
-          left: latest[resetTo] ?? 0,
-          behavior: "auto",
-        });
-        indexRef.current = resetTo;
-        scroller.style.scrollSnapType = "";
-        animTimerRef.current = null;
-      }, SCROLL_MS);
-    } else {
-      animTimerRef.current = window.setTimeout(() => {
-        scroller.style.scrollSnapType = "";
-        animTimerRef.current = null;
-      }, SCROLL_MS);
+    if (loopWithClones) {
+      scroller.scrollTo({ left: offsets[next], behavior: "smooth" });
+      indexRef.current = next;
+
+      if (next >= realCount) {
+        animTimerRef.current = window.setTimeout(() => {
+          const resetTo = next - realCount;
+          const latest = cardOffsets();
+          scroller.scrollTo({
+            left: latest[resetTo] ?? 0,
+            behavior: "auto",
+          });
+          indexRef.current = resetTo;
+          scroller.style.scrollSnapType = "";
+          animTimerRef.current = null;
+        }, SCROLL_MS);
+      } else {
+        animTimerRef.current = window.setTimeout(() => {
+          scroller.style.scrollSnapType = "";
+          animTimerRef.current = null;
+        }, SCROLL_MS);
+      }
+      return;
     }
+
+    // Desktop: scroll senza cloni, al fondo torna al primo.
+    const targetIndex = next >= realCount ? 0 : next;
+    scroller.scrollTo({
+      left: offsets[targetIndex] ?? 0,
+      behavior: "smooth",
+    });
+    indexRef.current = targetIndex;
+    animTimerRef.current = window.setTimeout(() => {
+      scroller.style.scrollSnapType = "";
+      animTimerRef.current = null;
+    }, SCROLL_MS);
   }
 
   useEffect(() => {
@@ -404,7 +422,7 @@ export default function HomeSponsoredSection({
                   key={`${ad.id}-${index}`}
                   ad={ad}
                   onDismiss={dismiss}
-                  clone={useCarousel && index >= ads.length}
+                  clone={loopWithClones && index >= ads.length}
                 />
               ))}
             </div>
