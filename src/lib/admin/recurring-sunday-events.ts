@@ -68,7 +68,8 @@ Puoi portare con te chi vuoi, l'ingresso è libero.`,
     organizerDirectoryId: "11c977f7-f177-4897-b23b-271457f7be82",
     organizerId: "53d3a2cf-e803-40b9-b5c1-59d80e42f316",
     timeRome: { hour: 10, minute: 30 },
-    weeksAhead: 16,
+    // Solo la domenica della settimana in corso (appare solo in quella settimana).
+    weeksAhead: 1,
   },
 ];
 
@@ -153,15 +154,19 @@ export async function ensureRecurringSundayEvents({
   const created: Array<{ title: string; start_at: string; source_url: string }> =
     [];
   const skipped: Array<{ source_url: string; reason: string }> = [];
+  const unpublished: Array<{ source_url: string }> = [];
 
   for (const series of RECURRING_SUNDAY_SERIES) {
     const dateKeys = upcomingSundayDateKeys(series.weeksAhead, now);
+    const keepSourceUrls = new Set(
+      dateKeys.map((dateKey) => recurrenceSourceUrl(series.key, dateKey)),
+    );
 
     for (const dateKey of dateKeys) {
       const sourceUrl = recurrenceSourceUrl(series.key, dateKey);
       const { data: existing, error: lookupError } = await supabase
         .from("events")
-        .select("id")
+        .select("id, status")
         .eq("source_url", sourceUrl)
         .maybeSingle();
 
@@ -169,7 +174,21 @@ export async function ensureRecurringSundayEvents({
         throw new Error(lookupError.message);
       }
       if (existing?.id) {
-        skipped.push({ source_url: sourceUrl, reason: "già presente" });
+        if (existing.status !== "published") {
+          const { error: republishError } = await supabase
+            .from("events")
+            .update({ status: "published" })
+            .eq("id", existing.id);
+          if (republishError) {
+            throw new Error(republishError.message);
+          }
+          skipped.push({
+            source_url: sourceUrl,
+            reason: "ripubblicato per la settimana corrente",
+          });
+        } else {
+          skipped.push({ source_url: sourceUrl, reason: "già presente" });
+        }
         continue;
       }
 
@@ -227,12 +246,49 @@ export async function ensureRecurringSundayEvents({
         source_url: data.source_url as string,
       });
     }
+
+    // Nascondi le istanze future oltre la finestra (es. le 16 domeniche create in passato).
+    const sourcePrefix = `everas://recurring/${series.key}/`;
+    const { data: seriesEvents, error: listError } = await supabase
+      .from("events")
+      .select("id, source_url, start_at, status")
+      .like("source_url", `${sourcePrefix}%`)
+      .eq("status", "published");
+
+    if (listError) {
+      throw new Error(listError.message);
+    }
+
+    // Solo la domenica in finestra resta pubblicata; le altre tornano in bozza.
+    const toUnpublish = (seriesEvents ?? []).filter(
+      (row) => !keepSourceUrls.has(row.source_url as string),
+    );
+
+    if (toUnpublish.length > 0) {
+      const { error: unpublishError } = await supabase
+        .from("events")
+        .update({ status: "draft" })
+        .in(
+          "id",
+          toUnpublish.map((row) => row.id as string),
+        );
+
+      if (unpublishError) {
+        throw new Error(unpublishError.message);
+      }
+
+      for (const row of toUnpublish) {
+        unpublished.push({ source_url: row.source_url as string });
+      }
+    }
   }
 
   return {
     createdCount: created.length,
     skippedCount: skipped.length,
+    unpublishedCount: unpublished.length,
     created,
     skipped,
+    unpublished,
   };
 }
