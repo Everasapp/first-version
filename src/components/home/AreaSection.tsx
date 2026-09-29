@@ -269,13 +269,14 @@ export default function AreaSection({
             className="snap-x snap-proximity overflow-x-auto overscroll-x-contain scroll-smooth py-2 [touch-action:pan-x_pan-y] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <div className="flex w-max max-w-none items-stretch gap-6 pr-16">
-              {visibleEvents.map((event, index) => (
+              {visibleEvents.map((event) => (
                 <div
                   key={event.eventId || event.id}
                   data-area-card
                   className="flex h-full w-72 shrink-0 snap-start sm:w-80 lg:w-[22rem]"
                 >
-                  <EventCard event={event} priority={index < 2} />
+                  {/* Homepage-only section: never compete with hero LCP. */}
+                  <EventCard event={event} priority={false} />
                 </div>
               ))}
               {hasMore ? (

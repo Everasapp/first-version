@@ -11,6 +11,7 @@ import {
   PROTECTED_AD_ORDER_IDS,
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
+import { resolveSponsoredMedia } from "@/src/lib/ads/sponsored-creative-media";
 import {
   ADMIN_NOTIFICATION_EMAIL,
   getEmailFromAddress,
@@ -635,6 +636,11 @@ export type PaidHomeAdDisplay = {
   href: string;
   imageSrc: string;
   external?: boolean;
+  /** Optional video creative (resolved locally from known GIF paths). */
+  mediaType?: "image" | "video";
+  posterUrl?: string;
+  videoWebmUrl?: string;
+  videoMp4Url?: string;
 };
 
 /** Banner home attivi, espansi per creatività (fino a 3 per ordine). */
@@ -651,14 +657,21 @@ export async function getPaidHomeAdsForDisplay(
       const urls = getOrderBannerUrls(row);
       if (!href || urls.length === 0) return [];
       const companyName = (row.company_name as string) || "Partner";
-      return urls.map((imageSrc, index) => ({
-        id: `${orderId}-${index}`,
-        orderId,
-        companyName,
-        href,
-        imageSrc,
-        external: isEverasSelfPromo ? false : true,
-      }));
+      return urls.map((imageSrc, index) => {
+        const media = resolveSponsoredMedia(imageSrc);
+        return {
+          id: `${orderId}-${index}`,
+          orderId,
+          companyName,
+          href,
+          imageSrc,
+          external: isEverasSelfPromo ? false : true,
+          mediaType: media.mediaType,
+          posterUrl: media.posterUrl,
+          videoWebmUrl: media.videoWebmUrl,
+          videoMp4Url: media.videoMp4Url,
+        };
+      });
     });
 
     // EVERAS → Monstera → Zoe → altri banner a pagamento.

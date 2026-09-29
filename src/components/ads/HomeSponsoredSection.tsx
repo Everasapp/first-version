@@ -8,11 +8,15 @@ import {
   MONSTERA_PROMO_ORDER_ID,
   ZOE_PROMO_ORDER_ID,
 } from "@/src/lib/ads/types";
+import { resolveSponsoredMedia } from "@/src/lib/ads/sponsored-creative-media";
+import SponsoredMedia from "@/src/components/ads/SponsoredMedia";
 import styles from "./HotWeekSideAds.module.css";
 
 const AUTOPLAY_MS = 4500;
 const SCROLL_MS = 480;
 const NARROW_MQ = "(max-width: 767px)";
+/** Load video only when the strip is near the viewport — keep margin tight. */
+const SECTION_ROOT_MARGIN = "48px 0px";
 
 type AdDef = {
   id: string;
@@ -22,6 +26,10 @@ type AdDef = {
   linkLabel: string;
   imageSrc: string;
   imageAlt: string;
+  mediaType: "image" | "video";
+  posterUrl?: string;
+  videoWebmUrl?: string;
+  videoMp4Url?: string;
   /** Se false, apre nella stessa tab (link interni EVERAS). Default: esterno. */
   external?: boolean;
   /** Ordine pubblicitario pagato (per tracking). */
@@ -60,10 +68,24 @@ export type PaidHomeAd = {
   href: string;
   imageSrc: string;
   external?: boolean;
+  posterUrl?: string;
+  videoWebmUrl?: string;
+  videoMp4Url?: string;
+  mediaType?: "image" | "video";
 };
 
 function paidAdToDef(ad: PaidHomeAd): AdDef {
   const copy = PARTNER_AD_COPY[ad.orderId];
+  const media =
+    ad.mediaType === "video" && ad.posterUrl && ad.videoWebmUrl && ad.videoMp4Url
+      ? {
+          mediaType: "video" as const,
+          posterUrl: ad.posterUrl,
+          videoWebmUrl: ad.videoWebmUrl,
+          videoMp4Url: ad.videoMp4Url,
+        }
+      : resolveSponsoredMedia(ad.imageSrc);
+
   return {
     id: `paid-${ad.id}`,
     storageKey: `everas-paid-ad-${ad.id}-dismissed`,
@@ -72,6 +94,10 @@ function paidAdToDef(ad: PaidHomeAd): AdDef {
     linkLabel: copy?.linkLabel ?? ad.companyName,
     imageSrc: ad.imageSrc,
     imageAlt: copy?.imageAlt ?? ad.companyName,
+    mediaType: media.mediaType,
+    posterUrl: media.posterUrl,
+    videoWebmUrl: media.videoWebmUrl,
+    videoMp4Url: media.videoMp4Url,
     orderId: ad.orderId,
     external:
       ad.external === false
@@ -117,10 +143,16 @@ function SponsoredAdSlide({
   ad,
   onDismiss,
   clone = false,
+  sectionInView,
+  isActive,
+  reducedMotion,
 }: {
   ad: AdDef;
   onDismiss: (id: string) => void;
   clone?: boolean;
+  sectionInView: boolean;
+  isActive: boolean;
+  reducedMotion: boolean;
 }) {
   const rootRef = useRef<HTMLElement>(null);
   const seenRef = useRef(false);
@@ -183,13 +215,17 @@ function SponsoredAdSlide({
             }
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- GIF/JPG promo assets must play/render without optimizer */}
-          <img
-            src={ad.imageSrc}
-            alt={clone ? "" : ad.imageAlt}
-            className={styles.image}
-            decoding="async"
-            loading={clone ? "lazy" : "eager"}
+          <SponsoredMedia
+            imageSrc={ad.imageSrc}
+            imageAlt={clone ? "" : ad.imageAlt}
+            mediaType={ad.mediaType}
+            posterUrl={ad.posterUrl}
+            videoWebmUrl={ad.videoWebmUrl}
+            videoMp4Url={ad.videoMp4Url}
+            sectionInView={sectionInView}
+            isActive={isActive}
+            isClone={clone}
+            reducedMotion={reducedMotion}
           />
         </a>
       </div>
@@ -202,6 +238,7 @@ function SponsoredAdSlide({
  * - mobile: horizontal carousel + infinite loop autoplay
  * - tablet/desktop: static row if ads fit; carousel only when they overflow
  * - dismiss is in-memory only: after refresh the banners reappear
+ * - mapped GIF creatives render as poster + lazy video (never request GIF)
  */
 export default function HomeSponsoredSection({
   paidAds = [],
@@ -210,19 +247,25 @@ export default function HomeSponsoredSection({
 }) {
   const ADS = paidAds.map(paidAdToDef);
   const adsKey = ADS.map((ad) => ad.id).join("|");
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(0);
   const animTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
+  const [dismissAdsKey, setDismissAdsKey] = useState(adsKey);
   const [isNarrow, setIsNarrow] = useState(false);
   const [desktopOverflows, setDesktopOverflows] = useState(false);
+  const [sectionInView, setSectionInView] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  useEffect(() => {
-    // Reset dismiss when the ad set changes (new creatives / orders).
+  // Reset dismiss when the ad set changes (adjust state during render).
+  if (dismissAdsKey !== adsKey) {
+    setDismissAdsKey(adsKey);
     setDismissedIds([]);
-  }, [adsKey]);
+  }
 
   useEffect(() => {
     const mq = window.matchMedia(NARROW_MQ);
@@ -232,26 +275,59 @@ export default function HomeSponsoredSection({
     return () => mq.removeEventListener("change", sync);
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      // Safe fallback: keep posters only (sectionInView stays false).
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) {
+          setSectionInView(true);
+          observer.disconnect();
+        }
+      },
+      { root: null, rootMargin: SECTION_ROOT_MARGIN, threshold: 0.01 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [adsKey]);
+
   function dismiss(id: string) {
     setDismissedIds((current) =>
       current.includes(id) ? current : [...current, id],
     );
     indexRef.current = 0;
+    setActiveIndex(0);
     const scroller = scrollerRef.current;
     if (scroller) scroller.scrollTo({ left: 0, behavior: "auto" });
   }
 
   const ads = ADS.filter((ad) => !dismissedIds.includes(ad.id));
-  const useCarousel = ads.length > 1 && (isNarrow || desktopOverflows);
+  const adsDismissKey = dismissedIds.join("|");
+  const effectiveOverflows = isNarrow ? false : desktopOverflows;
+  const useCarousel = ads.length > 1 && (isNarrow || effectiveOverflows);
   // Duplicati solo su mobile per il loop infinito; su desktop una sola copia di ciascun banner.
   const loopWithClones = useCarousel && isNarrow;
   const slides = loopWithClones ? [...ads, ...ads] : ads;
 
   useEffect(() => {
-    if (isNarrow) {
-      setDesktopOverflows(false);
-      return;
-    }
+    if (isNarrow) return;
 
     const container = containerRef.current;
     const scroller = scrollerRef.current;
@@ -274,11 +350,14 @@ export default function HomeSponsoredSection({
       setDesktopOverflows(contentWidth > container.clientWidth + 2);
     };
 
-    measure();
     const ro = new ResizeObserver(measure);
     ro.observe(container);
-    return () => ro.disconnect();
-  }, [isNarrow, ads.length, dismissedIds.join("|")]);
+    const raf = window.requestAnimationFrame(measure);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [isNarrow, ads.length, adsDismissKey]);
 
   function cardOffsets() {
     const scroller = scrollerRef.current;
@@ -313,6 +392,7 @@ export default function HomeSponsoredSection({
     if (loopWithClones) {
       scroller.scrollTo({ left: offsets[next], behavior: "smooth" });
       indexRef.current = next;
+      setActiveIndex(next % realCount);
 
       if (next >= realCount) {
         animTimerRef.current = window.setTimeout(() => {
@@ -323,6 +403,7 @@ export default function HomeSponsoredSection({
             behavior: "auto",
           });
           indexRef.current = resetTo;
+          setActiveIndex(resetTo);
           scroller.style.scrollSnapType = "";
           animTimerRef.current = null;
         }, SCROLL_MS);
@@ -342,6 +423,7 @@ export default function HomeSponsoredSection({
       behavior: "smooth",
     });
     indexRef.current = targetIndex;
+    setActiveIndex(targetIndex);
     animTimerRef.current = window.setTimeout(() => {
       scroller.style.scrollSnapType = "";
       animTimerRef.current = null;
@@ -351,17 +433,14 @@ export default function HomeSponsoredSection({
   useEffect(() => {
     if (!useCarousel || isPaused) return;
 
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) return;
+    if (reducedMotion) return;
 
     const timer = window.setInterval(() => {
       goNext();
     }, AUTOPLAY_MS);
 
     return () => window.clearInterval(timer);
-  }, [useCarousel, isPaused, ads.length]);
+  }, [useCarousel, isPaused, ads.length, reducedMotion]);
 
   useEffect(() => {
     return () => {
@@ -374,6 +453,7 @@ export default function HomeSponsoredSection({
   useEffect(() => {
     if (!useCarousel) {
       indexRef.current = 0;
+      // Static row treats every slide as active; activeIndex is unused then.
       scrollerRef.current?.scrollTo({ left: 0, behavior: "auto" });
     }
   }, [useCarousel]);
@@ -384,6 +464,7 @@ export default function HomeSponsoredSection({
 
   return (
     <section
+      ref={sectionRef}
       aria-label="Pubblicità"
       className="relative overflow-x-clip border-b border-slate-200 bg-slate-50 py-8 sm:py-10"
     >
@@ -417,14 +498,23 @@ export default function HomeSponsoredSection({
                   : "flex h-full flex-wrap items-stretch justify-start gap-4 sm:gap-5"
               }
             >
-              {slides.map((ad, index) => (
-                <SponsoredAdSlide
-                  key={`${ad.id}-${index}`}
-                  ad={ad}
-                  onDismiss={dismiss}
-                  clone={loopWithClones && index >= ads.length}
-                />
-              ))}
+              {slides.map((ad, index) => {
+                const isClone = loopWithClones && index >= ads.length;
+                const slideActive = useCarousel
+                  ? index % ads.length === activeIndex
+                  : true;
+                return (
+                  <SponsoredAdSlide
+                    key={`${ad.id}-${index}`}
+                    ad={ad}
+                    onDismiss={dismiss}
+                    clone={isClone}
+                    sectionInView={sectionInView}
+                    isActive={slideActive}
+                    reducedMotion={reducedMotion}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
