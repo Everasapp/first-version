@@ -18,6 +18,12 @@ type EventLandingSection = {
   title: string;
   events: EventCardData[];
   emptyHint?: string;
+  /** Crawlable HTML CTA under the section grid. */
+  cta?: { href: string; label: string };
+  /** Override grid initialCount for this section (defaults to eventsGridInitialCount). */
+  gridInitialCount?: number;
+  /** Leading priority images in this section’s grid (default grid behaviour if omitted). */
+  priorityImageCount?: number;
 };
 
 type HighlightItem = {
@@ -54,6 +60,8 @@ type EventLandingViewProps = {
   scheduleTitle?: string;
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
+  /** When true, cover uses eager/high fetch priority (hub LCP). Default false. */
+  coverPriority?: boolean;
   /**
    * Cards rendered in the initial SSR HTML per EventsExploreGrid.
    * Omit to keep the grid default (9). Hub pages may raise this for crawlability.
@@ -83,6 +91,7 @@ export default function EventLandingView({
   scheduleTitle = "Calendario tappe",
   relatedLinks = [],
   cover,
+  coverPriority = false,
   eventsGridInitialCount,
   promo,
 }: EventLandingViewProps) {
@@ -131,6 +140,9 @@ export default function EventLandingView({
                   width={1200}
                   height={630}
                   className="h-auto w-full bg-white"
+                  {...(coverPriority
+                    ? { fetchPriority: "high" as const, loading: "eager" as const }
+                    : {})}
                 />
               </div>
             ) : null}
@@ -292,8 +304,23 @@ export default function EventLandingView({
                       <div className="mt-5">
                         <EventsExploreGrid
                           events={section.events}
-                          initialCount={eventsGridInitialCount}
+                          initialCount={
+                            section.gridInitialCount ??
+                            eventsGridInitialCount ??
+                            section.events.length
+                          }
+                          priorityImageCount={section.priorityImageCount}
                         />
+                        {section.cta ? (
+                          <div className="mt-5">
+                            <Link
+                              href={section.cta.href}
+                              className="inline-flex rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE]"
+                            >
+                              {section.cta.label}
+                            </Link>
+                          </div>
+                        ) : null}
                       </div>
                     ) : (
                       <p className="mt-3 text-sm text-slate-600">

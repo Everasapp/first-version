@@ -19,10 +19,16 @@ type EventsExploreGridProps = {
   initialCount?: number;
   /** Quante card aggiungere a ogni “pagina” allo scroll. */
   batchSize?: number;
+  /**
+   * How many leading cards get `priority` / high fetch priority.
+   * Default `3` preserves existing landing behaviour.
+   */
+  priorityImageCount?: number;
 };
 
 const DEFAULT_INITIAL = EVENTS_EXPLORE_GRID_DEFAULT_INITIAL;
 const DEFAULT_BATCH = 9;
+const DEFAULT_PRIORITY_IMAGES = 3;
 
 /**
  * Griglia Esplora / ricerca:
@@ -34,6 +40,7 @@ export default function EventsExploreGrid({
   events,
   initialCount = DEFAULT_INITIAL,
   batchSize = DEFAULT_BATCH,
+  priorityImageCount = DEFAULT_PRIORITY_IMAGES,
 }: EventsExploreGridProps) {
   const { coords, hasLocation, status, requestLocation } = useUserLocation();
   const [sortByNearby, setSortByNearby] = useState(false);
@@ -150,7 +157,7 @@ export default function EventsExploreGrid({
           <EventCard
             key={event.eventId || event.id}
             event={event}
-            priority={index < 3}
+            priority={index < priorityImageCount}
           />
         ))}
       </div>

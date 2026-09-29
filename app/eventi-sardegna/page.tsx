@@ -17,10 +17,11 @@ import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { absoluteUrl } from "@/src/lib/seo/site";
 import { findCulturaTownPathByName } from "@/src/lib/seo/cultura-towns";
 import { cityEventsPath } from "@/src/lib/seo/paths";
+import { buildLandingStats } from "@/src/lib/seo/landing-copy";
 import {
-  buildLandingStats,
-  splitCityLandingEvents,
-} from "@/src/lib/seo/landing-copy";
+  findSameTitleDistinctEvents,
+  selectEventiSardegnaHubCards,
+} from "@/src/lib/seo/hub-event-selection";
 import { EVENTI_SARDEGNA_HUB_INTENT } from "@/src/lib/seo/landing-intents";
 import { formatEventHighlightList } from "@/src/lib/seo/weekends";
 import { dedupeLinks, temporalExploreLinks } from "@/src/lib/seo/internal-links";
@@ -67,19 +68,6 @@ function eventCategorySlugs(event: EventCardData): string[] {
 
 function eventMatchesSlugs(event: EventCardData, slugs: Set<string>) {
   return eventCategorySlugs(event).some((slug) => slugs.has(slug));
-}
-
-function takeMatching(
-  pool: EventCardData[],
-  predicate: (event: EventCardData) => boolean,
-  limit: number,
-) {
-  const matched = pool.filter(predicate).slice(0, limit);
-  const matchedIds = new Set(matched.map((event) => event.eventId));
-  return {
-    matched,
-    remaining: pool.filter((event) => !matchedIds.has(event.eventId)),
-  };
 }
 
 function buildHubEditorial(stats: ReturnType<typeof buildLandingStats>) {
@@ -159,87 +147,26 @@ export default async function EventiSardegnaHubPage() {
 
   const todayRange = getDateRange("oggi");
   const weekendRange = getDateRange("weekend");
-  const { today, weekend, upcomingRest } = splitCityLandingEvents(events, {
-    today: todayRange ?? { start: new Date(0), end: new Date(0) },
-    weekend: weekendRange ?? { start: new Date(0), end: new Date(0) },
+  const emptyRange = { start: new Date(0), end: new Date(0) };
+  const hubSelection = selectEventiSardegnaHubCards({
+    events,
+    todayRange: todayRange ?? emptyRange,
+    weekendRange: weekendRange ?? emptyRange,
+    isSagre: (event) => eventMatchesSlugs(event, SAGRE_CATEGORY_SLUGS),
+    isConcerti: (event) => eventMatchesSlugs(event, CONCERTI_CATEGORY_SLUGS),
   });
+  // Report-only: distinct records sharing a title (not auto-removed).
+  void findSameTitleDistinctEvents(events);
 
-  let pool = upcomingRest;
-  const sagreTake = takeMatching(
-    pool,
-    (event) => eventMatchesSlugs(event, SAGRE_CATEGORY_SLUGS),
-    pool.length,
-  );
-  pool = sagreTake.remaining;
-  const concertiTake = takeMatching(
-    pool,
-    (event) => eventMatchesSlugs(event, CONCERTI_CATEGORY_SLUGS),
-    pool.length,
-  );
-  pool = concertiTake.remaining;
-  const freeTake = takeMatching(pool, (event) => event.isFree, pool.length);
-  pool = freeTake.remaining;
-
-  const sections = [
-    ...(today.length > 0
-      ? [
-          {
-            id: "oggi",
-            title: "Eventi di oggi in Sardegna",
-            events: today,
-          },
-        ]
-      : []),
-    ...(weekend.length > 0
-      ? [
-          {
-            id: "weekend",
-            title: "Eventi del weekend",
-            events: weekend,
-          },
-        ]
-      : []),
-    ...(sagreTake.matched.length > 0
-      ? [
-          {
-            id: "sagre",
-            title: "Sagre e feste tradizionali",
-            events: sagreTake.matched,
-          },
-        ]
-      : []),
-    ...(concertiTake.matched.length > 0
-      ? [
-          {
-            id: "concerti",
-            title: "Concerti e spettacoli",
-            events: concertiTake.matched,
-          },
-        ]
-      : []),
-    ...(freeTake.matched.length > 0
-      ? [
-          {
-            id: "gratuiti",
-            title: "Eventi gratuiti",
-            events: freeTake.matched,
-          },
-        ]
-      : []),
-    ...(pool.length > 0
-      ? [
-          {
-            id: "prossimi",
-            title: "Altri prossimi eventi",
-            events: pool,
-          },
-        ]
-      : []),
-  ];
-
-  const listedInSections = sections.flatMap((section) => section.events);
-  const upcoming =
-    listedInSections.length > 0 ? listedInSections : events;
+  const sections = hubSelection.sections.map((section) => ({
+    id: section.id,
+    title: section.title,
+    events: section.events,
+    cta: section.cta,
+    gridInitialCount: section.events.length,
+    priorityImageCount: section.priorityImageCount,
+  }));
+  const ssrCards = hubSelection.ssrCards;
 
   const faqs = [
     {
@@ -366,12 +293,12 @@ export default async function EventiSardegnaHubPage() {
         subtitle="Il calendario degli eventi in Sardegna, per data, tipologia e località"
         intro={editorial.intro}
         paragraphs={editorial.paragraphs}
-        events={upcoming}
+        events={ssrCards}
         resultCount={stats.total}
         sections={sections.length > 0 ? sections : undefined}
-        eventsGridInitialCount={20}
         errorMessage={error?.message}
         cover={HUB_COVER}
+        coverPriority
         breadcrumbs={[
           { name: "Home", href: "/" },
           { name: "Eventi in Sardegna" },
@@ -411,7 +338,8 @@ export default async function EventiSardegnaHubPage() {
           eventsItemListSchema({
             name: HUB_H1,
             path: HUB_PATH,
-            events: upcoming,
+            events: ssrCards,
+            limit: ssrCards.length,
           }),
           breadcrumbListSchema([
             { name: "Home", path: "/" },
