@@ -1,34 +1,25 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
+import HubLiteEventsGrid from "@/src/components/events/HubLiteEventsGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import EventLandingLayout, {
   type EventLandingFaqItem,
   type EventLandingHighlightItem,
   type EventLandingLayoutProps,
-  type EventLandingScheduleRow,
   type EventLandingSectionBase,
 } from "@/src/components/seo/EventLandingLayout";
 import type { BreadcrumbItem } from "@/src/components/seo/Breadcrumbs";
 
-type EventLandingSection = EventLandingSectionBase & {
-  /** Override grid initialCount for this section (defaults to eventsGridInitialCount). */
-  gridInitialCount?: number;
-  /** Leading priority images in this section’s grid (default grid behaviour if omitted). */
-  priorityImageCount?: number;
-};
-
-type EventLandingViewProps = {
+type HubEventLandingViewProps = {
   eyebrow?: string;
   h1: string;
   subtitle?: string;
   intro: string;
   paragraphs?: string[];
   events: EventCardData[];
-  /** When the grid is capped, pass the full matching total so the badge stays truthful. */
   resultCount?: number;
-  sections?: EventLandingSection[];
+  sections?: EventLandingSectionBase[];
   errorMessage?: string | null;
   breadcrumbs: BreadcrumbItem[];
   jsonLd: Array<Record<string, unknown>>;
@@ -36,49 +27,26 @@ type EventLandingViewProps = {
   quickLinks?: Array<{ href: string; label: string }>;
   highlights?: EventLandingHighlightItem[];
   highlightsTitle?: string;
-  scheduleRows?: EventLandingScheduleRow[];
-  scheduleTitle?: string;
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
-  /** When true, cover uses eager/high fetch priority (hub LCP). Default false. */
+  /** Hub LCP: cover should be the only high-priority image. */
   coverPriority?: boolean;
-  /**
-   * Cards rendered in the initial SSR HTML per EventsExploreGrid.
-   * Omit to keep the grid default (9). Hub pages may raise this for crawlability.
-   */
-  eventsGridInitialCount?: number;
-  /** Optional mid-page promo (e.g. sponsored banner under intro). */
   promo?: ReactNode;
 };
 
-function buildExploreEventsContent({
-  sections,
-  events,
-  eventsGridInitialCount,
-}: {
-  sections?: EventLandingSection[];
-  events: EventCardData[];
-  eventsGridInitialCount?: number;
-}): ReactNode {
-  const hasSections = Boolean(sections && sections.length > 0);
-
-  if (hasSections) {
-    return sections!.map((section) => (
+function buildHubLiteEventsContent(
+  sections: EventLandingSectionBase[] | undefined,
+  events: EventCardData[],
+): ReactNode {
+  if (sections && sections.length > 0) {
+    return sections.map((section) => (
       <section key={section.id} id={section.id} className="scroll-mt-24">
         <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
           {section.title}
         </h2>
         {section.events.length > 0 ? (
           <div className="mt-5">
-            <EventsExploreGrid
-              events={section.events}
-              initialCount={
-                section.gridInitialCount ??
-                eventsGridInitialCount ??
-                section.events.length
-              }
-              priorityImageCount={section.priorityImageCount}
-            />
+            <HubLiteEventsGrid events={section.events} />
             {section.cta ? (
               <div className="mt-5">
                 <Link
@@ -100,9 +68,7 @@ function buildExploreEventsContent({
   }
 
   if (events.length > 0) {
-    return (
-      <EventsExploreGrid events={events} initialCount={eventsGridInitialCount} />
-    );
+    return <HubLiteEventsGrid events={events} />;
   }
 
   return (
@@ -123,7 +89,11 @@ function buildExploreEventsContent({
   );
 }
 
-export default function EventLandingView({
+/**
+ * `/eventi-sardegna` entry — hub-lite cards only.
+ * Does not import EventsExploreGrid / EventCard / FavoriteButton / ShareEventButton.
+ */
+export default function HubEventLandingView({
   eyebrow,
   h1,
   subtitle,
@@ -139,14 +109,11 @@ export default function EventLandingView({
   quickLinks,
   highlights,
   highlightsTitle,
-  scheduleRows,
-  scheduleTitle,
   relatedLinks,
   cover,
-  coverPriority,
-  eventsGridInitialCount,
+  coverPriority = true,
   promo,
-}: EventLandingViewProps) {
+}: HubEventLandingViewProps) {
   const layoutProps: Omit<EventLandingLayoutProps, "eventsContent"> = {
     eyebrow,
     h1,
@@ -162,8 +129,6 @@ export default function EventLandingView({
     quickLinks,
     highlights,
     highlightsTitle,
-    scheduleRows,
-    scheduleTitle,
     relatedLinks,
     cover,
     coverPriority,
@@ -173,11 +138,7 @@ export default function EventLandingView({
   return (
     <EventLandingLayout
       {...layoutProps}
-      eventsContent={buildExploreEventsContent({
-        sections,
-        events,
-        eventsGridInitialCount,
-      })}
+      eventsContent={buildHubLiteEventsContent(sections, events)}
     />
   );
 }

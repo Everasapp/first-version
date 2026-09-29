@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import type { EventCardData } from "@/src/components/home/EventCard";
-import EventLandingView from "@/src/components/seo/EventLandingView";
+import HubEventLandingView from "@/src/components/seo/HubEventLandingView";
 import { categories } from "@/src/data/categories";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
@@ -163,8 +163,6 @@ export default async function EventiSardegnaHubPage() {
     title: section.title,
     events: section.events,
     cta: section.cta,
-    gridInitialCount: section.events.length,
-    priorityImageCount: section.priorityImageCount,
   }));
   const ssrCards = hubSelection.ssrCards;
 
@@ -287,7 +285,7 @@ export default async function EventiSardegnaHubPage() {
   });
 
   return (
-    <EventLandingView
+    <HubEventLandingView
         eyebrow="Guida eventi"
         h1={HUB_H1}
         subtitle="Il calendario degli eventi in Sardegna, per data, tipologia e località"

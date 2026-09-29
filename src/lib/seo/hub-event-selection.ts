@@ -228,7 +228,8 @@ export function selectEventiSardegnaHubCards(
       title: HUB_SECTION_TITLES[row.id],
       events: row.events,
       cta: HUB_SECTION_CTAS[row.id],
-      priorityImageCount: row.id === "oggi" ? 2 : 0,
+      // Hub cover owns the only high-priority image; card images stay lazy.
+      priorityImageCount: 0,
     }));
 
   const ssrCards = sections.flatMap((section) => section.events);
