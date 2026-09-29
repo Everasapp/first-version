@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
@@ -9,6 +10,13 @@ import Breadcrumbs, {
 } from "@/src/components/seo/Breadcrumbs";
 import FaqAnswer from "@/src/components/seo/FaqAnswer";
 import JsonLd from "@/src/components/seo/JsonLd";
+
+/**
+ * Cover lives in `max-w-7xl` (80rem) with `px-5` / `sm:px-8`.
+ * Content width ≈ viewport − padding until the 1280px box; then 1216px.
+ */
+export const HUB_COVER_IMAGE_SIZES =
+  "(max-width: 640px) calc(100vw - 2.5rem), (max-width: 1279px) calc(100vw - 4rem), 1216px";
 
 export type EventLandingFaqItem = { question: string; answer: string };
 
@@ -54,6 +62,13 @@ export type EventLandingLayoutProps = {
   relatedLinks?: Array<{ href: string; label: string }>;
   cover?: { src: string; alt: string };
   coverPriority?: boolean;
+  /**
+   * When true, render the cover via `next/image` (srcset/sizes/optimizer).
+   * Default false keeps the legacy native `<img>` used by other landings.
+   */
+  optimizedCover?: boolean;
+  /** `sizes` for the optimized cover only (ignored when optimizedCover is false). */
+  coverImageSizes?: string;
   promo?: ReactNode;
   /** Pre-built `#elenco-eventi` contents (explore grid or hub-lite grid). */
   eventsContent: ReactNode;
@@ -83,6 +98,8 @@ export default function EventLandingLayout({
   relatedLinks = [],
   cover,
   coverPriority = false,
+  optimizedCover = false,
+  coverImageSizes = HUB_COVER_IMAGE_SIZES,
   promo,
   eventsContent,
 }: EventLandingLayoutProps) {
@@ -122,18 +139,37 @@ export default function EventLandingLayout({
 
             {cover ? (
               <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
-                {/* Same-origin generated asset; skip next/image optimization. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cover.src}
-                  alt={cover.alt}
-                  width={1200}
-                  height={630}
-                  className="h-auto w-full bg-white"
-                  {...(coverPriority
-                    ? { fetchPriority: "high" as const, loading: "eager" as const }
-                    : {})}
-                />
+                {optimizedCover ? (
+                  <Image
+                    src={cover.src}
+                    alt={cover.alt}
+                    width={1200}
+                    height={630}
+                    className="h-auto w-full bg-white"
+                    sizes={coverImageSizes}
+                    quality={55}
+                    preload={coverPriority}
+                    fetchPriority={coverPriority ? "high" : "auto"}
+                  />
+                ) : (
+                  <>
+                    {/* Same-origin asset; other landings keep native img. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cover.src}
+                      alt={cover.alt}
+                      width={1200}
+                      height={630}
+                      className="h-auto w-full bg-white"
+                      {...(coverPriority
+                        ? {
+                            fetchPriority: "high" as const,
+                            loading: "eager" as const,
+                          }
+                        : {})}
+                    />
+                  </>
+                )}
               </div>
             ) : null}
 

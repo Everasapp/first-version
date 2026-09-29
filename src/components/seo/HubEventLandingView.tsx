@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import HubLiteEventsGrid from "@/src/components/events/HubLiteEventsGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import EventLandingLayout, {
+  HUB_COVER_IMAGE_SIZES,
   type EventLandingFaqItem,
   type EventLandingHighlightItem,
   type EventLandingLayoutProps,
@@ -31,6 +32,9 @@ type HubEventLandingViewProps = {
   cover?: { src: string; alt: string };
   /** Hub LCP: cover should be the only high-priority image. */
   coverPriority?: boolean;
+  /** Use next/image optimizer + responsive srcset for the hub cover. */
+  optimizedCover?: boolean;
+  coverImageSizes?: string;
   promo?: ReactNode;
 };
 
@@ -112,6 +116,8 @@ export default function HubEventLandingView({
   relatedLinks,
   cover,
   coverPriority = true,
+  optimizedCover = true,
+  coverImageSizes = HUB_COVER_IMAGE_SIZES,
   promo,
 }: HubEventLandingViewProps) {
   const layoutProps: Omit<EventLandingLayoutProps, "eventsContent"> = {
@@ -132,6 +138,8 @@ export default function HubEventLandingView({
     relatedLinks,
     cover,
     coverPriority,
+    optimizedCover,
+    coverImageSizes,
     promo,
   };
 
