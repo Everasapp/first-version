@@ -63,6 +63,10 @@ import {
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
+import {
+  parseEventScheduleMode,
+  scheduleModeUsesEventSchema,
+} from "@/src/lib/eventScheduleMode";
 import { findCultureTown } from "@/src/lib/seo/cultura-towns";
 import {
   findCategoryBySlug,
@@ -73,6 +77,7 @@ import {
 } from "@/src/lib/seo/paths";
 import {
   breadcrumbListSchema,
+  collectionPageSchema,
   eventSchema,
 } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
@@ -98,6 +103,7 @@ type EventRow = {
   address: string | null;
   start_at: string;
   end_at: string | null;
+  schedule_mode?: string | null;
   image_url: string | null;
   is_free: boolean;
   price_from: number | string | null;
@@ -134,6 +140,7 @@ function mapEventForCard(event: EventRow, isFavorite = false) {
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at ?? undefined,
+    scheduleMode: parseEventScheduleMode(event.schedule_mode),
     imageUrl: event.image_url ?? "/images/concert.webp",
     isFree: pricing.isFree,
     priceFrom: pricing.priceFrom,
@@ -251,14 +258,29 @@ export default async function EventSlugPage({
 async function EventDetailPage({ slug }: { slug: string }) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
     )
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
+
+  if (
+    error &&
+    /schedule_mode/i.test(error.message) &&
+    /does not exist|schema cache|column/i.test(error.message)
+  ) {
+    ({ data, error } = await supabase
+      .from("events")
+      .select(
+        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
+      )
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle());
+  }
 
   if (error) {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);
@@ -443,6 +465,10 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const categoryPath = categoryEventsPath(primaryCategorySlug);
   const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
   const heroImage = event.image_url ?? "/images/concert.webp";
+  const scheduleMode = parseEventScheduleMode(event.schedule_mode);
+  const detailDescription =
+    stripHtml(event.description || "").slice(0, 300) ||
+    `${event.title} a ${event.municipality}`;
 
   return (
     <>
@@ -450,25 +476,31 @@ async function EventDetailPage({ slug }: { slug: string }) {
         <AdminEventViewOnce eventId={event.id} />
       ) : null}
       <JsonLd
-        data={eventSchema({
-          name: event.title,
-          description:
-            stripHtml(event.description || "").slice(0, 300) ||
-            `${event.title} a ${event.municipality}`,
-          startAt: event.start_at,
-          endAt: event.end_at,
-          imageUrl: event.image_url,
-          url: eventUrl,
-          isFree: pricing.isFree,
-          priceFrom: pricing.priceFrom,
-          ticketUrl: event.ticket_url,
-          locationName: eventLocation,
-          address: event.address,
-          city: event.municipality,
-          province: event.province,
-          organizerName,
-          isExpired: !isPublicEventActive(event.start_at, event.end_at),
-        })}
+        data={
+          scheduleModeUsesEventSchema(scheduleMode)
+            ? eventSchema({
+                name: event.title,
+                description: detailDescription,
+                startAt: event.start_at,
+                endAt: event.end_at,
+                imageUrl: event.image_url,
+                url: eventUrl,
+                isFree: pricing.isFree,
+                priceFrom: pricing.priceFrom,
+                ticketUrl: event.ticket_url,
+                locationName: eventLocation,
+                address: event.address,
+                city: event.municipality,
+                province: event.province,
+                organizerName,
+                isExpired: !isPublicEventActive(event.start_at, event.end_at),
+              })
+            : collectionPageSchema({
+                name: event.title,
+                description: detailDescription,
+                url: eventUrl,
+              })
+        }
       />
       <JsonLd
         data={breadcrumbListSchema([

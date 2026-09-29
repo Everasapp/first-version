@@ -16,6 +16,7 @@ import {
   type CalendarYear,
 } from "@/src/lib/seo/calendar";
 import { getMonthRange, getYearRange } from "@/src/lib/seo/dateRange";
+import { eventAppearsInRange } from "@/src/lib/seo/eventAppearsInRange";
 import { festivalHubLinks } from "@/src/lib/seo/festival-hubs";
 import { weekendExploreLinks } from "@/src/lib/seo/weekends";
 import { buildLandingStats } from "@/src/lib/seo/landing-copy";
@@ -31,11 +32,17 @@ const YEAR_COVER = {
 
 function eventsOverlappingMonth(events: EventCardData[], month: CalendarMonth) {
   const { start, end } = getMonthRange(month.year, month.monthIndex);
-  return events.filter((event) => {
-    const eventStart = new Date(event.startDate);
-    const eventEnd = event.endDate ? new Date(event.endDate) : eventStart;
-    return eventStart < end && eventEnd >= start;
-  });
+  return events.filter((event) =>
+    eventAppearsInRange(
+      {
+        startAt: event.startDate,
+        endAt: event.endDate,
+        scheduleMode: event.scheduleMode,
+      },
+      { start, end },
+      "month",
+    ),
+  );
 }
 
 export function buildYearLandingMetadata(

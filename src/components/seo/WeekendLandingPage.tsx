@@ -26,6 +26,7 @@ import {
   weekendOgPath,
 } from "@/src/lib/seo/weekend-mosaic";
 import { buildLandingStats } from "@/src/lib/seo/landing-copy";
+import { ssrVisibleExploreEvents } from "@/src/lib/seo/explore-grid";
 
 export function buildWeekendLandingMetadata(
   weekend: CalendarWeekend,
@@ -68,6 +69,7 @@ export default async function WeekendLandingPage({
 }) {
   const { events, error } = await loadFilteredPublishedEvents({
     range: { start: weekend.start, end: weekend.end },
+    temporalContext: "weekend",
   });
 
   const stats = buildLandingStats(events);
@@ -76,6 +78,7 @@ export default async function WeekendLandingPage({
   );
   const posterUrls = pickWeekendPosterUrls(events);
   const mosaicSrc = weekendOgPath(weekend.slug, events.length);
+  const itemListEvents = ssrVisibleExploreEvents(events);
 
   const intro =
     stats.total === 0
@@ -163,7 +166,8 @@ export default async function WeekendLandingPage({
         eventsItemListSchema({
           name: weekend.h1,
           path: weekend.path,
-          events,
+          events: itemListEvents,
+          limit: itemListEvents.length,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

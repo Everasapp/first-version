@@ -31,6 +31,10 @@ import {
 import { FESTIVAL_HUBS } from "@/src/lib/seo/festival-hubs";
 import { upcomingWeekends } from "@/src/lib/seo/weekends";
 import { getDateRange, getMonthRange, getYearRange } from "@/src/lib/seo/dateRange";
+import {
+  eventAppearsInRange,
+  type EventTemporalContext,
+} from "@/src/lib/seo/eventAppearsInRange";
 import { shouldIndexCityLanding } from "@/src/lib/seo/site";
 
 const SITE_URL = "https://www.everas.it";
@@ -42,6 +46,7 @@ type SitemapEventRow = {
   updated_at?: string | null;
   start_at: string;
   end_at?: string | null;
+  schedule_mode?: string | null;
   municipality?: string | null;
   category?: string | null;
   categories?: string[] | null;
@@ -75,12 +80,19 @@ function toLastModified(value: string | null | undefined) {
 }
 
 function eventOverlapsRange(
-  event: Pick<SitemapEventRow, "start_at" | "end_at">,
+  event: Pick<SitemapEventRow, "start_at" | "end_at" | "schedule_mode">,
   range: { start: Date; end: Date },
+  context: EventTemporalContext = "general",
 ) {
-  const eventStart = new Date(event.start_at);
-  const eventEnd = event.end_at ? new Date(event.end_at) : eventStart;
-  return eventStart < range.end && eventEnd >= range.start;
+  return eventAppearsInRange(
+    {
+      startAt: event.start_at,
+      endAt: event.end_at,
+      scheduleMode: event.schedule_mode,
+    },
+    range,
+    context,
+  );
 }
 
 function getEventArea(municipality: string | null | undefined) {
@@ -95,8 +107,10 @@ function getEventArea(municipality: string | null | undefined) {
 function countActiveOverlapping(
   events: SitemapEventRow[],
   range: { start: Date; end: Date },
+  context: EventTemporalContext = "general",
 ) {
-  return events.filter((event) => eventOverlapsRange(event, range)).length;
+  return events.filter((event) => eventOverlapsRange(event, range, context))
+    .length;
 }
 
 /** Evergreen / always-indexable public URLs (no event-count gate). */
@@ -218,20 +232,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return base;
     }
 
-    const [
-      { data: events, error: eventsError },
-      { data: organizers, error: organizersError },
-      { data: directoryPages, error: directoryError },
-    ] = await Promise.all([
-      supabase
+    const eventsSelectWithMode =
+      "slug, updated_at, start_at, end_at, schedule_mode, municipality, category, categories, is_free, price_from";
+    const eventsSelectWithoutMode =
+      "slug, updated_at, start_at, end_at, municipality, category, categories, is_free, price_from";
+
+    let eventsResult: {
+      data: SitemapEventRow[] | null;
+      error: { message: string } | null;
+    } = await supabase
+      .from("events")
+      .select(eventsSelectWithMode)
+      .eq("status", "published")
+      .not("slug", "is", null)
+      .order("start_at", { ascending: false })
+      .limit(5000);
+
+    if (
+      eventsResult.error &&
+      /schedule_mode/i.test(eventsResult.error.message) &&
+      /does not exist|schema cache|column/i.test(eventsResult.error.message)
+    ) {
+      eventsResult = await supabase
         .from("events")
-        .select(
-          "slug, updated_at, start_at, end_at, municipality, category, categories, is_free, price_from",
-        )
+        .select(eventsSelectWithoutMode)
         .eq("status", "published")
         .not("slug", "is", null)
         .order("start_at", { ascending: false })
-        .limit(5000),
+        .limit(5000);
+    }
+
+    const [
+      { data: organizers, error: organizersError },
+      { data: directoryPages, error: directoryError },
+    ] = await Promise.all([
       supabase
         .from("profiles")
         .select("id, updated_at")
@@ -244,6 +278,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .not("slug", "is", null)
         .limit(2000),
     ]);
+
+    const events = eventsResult.data;
+    const eventsError = eventsResult.error;
 
     if (eventsError) {
       console.error("Sitemap events query failed:", eventsError.message);
@@ -291,7 +328,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const key of ["oggi", "domani", "weekend", "domenica"] as const) {
       const range = getDateRange(key);
       if (!range) continue;
-      if (countActiveOverlapping(upcomingEvents, range) === 0) continue;
+      const context: EventTemporalContext =
+        key === "weekend" ? "weekend" : "daily";
+      if (countActiveOverlapping(upcomingEvents, range, context) === 0) continue;
       const path =
         key === "oggi"
           ? "/eventi-oggi"
@@ -312,7 +351,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const sudOggiCount = upcomingEvents.filter(
         (event) =>
           getEventArea(event.municipality) === "Sud Sardegna" &&
-          eventOverlapsRange(event, oggiRange),
+          eventOverlapsRange(event, oggiRange, "daily"),
       ).length;
       if (sudOggiCount > 0) {
         dateLandingRoutes.push({
@@ -341,7 +380,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const yearRoutes: MetadataRoute.Sitemap = calendarYears()
       .filter(
         (year) =>
-          countActiveOverlapping(upcomingEvents, getYearRange(year.year)) > 0,
+          countActiveOverlapping(upcomingEvents, getYearRange(year.year), "general") > 0,
       )
       .map((year) => ({
         url: `${SITE_URL}${year.path}`,
@@ -356,6 +395,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           countActiveOverlapping(
             upcomingEvents,
             getMonthRange(month.year, month.monthIndex),
+            "month",
           ) > 0,
       )
       .map((month) => ({
@@ -367,10 +407,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const weekendRoutes: MetadataRoute.Sitemap = upcomingWeekends(10)
       .filter(
         (weekend) =>
-          countActiveOverlapping(upcomingEvents, {
-            start: weekend.start,
-            end: weekend.end,
-          }) > 0,
+          countActiveOverlapping(
+            upcomingEvents,
+            {
+              start: weekend.start,
+              end: weekend.end,
+            },
+            "weekend",
+          ) > 0,
       )
       .map((weekend) => ({
         url: `${SITE_URL}${weekend.path}`,

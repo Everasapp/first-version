@@ -42,7 +42,7 @@ export default async function ModificaEventoPage({
   let eventQuery = supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
+      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
     )
     .eq("id", id);
 
@@ -50,7 +50,24 @@ export default async function ModificaEventoPage({
     eventQuery = eventQuery.eq("organizer_id", user.id);
   }
 
-  const { data: event, error } = await eventQuery.maybeSingle();
+  let { data: event, error } = await eventQuery.maybeSingle();
+
+  if (
+    error &&
+    /schedule_mode/i.test(error.message) &&
+    /does not exist|schema cache|column/i.test(error.message)
+  ) {
+    let fallbackQuery = supabase
+      .from("events")
+      .select(
+        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
+      )
+      .eq("id", id);
+    if (!isAdmin) {
+      fallbackQuery = fallbackQuery.eq("organizer_id", user.id);
+    }
+    ({ data: event, error } = await fallbackQuery.maybeSingle());
+  }
 
   if (error) {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);

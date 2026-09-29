@@ -22,6 +22,7 @@ import {
 } from "@/src/lib/seo/weekends";
 import { dedupeLinks, temporalExploreLinks } from "@/src/lib/seo/internal-links";
 import { cityEventsPath } from "@/src/lib/seo/paths";
+import { ssrVisibleExploreEvents } from "@/src/lib/seo/explore-grid";
 
 const SUD_AREA = "Sud Sardegna";
 const SUD_CITIES = ["Cagliari", "Quartu Sant'Elena", "Monserrato"] as const;
@@ -108,6 +109,7 @@ export default async function SudOggiLandingPage() {
       label: category.name,
     })),
   ];
+  const itemListEvents = ssrVisibleExploreEvents(events);
 
   return (
     <EventLandingView
@@ -138,7 +140,8 @@ export default async function SudOggiLandingPage() {
         eventsItemListSchema({
           name: SUD_OGGI_INTENT.h1,
           path: SUD_OGGI_INTENT.path,
-          events,
+          events: itemListEvents,
+          limit: itemListEvents.length,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },

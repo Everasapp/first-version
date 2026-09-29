@@ -1,4 +1,5 @@
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/src/lib/seo/site";
+import { EVENTS_EXPLORE_GRID_DEFAULT_INITIAL } from "@/src/lib/seo/explore-grid";
 
 export function websiteSearchActionSchema() {
   return {
@@ -210,14 +211,16 @@ export function itemListSchema(input: {
 
 /**
  * ItemList from event cards (`id` = public slug under `/eventi/...`).
+ * Default `limit` matches EventsExploreGrid SSR initial count.
  */
 export function eventsItemListSchema(input: {
   name: string;
   path: string;
   events: Array<{ title: string; id: string }>;
+  /** Max items; must match SSR-visible cards when the grid is capped. */
   limit?: number;
 }): Record<string, unknown> | undefined {
-  const limit = input.limit ?? 20;
+  const limit = input.limit ?? EVENTS_EXPLORE_GRID_DEFAULT_INITIAL;
   return itemListSchema({
     name: input.name,
     url: absoluteUrl(input.path),

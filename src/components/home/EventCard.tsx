@@ -10,6 +10,7 @@ import {
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
+import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 
 export type EventCardData = {
@@ -26,6 +27,8 @@ export type EventCardData = {
   date: string;
   startDate: string;
   endDate?: string;
+  /** Editorial calendar mode; defaults to single when absent. */
+  scheduleMode?: EventScheduleMode;
 
   location: string;
   /** Comune per ordinamento «vicino a me». */

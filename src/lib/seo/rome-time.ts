@@ -55,3 +55,24 @@ export function formatRomeLongDay(ymd: string) {
     timeZone: ROME_TZ,
   }).format(new Date(Date.UTC(year, month - 1, day, 12)));
 }
+
+/** Civil YYYY-MM-DD of the first day of a calendar month. */
+export function romeMonthStartYmd(year: number, monthIndex: number) {
+  const month = monthIndex + 1;
+  return `${year}-${String(month).padStart(2, "0")}-01`;
+}
+
+/**
+ * Half-open month window in Europe/Rome: [first day 00:00, next month 00:00).
+ * DST-safe via zonedTimeToUtc.
+ */
+export function romeMonthRange(year: number, monthIndex: number) {
+  const startYmd = romeMonthStartYmd(year, monthIndex);
+  const nextYear = monthIndex === 11 ? year + 1 : year;
+  const nextMonthIndex = monthIndex === 11 ? 0 : monthIndex + 1;
+  const endYmd = romeMonthStartYmd(nextYear, nextMonthIndex);
+  return {
+    start: zonedTimeToUtc(startYmd, "00:00:00"),
+    end: zonedTimeToUtc(endYmd, "00:00:00"),
+  };
+}

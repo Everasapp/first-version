@@ -31,6 +31,10 @@ import {
   parsePrice,
 } from "@/src/lib/eventForm";
 import {
+  EVENT_SCHEDULE_MODE_OPTIONS,
+  type EventScheduleMode,
+} from "@/src/lib/eventScheduleMode";
+import {
   PLAN_SELECT,
   canAssignOrganizers,
   type Plan,
@@ -71,6 +75,8 @@ export default function PublishEventPage() {
 
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
+  const [scheduleMode, setScheduleMode] =
+    useState<EventScheduleMode>("single");
   const [area, setArea] = useState("");
   const [city, setCity] = useState("");
   const [venue, setVenue] = useState("");
@@ -370,6 +376,7 @@ export default function PublishEventPage() {
           address: venue.trim(),
           start_at: startAt,
           end_at: null,
+          schedule_mode: scheduleMode,
           image_url: publicUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
@@ -757,6 +764,45 @@ export default function PublishEventPage() {
                         </p>
                       )}
                     </label>
+
+                    <fieldset className="sm:col-span-2">
+                      <legend className="text-sm font-bold text-slate-900">
+                        Tipo di calendario
+                      </legend>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Controlla se l’evento compare automaticamente in «oggi»
+                        e «weekend».
+                      </p>
+                      <div className="mt-3 grid gap-3">
+                        {EVENT_SCHEDULE_MODE_OPTIONS.map((option) => (
+                          <label
+                            key={option.value}
+                            className={`flex cursor-pointer gap-3 rounded-2xl border px-4 py-3 ${
+                              scheduleMode === option.value
+                                ? "border-[#075EAE] bg-blue-50/60"
+                                : "border-slate-200 bg-white"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="schedule_mode"
+                              value={option.value}
+                              checked={scheduleMode === option.value}
+                              onChange={() => setScheduleMode(option.value)}
+                              className="mt-1"
+                            />
+                            <span>
+                              <span className="block font-semibold text-slate-900">
+                                {option.label}
+                              </span>
+                              <span className="mt-0.5 block text-sm text-slate-600">
+                                {option.description}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
 
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">

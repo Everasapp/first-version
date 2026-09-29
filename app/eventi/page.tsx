@@ -19,9 +19,14 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { createClient } from "@/src/lib/supabase/server";
 import { isPublicEventActive } from "@/src/lib/eventActive";
+import { parseEventScheduleMode } from "@/src/lib/eventScheduleMode";
 import { eventMatchesQuery } from "@/src/utils/nearby-city";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { getDateRange, formatSearchDateLabel } from "@/src/lib/seo/dateRange";
+import {
+  eventAppearsInRange,
+  temporalContextForDateFilter,
+} from "@/src/lib/seo/eventAppearsInRange";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
 import { EVENTI_CATALOG_INTENT } from "@/src/lib/seo/landing-intents";
 import {
@@ -93,6 +98,7 @@ type DatabaseEvent = {
   address: string | null;
   start_at: string;
   end_at: string | null;
+  schedule_mode?: string | null;
   image_url: string | null;
   slug: string | null;
   is_free: boolean;
@@ -141,6 +147,7 @@ function mapDatabaseEvent(event: DatabaseEvent): EventCardData {
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
     endDate: event.end_at || undefined,
+    scheduleMode: parseEventScheduleMode(event.schedule_mode),
     location: event.municipality || event.location_name || "Sardegna",
     municipality: event.municipality || undefined,
     area: getEventArea(event.municipality),
@@ -212,12 +219,32 @@ export default async function EventsPage({
   const databaseEvents: DatabaseEvent[] = [];
   let from = 0;
   let error: { message: string } | null = null;
-
-  while (true) {
-    const page = await supabase
-      .from("events")
-      .select(
-        `
+  let selectWithMode = true;
+  const selectWithScheduleMode = `
+        id,
+        title,
+        description,
+        category,
+        categories,
+        province,
+        municipality,
+        location_name,
+        address,
+        start_at,
+        end_at,
+        schedule_mode,
+        image_url,
+        slug,
+        is_free,
+        price_from,
+        ticket_url,
+        status,
+        is_featured,
+        views_count,
+        favorites_count,
+        shares_count
+      `;
+  const selectWithoutScheduleMode = `
         id,
         title,
         description,
@@ -239,17 +266,39 @@ export default async function EventsPage({
         views_count,
         favorites_count,
         shares_count
-      `,
+      `;
+
+  while (true) {
+    // Dynamic select string: with/without schedule_mode until migration is applied.
+    const page = await supabase
+      .from("events")
+      .select(
+        (selectWithMode
+          ? selectWithScheduleMode
+          : selectWithoutScheduleMode) as string,
       )
       .eq("status", "published")
       .order("start_at", { ascending: true })
       .range(from, from + pageSize - 1);
 
+    if (
+      page.error &&
+      selectWithMode &&
+      /schedule_mode/i.test(page.error.message) &&
+      /does not exist|schema cache|column/i.test(page.error.message)
+    ) {
+      selectWithMode = false;
+      from = 0;
+      databaseEvents.length = 0;
+      error = null;
+      continue;
+    }
+
     if (page.error) {
       error = page.error;
       break;
     }
-    const chunk = (page.data ?? []) as DatabaseEvent[];
+    const chunk = (page.data ?? []) as unknown as DatabaseEvent[];
     databaseEvents.push(...chunk);
     if (chunk.length < pageSize) break;
     from += pageSize;
@@ -260,9 +309,6 @@ export default async function EventsPage({
 
   const filteredEvents = databaseEvents
     .filter((event) => {
-      const eventStartDate = new Date(event.start_at);
-      const eventEndDate = new Date(event.end_at || event.start_at);
-
       // Mai mostrare eventi scaduti (anche con filtro data)
       if (!isPublicEventActive(event.start_at, event.end_at, now)) {
         return false;
@@ -284,9 +330,18 @@ export default async function EventsPage({
         !selectedCategory ||
         eventMatchesCategoryFilter(event, selectedCategory);
 
+      const dateContext = temporalContextForDateFilter(selectedDate) ?? "general";
       const matchesDate =
         !dateRange ||
-        (eventStartDate < dateRange.end && eventEndDate >= dateRange.start);
+        eventAppearsInRange(
+          {
+            startAt: event.start_at,
+            endAt: event.end_at,
+            scheduleMode: event.schedule_mode,
+          },
+          dateRange,
+          dateContext,
+        );
 
       const matchesText = eventMatchesQuery(
         event,

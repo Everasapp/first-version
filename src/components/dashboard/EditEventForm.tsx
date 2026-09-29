@@ -30,6 +30,11 @@ import {
   normalizeTicketUrl,
   parsePrice,
 } from "@/src/lib/eventForm";
+import {
+  EVENT_SCHEDULE_MODE_OPTIONS,
+  parseEventScheduleMode,
+  type EventScheduleMode,
+} from "@/src/lib/eventScheduleMode";
 import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { getEventImageStoragePath } from "@/src/lib/images/storagePath";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
@@ -61,6 +66,7 @@ export type EditableEvent = {
   address: string | null;
   start_at: string;
   end_at: string | null;
+  schedule_mode?: string | null;
   image_url: string | null;
   is_free: boolean;
   price_from: number | string | null;
@@ -142,6 +148,9 @@ export default function EditEventForm({
   const [startTime, setStartTime] = useState(toTimeInputValue(event.start_at));
   const [endDate, setEndDate] = useState(toDateInputValue(event.end_at));
   const [endTime, setEndTime] = useState(toTimeInputValue(event.end_at));
+  const [scheduleMode, setScheduleMode] = useState<EventScheduleMode>(() =>
+    parseEventScheduleMode(event.schedule_mode),
+  );
   const [area, setArea] = useState(cityRecord?.area ?? "");
   const [city, setCity] = useState(event.municipality);
   const [venue, setVenue] = useState(
@@ -365,6 +374,7 @@ export default function EditEventForm({
           address: venue.trim(),
           start_at: startAt,
           end_at: endAt,
+          schedule_mode: scheduleMode,
           image_url: nextImageUrl,
           is_free: pricing === "free",
           price_from: numericPrice,
@@ -656,6 +666,45 @@ export default function EditEventForm({
                 Se imposti solo la data di fine, useremo le 23:59.
               </p>
             </label>
+
+            <fieldset className="sm:col-span-2">
+              <legend className="text-sm font-bold text-slate-900">
+                Tipo di calendario
+              </legend>
+              <p className="mt-1 text-sm text-slate-500">
+                Controlla se l’evento compare automaticamente in «oggi» e
+                «weekend».
+              </p>
+              <div className="mt-3 grid gap-3">
+                {EVENT_SCHEDULE_MODE_OPTIONS.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`flex cursor-pointer gap-3 rounded-2xl border px-4 py-3 ${
+                      scheduleMode === option.value
+                        ? "border-[#075EAE] bg-blue-50/60"
+                        : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="schedule_mode"
+                      value={option.value}
+                      checked={scheduleMode === option.value}
+                      onChange={() => setScheduleMode(option.value)}
+                      className="mt-1"
+                    />
+                    <span>
+                      <span className="block font-semibold text-slate-900">
+                        {option.label}
+                      </span>
+                      <span className="mt-0.5 block text-sm text-slate-600">
+                        {option.description}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
 
             <label className="block">
               <span className="text-sm font-bold text-slate-900">Area</span>

@@ -6,6 +6,10 @@ import {
 } from "@/src/lib/seo/paths";
 import type { DateLandingKey } from "@/src/lib/seo/dateRange";
 import { currentMonthLanding, currentYearLanding } from "@/src/lib/seo/calendar";
+import {
+  eventAppearsInRange,
+  type EventTemporalContext,
+} from "@/src/lib/seo/eventAppearsInRange";
 import { formatEventHighlightList } from "@/src/lib/seo/weekends";
 
 export type LandingLink = { href: string; label: string };
@@ -306,12 +310,19 @@ export function buildDateLandingLinks(
 }
 
 export function eventOverlapsRange(
-  event: Pick<EventCardData, "startDate" | "endDate">,
+  event: Pick<EventCardData, "startDate" | "endDate" | "scheduleMode">,
   range: { start: Date; end: Date },
+  context: EventTemporalContext = "general",
 ) {
-  const start = new Date(event.startDate);
-  const end = event.endDate ? new Date(event.endDate) : start;
-  return start < range.end && end >= range.start;
+  return eventAppearsInRange(
+    {
+      startAt: event.startDate,
+      endAt: event.endDate,
+      scheduleMode: event.scheduleMode,
+    },
+    range,
+    context,
+  );
 }
 
 export function splitCityLandingEvents(
@@ -319,12 +330,13 @@ export function splitCityLandingEvents(
   ranges: { today: { start: Date; end: Date }; weekend: { start: Date; end: Date } },
 ) {
   const today = upcoming.filter((event) =>
-    eventOverlapsRange(event, ranges.today),
+    eventOverlapsRange(event, ranges.today, "daily"),
   );
   const todayIds = new Set(today.map((event) => event.eventId));
   const weekend = upcoming.filter(
     (event) =>
-      eventOverlapsRange(event, ranges.weekend) && !todayIds.has(event.eventId),
+      eventOverlapsRange(event, ranges.weekend, "weekend") &&
+      !todayIds.has(event.eventId),
   );
   const listedIds = new Set([
     ...todayIds,

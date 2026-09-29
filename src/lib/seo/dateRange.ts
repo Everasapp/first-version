@@ -2,6 +2,7 @@ import {
   addDaysYmd,
   formatRomeLongDay,
   romeDayRange,
+  romeMonthRange,
   romeYmd,
 } from "@/src/lib/seo/rome-time";
 import {
@@ -204,15 +205,15 @@ export function getDateRange(filter: string) {
   }
 }
 
+/** Inclusive civil month in Europe/Rome as half-open UTC range [start, end). */
 export function getMonthRange(year: number, monthIndex: number) {
-  const start = new Date(year, monthIndex, 1);
-  const end = new Date(year, monthIndex + 1, 1);
-  return { start, end };
+  return romeMonthRange(year, monthIndex);
 }
 
+/** Inclusive civil year in Europe/Rome as half-open UTC range [start, end). */
 export function getYearRange(year: number) {
   return {
-    start: new Date(year, 0, 1),
-    end: new Date(year + 1, 0, 1),
+    start: romeMonthRange(year, 0).start,
+    end: romeMonthRange(year + 1, 0).start,
   };
 }

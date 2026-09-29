@@ -11,6 +11,7 @@ import {
   sortEventsByProximity,
   sortEventsByUpcomingDate,
 } from "@/src/utils/nearby-city";
+import { EVENTS_EXPLORE_GRID_DEFAULT_INITIAL } from "@/src/lib/seo/explore-grid";
 
 type EventsExploreGridProps = {
   events: EventCardData[];
@@ -20,7 +21,7 @@ type EventsExploreGridProps = {
   batchSize?: number;
 };
 
-const DEFAULT_INITIAL = 9;
+const DEFAULT_INITIAL = EVENTS_EXPLORE_GRID_DEFAULT_INITIAL;
 const DEFAULT_BATCH = 9;
 
 /**

@@ -19,6 +19,7 @@ import {
   buildDateLandingLinks,
   buildLandingStats,
 } from "@/src/lib/seo/landing-copy";
+import { ssrVisibleExploreEvents } from "@/src/lib/seo/explore-grid";
 import {
   absoluteUrl,
   defaultOgImages,
@@ -81,6 +82,7 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
   const faqs = buildDateLandingFaqs(dateKey, stats, context.datePhrase);
   const { quickLinks, relatedLinks } = buildDateLandingLinks(dateKey, stats);
   const h1 = context.h1 ?? meta.h1;
+  const itemListEvents = ssrVisibleExploreEvents(events);
 
   return (
     <EventLandingView
@@ -112,7 +114,8 @@ export default async function DateLandingPage({ dateKey }: DateLandingPageProps)
         eventsItemListSchema({
           name: h1,
           path: meta.path,
-          events,
+          events: itemListEvents,
+          limit: itemListEvents.length,
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
