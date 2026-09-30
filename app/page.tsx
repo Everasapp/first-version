@@ -6,6 +6,7 @@ import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
 import CategoriesSection from "@/src/components/home/CategoriesSection";
 import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
+import JsonLd from "@/src/components/seo/JsonLd";
 import { getPaidHomeAdsForDisplay } from "@/src/lib/ads/orders";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { cities } from "@/src/data/cities";
@@ -18,6 +19,8 @@ import {
   eventOverlapsRomeWeek,
   pickWeeklyTownGuides,
 } from "@/src/lib/home/weekly-town-guides";
+import { selectHomepageEventSections } from "@/src/lib/seo/homepage-event-selection";
+import { eventsItemListSchema } from "@/src/lib/seo/schema";
 import { createClient } from "@/src/lib/supabase/server";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 
@@ -179,19 +182,32 @@ export default async function Home() {
     }));
 
   // Ordine = più recenti prima (niente interleave per area: altrimenti i nuovi non restano in testa).
-  const weekEvents = weekCandidates;
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
+
+  const sections = selectHomepageEventSections({
+    hotCandidates: weekCandidates,
+    allEvents: events,
+  });
+
+  const homepageItemList = eventsItemListSchema({
+    name: "Eventi in Sardegna",
+    path: "/",
+    events: sections.ssrCards,
+    limit: sections.ssrCards.length,
+  });
 
   const paidAds = await getPaidHomeAdsForDisplay(now);
 
   return (
     <>
+      {homepageItemList ? <JsonLd data={homepageItemList} /> : null}
+
       <Header />
 
       <main className="min-w-0 max-w-full">
         <Hero />
 
-        <HappeningToday events={weekEvents} />
+        <HappeningToday events={sections.hot} />
 
         <HomeSponsoredSection paidAds={paidAds} />
 
@@ -202,7 +218,8 @@ export default async function Home() {
           area="Nord Sardegna"
           description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
           image="/images/nord-sardegna.webp"
-          events={events}
+          events={sections.north}
+          totalCount={sections.northTotalCount}
         />
 
         <AreaSection
@@ -210,7 +227,8 @@ export default async function Home() {
           area="Centro Sardegna"
           description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
           image="/images/centro-sardegna.webp"
-          events={events}
+          events={sections.center}
+          totalCount={sections.centerTotalCount}
         />
 
         <AreaSection
@@ -218,7 +236,8 @@ export default async function Home() {
           area="Sud Sardegna"
           description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
           image="/images/sud-sardegna.webp"
-          events={events}
+          events={sections.south}
+          totalCount={sections.southTotalCount}
         />
 
         <CategoriesSection />

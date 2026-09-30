@@ -59,7 +59,24 @@ export default function CategoriesSection() {
           })}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex flex-col items-center gap-4 sm:gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-[#075EAE]">
+            <Link
+              href="/eventi-sardegna/sagre"
+              className="underline-offset-2 hover:underline"
+            >
+              Sagre in Sardegna
+            </Link>
+            <span className="hidden text-slate-300 sm:inline" aria-hidden="true">
+              ·
+            </span>
+            <Link
+              href="/eventi/musica-concerti"
+              className="underline-offset-2 hover:underline"
+            >
+              Concerti e spettacoli in Sardegna
+            </Link>
+          </div>
           <Link
             href="/categorie"
             className="inline-flex rounded-xl border border-[#075EAE] px-6 py-3 text-sm font-bold text-[#075EAE] transition hover:bg-[#075EAE] hover:text-white"

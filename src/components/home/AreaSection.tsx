@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,7 +14,13 @@ type AreaSectionProps = {
   area: City["area"];
   description: string;
   image: string;
+  /** Pre-filtered, ordered, and capped events for this area only. */
   events?: EventCardData[];
+  /**
+   * Real area inventory (server-side count before carousel cap).
+   * Scalar only — do not pass the full catalog.
+   */
+  totalCount?: number;
 };
 
 const AREA_CITY_HUBS: Record<City["area"], string[]> = {
@@ -33,38 +39,24 @@ const AUTOPLAY_MS = 4500;
 const INITIAL_CARDS = 6;
 const BATCH_CARDS = 6;
 
-function sortByNewestCreated(events: EventCardData[]) {
-  return [...events].sort((a, b) => {
-    const aCreated = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-    const bCreated = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-    if (aCreated !== bCreated) return bCreated - aCreated;
-    const aStart = a.startDate ? new Date(a.startDate).getTime() : 0;
-    const bStart = b.startDate ? new Date(b.startDate).getTime() : 0;
-    return aStart - bStart;
-  });
-}
-
 export default function AreaSection({
   title,
   area,
   description,
   image,
   events = [],
+  totalCount,
 }: AreaSectionProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
-
-  const areaEvents = useMemo(() => {
-    const filtered = events.filter((event) => event.area === area);
-    return sortByNewestCreated(filtered);
-  }, [area, events]);
-
-  useEffect(() => {
-    setVisibleCount(Math.min(INITIAL_CARDS, areaEvents.length || INITIAL_CARDS));
-  }, [areaEvents]);
+  // Server already filtered/sorted/limited; do not rescan a full catalog.
+  const areaEvents = events;
+  const displayedTotal = totalCount ?? areaEvents.length;
+  const [visibleCount, setVisibleCount] = useState(() =>
+    Math.min(INITIAL_CARDS, areaEvents.length || INITIAL_CARDS),
+  );
 
   const visibleEvents = areaEvents.slice(0, visibleCount);
   const hasMore = visibleCount < areaEvents.length;
@@ -226,8 +218,8 @@ export default function AreaSection({
 
         <div className="mt-6 flex items-center justify-between gap-4">
           <p className="text-sm font-semibold text-slate-500">
-            {areaEvents.length}{" "}
-            {areaEvents.length === 1 ? "evento" : "eventi"}
+            {displayedTotal}{" "}
+            {displayedTotal === 1 ? "evento" : "eventi"}
             {hasMore ? (
               <span className="font-medium text-slate-400">
                 {" "}
