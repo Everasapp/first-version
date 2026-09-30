@@ -82,7 +82,8 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
                     sizes="(max-width: 640px) 100vw, 33vw"
                     className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
                     priority={index === 0}
-                    unoptimized
+                    quality={55}
+                    unoptimized={!town.imageSrc.startsWith("/images/")}
                   />
                 </div>
                 <div className="border-t border-slate-100 px-4 py-3.5 sm:px-5 sm:py-4">
