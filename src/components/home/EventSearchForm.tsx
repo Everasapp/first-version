@@ -238,7 +238,12 @@ export default function EventSearchForm() {
     "mt-0.5 w-full min-w-0 bg-transparent text-[11px] font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:text-xs";
 
   return (
-    <div id="ricerca" className="scroll-mt-24 sm:scroll-mt-28">
+    // min-h reserves the measured collapsed footprint so any late client swap
+    // (or font/icon settle) cannot shrink the hero and shove “Hot this week”.
+    <div
+      id="ricerca"
+      className="scroll-mt-24 min-h-[342px] sm:scroll-mt-28 sm:min-h-[350px] md:min-h-[216px]"
+    >
       <div className="mt-5 min-w-0 max-w-7xl sm:mt-6">
         <div className="flex min-w-0 flex-nowrap items-center gap-1 overflow-x-auto pb-1 touch-pan-x sm:gap-1.5">
           <button
