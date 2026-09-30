@@ -1437,8 +1437,8 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Nuoro: Museo ISRE, MAN, casa Deledda e sagra del Redentore sul monte Ortobene.",
     hero: {
-      src: "/images/cultura/nuoro-panorama-everas.webp",
-      alt: "Nuoro vista dal parco di colle Sant’Onofrio, verso il monte Ortobene",
+      src: "/images/cultura/nuoro-cattedrale-drone-everas.webp",
+      alt: "Veduta aerea della cattedrale e del centro storico di Nuoro",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/nuoro"),
     },
     intro:
