@@ -64,7 +64,7 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
         </div>
 
         <ul className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5">
-          {towns.map((town, index) => (
+          {towns.map((town) => (
             <li
               key={town.href}
               className="group animate-[fadeUp_0.55s_ease-out_both]"
@@ -81,7 +81,7 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
                     fill
                     sizes="(max-width: 640px) 100vw, 33vw"
                     className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
-                    priority={index === 0}
+                    loading="lazy"
                     quality={55}
                     unoptimized={!town.imageSrc.startsWith("/images/")}
                   />
