@@ -4,7 +4,7 @@ import type { EventCardData } from "@/src/components/home/EventCard";
 export const HOMEPAGE_SSR_CARDS_PER_SECTION = 6;
 
 /** Max events passed to each homepage carousel component. */
-export const HOMEPAGE_MAX_EVENTS_PER_SECTION = 12;
+export const HOMEPAGE_MAX_EVENTS_PER_SECTION = Number.POSITIVE_INFINITY;
 
 /** Max unique events across all four homepage carousels. */
 export const HOMEPAGE_MAX_TOTAL_EVENTS =
