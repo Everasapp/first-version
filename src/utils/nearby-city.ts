@@ -1,6 +1,6 @@
 import { cities, type City } from "@/src/data/cities";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
-import { stripHtml } from "@/src/lib/sanitizeHtml";
+import { htmlToSearchText } from "@/src/utils/html-to-search-text";
 
 /** Coordinate approssimative dei comuni (centro abitato) per «Vicino a me». */
 const cityCoordinates: Record<string, { lat: number; lng: number }> = {
@@ -434,7 +434,7 @@ export function eventMatchesQuery(
 
   const haystack = [
     event.title,
-    event.description ? stripHtml(event.description) : null,
+    event.description ? htmlToSearchText(event.description) : null,
     event.municipality,
     event.location_name,
     event.category,
