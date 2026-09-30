@@ -64,7 +64,7 @@ export default function TownGuidesPreview({ towns }: TownGuidesPreviewProps) {
         </div>
 
         <ul className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-3 sm:gap-5">
-          {towns.map((town) => (
+          {towns.map((town, index) => (
             <li
               key={town.href}
               className="group animate-[fadeUp_0.55s_ease-out_both]"
