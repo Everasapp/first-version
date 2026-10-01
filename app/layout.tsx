@@ -30,6 +30,7 @@ const gaMeasurementId =
 
 export const viewport: Viewport = {
   themeColor: "#E67E22",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };

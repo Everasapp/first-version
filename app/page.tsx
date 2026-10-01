@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
@@ -82,7 +84,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
   };
 }
 
-export default async function Home() {
+async function HomeContent() {
   const [{ rows, error }, favoriteIds] = await Promise.all([
     loadHomeEventRows(),
     getCurrentUserFavoriteIds(),
@@ -153,45 +155,62 @@ export default async function Home() {
     <>
       {homepageItemList ? <JsonLd data={homepageItemList} /> : null}
 
-      <Header />
+      <HappeningToday events={sections.hot} />
 
+      <HomeSponsoredSection paidAds={paidAds} />
+
+      <TownGuidesPreview towns={weeklyTownGuides} />
+
+      <AreaSection
+        title="Nord Sardegna"
+        area="Nord Sardegna"
+        description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
+        image="/images/nord-sardegna.webp"
+        events={sections.north}
+        totalCount={sections.northTotalCount}
+      />
+
+      <AreaSection
+        title="Centro Sardegna"
+        area="Centro Sardegna"
+        description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
+        image="/images/centro-sardegna.webp"
+        events={sections.center}
+        totalCount={sections.centerTotalCount}
+      />
+
+      <AreaSection
+        title="Sud Sardegna"
+        area="Sud Sardegna"
+        description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
+        image="/images/sud-sardegna.webp"
+        events={sections.south}
+        totalCount={sections.southTotalCount}
+      />
+
+      <CategoriesSection />
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <>
+      <Header />
       <main className="min-w-0 max-w-full">
         <Hero />
-
-        <HappeningToday events={sections.hot} />
-
-        <HomeSponsoredSection paidAds={paidAds} />
-
-        <TownGuidesPreview towns={weeklyTownGuides} />
-
-        <AreaSection
-          title="Nord Sardegna"
-          area="Nord Sardegna"
-          description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
-          image="/images/nord-sardegna.webp"
-          events={sections.north}
-          totalCount={sections.northTotalCount}
-        />
-
-        <AreaSection
-          title="Centro Sardegna"
-          area="Centro Sardegna"
-          description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
-          image="/images/centro-sardegna.webp"
-          events={sections.center}
-          totalCount={sections.centerTotalCount}
-        />
-
-        <AreaSection
-          title="Sud Sardegna"
-          area="Sud Sardegna"
-          description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
-          image="/images/sud-sardegna.webp"
-          events={sections.south}
-          totalCount={sections.southTotalCount}
-        />
-
-        <CategoriesSection />
+        <Suspense
+          fallback={
+            <div
+              role="status"
+              className="min-h-48 bg-white px-5 py-10 text-center text-slate-600"
+            >
+              Caricamento degli eventi…
+            </div>
+          }
+        >
+          <HomeContent />
+        </Suspense>
       </main>
     </>
   );
