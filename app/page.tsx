@@ -21,29 +21,8 @@ import {
 } from "@/src/lib/home/weekly-town-guides";
 import { selectHomepageEventSections } from "@/src/lib/seo/homepage-event-selection";
 import { eventsItemListSchema } from "@/src/lib/seo/schema";
-import { createClient } from "@/src/lib/supabase/server";
+import { loadHomeEventRows, type HomeEventRow as EventRow } from "@/src/lib/home/load-events";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-
-type EventRow = {
-  id: string;
-  slug: string;
-  title: string;
-  category: string;
-  categories?: string[] | null;
-  province: string | null;
-  municipality: string;
-  location_name: string | null;
-  start_at: string;
-  end_at: string | null;
-  image_url: string | null;
-  is_free: boolean;
-  price_from: number | string | null;
-  is_featured: boolean;
-  created_at?: string | null;
-  views_count?: number | null;
-  favorites_count?: number | null;
-  shares_count?: number | null;
-};
 
 function formatEventDate(startAt: string, endAt?: string | null) {
   return formatEventDateRange(startAt, endAt);
@@ -104,39 +83,11 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
 }
 
 export default async function Home() {
-  const supabase = await createClient();
+  const [{ rows, error }, favoriteIds] = await Promise.all([
+    loadHomeEventRows(),
+    getCurrentUserFavoriteIds(),
+  ]);
   const now = new Date();
-  // Bound the query so homepage SSR does not pull ancient expired rows.
-  const lookback = new Date(now);
-  lookback.setUTCDate(lookback.getUTCDate() - 120);
-
-  const pageSize = 1000;
-  const rows: EventRow[] = [];
-  let from = 0;
-  let error: { message: string } | null = null;
-
-  while (true) {
-    const page = await supabase
-      .from("events")
-      .select(
-        "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
-      )
-      .eq("status", "published")
-      .gte("start_at", lookback.toISOString())
-      .order("start_at", { ascending: true })
-      .range(from, from + pageSize - 1);
-
-    if (page.error) {
-      error = page.error;
-      break;
-    }
-    const chunk = (page.data ?? []) as EventRow[];
-    rows.push(...chunk);
-    if (chunk.length < pageSize) break;
-    from += pageSize;
-  }
-
-  const favoriteIds = await getCurrentUserFavoriteIds();
 
   if (error) {
     console.error("Errore nel caricamento della homepage:", error);

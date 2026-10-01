@@ -68,6 +68,9 @@ export type ResolvedSponsoredMedia = {
  * Mapped GIF paths become video creatives that must never request the GIF.
  */
 export function resolveSponsoredMedia(imageSrc: string): ResolvedSponsoredMedia {
+  if (normalizeSponsoredImageSrc(imageSrc) === "/images/mc-design-banner.png") {
+    return { imageSrc: "/images/mc-design-banner-v2.webp", mediaType: "image" };
+  }
   const video = resolveSponsoredVideoCreative(imageSrc);
   if (!video) {
     return { imageSrc, mediaType: "image" };

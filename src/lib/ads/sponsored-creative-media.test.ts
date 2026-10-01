@@ -8,6 +8,17 @@ import {
 } from "@/src/lib/ads/sponsored-creative-media";
 
 describe("sponsored-creative-media", () => {
+  it("serves the lightweight MC Design asset for existing banner URLs", () => {
+    for (const src of [
+      "/images/mc-design-banner.png",
+      "https://www.everas.it/images/mc-design-banner.png?v=1",
+    ]) {
+      expect(resolveSponsoredMedia(src)).toEqual({
+        imageSrc: "/images/mc-design-banner-v2.webp",
+        mediaType: "image",
+      });
+    }
+  });
   it("keeps unknown image creatives as image-only (retrocompatible)", () => {
     const resolved = resolveSponsoredMedia("/images/ads/some-partner.jpg");
     expect(resolved).toEqual({

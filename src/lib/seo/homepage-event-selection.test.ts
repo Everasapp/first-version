@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import type { EventCardData } from "@/src/components/home/EventCard";
 import {
-  HOMEPAGE_MAX_EVENTS_PER_SECTION,
-  HOMEPAGE_MAX_TOTAL_EVENTS,
   HOMEPAGE_SSR_CARDS_PER_SECTION,
   findSameTitleDistinctHomepageEvents,
   selectHomepageEventSections,
@@ -41,7 +39,7 @@ function makePool(count: number, area: string, prefix: string) {
 }
 
 describe("selectHomepageEventSections", () => {
-  it("1. max 12 events per section", () => {
+  it("1. keeps all unique events available to the carousels", () => {
     const hot = makePool(20, "Nord Sardegna", "hot");
     const all = [
       ...makePool(20, "Nord Sardegna", "nord"),
@@ -52,10 +50,10 @@ describe("selectHomepageEventSections", () => {
       hotCandidates: hot,
       allEvents: all,
     });
-    expect(result.hot).toHaveLength(HOMEPAGE_MAX_EVENTS_PER_SECTION);
-    expect(result.north).toHaveLength(HOMEPAGE_MAX_EVENTS_PER_SECTION);
-    expect(result.center).toHaveLength(HOMEPAGE_MAX_EVENTS_PER_SECTION);
-    expect(result.south).toHaveLength(HOMEPAGE_MAX_EVENTS_PER_SECTION);
+    expect(result.hot).toHaveLength(20);
+    expect(result.north).toHaveLength(20);
+    expect(result.center).toHaveLength(20);
+    expect(result.south).toHaveLength(20);
   });
 
   it("2. first 6 SSR cards per section", () => {
@@ -397,7 +395,7 @@ describe("selectHomepageEventSections", () => {
     expect(elements[0]?.url).toContain(`/eventi/${result.ssrCards[0]?.id}`);
   });
 
-  it("14. max 48 unique events passed to components", () => {
+  it("14. passes the full unique carousel inventory while bounding SSR cards", () => {
     const hot = makePool(20, "Nord Sardegna", "hot");
     const all = [
       ...makePool(20, "Nord Sardegna", "nord"),
@@ -414,10 +412,10 @@ describe("selectHomepageEventSections", () => {
       ...result.center,
       ...result.south,
     ];
-    expect(allPassed.length).toBeLessThanOrEqual(HOMEPAGE_MAX_TOTAL_EVENTS);
-    expect(allPassed.length).toBe(48);
+    expect(allPassed.length).toBe(80);
     const ids = new Set(allPassed.map((e) => e.eventId));
-    expect(ids.size).toBe(48);
+    expect(ids.size).toBe(80);
+    expect(result.ssrCards).toHaveLength(4 * HOMEPAGE_SSR_CARDS_PER_SECTION);
   });
 
   it("15. area totalCount is real inventory before cap", () => {
@@ -431,7 +429,7 @@ describe("selectHomepageEventSections", () => {
       hotCandidates: hot,
       allEvents: all,
     });
-    expect(result.north).toHaveLength(HOMEPAGE_MAX_EVENTS_PER_SECTION);
+    expect(result.north).toHaveLength(25);
     expect(result.northTotalCount).toBe(25);
     expect(result.centerTotalCount).toBe(8);
     expect(result.southTotalCount).toBe(3);

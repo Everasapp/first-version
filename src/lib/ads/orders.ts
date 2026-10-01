@@ -664,7 +664,7 @@ export async function getPaidHomeAdsForDisplay(
           orderId,
           companyName,
           href,
-          imageSrc,
+          imageSrc: media.imageSrc,
           external: isEverasSelfPromo ? false : true,
           mediaType: media.mediaType,
           posterUrl: media.posterUrl,
