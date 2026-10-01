@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { createPublicClient } from "@/src/lib/supabase/public";
 
 import { cities } from "@/src/data/cities";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -34,7 +34,6 @@ export type PublishedEventRow = {
   province: string | null;
   municipality: string | null;
   location_name: string | null;
-  address: string | null;
   start_at: string;
   end_at: string | null;
   schedule_mode?: string | null;
@@ -42,7 +41,6 @@ export type PublishedEventRow = {
   slug: string | null;
   is_free: boolean;
   price_from: number | string | null;
-  ticket_url: string | null;
   status: string;
   is_featured: boolean;
   views_count?: number | null;
@@ -116,14 +114,12 @@ const PUBLISHED_EVENT_SELECT_BASE = `
         province,
         municipality,
         location_name,
-        address,
         start_at,
         end_at,
         image_url,
         slug,
         is_free,
         price_from,
-        ticket_url,
         status,
         is_featured,
         views_count,
@@ -140,7 +136,6 @@ const PUBLISHED_EVENT_SELECT_WITH_MODE = `
         province,
         municipality,
         location_name,
-        address,
         start_at,
         end_at,
         schedule_mode,
@@ -148,7 +143,6 @@ const PUBLISHED_EVENT_SELECT_WITH_MODE = `
         slug,
         is_free,
         price_from,
-        ticket_url,
         status,
         is_featured,
         views_count,
@@ -164,28 +158,9 @@ function isMissingScheduleModeColumn(message: string | undefined) {
   );
 }
 
-function createPublicEventsClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!url || !publishableKey) {
-    throw new Error(
-      "Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
-    );
-  }
-
-  return createSupabaseClient(url, publishableKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-  });
-}
-
 /** PostgREST caps a single response; page until we have every published row. */
 async function fetchAllPublishedEventRows(city?: string) {
-  const supabase = createPublicEventsClient();
+  const supabase = createPublicClient();
   const pageSize = 1000;
   const rows: PublishedEventRow[] = [];
   let from = 0;
@@ -216,7 +191,7 @@ async function fetchAllPublishedEventRows(city?: string) {
     }
 
     if (error) {
-      return { rows, error };
+      throw new Error(error.message);
     }
     const chunk = (data ?? []) as unknown as PublishedEventRow[];
     rows.push(...chunk);
@@ -231,12 +206,25 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-event-rows-v1"],
+  ["published-event-rows-v2"],
   {
     revalidate: 300,
     tags: ["published-events"],
   },
 );
+
+async function loadPublishedEventRows(city?: string) {
+  try {
+    return await fetchCachedPublishedEventRows(city?.toLocaleLowerCase("it") ?? null);
+  } catch (error) {
+    return {
+      rows: [] as PublishedEventRow[],
+      error: {
+        message: error instanceof Error ? error.message : "Unable to load published events",
+      },
+    };
+  }
+}
 
 function resolveListTemporalContext(
   filters: EventListFilters,
@@ -253,7 +241,7 @@ function resolveListTemporalContext(
 export const loadFilteredPublishedEvents = cache(
   async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
     const [{ rows, error }, favoriteIds] = await Promise.all([
-      fetchCachedPublishedEventRows(filters.city ?? null),
+      loadPublishedEventRows(filters.city),
       getCurrentUserFavoriteIds(),
     ]);
 
