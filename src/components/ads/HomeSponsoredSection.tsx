@@ -7,6 +7,7 @@ import {
   EVERAS_SELF_PROMO_ORDER_ID,
   MONSTERA_PROMO_ORDER_ID,
   ZOE_PROMO_ORDER_ID,
+  MC_DESIGN_PROMO_ORDER_ID,
 } from "@/src/lib/ads/types";
 import { resolveSponsoredMedia } from "@/src/lib/ads/sponsored-creative-media";
 import SponsoredMedia from "@/src/components/ads/SponsoredMedia";
@@ -59,6 +60,12 @@ const PARTNER_AD_COPY: Record<
     imageAlt:
       "Laboratori ZOE — robot LEGO per bambini. Corsi e workshop a Sassari",
   },
+  [MC_DESIGN_PROMO_ORDER_ID]: {
+    ariaLabel: "Pubblicità MC Design",
+    linkLabel: "MC Design — Siti web, e-commerce e app",
+    imageAlt:
+      "MC Design — Digital partner. Siti web, e-commerce e app.",
+  },
 };
 
 export type PaidHomeAd = {
@@ -77,7 +84,10 @@ export type PaidHomeAd = {
 function paidAdToDef(ad: PaidHomeAd): AdDef {
   const copy = PARTNER_AD_COPY[ad.orderId];
   const media =
-    ad.mediaType === "video" && ad.posterUrl && ad.videoWebmUrl && ad.videoMp4Url
+    ad.mediaType === "video" &&
+    ad.posterUrl &&
+    ad.videoWebmUrl &&
+    ad.videoMp4Url
       ? {
           mediaType: "video" as const,
           posterUrl: ad.posterUrl,
@@ -110,6 +120,7 @@ function paidAdToDef(ad: PaidHomeAd): AdDef {
 
 function trackAdEvent(orderId: string, event: "impression" | "click") {
   const payload = JSON.stringify({ orderId, event });
+
   try {
     if (typeof navigator !== "undefined" && navigator.sendBeacon) {
       const blob = new Blob([payload], { type: "application/json" });
@@ -118,6 +129,7 @@ function trackAdEvent(orderId: string, event: "impression" | "click") {
   } catch {
     // fallback sotto
   }
+
   void fetch("/api/advertising/track", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -130,12 +142,14 @@ function trackAdEvent(orderId: string, event: "impression" | "click") {
 
 function markImpressionOnce(orderId: string, adId: string) {
   const key = `everas-ad-imp-${adId}`;
+
   try {
     if (window.sessionStorage.getItem(key) === "1") return;
     window.sessionStorage.setItem(key, "1");
   } catch {
     // se sessionStorage non è disponibile, conta comunque una volta in-memory
   }
+
   trackAdEvent(orderId, "impression");
 }
 
@@ -159,14 +173,17 @@ function SponsoredAdSlide({
 
   useEffect(() => {
     if (clone || !ad.orderId || seenRef.current) return;
+
     const node = rootRef.current;
     if (!node || typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
+
         if (!entry?.isIntersecting || entry.intersectionRatio < 0.5) return;
         if (seenRef.current) return;
+
         seenRef.current = true;
         markImpressionOnce(ad.orderId!, ad.id);
         observer.disconnect();
@@ -175,6 +192,7 @@ function SponsoredAdSlide({
     );
 
     observer.observe(node);
+
     return () => observer.disconnect();
   }, [ad.id, ad.orderId, clone]);
 
@@ -196,8 +214,13 @@ function SponsoredAdSlide({
           aria-label="Chiudi pubblicità"
           tabIndex={clone ? -1 : undefined}
         >
-          <X aria-hidden="true" className="h-4 w-4" strokeWidth={2.5} />
+          <X
+            aria-hidden="true"
+            className="h-4 w-4"
+            strokeWidth={2.5}
+          />
         </button>
+
         <a
           className={styles.link}
           href={ad.href}
@@ -247,11 +270,13 @@ export default function HomeSponsoredSection({
 }) {
   const ADS = paidAds.map(paidAdToDef);
   const adsKey = ADS.map((ad) => ad.id).join("|");
+
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const indexRef = useRef(0);
   const animTimerRef = useRef<number | null>(null);
+
   const [isPaused, setIsPaused] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [dismissAdsKey, setDismissAdsKey] = useState(adsKey);
@@ -269,22 +294,29 @@ export default function HomeSponsoredSection({
 
   useEffect(() => {
     const mq = window.matchMedia(NARROW_MQ);
+
     const sync = () => setIsNarrow(mq.matches);
+
     sync();
     mq.addEventListener("change", sync);
+
     return () => mq.removeEventListener("change", sync);
   }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
     const sync = () => setReducedMotion(mq.matches);
+
     sync();
     mq.addEventListener("change", sync);
+
     return () => mq.removeEventListener("change", sync);
   }, []);
 
   useEffect(() => {
     const node = sectionRef.current;
+
     if (!node) return;
 
     if (typeof IntersectionObserver === "undefined") {
@@ -295,16 +327,23 @@ export default function HomeSponsoredSection({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
+
         if (!entry) return;
+
         if (entry.isIntersecting) {
           setSectionInView(true);
           observer.disconnect();
         }
       },
-      { root: null, rootMargin: SECTION_ROOT_MARGIN, threshold: 0.01 },
+      {
+        root: null,
+        rootMargin: SECTION_ROOT_MARGIN,
+        threshold: 0.01,
+      },
     );
 
     observer.observe(node);
+
     return () => observer.disconnect();
   }, [adsKey]);
 
@@ -312,16 +351,26 @@ export default function HomeSponsoredSection({
     setDismissedIds((current) =>
       current.includes(id) ? current : [...current, id],
     );
+
     indexRef.current = 0;
     setActiveIndex(0);
+
     const scroller = scrollerRef.current;
-    if (scroller) scroller.scrollTo({ left: 0, behavior: "auto" });
+
+    if (scroller) {
+      scroller.scrollTo({
+        left: 0,
+        behavior: "auto",
+      });
+    }
   }
 
   const ads = ADS.filter((ad) => !dismissedIds.includes(ad.id));
   const adsDismissKey = dismissedIds.join("|");
   const effectiveOverflows = isNarrow ? false : desktopOverflows;
-  const useCarousel = ads.length > 1 && (isNarrow || effectiveOverflows);
+  const useCarousel =
+    ads.length > 1 && (isNarrow || effectiveOverflows);
+
   // Duplicati solo su mobile per il loop infinito; su desktop una sola copia di ciascun banner.
   const loopWithClones = useCarousel && isNarrow;
   const slides = loopWithClones ? [...ads, ...ads] : ads;
@@ -331,6 +380,7 @@ export default function HomeSponsoredSection({
 
     const container = containerRef.current;
     const scroller = scrollerRef.current;
+
     if (!container || !scroller) return;
 
     const measure = () => {
@@ -339,20 +389,29 @@ export default function HomeSponsoredSection({
           "[data-ad-card]:not([data-ad-clone])",
         ),
       );
+
       if (realCards.length === 0) {
         setDesktopOverflows(false);
         return;
       }
 
       const first = realCards[0].getBoundingClientRect();
-      const last = realCards[realCards.length - 1].getBoundingClientRect();
+      const last =
+        realCards[realCards.length - 1].getBoundingClientRect();
+
       const contentWidth = last.right - first.left;
-      setDesktopOverflows(contentWidth > container.clientWidth + 2);
+
+      setDesktopOverflows(
+        contentWidth > container.clientWidth + 2,
+      );
     };
 
     const ro = new ResizeObserver(measure);
+
     ro.observe(container);
+
     const raf = window.requestAnimationFrame(measure);
+
     return () => {
       window.cancelAnimationFrame(raf);
       ro.disconnect();
@@ -361,23 +420,32 @@ export default function HomeSponsoredSection({
 
   function cardOffsets() {
     const scroller = scrollerRef.current;
+
     if (!scroller) return [] as number[];
+
     const cards = Array.from(
       scroller.querySelectorAll<HTMLElement>("[data-ad-card]"),
     );
+
     const scrollLeft = scroller.scrollLeft;
-    const scrollerLeft = scroller.getBoundingClientRect().left;
+    const scrollerLeft =
+      scroller.getBoundingClientRect().left;
+
     return cards.map(
       (card) =>
-        card.getBoundingClientRect().left - scrollerLeft + scrollLeft,
+        card.getBoundingClientRect().left -
+        scrollerLeft +
+        scrollLeft,
     );
   }
 
   function goNext() {
     const scroller = scrollerRef.current;
+
     if (!scroller || !useCarousel || ads.length < 2) return;
 
     const offsets = cardOffsets();
+
     if (offsets.length < 2) return;
 
     const realCount = ads.length;
@@ -390,7 +458,11 @@ export default function HomeSponsoredSection({
     scroller.style.scrollSnapType = "none";
 
     if (loopWithClones) {
-      scroller.scrollTo({ left: offsets[next], behavior: "smooth" });
+      scroller.scrollTo({
+        left: offsets[next],
+        behavior: "smooth",
+      });
+
       indexRef.current = next;
       setActiveIndex(next % realCount);
 
@@ -398,10 +470,12 @@ export default function HomeSponsoredSection({
         animTimerRef.current = window.setTimeout(() => {
           const resetTo = next - realCount;
           const latest = cardOffsets();
+
           scroller.scrollTo({
             left: latest[resetTo] ?? 0,
             behavior: "auto",
           });
+
           indexRef.current = resetTo;
           setActiveIndex(resetTo);
           scroller.style.scrollSnapType = "";
@@ -413,17 +487,21 @@ export default function HomeSponsoredSection({
           animTimerRef.current = null;
         }, SCROLL_MS);
       }
+
       return;
     }
 
     // Desktop: scroll senza cloni, al fondo torna al primo.
     const targetIndex = next >= realCount ? 0 : next;
+
     scroller.scrollTo({
       left: offsets[targetIndex] ?? 0,
       behavior: "smooth",
     });
+
     indexRef.current = targetIndex;
     setActiveIndex(targetIndex);
+
     animTimerRef.current = window.setTimeout(() => {
       scroller.style.scrollSnapType = "";
       animTimerRef.current = null;
@@ -432,7 +510,6 @@ export default function HomeSponsoredSection({
 
   useEffect(() => {
     if (!useCarousel || isPaused) return;
-
     if (reducedMotion) return;
 
     const timer = window.setInterval(() => {
@@ -453,8 +530,12 @@ export default function HomeSponsoredSection({
   useEffect(() => {
     if (!useCarousel) {
       indexRef.current = 0;
+
       // Static row treats every slide as active; activeIndex is unused then.
-      scrollerRef.current?.scrollTo({ left: 0, behavior: "auto" });
+      scrollerRef.current?.scrollTo({
+        left: 0,
+        behavior: "auto",
+      });
     }
   }, [useCarousel]);
 
@@ -475,15 +556,24 @@ export default function HomeSponsoredSection({
         <p className="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-500">
           Pubblicità
         </p>
+
         <div className="relative w-full min-w-0">
           <div
             ref={scrollerRef}
-            onMouseEnter={() => useCarousel && setIsPaused(true)}
+            onMouseEnter={() =>
+              useCarousel && setIsPaused(true)
+            }
             onMouseLeave={() => setIsPaused(false)}
-            onFocusCapture={() => useCarousel && setIsPaused(true)}
+            onFocusCapture={() =>
+              useCarousel && setIsPaused(true)
+            }
             onBlurCapture={() => setIsPaused(false)}
-            onPointerDown={() => useCarousel && setIsPaused(true)}
-            onTouchStart={() => useCarousel && setIsPaused(true)}
+            onPointerDown={() =>
+              useCarousel && setIsPaused(true)
+            }
+            onTouchStart={() =>
+              useCarousel && setIsPaused(true)
+            }
             onTouchEnd={() => setIsPaused(false)}
             className={
               useCarousel
@@ -499,10 +589,13 @@ export default function HomeSponsoredSection({
               }
             >
               {slides.map((ad, index) => {
-                const isClone = loopWithClones && index >= ads.length;
+                const isClone =
+                  loopWithClones && index >= ads.length;
+
                 const slideActive = useCarousel
                   ? index % ads.length === activeIndex
                   : true;
+
                 return (
                   <SponsoredAdSlide
                     key={`${ad.id}-${index}`}

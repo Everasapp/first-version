@@ -12,11 +12,16 @@ export const MONSTERA_PROMO_ORDER_ID =
 export const ZOE_PROMO_ORDER_ID =
   "e7e8a500-0000-4000-8000-000000000003";
 
+/** Ordine fisso del banner MC Design (tracking views/click). */
+export const MC_DESIGN_PROMO_ORDER_ID =
+  "e7e8a500-0000-4000-8000-000000000004";
+
 /** Banner istituzionali / partner fissi: non eliminabili da admin. */
 export const PROTECTED_AD_ORDER_IDS = new Set<string>([
   EVERAS_SELF_PROMO_ORDER_ID,
   MONSTERA_PROMO_ORDER_ID,
   ZOE_PROMO_ORDER_ID,
+  MC_DESIGN_PROMO_ORDER_ID,
 ]);
 
 /** Ordine di pin in carosello home (più basso = più in alto). */
@@ -24,6 +29,7 @@ export const HOME_AD_PIN_RANK: Record<string, number> = {
   [EVERAS_SELF_PROMO_ORDER_ID]: 0,
   [MONSTERA_PROMO_ORDER_ID]: 1,
   [ZOE_PROMO_ORDER_ID]: 2,
+  [MC_DESIGN_PROMO_ORDER_ID]: 3,
 };
 
 export type AdvertisingOrderRow = {
@@ -89,9 +95,12 @@ export function getOrderBannerUrls(order: {
   const fromArray = (order.banner_urls ?? []).filter(
     (url): url is string => typeof url === "string" && url.length > 0,
   );
+
   if (fromArray.length > 0) return fromArray;
+
   if (typeof order.banner_url === "string" && order.banner_url.length > 0) {
     return [order.banner_url];
   }
+
   return [];
 }
