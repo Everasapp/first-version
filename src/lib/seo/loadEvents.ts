@@ -166,6 +166,7 @@ function isMissingScheduleModeColumn(message: string | undefined) {
 /** PostgREST caps a single response; page until we have every published row. */
 async function fetchAllPublishedEventRows(
   supabase: Awaited<ReturnType<typeof createClient>>,
+  filters: EventListFilters = {},
 ) {
   const pageSize = 1000;
   const rows: PublishedEventRow[] = [];
@@ -174,10 +175,16 @@ async function fetchAllPublishedEventRows(
   let scheduleModeAvailable = true;
 
   while (true) {
-    const { data, error } = await supabase
+    let query = supabase
       .from("events")
       .select(select as string)
-      .eq("status", "published")
+      .eq("status", "published");
+
+    if (filters.city) {
+      query = query.ilike("municipality", filters.city);
+    }
+
+    const { data, error } = await query
       .order("start_at", { ascending: true })
       .range(from, from + pageSize - 1);
 
@@ -218,7 +225,7 @@ export const loadFilteredPublishedEvents = cache(
   async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
     const supabase = await createClient();
     const [{ rows, error }, favoriteIds] = await Promise.all([
-      fetchAllPublishedEventRows(supabase),
+      fetchAllPublishedEventRows(supabase, filters),
       getCurrentUserFavoriteIds(),
     ]);
 

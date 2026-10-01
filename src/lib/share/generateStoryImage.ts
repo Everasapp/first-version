@@ -1,12 +1,24 @@
-import { toJpeg } from "html-to-image";
-
 import { waitForElementImages } from "@/src/lib/share/canvasSafeImage";
 import { STORY_HEIGHT, STORY_WIDTH } from "@/src/lib/share/types";
+
+let htmlToImagePromise: Promise<typeof import("html-to-image")> | null = null;
+
+/** Carica html-to-image una sola volta, solo quando serve generare la Story. */
+export function loadHtmlToImage() {
+  htmlToImagePromise ??= import("html-to-image");
+  return htmlToImagePromise;
+}
+
+/** Solo per test: resetta la Promise condivisa. */
+export function resetHtmlToImageLoaderForTests() {
+  htmlToImagePromise = null;
+}
 
 /** Genera JPEG della Story (mira a < ~500KB). */
 export async function generateStoryJpeg(node: HTMLElement): Promise<Blob> {
   await waitForElementImages(node);
 
+  const { toJpeg } = await loadHtmlToImage();
   const dataUrl = await toJpeg(node, {
     quality: 0.82,
     width: STORY_WIDTH,
