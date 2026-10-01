@@ -1,4 +1,6 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 import { cities } from "@/src/data/cities";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -16,7 +18,6 @@ import {
 } from "@/src/lib/eventScheduleMode";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-import { createClient } from "@/src/lib/supabase/server";
 import { getDateRange, getMonthRange } from "@/src/lib/seo/dateRange";
 import {
   eventAppearsInRange,
@@ -163,11 +164,28 @@ function isMissingScheduleModeColumn(message: string | undefined) {
   );
 }
 
+function createPublicEventsClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !publishableKey) {
+    throw new Error(
+      "Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+    );
+  }
+
+  return createSupabaseClient(url, publishableKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+    },
+  });
+}
+
 /** PostgREST caps a single response; page until we have every published row. */
-async function fetchAllPublishedEventRows(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  filters: EventListFilters = {},
-) {
+async function fetchAllPublishedEventRows(city?: string) {
+  const supabase = createPublicEventsClient();
   const pageSize = 1000;
   const rows: PublishedEventRow[] = [];
   let from = 0;
@@ -180,8 +198,8 @@ async function fetchAllPublishedEventRows(
       .select(select as string)
       .eq("status", "published");
 
-    if (filters.city) {
-      query = query.ilike("municipality", filters.city);
+    if (city) {
+      query = query.ilike("municipality", city);
     }
 
     const { data, error } = await query
@@ -209,6 +227,17 @@ async function fetchAllPublishedEventRows(
   }
 }
 
+// Public event rows are identical for every visitor. Cache only this anonymous
+// dataset, never the user's favorites/session. City remains part of the cache key.
+const fetchCachedPublishedEventRows = unstable_cache(
+  async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
+  ["published-event-rows-v1"],
+  {
+    revalidate: 300,
+    tags: ["published-events"],
+  },
+);
+
 function resolveListTemporalContext(
   filters: EventListFilters,
 ): EventTemporalContext {
@@ -223,9 +252,8 @@ function resolveListTemporalContext(
 
 export const loadFilteredPublishedEvents = cache(
   async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
-    const supabase = await createClient();
     const [{ rows, error }, favoriteIds] = await Promise.all([
-      fetchAllPublishedEventRows(supabase, filters),
+      fetchCachedPublishedEventRows(filters.city ?? null),
       getCurrentUserFavoriteIds(),
     ]);
 
