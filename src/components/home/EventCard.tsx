@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import EventCardImage from "@/src/components/events/EventCardImage";
 import {
   CalendarDays,
   MapPin,
@@ -86,7 +86,7 @@ export default function EventCard({
   return (
     <article className="group relative isolate flex h-full min-w-0 w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
-        <Image
+        <EventCardImage
           src={event.imageUrl}
           alt={event.title}
           title={event.title}
