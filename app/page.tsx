@@ -158,6 +158,9 @@ async function HomeContent() {
 
       <HappeningToday events={sections.hot} />
 
+      <Hero />
+      <EditorialGuides />
+
       <HomeSponsoredSection paidAds={paidAds} />
 
       <TownGuidesPreview towns={weeklyTownGuides} />
@@ -199,8 +202,6 @@ export default function Home() {
     <>
       <Header />
       <main className="min-w-0 max-w-full">
-        <Hero />
-        <EditorialGuides />
         <Suspense
           fallback={
             <div
