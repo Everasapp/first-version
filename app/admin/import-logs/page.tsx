@@ -22,8 +22,8 @@ export default async function ImportLogsPage() {
     .from("events")
     .select("id, title, municipality, source_url")
     .eq("status", "draft")
-    .not("imported_at", "is", null)
-    .order("imported_at", { ascending: false })
+    .eq("verification_status", "pending_verification")
+    .order("updated_at", { ascending: false })
     .limit(30);
   if (draftError) throw new Error(`Impossibile caricare le bozze: ${draftError.message}`);
 
@@ -33,7 +33,7 @@ export default async function ImportLogsPage() {
       .from("event_import_logs")
       .select("event_id, payload")
       .in("event_id", drafts.map((row) => row.id))
-      .eq("status", "success")
+      .in("status", ["success", "updated"])
       .order("created_at", { ascending: false });
     if (logError) throw new Error(`Impossibile caricare i controlli delle bozze: ${logError.message}`);
     for (const log of logs ?? []) {
@@ -55,7 +55,7 @@ export default async function ImportLogsPage() {
       <div className="mt-8">
         <section className="mb-10 rounded-2xl border border-amber-200 bg-amber-50 p-5" aria-labelledby="draft-review-title">
           <h2 id="draft-review-title" className="text-xl font-bold text-slate-900">Bozze da verificare</h2>
-          <p className="mt-2 text-sm text-slate-700">Le schede incomplete non sono pubbliche. Controlla la fonte, completa le informazioni e rivedi il testo prima di pubblicare.</p>
+          <p className="mt-2 text-sm text-slate-700">Le schede in revisione non sono pubbliche. Leggi il motivo del controllo, verifica la fonte e completa le informazioni prima di pubblicare. I doppioni consolidati devono restare in bozza.</p>
           {drafts?.length ? (
             <ul className="mt-4 space-y-4">
               {drafts.map((draft) => (
@@ -72,7 +72,7 @@ export default async function ImportLogsPage() {
                 </li>
               ))}
             </ul>
-          ) : <p className="mt-4 text-sm text-slate-600">Nessuna bozza importata da verificare.</p>}
+          ) : <p className="mt-4 text-sm text-slate-600">Nessuna bozza da verificare.</p>}
         </section>
         <ImportLogsPanel runs={(data || []) as ImportRunRow[]} />
       </div>

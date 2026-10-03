@@ -142,6 +142,7 @@ export const cities: City[] = [
   { id: 198, city: "Orani", province: "NU", area: "Centro Sardegna" },
   { id: 99, city: "Orgosolo", province: "NU", area: "Centro Sardegna" },
   { id: 100, city: "Oristano", province: "OR", area: "Centro Sardegna" },
+  { id: 226, city: "Nurachi", province: "OR", area: "Centro Sardegna" },
   { id: 101, city: "Orosei", province: "NU", area: "Centro Sardegna" },
   { id: 199, city: "Orotelli", province: "NU", area: "Centro Sardegna" },
   { id: 200, city: "Ortueri", province: "NU", area: "Centro Sardegna" },
@@ -228,6 +229,7 @@ export const cities: City[] = [
   { id: 162, city: "Soleminis", province: "CA", area: "Sud Sardegna" },
   { id: 163, city: "Suelli", province: "CA", area: "Sud Sardegna" },
   { id: 164, city: "Ussana", province: "CA", area: "Sud Sardegna" },
+  { id: 228, city: "Seui", province: "SU", area: "Sud Sardegna" },
   { id: 165, city: "Uta", province: "CA", area: "Sud Sardegna" },
   { id: 166, city: "Vallermosa", province: "CA", area: "Sud Sardegna" },
   { id: 167, city: "Villa San Pietro", province: "CA", area: "Sud Sardegna" },
@@ -243,6 +245,8 @@ export const cities: City[] = [
 
   // Sulcis (fuori dalla Città metropolitana, ma nel Sud operativo)
   { id: 174, city: "Carbonia", province: "SU", area: "Sud Sardegna" },
+  { id: 229, city: "Domusnovas", province: "SU", area: "Sud Sardegna" },
+  { id: 227, city: "San Giovanni Suergiu", province: "SU", area: "Sud Sardegna" },
   { id: 175, city: "Carloforte", province: "SU", area: "Sud Sardegna" },
   { id: 209, city: "Gonnesa", province: "SU", area: "Sud Sardegna" },
   { id: 176, city: "Iglesias", province: "SU", area: "Sud Sardegna" },
@@ -254,10 +258,12 @@ export const cities: City[] = [
 const SULCIS_CITY_NAMES = new Set([
   "Carbonia",
   "Carloforte",
+  "Domusnovas",
   "Gonnesa",
   "Iglesias",
   "Narcao",
   "Portoscuso",
+  "San Giovanni Suergiu",
   "Sant'Antioco",
 ]);
 

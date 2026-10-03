@@ -7,6 +7,18 @@ const IMPORT_SUFFIX = /-[a-z0-9]{6,12}$/i;
 
 /** Vecchie URL evento → slug pubblicato attuale. */
 const EVENT_SLUG_ALIASES: Record<string, string> = {
+  "nuracque-a-nurachi-2026-p8":
+    "nuraque-mudp855p",
+  "autunno-in-barbagia-carreras-de-lollobe-nuoro-2026":
+    "autunno-in-barbagia-lollove-2026-10-10",
+  "festival-internazionale-di-musiche-polifoniche-voci-d-europa-mus8doo3":
+    "voci-deuropa-tallis-scholars-porto-torres-2026-10-24",
+  "paolo-ehrenheim-festival-nessun-dorma-iii-edizione-mu6kmbef":
+    "recital-paolo-ehrenheim-teatro-civico-sassari-2026-10-27",
+  "passeggiata-belle-epoque-sassarese-2026-10-09":
+    "passeggiata-nella-memoria-festival-nessun-dorma-iii-edizione-1a09065a709",
+  "festival-dell-aerospazio-a-olbia-dal-1-al-3-ottobre-2026-il-programma-mul70cgv":
+    "festival-dell-aerospazio-olbia-mueac5aa",
   "festa-del-gusto":
     "festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
   "festa-del-gusto-santa-teresa":
@@ -31,7 +43,13 @@ export async function findReplacementEventSlug(
 ): Promise<string | null> {
   const alias = EVENT_SLUG_ALIASES[requestedSlug];
   if (alias && alias !== requestedSlug) {
-    return alias;
+    const { data: target } = await supabase
+      .from("events")
+      .select("slug")
+      .eq("status", "published")
+      .eq("slug", alias)
+      .maybeSingle();
+    if (target?.slug === alias) return alias;
   }
 
   const withoutDraft = stripDraftSlugSuffix(requestedSlug);
