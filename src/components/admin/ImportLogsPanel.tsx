@@ -60,7 +60,7 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
 
   async function handleRunNow() {
     const confirmed = window.confirm(
-      "Lanciare ora lo stesso importatore cloud del cron? Pubblica eventi nuovi con locandina e descrizione completa.",
+      "Lanciare ora lo stesso importatore cloud del cron? Pubblica le schede complete e conserva in bozza quelle da verificare.",
     );
     if (!confirmed) return;
 
@@ -76,6 +76,8 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
         error?: string;
         batchId?: string;
         importedCount?: number;
+        publishedCount?: number;
+        draftCount?: number;
         discoveredNew?: number;
         sourceResults?: Array<{ source: string; status: string }>;
       };
@@ -86,7 +88,7 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
         ? ` · ${data.sourceResults.length} fonti`
         : "";
       setMessage(
-        `Batch ${data.batchId || "ok"}: trovati ${data.discoveredNew ?? 0}, pubblicati ${data.importedCount ?? 0}${sources}.`,
+        `Batch ${data.batchId || "ok"}: trovati ${data.discoveredNew ?? 0}, pubblicati ${data.publishedCount ?? 0}, bozze da verificare ${data.draftCount ?? 0}${sources}.`,
       );
       router.refresh();
     } catch (err) {

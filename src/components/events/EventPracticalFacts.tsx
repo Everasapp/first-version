@@ -2,6 +2,7 @@ import { CalendarClock, Ticket } from "lucide-react";
 
 import { formatEventAdmission } from "@/src/lib/event-practical";
 import { formatEventHoursDetail } from "@/src/lib/formatEventDate";
+import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
 
 type EventPracticalFactsProps = {
   startAt: string;
@@ -9,6 +10,7 @@ type EventPracticalFactsProps = {
   isFree: boolean;
   priceFrom: number | string | null;
   ticketUrl?: string | null;
+  scheduleMode?: EventScheduleMode;
 };
 
 export default function EventPracticalFacts({
@@ -17,8 +19,9 @@ export default function EventPracticalFacts({
   isFree,
   priceFrom,
   ticketUrl,
+  scheduleMode,
 }: EventPracticalFactsProps) {
-  const hours = formatEventHoursDetail(startAt, endAt);
+  const hours = formatEventHoursDetail(startAt, endAt, scheduleMode);
   const admission = formatEventAdmission(isFree, priceFrom, ticketUrl);
 
   return (
