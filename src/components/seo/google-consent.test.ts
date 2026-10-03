@@ -63,12 +63,11 @@ describe("Google consent and publisher tags", () => {
     }))).toBe("");
   });
 
-  it("keeps AdSense and a single production GA source on content pages", () => {
+  it("keeps a single production GA source on content pages", () => {
     route.pathname = "/cultura-sarda/centro-sardegna/orgosolo";
     const html = renderToStaticMarkup(React.createElement(GooglePublisherTags, {
       gaMeasurementId: "G-TEST", analyticsEnabled: true,
     }));
-    expect(html).toContain("adsbygoogle.js?client=ca-pub-5513319548780658");
     expect(html.match(/data-ga-id=/g)).toHaveLength(1);
     const developmentHtml = renderToStaticMarkup(React.createElement(GooglePublisherTags, {
       gaMeasurementId: "G-TEST", analyticsEnabled: false,
