@@ -1948,9 +1948,16 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     description:
       "Orgosolo in Barbagia: sistema museale Miradas, Sonos e Radichinas, murales e sguardi sul paese. Il canto a tenore sta nella guida alla musica.",
     hero: {
-      src: "/images/cultura/orgosolo-panorama-everas.webp",
+      src: "/images/cultura/orgosolo-panorama-foto.webp",
       alt: "Panorama di Orgosolo, Nuoro",
-      credit: everasHeroCredit("/cultura-sarda/centro-sardegna/orgosolo"),
+      credit: {
+        author: "EVERAS",
+        creditPrefix: "Immagine fornita per",
+        license: "Fotografia",
+        licenseUrl: "https://www.everas.it/cultura-sarda/centro-sardegna/orgosolo",
+        sourceUrl: "https://www.everas.it/cultura-sarda/centro-sardegna/orgosolo",
+        sourceLabel: "Orgosolo",
+      },
     },
     intro:
       "I muri dipinti sono la prima cosa che si cerca. Il Comune, dal 2026, tiene anche tre musei — Miradas, Sonos, Radichinas — nati dal progetto PNRR «Attrattività dei borghi» del Ministero della Cultura. L’identità documentata non è un catalogo di dipinti: è il modo in cui Orgosolo è stata osservata, e il modo in cui il paese ha imparato a guardarsi. I murales restano in strada; i musei spiegano lo sguardo.",

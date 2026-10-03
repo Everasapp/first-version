@@ -141,7 +141,7 @@ export default function Footer() {
             <p>
               Piattaforma ideata e sviluppata da:{" "}
               <a
-                href="https://www.mc-design.site/home-it"
+                href="https://www.mc-design.site/it/home"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[#075EAE] transition hover:text-[#064E91]"
@@ -156,13 +156,14 @@ export default function Footer() {
             className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold"
           >
             {legalLinks.map((link) => (
-              <Link
+              // Reload the document to leave Google tags behind on policy pages.
+              <a
                 key={link.href}
                 href={link.href}
                 className="text-[#075EAE] transition hover:text-[#064E91]"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>

@@ -82,9 +82,10 @@ export default function ChiSiamoPage() {
               .
             </p>
             <p>
-              EVERAS è ideata e sviluppata da{" "}
+              EVERAS è un progetto indipendente ideato e sviluppato da Marina
+              Canalis, attraverso{" "}
               <a
-                href="https://www.mc-design.site/home-it"
+                href="https://www.mc-design.site/it/home"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[#075EAE] hover:underline"
@@ -106,6 +107,36 @@ export default function ChiSiamoPage() {
                 info@everas.it
               </a>
               .
+            </p>
+            <h2 className="pt-5 text-2xl font-bold tracking-tight text-slate-900">
+              Come curiamo i contenuti
+            </h2>
+            <p>
+              Per controllare gli appuntamenti, il nostro riferimento sono le
+              comunicazioni degli organizzatori, dei Comuni e degli enti che
+              promuovono le iniziative. Confrontiamo le informazioni disponibili
+              su data, luogo e programma e correggiamo le schede quando emergono
+              errori o aggiornamenti. Se mancano dati essenziali e non riusciamo
+              a verificarli, sospendiamo la pubblicazione della scheda.
+            </p>
+            <p>
+              Le guide ai comuni raccolgono storia, tradizioni e luoghi da
+              visitare, con riferimenti alle fonti nelle pagine. Orari,
+              programmi, prezzi e condizioni di accesso possono cambiare:
+              prima di partire, verifica le ultime comunicazioni
+              dell’organizzatore o del gestore del luogo.
+            </p>
+            <p>
+              Hai trovato un errore? Scrivi a{" "}
+              <a
+                href="mailto:info@everas.it"
+                className="font-semibold text-[#075EAE] hover:underline"
+              >
+                info@everas.it
+              </a>{" "}
+              indicando il collegamento alla pagina, la correzione e, se
+              disponibile, una fonte. Le segnalazioni ci aiutano a mantenere
+              utili il calendario e le guide.
             </p>
           </div>
         </article>
