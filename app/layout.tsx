@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import Script from "next/script";
 
 import Footer from "@/src/components/home/Footer";
 import PWAInstallBanner from "@/src/components/PWAInstallBanner";
 import PWARegister from "@/src/components/PWARegister";
 import GoogleConsentDefaults from "@/src/components/seo/GoogleConsentDefaults";
+import GooglePublisherTags from "@/src/components/seo/GooglePublisherTags";
 import JsonLd from "@/src/components/seo/JsonLd";
 import {
   organizationSchema,
@@ -97,12 +96,6 @@ export default function RootLayout({
     >
       <body className="flex min-h-full min-w-0 flex-col">
         <GoogleConsentDefaults />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5513319548780658"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />
         <div className="flex min-w-0 max-w-full flex-1 flex-col">
@@ -111,16 +104,10 @@ export default function RootLayout({
         </div>
         <PWARegister />
         <PWAInstallBanner />
-        {/*
-          Single GA4 source: @next/third-parties GoogleAnalytics.
-          Initial page_view comes from gtag('config', gaId).
-          Client navigations rely on GA4 Enhanced Measurement
-          ("Page changes based on browser history events") — do not
-          also send manual page_view events or they will duplicate.
-        */}
-        {process.env.NODE_ENV === "production" ? (
-          <GoogleAnalytics gaId={gaMeasurementId} />
-        ) : null}
+        <GooglePublisherTags
+          gaMeasurementId={gaMeasurementId}
+          analyticsEnabled={process.env.NODE_ENV === "production"}
+        />
       </body>
     </html>
   );

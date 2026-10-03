@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updatedAt="22 settembre 2026">
+    <LegalPage title="Privacy Policy" updatedAt="3 ottobre 2026">
       <p>
         EVERAS tratta i dati personali degli utenti per erogare il servizio di
         scoperta e pubblicazione eventi in Sardegna, gestire gli account e
@@ -23,15 +23,9 @@ export default function PrivacyPage() {
       </p>
       <p>
         Su EVERAS sono presenti servizi di terzi forniti da Google. In ambiente
-        di produzione viene utilizzato Google Analytics (measurement ID{" "}
-        <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">
-          G-NBHEHZ5FLD
-        </code>
-        , oppure l’identificativo indicato dalla variabile d’ambiente{" "}
-        <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">
-          NEXT_PUBLIC_GA_MEASUREMENT_ID
-        </code>
-        ) per statistiche e analisi d’uso del sito, in forma aggregata.
+        di produzione viene utilizzato Google Analytics per statistiche e
+        analisi d’uso del sito. Le pagine Privacy Policy e Cookie Policy non
+        caricano i tag di Google Analytics e Google AdSense.
       </p>
       <p>
         Il sito utilizza anche Google AdSense (publisher ID{" "}
@@ -67,6 +61,11 @@ export default function PrivacyPage() {
           adssettings.google.com
         </a>
         .
+      </p>
+      <p>
+        Google Consent Mode può inviare segnali di misurazione senza cookie
+        anche quando il consenso è negato. Negare il consenso non equivale
+        quindi a impedire ogni comunicazione con Google.
       </p>
       <p>
         Per maggiori dettagli su come Google tratta i dati:{" "}

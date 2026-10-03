@@ -11,11 +11,17 @@ export const metadata: Metadata = {
 
 export default function CookiePage() {
   return (
-    <LegalPage title="Cookie Policy" updatedAt="22 settembre 2026">
+    <LegalPage title="Cookie Policy" updatedAt="3 ottobre 2026">
       <p>
         EVERAS utilizza cookie e tecnologie simili per garantire il
         funzionamento del sito, mantenere la sessione di accesso e migliorare
         l&apos;esperienza di navigazione.
+      </p>
+      <p>
+        Le pagine Privacy Policy e Cookie Policy non caricano i tag di
+        Google Analytics e Google AdSense. Nelle altre pagine, Google Consent
+        Mode può inviare segnali di misurazione senza cookie anche in assenza
+        di consenso.
       </p>
       <p>
         Alcuni cookie sono tecnici e necessari al servizio (per esempio per
