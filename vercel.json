@@ -5,6 +5,10 @@
       "schedule": "0 7 * * 1"
     },
     {
+      "path": "/api/cron/discover-events",
+      "schedule": "0 6 * * *"
+    },
+    {
       "path": "/api/cron/ensure-recurring-events",
       "schedule": "15 5 * * *"
     },
