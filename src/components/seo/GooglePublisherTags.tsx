@@ -2,7 +2,8 @@
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { usePathname } from "next/navigation";
-import Script from "next/script";
+import { useEffect } from "react";
+import { loadAdSenseHeadTag } from "./loadAdSenseHeadTag";
 
 type GooglePublisherTagsProps = {
   gaMeasurementId: string;
@@ -15,17 +16,17 @@ export default function GooglePublisherTags({
 }: GooglePublisherTagsProps) {
   const pathname = usePathname();
 
+  useEffect(() => {
+    if (pathname === "/privacy" || pathname === "/cookie") return;
+    // Consent defaults run before hydration. Load promptly afterward, in head.
+    loadAdSenseHeadTag(document);
+  }, [pathname]);
+
   // Policy links use document navigation so previously loaded tags are cleared.
   if (pathname === "/privacy" || pathname === "/cookie") return null;
 
   return (
     <>
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5513319548780658"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
-      />
       {/* GA4 Enhanced Measurement handles history changes; no manual page_view. */}
       {analyticsEnabled ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
     </>
