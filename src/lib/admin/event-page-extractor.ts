@@ -1,9 +1,10 @@
 import * as cheerio from "cheerio";
 
 import { categories } from "@/src/data/categories";
-import { cities } from "@/src/data/cities";
+import { containsPlaceName, matchEventCity as matchCity } from "@/src/lib/admin/event-place-match";
 import {
   emptyField,
+  extractSourceDateTime as extractDateParts,
   type Confidence,
   type EventListingResult,
   type ExtractedEventDraft,
@@ -151,20 +152,6 @@ function findEventNodes(nodes: unknown[]) {
   );
 }
 
-function extractDateParts(isoLike: string | null | undefined): {
-  date: string | null;
-  time: string | null;
-} {
-  if (!isoLike) return { date: null, time: null };
-  const cleaned = isoLike.trim();
-  const dateMatch = cleaned.match(/(\d{4}-\d{2}-\d{2})/);
-  const timeMatch = cleaned.match(/T(\d{2}):(\d{2})/);
-  return {
-    date: dateMatch?.[1] || null,
-    time: timeMatch ? `${timeMatch[1]}:${timeMatch[2]}` : null,
-  };
-}
-
 function guessCategory(text: string): string | null {
   const hay = ` ${text.toLowerCase()} `;
   if (
@@ -211,19 +198,9 @@ function guessCategory(text: string): string | null {
   return null;
 }
 
-function matchCity(text: string): { city: string; province: string } | null {
-  const hay = text.toLowerCase();
-  const sorted = [...cities].sort((a, b) => b.city.length - a.city.length);
-  for (const city of sorted) {
-    if (hay.includes(city.city.toLowerCase())) {
-      return { city: city.city, province: city.province };
-    }
-  }
-  return null;
-}
-
 /** Frazioni / località usate nei cartelloni ma assenti da `cities`. */
 const HAMLET_TO_CITY: Record<string, { city: string; province: string }> = {
+  arbatax: { city: "Tortolì", province: "NU" },
   argentiera: { city: "Sassari", province: "SS" },
   asinara: { city: "Porto Torres", province: "SS" },
   "bosa marina": { city: "Bosa", province: "OR" },
@@ -255,7 +232,7 @@ function matchPlace(text: string): {
     (a, b) => b[0].length - a[0].length,
   );
   for (const [hamlet, city] of hamlets) {
-    if (hay.includes(hamlet)) {
+    if (containsPlaceName(hay, hamlet)) {
       return {
         ...city,
         hamlet: hamlet
@@ -2035,7 +2012,7 @@ function extractHtmlEventListing(
 
   if (candidates.length < 2) return null;
 
-  let sourceName =
+  const sourceName =
     cleanText($('meta[property="og:site_name"]').attr("content") || "") ||
     cleanText($("title").first().text()).split(/[|\-–]/)[0]?.trim() ||
     "elenco web";
@@ -2294,7 +2271,7 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
       ...lista,
       pageOrigin: finalUrl,
     });
-    let sourceName =
+    const sourceName =
       cleanText($('meta[property="og:site_name"]').attr("content") || "") ||
       "sito comunale";
     if (listing && listing.candidates.length > 0) {
@@ -2517,6 +2494,10 @@ export async function extractEventFromUrl(inputUrl: string): Promise<{
     startTime = start.time;
     endDate = end.date;
     endTime = end.time;
+    if (start.time && start.date === end.date && start.time === end.time) {
+      endDate = null;
+      endTime = null;
+    }
     conf.dates = startDate ? "high" : "low";
     sources.dates = "JSON-LD Event";
     conf.title = title ? "high" : conf.title;

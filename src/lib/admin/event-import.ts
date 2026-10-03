@@ -192,6 +192,28 @@ export function isoToRomeDateTime(iso: string | null | undefined): {
   return { date, time };
 }
 
+/** JSON-LD instants must become Rome wall-clock values before editing/import. */
+export function extractSourceDateTime(isoLike: string | null | undefined): {
+  date: string | null;
+  time: string | null;
+} {
+  const cleaned = isoLike?.trim() || "";
+  const dateMatch = cleaned.match(/(\d{4}-\d{2}-\d{2})/);
+  const timeMatch = cleaned.match(/T(\d{2}):(\d{2})/);
+  if (dateMatch && timeMatch && /(?:Z|[+-]\d{2}:?\d{2})$/i.test(cleaned)) {
+    const rawDate = dateMatch[1];
+    const midnight = new Date(`${rawDate}T00:00:00Z`);
+    if (Number.isNaN(midnight.getTime()) || midnight.toISOString().slice(0, 10) !== rawDate) {
+      return { date: null, time: null };
+    }
+    return isoToRomeDateTime(cleaned) ?? { date: null, time: null };
+  }
+  return {
+    date: dateMatch?.[1] || null,
+    time: timeMatch ? `${timeMatch[1]}:${timeMatch[2]}` : null,
+  };
+}
+
 export function daysBetween(startDate: string, endDate: string): number | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate)) {
     return null;
