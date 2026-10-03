@@ -120,20 +120,22 @@ export async function GET(request: Request) {
           : "success",
       startedAt,
       summary: {
-        published: true,
+        published: result.publishedCount > 0,
         batchId: result.batchId,
         triggeredBy: result.triggeredBy,
         discoveredNew: result.discoveredNew,
         processed: result.processed,
         importedCount: result.importedCount,
-        publishedCount: result.importedCount,
-        imagesUploaded: result.importedCount,
+        publishedCount: result.publishedCount,
+        draftCount: result.draftCount,
+        imagesUploaded: result.imagesUploaded,
         skippedCount: result.skippedCount,
         errorCount: result.errorCount,
         sourceErrors,
         sourcePartial,
         sourceResults: result.sourceResults,
         importedTitles: result.imported.map((row) => row.title),
+        draftsForReview: result.imported.filter((row) => row.status === "draft").map((row) => ({ title: row.title, slug: row.slug, reasons: row.reviewReasons })),
         skippedSample: result.skipped.slice(0, 10),
         errors: result.errors,
         hasServiceRole: keyDiagnostics.bypassesRls,
@@ -145,7 +147,7 @@ export async function GET(request: Request) {
           ? "Tutte le fonti sono fallite"
           : null,
     });
-    return NextResponse.json({ ok: true, published: true, ...result });
+    return NextResponse.json({ ok: true, published: result.publishedCount > 0, ...result });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Errore sconosciuto";

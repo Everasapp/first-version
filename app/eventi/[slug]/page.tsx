@@ -618,6 +618,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
         <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
             <EventPracticalFacts
+              scheduleMode={scheduleMode}
               startAt={event.start_at}
               endAt={event.end_at}
               isFree={event.is_free}

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
+import EditorialGuides from "@/src/components/home/EditorialGuides";
 import HappeningToday from "@/src/components/home/HappeningToday";
 import TownGuidesPreview from "@/src/components/home/TownGuidesPreview";
 import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
@@ -199,6 +200,7 @@ export default function Home() {
       <Header />
       <main className="min-w-0 max-w-full">
         <Hero />
+        <EditorialGuides />
         <Suspense
           fallback={
             <div

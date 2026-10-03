@@ -6,6 +6,7 @@ import {
   type ListingEventCandidate,
 } from "@/src/lib/admin/event-import";
 import { extractEventFromUrl } from "@/src/lib/admin/event-page-extractor";
+import { automaticImportAdmission, automaticImportReviewReasons, hasValidImportDate, prepareAutomaticImportImage, type AutomaticImportStatus } from "@/src/lib/admin/event-import-quality";
 import {
   classifyImportError,
   finishImportRun,
@@ -19,7 +20,6 @@ import { isPublicEventActive } from "@/src/lib/eventActive";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import {
   normalizeEventDescription,
-  stripHtml,
 } from "@/src/lib/sanitizeHtml";
 import { createSlug } from "@/src/lib/slug";
 
@@ -71,31 +71,6 @@ function isImportableSchedule(
   const parsed = new Date(startAt);
   if (Number.isNaN(parsed.getTime())) return false;
   return isPublicEventActive(startAt, endAt ?? null);
-}
-
-const MIN_DESCRIPTION_CHARS = 280;
-
-function hasUsableImage(imageUrl: string) {
-  const url = imageUrl.trim();
-  if (!/^https?:\/\//i.test(url)) return false;
-  if (/\.(svg|ico)(\?|$)/i.test(url)) return false;
-  if (/logo|placeholder|sprite|default[-_]?img/i.test(url)) return false;
-  return true;
-}
-
-function hasCompleteDescription(description: string) {
-  const text = stripHtml(description).trim();
-  if (text.length < MIN_DESCRIPTION_CHARS) return false;
-  if (/\.\.\.$|…$/.test(text) && text.length < 600) return false;
-  return true;
-}
-
-function missingMediaReason(editable: ReturnType<typeof draftToEditable>) {
-  if (!hasUsableImage(editable.imageUrl)) return "immagine mancante";
-  if (!hasCompleteDescription(editable.description)) {
-    return "descrizione incompleta";
-  }
-  return null;
 }
 
 async function downloadAndStoreEventImage(
@@ -307,6 +282,8 @@ async function importDraft(
   adminUserId: string,
   editable: ReturnType<typeof draftToEditable>,
   publish: boolean,
+  reviewReasons: string[],
+  admission: boolean | null,
 ) {
   const title = editable.title.trim();
   const municipality = editable.municipality.trim();
@@ -351,12 +328,13 @@ async function importDraft(
   const primaryCategory = categorySlugs[0] || "musica-concerti";
   const nowIso = new Date().toISOString();
   const uniqueSlug = `${createSlug(title) || "evento"}-${Date.now().toString(36)}`;
-  const storedImageUrl = await downloadAndStoreEventImage(
-    supabase,
-    adminUserId,
-    title,
+  const media = await prepareAutomaticImportImage(
     editable.imageUrl.trim(),
+    publish,
+    reviewReasons,
+    (url) => downloadAndStoreEventImage(supabase, adminUserId, title, url),
   );
+  const published = media.status === "published";
 
   const { data, error } = await supabase
     .from("events")
@@ -375,8 +353,8 @@ async function importDraft(
       address: editable.address.trim() || editable.locationName.trim() || null,
       start_at: startAt,
       end_at: endAt,
-      image_url: storedImageUrl,
-      is_free: editable.isFree,
+      image_url: media.imageUrl,
+      is_free: admission,
       price_from: Number.isFinite(numericPrice as number) ? numericPrice : null,
       price: Number.isFinite(numericPrice as number) ? numericPrice : 0,
       ticket_url: editable.ticketUrl.trim() || null,
@@ -387,9 +365,9 @@ async function importDraft(
       imported_at: nowIso,
       imported_by: adminUserId,
       import_method: "url",
-      verification_status: publish ? "verified" : "pending_verification",
-      last_verified_at: publish ? nowIso : null,
-      status: publish ? "published" : "pending",
+      verification_status: published ? "verified" : "pending_verification",
+      last_verified_at: published ? nowIso : null,
+      status: media.status,
       is_featured: false,
     })
     .select("id, slug, title, municipality, start_at")
@@ -408,13 +386,15 @@ async function importDraft(
     payload: {
       title,
       municipality,
-      publish,
+      publish: published,
       autoDiscovery: true,
-      autoPublish: publish,
+      autoPublish: published,
+      requestedPublish: publish,
+      reviewReasons: media.reviewReasons,
     },
   });
 
-  return data;
+  return { ...data, status: media.status, reviewReasons: media.reviewReasons, imageUploaded: media.imageUploaded };
 }
 
 type ListingCandidate = ListingEventCandidate & { listingLabel: string };
@@ -445,6 +425,9 @@ type ImportedEventRow = {
   municipality: string;
   start_at: string;
   source_url: string;
+  status: AutomaticImportStatus;
+  reviewReasons: string[];
+  imageUploaded: boolean;
 };
 
 type SourceQueue = {
@@ -514,7 +497,7 @@ async function importOneCandidate(
   existingUrls: Set<string>,
   publish: boolean,
 ): Promise<
-  | { kind: "created"; row: ExistingEventRow & { id: string; slug: string; source_url: string } }
+  | { kind: "created"; row: ExistingEventRow & ImportedEventRow }
   | { kind: "duplicate" }
   | { kind: "skipped"; reason: string }
   | { kind: "error"; error: string }
@@ -565,6 +548,10 @@ async function importOneCandidate(
       return { kind: "skipped", reason: "titolo, comune o data mancanti" };
     }
 
+    if (!hasValidImportDate(editable.startDate.trim()) || (editable.endDate.trim() && !hasValidImportDate(editable.endDate.trim()))) {
+      return { kind: "skipped", reason: "data non valida: nessuna data inventata" };
+    }
+
     const startAt = buildStartAt(
       editable.startDate.trim(),
       editable.startTime.trim(),
@@ -583,10 +570,7 @@ async function importOneCandidate(
       return { kind: "skipped", reason: "evento scaduto" };
     }
 
-    const mediaReason = missingMediaReason(editable);
-    if (mediaReason) {
-      return { kind: "skipped", reason: mediaReason };
-    }
+    const reviewReasons = automaticImportReviewReasons(editable, extracted.draft);
 
     if (
       isDuplicateOfExisting(
@@ -600,7 +584,7 @@ async function importOneCandidate(
       return { kind: "duplicate" };
     }
 
-    const row = await importDraft(supabase, adminUserId, editable, publish);
+    const row = await importDraft(supabase, adminUserId, editable, publish, reviewReasons, automaticImportAdmission(extracted.draft));
     return {
       kind: "created",
       row: {
@@ -611,6 +595,9 @@ async function importOneCandidate(
         start_at: row.start_at as string,
         end_at: endAt,
         source_url: editable.sourceUrl.trim() || candidate.url,
+        status: row.status,
+        reviewReasons: row.reviewReasons,
+        imageUploaded: row.imageUploaded,
       },
     };
   } catch (error) {
@@ -965,6 +952,9 @@ export async function discoverAndImportEventDrafts({
       0,
     ),
     importedCount: imported.length,
+    publishedCount: imported.filter((row) => row.status === "published").length,
+    draftCount: imported.filter((row) => row.status === "draft").length,
+    imagesUploaded: imported.filter((row) => row.imageUploaded).length,
     skippedCount: skipped.length,
     errorCount: errors.length,
     imported,
@@ -972,4 +962,3 @@ export async function discoverAndImportEventDrafts({
     errors: errors.slice(0, 20),
   };
 }
-

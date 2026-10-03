@@ -1,3 +1,5 @@
+import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
+
 const ROME_TZ = "Europe/Rome";
 
 function romeDayKey(value: Date) {
@@ -93,11 +95,21 @@ export function formatEventDateRange(
 export function formatEventHoursDetail(
   startAt: string,
   endAt?: string | null,
+  scheduleMode?: EventScheduleMode,
 ) {
   const summary = formatEventDateRange(startAt, endAt, { includeWeekday: true });
   const start = new Date(startAt);
   if (Number.isNaN(start.getTime())) {
     return { summary, lines: [] as string[] };
+  }
+
+  if (scheduleMode === "series" || scheduleMode === "container") {
+    const dateFormat = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: ROME_TZ });
+    const end = endAt ? new Date(endAt) : null;
+    const period = end && !Number.isNaN(end.getTime()) && romeDayKey(start) !== romeDayKey(end)
+      ? `${dateFormat.format(start)} – ${dateFormat.format(end)}`
+      : dateFormat.format(start);
+    return { summary: period, lines: [period, "Date e orari dei singoli appuntamenti nel programma qui sotto."] };
   }
 
   const dateLabel = new Intl.DateTimeFormat("it-IT", {
