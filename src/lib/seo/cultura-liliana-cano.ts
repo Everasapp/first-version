@@ -13,6 +13,18 @@ export const LILIANA_CANO_ARTICLE: CulturaArticle = {
   excerpt:
     "Una pittrice tra Sardegna e Francia: il colore, le figure e le opere che dialogano con le comunità.",
   kind: "approfondimento",
+  hero: {
+    src: "/images/cultura/pittrice-anonima-hero.webp",
+    alt: "Illustrazione stilizzata di una pittrice anonima vista di spalle davanti a un cavalletto; non ritrae Liliana Cano",
+    credit: {
+      author: "EVERAS",
+      license: "CC0 1.0",
+      licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/deed.it",
+      sourceUrl: "/images/cultura/pittrice-anonima-hero.license.txt",
+      sourceLabel: "Figura di fantasia, non ritratto di Liliana Cano",
+      creditPrefix: "Illustrazione AI originale di",
+    },
+  },
   sections: [
     {
       title: "Da Gorizia e Torino a Sassari",
