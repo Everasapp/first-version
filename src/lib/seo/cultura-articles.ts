@@ -5,6 +5,7 @@ import { CULTURA_GUIDE_ARTICLES_PHASE2 } from "@/src/lib/seo/cultura-articles-gu
 import { CULTURA_GUIDE_ARTICLES_PHASE3 } from "@/src/lib/seo/cultura-articles-guides-phase3";
 import { CULTURA_PEOPLE_ARTICLES } from "@/src/lib/seo/cultura-articles-people";
 import { LILIANA_CANO_ARTICLE } from "@/src/lib/seo/cultura-liliana-cano";
+import { GIGI_RIVA_ARTICLE } from "@/src/lib/seo/cultura-gigi-riva";
 import { CULTURA_SPIAGGE_ARTICLES } from "@/src/lib/seo/cultura-articles-spiagge";
 
 export const CULTURA_ARTICLES_HUB_PATH = "/cultura";
@@ -896,6 +897,7 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
   ...CULTURA_THEME_ARTICLES,
   ...CULTURA_PEOPLE_ARTICLES,
   LILIANA_CANO_ARTICLE,
+  GIGI_RIVA_ARTICLE,
 ];
 
 export function findCulturaArticle(slug: string) {
