@@ -2,8 +2,6 @@
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { loadAdSenseHeadTag } from "./loadAdSenseHeadTag";
 
 type GooglePublisherTagsProps = {
   gaMeasurementId: string;
@@ -16,12 +14,7 @@ export default function GooglePublisherTags({
 }: GooglePublisherTagsProps) {
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (pathname === "/privacy" || pathname === "/cookie") return;
-    // Consent defaults run before hydration. Load promptly afterward, in head.
-    loadAdSenseHeadTag(document);
-  }, [pathname]);
-
+  // AdSense is temporarily suspended while its consent banner is unavailable.
   // Policy links use document navigation so previously loaded tags are cleared.
   if (pathname === "/privacy" || pathname === "/cookie") return null;
 
