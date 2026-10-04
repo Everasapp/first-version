@@ -6,7 +6,7 @@ import PWAInstallBanner from "@/src/components/PWAInstallBanner";
 import PWARegister from "@/src/components/PWARegister";
 import GoogleConsentDefaults from "@/src/components/seo/GoogleConsentDefaults";
 import GooglePublisherTags from "@/src/components/seo/GooglePublisherTags";
-import AnalyticsConsentBanner from "@/src/components/seo/AnalyticsConsentBanner";
+import InMobiConsentManager from "@/src/components/seo/InMobiConsentManager";
 import JsonLd from "@/src/components/seo/JsonLd";
 import {
   organizationSchema,
@@ -97,6 +97,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full min-w-0 flex-col">
         <GoogleConsentDefaults />
+        <InMobiConsentManager />
         <JsonLd data={websiteSearchActionSchema()} />
         <JsonLd data={organizationSchema()} />
         <div className="flex min-w-0 max-w-full flex-1 flex-col">
@@ -105,7 +106,6 @@ export default function RootLayout({
         </div>
         <PWARegister />
         <PWAInstallBanner />
-        <AnalyticsConsentBanner />
         <GooglePublisherTags
           gaMeasurementId={gaMeasurementId}
           analyticsEnabled={process.env.NODE_ENV === "production"}

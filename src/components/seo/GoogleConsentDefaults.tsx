@@ -1,14 +1,24 @@
 import Script from "next/script";
-import { ANALYTICS_CONSENT_COOKIE } from "@/src/lib/analytics-consent";
+import { ANALYTICS_CONSENT_EVENT } from "@/src/lib/analytics-consent";
 
-/** Defaults run before measurement. Only a saved visitor choice can grant Analytics. */
+/** InMobi is the consent writer. Mirror its Google signal for the GA loading gate. */
 export default function GoogleConsentDefaults() {
   // This component is mounted only in the root App Router layout.
   return (
     // eslint-disable-next-line @next/next/no-before-interactive-script-outside-document
     <Script id="google-consent-mode-defaults" strategy="beforeInteractive">{`
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
+window.__everasAnalyticsConsent = null;
+function gtag(){
+  window.dataLayer.push(arguments);
+  if (arguments[0] === 'consent' && arguments[1] === 'update') {
+    var choice = arguments[2] && arguments[2].analytics_storage;
+    if (choice === 'granted' || choice === 'denied') {
+      window.__everasAnalyticsConsent = choice;
+      window.dispatchEvent(new Event('${ANALYTICS_CONSENT_EVENT}'));
+    }
+  }
+}
 gtag('consent', 'default', {
   ad_storage: 'denied',
   ad_user_data: 'denied',
@@ -18,13 +28,6 @@ gtag('consent', 'default', {
 });
 gtag('set', 'ads_data_redaction', true);
 gtag('set', 'url_passthrough', false);
-try {
-  var everasAnalyticsChoice = document.cookie.split(';').map(function(cookie){return cookie.trim();})
-    .find(function(cookie){return cookie.indexOf('${ANALYTICS_CONSENT_COOKIE}=') === 0;});
-  if (everasAnalyticsChoice === '${ANALYTICS_CONSENT_COOKIE}=granted') {
-    gtag('consent', 'update', {analytics_storage: 'granted'});
-  }
-} catch (error) { /* Missing or inaccessible storage never grants consent. */ }
 `}</Script>
   );
 }

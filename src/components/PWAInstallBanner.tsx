@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { readAnalyticsConsent } from "@/src/lib/analytics-consent";
+import { getBrowserAnalyticsConsent } from "@/src/lib/analytics-consent";
 
 const STORAGE_DISMISS = "everas-pwa-dismiss-until";
 const STORAGE_VISITS = "everas-pwa-visit-count";
@@ -170,7 +170,7 @@ export default function PWAInstallBanner() {
 
     const tryShow = (fromTimer: boolean) => {
       if (cancelled || isStandalone() || wasDismissedRecently()) return;
-      if (readAnalyticsConsent(document.cookie) === null) return;
+      if (getBrowserAnalyticsConsent() === null) return;
 
       const visits = getVisitCount();
       const ready = fromTimer || visits >= SHOW_AFTER_VISITS;

@@ -26,7 +26,7 @@ describe("Google consent and publisher tags", () => {
   it("queues denied defaults before measurement without accessing storage", () => {
     const element = GoogleConsentDefaults();
     expect(element.props.strategy).toBe("beforeInteractive");
-    const sandbox: Record<string, unknown> = {};
+    const sandbox: Record<string, unknown> = { dispatchEvent: vi.fn(), Event: class { constructor(public type: string) {} } };
     sandbox.window = sandbox;
     vm.runInNewContext(element.props.children, sandbox);
     const commands = (sandbox.dataLayer as IArguments[]).map((command) =>
@@ -57,6 +57,24 @@ describe("Google consent and publisher tags", () => {
     ]);
   });
 
+  it("mirrors CMP Analytics updates without overriding advertising preferences", () => {
+    const sandbox: Record<string, unknown> = {
+      dispatchEvent: vi.fn(), Event: class { constructor(public type: string) {} },
+    };
+    sandbox.window = sandbox;
+    vm.runInNewContext(GoogleConsentDefaults().props.children, sandbox);
+    vm.runInNewContext("gtag('consent', 'update', {analytics_storage: 'granted', ad_storage: 'denied'});", sandbox);
+    expect(sandbox.__everasAnalyticsConsent).toBe("granted");
+    vm.runInNewContext("gtag('consent', 'update', {ad_storage: 'granted'});", sandbox);
+    expect(sandbox.__everasAnalyticsConsent).toBe("granted");
+    vm.runInNewContext("gtag('consent', 'update', {analytics_storage: 'denied'});", sandbox);
+    expect(sandbox.__everasAnalyticsConsent).toBe("denied");
+    expect(sandbox.dispatchEvent).toHaveBeenCalledTimes(2);
+    expect(Array.from((sandbox.dataLayer as IArguments[]).at(-2)!)).toEqual([
+      "consent", "update", {ad_storage: "granted"},
+    ]);
+  });
+
   it.each(["/privacy", "/cookie"])("loads no Google tags on %s", (pathname) => {
     route.pathname = pathname;
     route.consent = "granted";
@@ -73,7 +91,7 @@ describe("Google consent and publisher tags", () => {
     }))).toBe("");
   });
 
-  it.each(["granted", "denied", "accepted", "invalid"])("restores only a valid saved acceptance (%s)", (choice) => {
+  it.each(["granted", "denied", "accepted", "invalid"])("never restores legacy cookie choices (%s)", (choice) => {
     const element = GoogleConsentDefaults();
     const sandbox: Record<string, unknown> = {
       document: { cookie: `other=1; everas_analytics_consent_v1=${choice}` },
@@ -82,9 +100,8 @@ describe("Google consent and publisher tags", () => {
     vm.runInNewContext(element.props.children, sandbox);
     const updates = (sandbox.dataLayer as IArguments[]).map((c) => Array.from(c))
       .filter((c) => c[0] === "consent" && c[1] === "update");
-    expect(updates).toEqual(choice === "granted" ? [
-      ["consent", "update", { analytics_storage: "granted" }],
-    ] : []);
+    expect(updates).toEqual([]);
+    expect(sandbox.__everasAnalyticsConsent).toBeNull();
   });
 
   it("keeps a single production GA source on content pages", () => {

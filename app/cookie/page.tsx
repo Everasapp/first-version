@@ -19,13 +19,15 @@ export default function CookiePage() {
       </p>
       <p>
         I cookie tecnici sono necessari al servizio, per esempio per
-        autenticazione e preferenze di navigazione. La tua scelta per Analytics
-        viene salvata nel cookie tecnico <code>everas_analytics_consent_v1</code>
-        per 180 giorni, salvo cancellazione dal browser.
+        autenticazione e preferenze di navigazione. InMobi Choice gestisce il
+        banner e memorizza le scelte di consenso con cookie e archiviazione
+        locale, tra cui <code>euconsent-v2</code> e <code>gbc_consent</code>.
+        Puoi modificare le scelte o cancellarle dalle impostazioni del browser.
       </p>
       <p>
-        Google Analytics misura visite e utenti solo dopo che premi “Accetta”
-        nel banner. Prima della scelta o se premi “Rifiuta”, il tag Analytics
+        Google Analytics misura visite e utenti solo dopo che accetti i cookie
+        per le statistiche, anche separatamente da quelli pubblicitari.
+        Prima della scelta o se rifiuti i cookie per le statistiche, il tag Analytics
         non viene caricato. Quando accetti, Google può usare cookie come
         <code> _ga</code> e <code>_ga_*</code> per le statistiche del sito.
         Le pagine Privacy Policy e Cookie Policy non caricano il tag Analytics.
@@ -38,9 +40,11 @@ export default function CookiePage() {
         impostazioni del browser.
       </p>
       <p>
-        Dal 4 ottobre 2026, Google AdSense e il suo messaggio di consenso sono
-        sospesi su tutto il sito. Il banner attuale gestisce soltanto Analytics
-        e non abilita cookie pubblicitari. Per informazioni su come Google
+        Il banner InMobi Choice consente anche di scegliere le finalità e i
+        partner pubblicitari. Al momento il tag Google AdSense e gli annunci
+        sono sospesi su tutto il sito, in attesa dell&apos;approvazione.
+        Accettare una finalità pubblicitaria non attiva il tag AdSense.
+        Per informazioni su come Google
         tratta i dati:{" "}
         <a href="https://policies.google.com/privacy" target="_blank"
           rel="noopener noreferrer" className="font-semibold text-[#075EAE] hover:underline">
