@@ -2,6 +2,7 @@
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { usePathname } from "next/navigation";
+import { useAnalyticsConsent } from "./useAnalyticsConsent";
 
 type GooglePublisherTagsProps = {
   gaMeasurementId: string;
@@ -13,6 +14,7 @@ export default function GooglePublisherTags({
   analyticsEnabled,
 }: GooglePublisherTagsProps) {
   const pathname = usePathname();
+  const consent = useAnalyticsConsent();
 
   // AdSense is temporarily suspended while its consent banner is unavailable.
   // Policy links use document navigation so previously loaded tags are cleared.
@@ -21,7 +23,7 @@ export default function GooglePublisherTags({
   return (
     <>
       {/* GA4 Enhanced Measurement handles history changes; no manual page_view. */}
-      {analyticsEnabled ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
+      {analyticsEnabled && consent === "granted" ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
     </>
   );
 }

@@ -5,7 +5,7 @@ import LegalPage from "@/src/components/home/LegalPage";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Come EVERAS tratta i dati personali, inclusa l’uso di Google Analytics, Google AdSense e il consenso cookie.",
+    "Come EVERAS tratta i dati personali e gestisce la scelta per Google Analytics.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -22,41 +22,26 @@ export default function PrivacyPage() {
         organizzatore e contenuti relativi agli eventi pubblicati.
       </p>
       <p>
-        Su EVERAS sono presenti servizi di terzi forniti da Google. In ambiente
-        di produzione viene utilizzato Google Analytics per statistiche e
-        analisi d’uso del sito. Le pagine Privacy Policy e Cookie Policy non
-        caricano i tag di Google Analytics e Google AdSense.
+        In produzione, Google Analytics misura visite e utenti del sito dopo
+        il tuo consenso. Prima della scelta o in caso di rifiuto, il tag non
+        viene caricato. Le pagine Privacy Policy e Cookie Policy non caricano
+        il tag Analytics.
       </p>
       <p>
         Dal 4 ottobre 2026, Google AdSense e il suo banner Privacy &amp;
         messaging sono temporaneamente sospesi su tutto il sito. EVERAS non
         carica il tag pubblicitario AdSense e non mostra annunci tramite questa
-        integrazione. Google Analytics resta presente con il consenso iniziale
-        negato.
+        integrazione. Il banner attuale riguarda soltanto Google Analytics.
       </p>
       <p>
-        Per gli utenti nello Spazio economico europeo, nel Regno Unito e in
-        Svizzera, EVERAS utilizza Google Consent Mode e il messaggio di consenso
-        Privacy &amp; messaging di Google (CMP certificato, framework IAB TCF)
-        quando è attivo sul sito. In assenza di consenso, cookie analitici e
-        pubblicitari restano disattivati di default; dopo la scelta, Analytics e
-        AdSense ricevono gli stati aggiornati. Puoi modificare le preferenze dal
-        banner di consenso quando viene mostrato. Per le impostazioni annunci
-        Google:{" "}
-        <a
-          href="https://adssettings.google.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-[#075EAE] hover:underline"
-        >
-          adssettings.google.com
-        </a>
-        .
-      </p>
-      <p>
-        Google Consent Mode può inviare segnali di misurazione senza cookie
-        anche quando il consenso è negato. Negare il consenso non equivale
-        quindi a impedire ogni comunicazione con Google.
+        Puoi accettare o rifiutare i cookie Analytics dal banner di EVERAS.
+        La scelta viene ricordata per 180 giorni e può essere modificata dal
+        comando “Preferenze cookie” nel footer. In caso di revoca, il sito
+        disattiva Analytics, cancella i relativi cookie accessibili sul proprio
+        dominio e ricarica la pagina. Per maggiori dettagli consulta la{" "}
+        <a href="/cookie" className="font-semibold text-[#075EAE] hover:underline">
+          Cookie Policy
+        </a>.
       </p>
       <p>
         Per maggiori dettagli su come Google tratta i dati:{" "}

@@ -6,6 +6,7 @@ import PWAInstallBanner from "@/src/components/PWAInstallBanner";
 import PWARegister from "@/src/components/PWARegister";
 import GoogleConsentDefaults from "@/src/components/seo/GoogleConsentDefaults";
 import GooglePublisherTags from "@/src/components/seo/GooglePublisherTags";
+import AnalyticsConsentBanner from "@/src/components/seo/AnalyticsConsentBanner";
 import JsonLd from "@/src/components/seo/JsonLd";
 import {
   organizationSchema,
@@ -104,6 +105,7 @@ export default function RootLayout({
         </div>
         <PWARegister />
         <PWAInstallBanner />
+        <AnalyticsConsentBanner />
         <GooglePublisherTags
           gaMeasurementId={gaMeasurementId}
           analyticsEnabled={process.env.NODE_ENV === "production"}

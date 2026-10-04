@@ -1,62 +1,46 @@
-# Verifica consenso Google AdSense
+# Consenso Analytics e sospensione AdSense
 
-Il codice imposta i quattro segnali Consent Mode v2 su `denied` prima dei
-tag Google. Il timeout di 500 ms non concede il consenso: lascia alla CMP
-il tempo di aggiornare gli stati. La modalità avanzata può inviare segnali
-senza cookie anche con consenso negato.
+## Stato dal 4 ottobre 2026
 
-Le pagine `/privacy` e `/cookie` non caricano AdSense o Analytics. I link nel
-footer aprono un nuovo documento, così i tag già caricati vengono eliminati.
+AdSense è sospeso: `GooglePublisherTags` non carica più `adsbygoogle.js` o il
+messaggio Funding Choices. Il banner di EVERAS gestisce solo Google Analytics.
 
-## Stato dell’account verificato il 3 ottobre 2026
+Il codice applica il Consent Mode di base:
 
-- `everas.it` è l’unico sito nell’elenco dell’account.
-- Esito della revisione del 30 settembre: **Low value content**.
-- `ads.txt`: **Authorized**.
-- Messaggio europeo per `everas.it`: **Published**, ultima modifica indicata
-  10 settembre 2026; inglese e altre 31 lingue.
-- Abilitate e salvate entrambe le opzioni Consent Mode, pubblicità e analisi.
+- Tutti i segnali iniziali sono `denied` prima di qualsiasi tag Google.
+- Il tag GA4 viene montato soltanto quando il visitatore ha accettato Analytics.
+- “Accetta” aggiorna solo `analytics_storage` a `granted`; i segnali pubblicitari
+  restano `denied`.
+- “Rifiuta” conserva `analytics_storage: denied` e non carica GA4.
+- La scelta viene salvata nel cookie tecnico `everas_analytics_consent_v1`,
+  valido 180 giorni, con Path=/, SameSite=Lax e Secure su HTTPS.
+- Il bootstrap ripristina una precedente accettazione prima della configurazione
+  GA4. Cookie assenti o valori non validi non concedono il consenso.
+- “Preferenze cookie” nel footer riapre la scelta. Revocare cancella `_ga` e
+  `_ga_*` per il dominio corrente e i domini superiori, poi ricarica il documento
+  per eliminare il runtime Analytics già caricato.
+- `/privacy` e `/cookie` non caricano GA4 anche quando il consenso è accettato.
+- L'invito di installazione PWA aspetta che sia stata effettuata una scelta.
 
-La correzione del consenso non risolve da sola l’esito sui contenuti. Non è
-stata richiesta una nuova revisione. Le prove di accettazione, rifiuto e revoca
-sul sito restano da completare dopo il deploy.
+## Verifica
 
-## Impostazioni da mantenere nell’account AdSense
+I test controllano defaults e ripristino prima dei tag, riconoscimento della
+scelta, aggiornamenti di consenso, assenza di GA senza accettazione e rimozione
+dei cookie Analytics senza cancellare autenticazione o preferenze.
 
-1. In **Privacy e messaggi → Regolamenti europei**, selezionare il sito
-   `everas.it` e verificare che il messaggio sia pubblicato.
-2. Impostare la privacy policy a `https://www.everas.it/privacy` e verificare
-   che siano disponibili accettazione, rifiuto e gestione delle opzioni.
-3. In **Impostazioni**, abilitare **Attiva la modalità di consenso per scopi
-   pubblicitari** e **Attiva la modalità di consenso per scopi di analisi**.
-   Google applica queste impostazioni a tutti i siti/app con messaggi europei
-   nell'account: verificare l'eventuale presenza di altri siti prima di salvare.
-4. Verificare il collegamento per riaprire le preferenze della CMP e revocare
-   il consenso dopo la prima scelta.
+Dopo ogni deploy, verificare in una nuova sessione:
 
-Non aggiungere un secondo banner o aggiornamenti manuali che concedano
-automaticamente il consenso: gli aggiornamenti spettano alla CMP certificata.
+1. Il banner è visibile e nessun tag Analytics/AdSense è caricato.
+2. Rifiuto, navigazione e ricaricamento conservano GA disattivato.
+3. Il comando nel footer riapre le preferenze.
+4. Accettazione e ricaricamento caricano una sola sorgente GA4.
+5. Revoca ricarica il documento senza tag GA4.
+6. Privacy/Cookie restano accessibili senza tag Google.
 
-## Controlli dopo il deploy
+La raccolta effettiva nei report GA4 dipende anche dalle impostazioni della
+proprietà, dai blocchi del browser e dai tempi di elaborazione. Il codice non
+può ricostruire visite pregresse non registrate.
 
-Da una nuova sessione browser in Italia, controllare con Tag Assistant:
+## Fonte tecnica
 
-- Prima della scelta: tutti e quattro gli stati predefiniti sono `denied`.
-- Rifiuto: restano negati e non vengono creati cookie Analytics/pubblicitari.
-- Accettazione: la CMP aggiorna gli stati coerentemente con la scelta.
-- Ricaricamento: la CMP recupera la scelta e aggiorna gli stati.
-- Revoca: gli aggiornamenti riflettono il nuovo rifiuto; non verificare soltanto
-  la scomparsa del banner.
-- Aprire Privacy/Cookie dal footer e direttamente: nessun caricamento dei
-  tag AdSense, Analytics o del messaggio Funding Choices.
-
-Questi controlli runtime restano da completare
-prima di considerare terminata l'integrazione. Non garantiscono l'approvazione
-AdSense: occorre anche leggere il motivo dell'eventuale rifiuto nell'account.
-
-## Fonti Google
-
-- https://developers.google.com/tag-platform/security/guides/consent
-- https://support.google.com/adsense/answer/16053245?hl=it
-- https://support.google.com/adsense/answer/10961370?hl=en
-- https://support.google.com/adsense/answer/10960768?hl=en
+https://developers.google.com/tag-platform/security/guides/consent
