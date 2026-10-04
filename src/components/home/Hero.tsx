@@ -5,13 +5,13 @@ import HeroSearchLazy from "@/src/components/home/HeroSearchLazy";
 export default function Hero() {
   // Decorative background: keep out of the LCP element tree so mobile LCP
   // can be the H1 text (paints with CSS). Still preload for visual quality.
-  preload("/images/concert.webp", { as: "image", fetchPriority: "high" });
+  preload("/images/everas-borgo-festa-hero.webp", { as: "image", fetchPriority: "high" });
 
   return (
     <section
       className="relative isolate overflow-hidden bg-cover bg-no-repeat"
       style={{
-        backgroundImage: "url('/images/concert.webp')",
+        backgroundImage: "url('/images/everas-borgo-festa-hero.webp')",
         backgroundPosition: "60% center",
         backgroundSize: "cover",
       }}
