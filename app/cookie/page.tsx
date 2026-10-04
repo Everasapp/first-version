@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function CookiePage() {
   return (
-    <LegalPage title="Cookie Policy" updatedAt="3 ottobre 2026">
+    <LegalPage title="Cookie Policy" updatedAt="4 ottobre 2026">
       <p>
         EVERAS utilizza cookie e tecnologie simili per garantire il
         funzionamento del sito, mantenere la sessione di accesso e migliorare
@@ -28,10 +28,10 @@ export default function CookiePage() {
         autenticazione e preferenze di navigazione).
       </p>
       <p>
-        In produzione sono presenti Google Analytics e Google AdSense, che
-        possono impostare cookie o tecnologie analoghe per misurazione
-        aggregata e finalità pubblicitarie, secondo le policy di Google e dei
-        suoi partner.
+        Google Analytics resta presente in produzione, con il consenso
+        iniziale negato. Dal 4 ottobre 2026, Google AdSense e il suo banner
+        Privacy &amp; messaging sono temporaneamente sospesi su tutto il sito:
+        EVERAS non carica il tag pubblicitario AdSense.
       </p>
       <p>
         Per UE, Regno Unito e Svizzera, quando è attivo, EVERAS mostra il

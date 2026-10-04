@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updatedAt="3 ottobre 2026">
+    <LegalPage title="Privacy Policy" updatedAt="4 ottobre 2026">
       <p>
         EVERAS tratta i dati personali degli utenti per erogare il servizio di
         scoperta e pubblicazione eventi in Sardegna, gestire gli account e
@@ -28,20 +28,11 @@ export default function PrivacyPage() {
         caricano i tag di Google Analytics e Google AdSense.
       </p>
       <p>
-        Il sito utilizza anche Google AdSense (publisher ID{" "}
-        <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">
-          ca-pub-5513319548780658
-        </code>
-        ) per mostrare annunci. Google e i suoi partner possono usare cookie o
-        tecnologie analoghe per finalità pubblicitarie, secondo le rispettive
-        impostazioni e policy. Il file{" "}
-        <a
-          href="/ads.txt"
-          className="font-semibold text-[#075EAE] hover:underline"
-        >
-          ads.txt
-        </a>{" "}
-        dichiara il rapporto con Google AdSense.
+        Dal 4 ottobre 2026, Google AdSense e il suo banner Privacy &amp;
+        messaging sono temporaneamente sospesi su tutto il sito. EVERAS non
+        carica il tag pubblicitario AdSense e non mostra annunci tramite questa
+        integrazione. Google Analytics resta presente con il consenso iniziale
+        negato.
       </p>
       <p>
         Per gli utenti nello Spazio economico europeo, nel Regno Unito e in
