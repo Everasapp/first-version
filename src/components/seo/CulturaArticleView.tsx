@@ -67,12 +67,14 @@ export default function CulturaArticleView({
           </header>
 
           <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-            <ArticleFullPhoto
-              src={article.hero.src}
-              alt={article.hero.alt}
-              credit={article.hero.credit}
-              priority
-            />
+            {article.hero ? (
+              <ArticleFullPhoto
+                src={article.hero.src}
+                alt={article.hero.alt}
+                credit={article.hero.credit}
+                priority
+              />
+            ) : null}
 
             {article.sections.map((section) => (
               <section key={section.title} className="mt-12">

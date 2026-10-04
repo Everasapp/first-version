@@ -30,13 +30,13 @@ export async function generateMetadata({
   const article = findCulturaArticle(slug);
   if (!article) return {};
 
-  const ogImage = {
+  const ogImage = article.hero ? {
     url: article.hero.src,
     width: 1600,
     height: 1067,
     alt: article.hero.alt,
     type: "image/webp" as const,
-  };
+  } : undefined;
 
   return {
     title: article.title,
@@ -47,13 +47,13 @@ export async function generateMetadata({
       description: article.description,
       url: article.path,
       type: "article",
-      images: [ogImage],
+      images: ogImage ? [ogImage] : [],
     },
     twitter: {
-      card: "summary_large_image",
+      card: ogImage ? "summary_large_image" : "summary",
       title: `${article.title} | EVERAS`,
       description: article.description,
-      images: [ogImage.url],
+      images: ogImage ? [ogImage.url] : [],
     },
   };
 }
@@ -112,7 +112,7 @@ export default async function CulturaArticlePage({
           headline: article.title,
           description: article.description,
           url: absoluteUrl(article.path),
-          imageUrl: article.hero.src,
+          imageUrl: article.hero?.src,
           datePublished: article.publishedAt,
           aboutName: "Sardegna",
         }),

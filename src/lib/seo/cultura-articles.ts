@@ -4,6 +4,7 @@ import { CULTURA_GUIDE_ARTICLES } from "@/src/lib/seo/cultura-articles-guides";
 import { CULTURA_GUIDE_ARTICLES_PHASE2 } from "@/src/lib/seo/cultura-articles-guides-phase2";
 import { CULTURA_GUIDE_ARTICLES_PHASE3 } from "@/src/lib/seo/cultura-articles-guides-phase3";
 import { CULTURA_PEOPLE_ARTICLES } from "@/src/lib/seo/cultura-articles-people";
+import { LILIANA_CANO_ARTICLE } from "@/src/lib/seo/cultura-liliana-cano";
 import { CULTURA_SPIAGGE_ARTICLES } from "@/src/lib/seo/cultura-articles-spiagge";
 
 export const CULTURA_ARTICLES_HUB_PATH = "/cultura";
@@ -28,7 +29,8 @@ export type CulturaArticle = {
   description: string;
   intro: string;
   excerpt: string;
-  hero: {
+  /** Omit when no image has verified reproduction rights. */
+  hero?: {
     src: string;
     alt: string;
     credit: PhotoCredit;
@@ -893,6 +895,7 @@ export const CULTURA_ARTICLES: CulturaArticle[] = [
   ...CULTURA_GUIDE_ARTICLES_PHASE3,
   ...CULTURA_THEME_ARTICLES,
   ...CULTURA_PEOPLE_ARTICLES,
+  LILIANA_CANO_ARTICLE,
 ];
 
 export function findCulturaArticle(slug: string) {
