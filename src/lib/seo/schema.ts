@@ -128,7 +128,7 @@ export function articleSchema(input: {
   headline: string;
   description: string;
   url: string;
-  imageUrl: string;
+  imageUrl?: string;
   datePublished: string;
   dateModified?: string;
   aboutName?: string;
@@ -139,7 +139,7 @@ export function articleSchema(input: {
     headline: input.headline,
     description: input.description,
     url: input.url,
-    image: [absoluteUrl(input.imageUrl)],
+    image: input.imageUrl ? [absoluteUrl(input.imageUrl)] : undefined,
     datePublished: input.datePublished,
     dateModified: input.dateModified || input.datePublished,
     inLanguage: "it-IT",

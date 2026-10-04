@@ -38,16 +38,18 @@ export default function CulturaArticlesFeaturedGrid({
             href={article.path}
             className="group block overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white transition hover:border-[#075EAE]/35 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
           >
-            <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-              <Image
-                src={article.hero.src}
-                alt={article.hero.alt}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
-                unoptimized
-              />
-            </div>
+            {article.hero ? (
+              <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                <Image
+                  src={article.hero.src}
+                  alt={article.hero.alt}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition duration-500 ease-out group-hover:scale-[1.03]"
+                  unoptimized
+                />
+              </div>
+            ) : null}
             <div className="border-t border-slate-100 px-4 py-4 sm:px-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#075EAE]">
                 {formatPublishedAt(article.publishedAt)}
