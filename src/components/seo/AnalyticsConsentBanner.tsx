@@ -71,8 +71,8 @@ export default function AnalyticsConsentBanner() {
           <button type="button" onClick={() => choose("denied")} className="min-h-11 flex-1 rounded-xl border-2 border-[#075EAE] bg-white px-6 py-2.5 text-sm font-bold text-[#075EAE] hover:bg-[#e8f1fa] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">
             Rifiuta
           </button>
-          <button type="button" onClick={() => choose("granted")} className="min-h-11 flex-1 rounded-xl border-2 border-[#075EAE] bg-[#075EAE] px-6 py-2.5 text-sm font-bold text-white hover:bg-[#064E91] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">
-            Accetta
+          <button type="button" onClick={() => choose("granted")} className="min-h-11 flex-1 whitespace-nowrap rounded-xl border-2 border-[#E67E22] bg-[#E67E22] px-6 py-2.5 text-sm font-bold text-slate-900 hover:border-[#C96A1A] hover:bg-[#C96A1A] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9A3412]">
+            Accetta tutti
           </button>
         </div>
       </div>
