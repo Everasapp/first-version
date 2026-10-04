@@ -212,13 +212,13 @@ export default function CulturaArticlesHubView({
             </section>
 
             {otherArticles.length > 0 ? (
-              <section className="mt-12 border-t border-slate-200 pt-10">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Altri approfondimenti
+              <section id="storie-di-sardegna" aria-labelledby="storie-di-sardegna-title" className="mt-12 scroll-mt-24 border-t border-slate-200 pt-10">
+                <h2 id="storie-di-sardegna-title" className="text-2xl font-bold text-slate-900">
+                  Storie di Sardegna
                 </h2>
                 <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-                  Personaggi, zona blu, spiagge, golf: testi autonomi, non
-                  sostituti delle guide pillar.
+                  Artisti, personaggi, tradizioni e luoghi: racconti per conoscere
+                  l’isola e le persone che ne hanno segnato la storia.
                 </p>
                 <CulturaArticlesFeaturedGrid articles={otherArticles} />
               </section>

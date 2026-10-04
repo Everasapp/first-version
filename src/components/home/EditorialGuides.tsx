@@ -40,6 +40,13 @@ export default function EditorialGuides() {
             </li>
           ))}
         </ul>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#075EAE]/20 bg-white p-5 sm:p-6">
+          <div>
+            <h3 className="text-xl font-bold text-slate-900">Storie di Sardegna</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">Artisti, personaggi, tradizioni e luoghi da scoprire attraverso i racconti di EVERAS.</p>
+          </div>
+          <Link href="/cultura#storie-di-sardegna" prefetch={false} className="inline-flex rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#064f93] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Scopri le storie →</Link>
+        </div>
       </div>
     </section>
   );
