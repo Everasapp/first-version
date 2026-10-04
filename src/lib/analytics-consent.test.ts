@@ -1,31 +1,27 @@
-import { describe, expect, it, vi } from "vitest";
-import { clearAnalyticsCookies, readAnalyticsConsent, updateAnalyticsConsent } from "./analytics-consent";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { clearAnalyticsCookies, getBrowserAnalyticsConsent, openConsentPreferences } from "./analytics-consent";
 
-describe("Analytics consent choices", () => {
-  it("ignores missing, malformed and similarly named consent cookies", () => {
-    expect(readAnalyticsConsent("")).toBeNull();
-    expect(readAnalyticsConsent("other_everas_analytics_consent_v1=granted")).toBeNull();
-    expect(readAnalyticsConsent("everas_analytics_consent_v1=accepted")).toBeNull();
-    expect(readAnalyticsConsent("other=x; everas_analytics_consent_v1=granted")).toBe("granted");
-    expect(readAnalyticsConsent("everas_analytics_consent_v1=denied; other=x")).toBe("denied");
+afterEach(() => vi.unstubAllGlobals());
+
+describe("CMP Analytics consent", () => {
+  it("waits for the CMP and ignores previous banner cookies", () => {
+    vi.stubGlobal("window", {});
+    vi.stubGlobal("document", { cookie: "everas_analytics_consent_v1=granted" });
+    expect(getBrowserAnalyticsConsent()).toBeNull();
   });
 
-  it.each(["granted", "denied"] as const)("updates Analytics to %s while all advertising stays denied", (choice) => {
-    const gtag = vi.fn();
-    updateAnalyticsConsent(choice, { gtag });
-    expect(gtag).toHaveBeenCalledWith("consent", "update", {
-      analytics_storage: choice, ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
-    });
+  it.each(["granted", "denied"])("uses the CMP Analytics choice %s", (choice) => {
+    vi.stubGlobal("window", { __everasAnalyticsConsent: choice });
+    expect(getBrowserAnalyticsConsent()).toBe(choice);
   });
 
-  it("queues the choice if the Google script has not initialized yet", () => {
-    const target = { dataLayer: [] as unknown[] };
-    updateAnalyticsConsent("granted", target);
-    expect(Array.from(target.dataLayer[0] as IArguments)).toEqual([
-      "consent", "update", {
-        analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied",
-      },
-    ]);
+  it("opens the certified CMP preferences through its API", () => {
+    const tcfapi = vi.fn();
+    vi.stubGlobal("window", { __tcfapi: tcfapi });
+    expect(openConsentPreferences()).toBe(true);
+    expect(tcfapi).toHaveBeenCalledWith("displayConsentUi", 2, expect.any(Function));
+    vi.stubGlobal("window", {});
+    expect(openConsentPreferences()).toBe(false);
   });
 
   it("revokes GA cookies at the host and parent domain without deleting login or consent cookies", () => {
