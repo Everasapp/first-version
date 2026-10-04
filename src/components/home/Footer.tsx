@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import HomeNewsletterSignup from "@/src/components/home/HomeNewsletterSignup";
+import AnalyticsConsentPreferences from "@/src/components/seo/AnalyticsConsentPreferences";
 import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
 
 const legalLinks = [
@@ -165,6 +166,7 @@ export default function Footer() {
                 {link.label}
               </a>
             ))}
+            <AnalyticsConsentPreferences />
           </nav>
         </div>
       </div>
