@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleAnalytics } from "@next/third-parties/google";
+import ConsentedGoogleAnalytics from "./ConsentedGoogleAnalytics";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { clearAnalyticsCookies } from "@/src/lib/analytics-consent";
@@ -24,7 +24,11 @@ export default function GooglePublisherTags({
     if (consent === "denied") {
       clearAnalyticsCookies(document);
       // Unmounting a Script does not stop a loaded GA runtime. A fresh document does.
-      if (previouslyGranted.current) window.location.reload();
+      if (previouslyGranted.current) {
+        // Let the CMP finish persisting all consent strings in the current task.
+        const timer = window.setTimeout(() => window.location.reload(), 0);
+        return () => window.clearTimeout(timer);
+      }
     }
   }, [consent]);
 
@@ -35,7 +39,7 @@ export default function GooglePublisherTags({
   return (
     <>
       {/* GA4 Enhanced Measurement handles history changes; no manual page_view. */}
-      {analyticsEnabled && consent === "granted" ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
+      {analyticsEnabled && consent === "granted" ? <ConsentedGoogleAnalytics gaId={gaMeasurementId} /> : null}
     </>
   );
 }

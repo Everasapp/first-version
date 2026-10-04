@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import GoogleConsentDefaults from "./GoogleConsentDefaults";
 import GooglePublisherTags from "./GooglePublisherTags";
+import ConsentedGoogleAnalytics from "./ConsentedGoogleAnalytics";
 
 const { route } = vi.hoisted(() => ({ route: { pathname: "/", consent: "pending" as string | null } }));
 
@@ -14,15 +15,27 @@ vi.mock("next/script", () => ({
   default: ({ children, ...props }: React.ComponentProps<"script">) =>
     React.createElement("script", props, children),
 }));
-vi.mock("@next/third-parties/google", () => ({
-  GoogleAnalytics: ({ gaId }: { gaId: string }) =>
-    React.createElement("script", { "data-ga-id": gaId }),
-}));
 
 // Vitest's JSX transform uses the classic runtime for these Next.js files.
 vi.stubGlobal("React", React);
 
 describe("Google consent and publisher tags", () => {
+  it("preserves the consent bridge after GA initializes and during revocation", () => {
+    const sandbox: Record<string, unknown> = {
+      dispatchEvent: vi.fn(), Event: class { constructor(public type: string) {} },
+    };
+    sandbox.window = sandbox;
+    vm.runInNewContext(GoogleConsentDefaults().props.children, sandbox);
+    vm.runInNewContext("gtag('consent', 'update', {analytics_storage: 'granted'});", sandbox);
+    const originalGtag = sandbox.gtag;
+    const ga = ConsentedGoogleAnalytics({ gaId: "G-TEST" });
+    vm.runInNewContext(ga.props.children[0].props.children, sandbox);
+    expect(sandbox.gtag).toBe(originalGtag);
+    vm.runInNewContext("gtag('consent', 'update', {analytics_storage: 'denied'});", sandbox);
+    expect(sandbox.__everasAnalyticsConsent).toBe("denied");
+    expect((sandbox.dataLayer as IArguments[]).map(c => Array.from(c)))
+      .toContainEqual(["config", "G-TEST"]);
+  });
   it("queues denied defaults before measurement without accessing storage", () => {
     const element = GoogleConsentDefaults();
     expect(element.props.strategy).toBe("beforeInteractive");
@@ -110,10 +123,10 @@ describe("Google consent and publisher tags", () => {
     const html = renderToStaticMarkup(React.createElement(GooglePublisherTags, {
       gaMeasurementId: "G-TEST", analyticsEnabled: true,
     }));
-    expect(html.match(/data-ga-id=/g)).toHaveLength(1);
+    expect(html.match(/googletagmanager.com/g)).toHaveLength(1);
     const developmentHtml = renderToStaticMarkup(React.createElement(GooglePublisherTags, {
       gaMeasurementId: "G-TEST", analyticsEnabled: false,
     }));
-    expect(developmentHtml).not.toContain("data-ga-id");
+    expect(developmentHtml).not.toContain("googletagmanager.com");
   });
 });
