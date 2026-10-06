@@ -25,12 +25,15 @@ export type CultureArea = {
   faqs: Array<{ question: string; answer: string }>;
 };
 
+const areaTownCount = (area: City["area"]) => citiesInArea(area).length;
+
 const PROVINCE_LABEL: Record<string, string> = {
   SS: "Sassari",
   NU: "Nuoro",
   OR: "Oristano",
   CA: "Cagliari",
   SU: "Sud Sardegna",
+  VS: "Medio Campidano",
 };
 
 export const CULTURE_AREAS: CultureArea[] = [
@@ -58,7 +61,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 93 comuni del Nord, sui 47 del Centro e sugli 84 del Sud.",
+          `Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i ${areaTownCount("Nord Sardegna")} comuni del Nord, sui ${areaTownCount("Centro Sardegna")} del Centro e sugli ${areaTownCount("Sud Sardegna")} del Sud.`,
       },
     ],
   },
@@ -86,7 +89,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i 47 comuni del Centro. In evidenza trovi 18 paesi tra Barbagia, costa e capoluoghi; gli altri restano nell’elenco A–Z.",
+          `Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti i ${areaTownCount("Centro Sardegna")} comuni del Centro. In evidenza trovi 18 paesi tra Barbagia, costa e capoluoghi; gli altri restano nell’elenco A–Z.`,
       },
     ],
   },
@@ -96,12 +99,12 @@ export const CULTURE_AREAS: CultureArea[] = [
     path: `${CULTURE_HUB_PATH}/sud-sardegna`,
     image: "/images/sud-sardegna.webp",
     imageAlt: "Paesaggio del Sud Sardegna",
-    title: "Cultura sarda nel Sud: comuni di Cagliari e Sulcis",
+    title: "Cultura sarda nel Sud: Cagliari, Marmilla e Sulcis",
     h1: "Sud Sardegna",
     description:
-      "Directory dei comuni del Sud Sardegna: Cagliari, il Campidano e una selezione del Sulcis, con una pagina per ciascun comune.",
+      "Directory dei comuni del Sud Sardegna: Cagliari, il Campidano, la Marmilla e una selezione del Sulcis, con una pagina per ciascun comune.",
     paragraphs: [
-      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari e una selezione del Sulcis. In evidenza le schede dei paesi più cercati; sotto, l’elenco completo A–Z: ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
+      "Il Sud segue i filtri eventi: Città metropolitana di Cagliari, Campidano, Marmilla e una selezione del Sulcis. In evidenza le schede dei paesi più cercati; sotto, l’elenco completo A–Z: ogni comune ha una guida con storia, tradizioni, visite e gli eventi collegati.",
       "Apri il paese che ti interessa: trovi il testo della guida e, in fondo, il calendario degli appuntamenti pubblicati in quel comune su EVERAS.",
     ],
     townPagesLive: true,
@@ -114,7 +117,7 @@ export const CULTURE_AREAS: CultureArea[] = [
       {
         question: "Ogni paese ha una guida completa?",
         answer:
-          "Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti gli 84 comuni del Sud. In evidenza trovi 18 paesi tra Cagliari, costa, Sulcis e centri più cercati; gli altri restano nell’elenco A–Z.",
+          `Le schede lunghe — storia, tradizioni, cosa visitare e calendario eventi — ci sono su tutti gli ${areaTownCount("Sud Sardegna")} comuni del Sud. In evidenza trovi 18 paesi tra Cagliari, costa, Sulcis e centri più cercati; gli altri restano nell’elenco A–Z.`,
       },
     ],
   },

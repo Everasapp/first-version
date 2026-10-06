@@ -222,6 +222,7 @@ export const cities: City[] = [
   { id: 156, city: "Sestu", province: "CA", area: "Sud Sardegna" },
   { id: 208, city: "Seulo", province: "CA", area: "Sud Sardegna" },
   { id: 157, city: "Settimo San Pietro", province: "CA", area: "Sud Sardegna" },
+  { id: 230, city: "Siddi", province: "VS", area: "Sud Sardegna" },
   { id: 158, city: "Siliqua", province: "CA", area: "Sud Sardegna" },
   { id: 159, city: "Silius", province: "CA", area: "Sud Sardegna" },
   { id: 160, city: "Sinnai", province: "CA", area: "Sud Sardegna" },

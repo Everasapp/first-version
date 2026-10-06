@@ -1,0 +1,7 @@
+Siddi - Panorama (02)
+Author: Gianni Careddu
+Source: https://commons.wikimedia.org/wiki/File:Siddi_-_Panorama_(02).jpg
+License: Creative Commons Attribution-ShareAlike 4.0 International
+https://creativecommons.org/licenses/by-sa/4.0/
+Changes: resized to 1600 x 1067 pixels and converted to WebP for the web.
+The adapted image is distributed under CC BY-SA 4.0.
