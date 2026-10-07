@@ -4,6 +4,142 @@ import type { CulturaArticle } from "@/src/lib/seo/cultura-articles";
  * Personaggi sardi noti nel mondo, con link alle guide paese Everas.
  */
 export const CULTURA_PEOPLE_ARTICLES: CulturaArticle[] = [
+{
+  "slug": "giuseppe-biasi-pittore-sardegna",
+  "path": "/cultura/giuseppe-biasi-pittore-sardegna",
+  "title": "Giuseppe Biasi: vita, opere e Sardegna | EVERAS",
+  "h1": "Giuseppe Biasi, il pittore che trasformò la Sardegna in immagine",
+  "description": "Vita e opere di Giuseppe Biasi, pittore e illustratore sassarese che contribuì a costruire l’immagine moderna della Sardegna tra tradizioni, Grazia Deledda e viaggi in Africa.",
+  "intro": "Giuseppe Biasi non si limitò a dipingere la Sardegna. Con linee nette, colori intensi e figure disposte quasi come su un palcoscenico, contribuì a costruire l’immagine con cui l’isola entrò nella cultura visiva del Novecento. Nei suoi dipinti e nelle sue illustrazioni compaiono feste, processioni, abiti tradizionali, cavalieri e comunità riunite. Non sono semplici scene di costume: sono il risultato dello sguardo di un artista sardo attento alle esperienze europee del suo tempo.",
+  "excerpt": "Vita, opere e viaggi del pittore sassarese che trasformò feste e tradizioni sarde in immagini del Novecento.",
+  "hero": {
+    "src": "/images/cultura/giuseppe-biasi-ballo-tondo-everas.webp",
+    "alt": "Ballo tondo davanti a un paese sardo, dipinto da Giuseppe Biasi nel 1934-35",
+    "credit": {
+      "author": "Sailko, opera di Giuseppe Biasi: Ballo tondo (1934-35)",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Giuseppe_biasi,_ballo_tondo,_1934-35.jpg",
+      "sourceLabel": "Wikimedia Commons, ritaglio per il web"
+    }
+  },
+  "sections": [
+    {
+      "title": "Da Sassari alle riviste nazionali",
+      "paragraphs": [
+        "Giuseppe Biasi nacque a Sassari il 23 ottobre 1885. Iniziò a farsi conoscere soprattutto attraverso il disegno e l’illustrazione, collaborando con importanti riviste italiane. La forza grafica rimase una caratteristica riconoscibile anche nella sua pittura: contorni marcati, campiture cromatiche compatte e composizioni capaci di trasformare una scena collettiva in racconto.",
+        "Il primo Novecento fu un momento decisivo per gli artisti dell’isola. Insieme a personalità come Filippo Figari, Francesco Ciusa e, più tardi, Mario Delitala, Biasi partecipò alla nascita di un linguaggio figurativo moderno legato alla Sardegna. Il suo lavoro guardava alle feste e ai riti locali, ma dialogava anche con la Secessione, l’espressionismo e le nuove correnti artistiche europee."
+      ]
+    },
+    {
+      "title": "Il legame con Grazia Deledda",
+      "paragraphs": [
+        "Un passaggio importante della sua carriera fu la collaborazione con Grazia Deledda. Biasi illustrò testi della scrittrice nuorese e contribuì a dare una forma visiva a quel mondo di paesi, paesaggi e personaggi che la futura premio Nobel raccontava nella narrativa.",
+        "Il loro rapporto non fu soltanto professionale. Entrambi cercavano di portare la Sardegna oltre i confini dell’isola senza ridurla a una curiosità periferica. Deledda lo fece attraverso la letteratura; Biasi attraverso immagini capaci di circolare su libri, riviste e mostre nazionali."
+      ]
+    },
+    {
+      "title": "Feste, riti e vita collettiva",
+      "paragraphs": [
+        "Nelle opere di Biasi la Sardegna appare spesso come una comunità in movimento. Battesimi, matrimoni, processioni, balli e feste campestri diventano grandi composizioni corali. Gli abiti tradizionali non sono dettagli ornamentali: il colore e la geometria dei tessuti determinano il ritmo dell’intera scena.",
+        "Uno dei soggetti a cui tornò più volte fu la Discesa dei Candelieri di Sassari. Il pittore osservò obrieri, stendardi, folla e movimento della festa, lasciando opere grafiche oggi legate anche alla memoria visiva della Faradda.",
+        "Questa attenzione al mondo popolare va letta nel contesto dell’epoca. Biasi contribuì alla ricerca di un’identità artistica sarda, ma la sua non era una registrazione neutrale della realtà. Selezionava, componeva e trasformava ciò che vedeva, creando una Sardegna sospesa tra osservazione, mito e rappresentazione teatrale."
+      ]
+    },
+    {
+      "title": "Il viaggio in Africa",
+      "paragraphs": [
+        "Tra il 1924 e il 1927 Biasi soggiornò e viaggiò nel Nord Africa. L’esperienza modificò colori, soggetti e atmosfere della sua pittura. Mercati, figure, tessuti e paesaggi africani entrarono nel suo repertorio, alimentando il gusto per l’esotico diffuso nella cultura europea del periodo.",
+        "Questo capitolo permette oggi una lettura più complessa dell’artista. Le opere africane testimoniano curiosità e ricerca formale, ma appartengono anche allo sguardo europeo e coloniale del primo Novecento. Comprenderle significa collocarle nel loro tempo, senza cancellarne il fascino pittorico e senza ignorare il contesto storico in cui nacquero."
+      ]
+    },
+    {
+      "title": "Un finale tragico",
+      "paragraphs": [
+        "Negli ultimi anni Biasi lavorò anche a importanti decorazioni pubbliche, tra cui quelle per lo scalone del Palazzo di Giustizia di Sassari. Durante la Seconda guerra mondiale si trovava in Piemonte. Morì il 20 maggio 1945 ad Andorno Micca, nel Biellese, durante le violenze seguite alla Liberazione.",
+        "Le circostanze della morte sono state a lungo raccontate attraverso ricostruzioni diverse e devono essere affrontate con cautela. Ciò che resta certo è la brusca conclusione di una carriera che aveva attraversato illustrazione, pittura, incisione, decorazione e dibattito culturale."
+      ]
+    },
+    {
+      "title": "Dove vedere le opere di Giuseppe Biasi",
+      "paragraphs": [
+        "La Pinacoteca Nazionale di Sassari conserva ed espone un importante nucleo della Collezione regionale Biasi. Altre opere si trovano in collezioni pubbliche sarde, tra cui la Galleria Comunale d’Arte di Cagliari e il MAN di Nuoro.",
+        "Vedere dal vivo i dipinti consente di cogliere elementi che sullo schermo si perdono: la materia del colore, la costruzione delle figure e il rapporto tra decorazione e racconto. Per chi visita Sassari, la Pinacoteca nel centro storico è il punto naturale da cui iniziare."
+      ]
+    },
+    {
+      "title": "Perché Giuseppe Biasi è ancora importante",
+      "paragraphs": [
+        "Biasi è una figura centrale non perché abbia offerto un’immagine definitiva della Sardegna, ma perché ha contribuito a renderla visibile nel panorama artistico nazionale. Le sue opere raccontano come l’isola volle presentarsi nel primo Novecento e, allo stesso tempo, come venne trasformata dallo sguardo dell’artista.",
+        "Oggi i suoi dipinti possono essere osservati su più livelli: come opere d’arte, come documenti di una stagione culturale e come immagini che hanno influenzato il modo di rappresentare feste, abiti e comunità sarde. È proprio questa stratificazione a renderli ancora vivi."
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Chi era Giuseppe Biasi?",
+      "answer": "Giuseppe Biasi fu un pittore, incisore e illustratore nato a Sassari nel 1885. È considerato uno dei principali protagonisti dell’arte sarda del Novecento."
+    },
+    {
+      "question": "Quali soggetti dipingeva?",
+      "answer": "Rappresentò soprattutto feste, processioni, balli, abiti tradizionali e scene della vita comunitaria sarda. Dopo i viaggi nel Nord Africa realizzò anche numerose opere di soggetto africano."
+    },
+    {
+      "question": "Quale rapporto ebbe con Grazia Deledda?",
+      "answer": "Biasi illustrò alcuni testi di Grazia Deledda. La collaborazione contribuì alla diffusione nazionale di un immaginario sardo costruito attraverso letteratura e arti visive."
+    },
+    {
+      "question": "Dove si possono vedere le sue opere?",
+      "answer": "Un importante nucleo è esposto alla Pinacoteca Nazionale di Sassari. Altre opere si trovano nella Galleria Comunale d’Arte di Cagliari, al MAN di Nuoro e in ulteriori collezioni pubbliche e private."
+    }
+  ],
+  "sources": [
+    {
+      "label": "SardegnaCultura: Giuseppe Biasi",
+      "href": "https://www.sardegnacultura.it/cerca/193878"
+    },
+    {
+      "label": "SardegnaCultura: Giuseppe Biasi e Filippo Figari",
+      "href": "https://www.sardegnacultura.it/articolo/giuseppe-biasi-e-filippo-figari"
+    },
+    {
+      "label": "Ministero della Cultura: Pinacoteca Nazionale di Sassari",
+      "href": "https://cultura.gov.it/luogo/pinacoteca-nazionale-di-sassari"
+    },
+    {
+      "label": "Treccani: Biasi, Giuseppe, Dizionario Biografico degli Italiani",
+      "href": "https://www.treccani.it/enciclopedia/giuseppe-biasi_(Dizionario-Biografico)/"
+    },
+    {
+      "label": "Ministero della Cultura: la Collezione regionale Biasi",
+      "href": "https://cultura.gov.it/evento/giuseppe-biasi-la-collezione-regionale-inaugurazione-nuove-sale"
+    },
+    {
+      "label": "Wikimedia Commons: Ballo tondo, scheda e licenza",
+      "href": "https://commons.wikimedia.org/wiki/File:Giuseppe_biasi,_ballo_tondo,_1934-35.jpg"
+    }
+  ],
+  "relatedLinks": [
+    {
+      "href": "/cultura-sarda/nord-sardegna/sassari",
+      "label": "Sassari: storia, musei e luoghi da visitare"
+    },
+    {
+      "href": "/cultura-sarda/sud-sardegna/cagliari",
+      "label": "Cagliari: guida alla città"
+    },
+    {
+      "href": "/cultura-sarda/centro-sardegna/nuoro",
+      "label": "Nuoro: arte e cultura"
+    },
+    {
+      "href": "/eventi/sassari",
+      "label": "Eventi a Sassari"
+    }
+  ],
+  "kind": "approfondimento",
+  "publishedAt": "2026-10-07"
+},
   {
     slug: "francesco-cossiga-presidente",
     path: "/cultura/francesco-cossiga-presidente",
