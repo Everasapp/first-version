@@ -1,5 +1,10 @@
 import { categories } from "@/src/data/categories";
-import { currentMonthLanding, currentYearLanding } from "@/src/lib/seo/calendar";
+import {
+  CALENDAR_YEAR_MIN,
+  currentMonthLanding,
+  currentYearLanding,
+  monthLanding,
+} from "@/src/lib/seo/calendar";
 import type { LandingLink, LandingStats } from "@/src/lib/seo/landing-copy";
 import {
   categoryEventsPath,
@@ -77,6 +82,78 @@ export function temporalExploreLinks(excludeHref?: string): LandingLink[] {
         label: "Cerca e filtra tutti gli eventi",
       },
     ].filter((link) => link.href !== excludeHref),
+  );
+}
+
+
+export type EventContextLinkInput = {
+  municipality: string;
+  categorySlug: string;
+  categoryLabel: string;
+  startAt: string;
+};
+
+function eventMonthLink(startAt: string, from: Date): LandingLink | null {
+  const eventDate = new Date(startAt);
+  if (Number.isNaN(eventDate.getTime())) return null;
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Rome",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(eventDate);
+  const year = Number(parts.find((part) => part.type === "year")?.value);
+  const month = Number(parts.find((part) => part.type === "month")?.value);
+  const currentYear = currentMonthLanding(from).year;
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    month < 1 ||
+    month > 12 ||
+    year < CALENDAR_YEAR_MIN ||
+    year > currentYear + 1
+  ) {
+    return null;
+  }
+
+  const landing = monthLanding(year, month - 1);
+  return { href: landing.path, label: landing.title };
+}
+
+/**
+ * Link contestuali dalle schede evento alle landing SEO stabili.
+ * Usa solo URL canonici e la data civile Europe/Rome dell'evento.
+ */
+export function eventContextLinks(
+  input: EventContextLinkInput,
+  from = new Date(),
+): LandingLink[] {
+  const month = eventMonthLink(input.startAt, from);
+  const categoryLabel = /sardegna/i.test(input.categoryLabel)
+    ? input.categoryLabel
+    : `${input.categoryLabel} in Sardegna`;
+
+  return dedupeLinks(
+    [
+      {
+        href: cityEventsPath(input.municipality),
+        label: `Eventi a ${input.municipality}`,
+      },
+      {
+        href: categoryEventsPath(input.categorySlug),
+        label: categoryLabel,
+      },
+      month,
+      {
+        href: "/eventi-weekend",
+        label: "Eventi Sardegna questo weekend",
+      },
+      {
+        href: "/eventi-sardegna",
+        label: "Tutti gli eventi in Sardegna",
+      },
+    ].filter((link): link is LandingLink => link !== null),
   );
 }
 
