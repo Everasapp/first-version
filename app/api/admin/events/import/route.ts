@@ -7,6 +7,7 @@ import { normalizeEventCategories } from "@/src/lib/event-categories";
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import { createSlug } from "@/src/lib/slug";
 import { normalizeEventDescription } from "@/src/lib/sanitizeHtml";
+import { revalidatePublishedEvents } from "@/src/lib/seo/revalidate-published-events";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -310,6 +311,10 @@ export async function POST(request: Request) {
       publish,
     },
   });
+
+  if (publish || event.updateExistingId) {
+    revalidatePublishedEvents();
+  }
 
   // Import admin: nessuna email (l’admin non deve notificarsi da solo).
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle, Send } from "lucide-react";
 
 import { requestAdminNotification } from "@/src/lib/notifications/client";
+import { requestPublishedEventsRevalidation } from "@/src/lib/seo/request-published-events-revalidation";
 import { stripDraftSlugSuffix } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -45,6 +46,8 @@ export default function PublishEventButton({
       setIsPublishing(false);
       return;
     }
+
+    await requestPublishedEventsRevalidation(eventId);
 
     requestAdminNotification({
       type: "event_published",

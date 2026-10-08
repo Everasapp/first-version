@@ -12,11 +12,15 @@ vi.mock("@/src/lib/favorites", () => ({ getCurrentUserFavoriteIds: state.favorit
 type Page = { data: Record<string, unknown>[] | null; error: { message: string } | null };
 
 function queryReturning(...pages: Page[]) {
+  const matchingIds = pages.flatMap((page) =>
+    (page.data ?? []).map((row) => ({ id: row.id })),
+  );
   const query = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     gte: vi.fn().mockReturnThis(),
     ilike: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockResolvedValue({ data: matchingIds, error: null }),
     order: vi.fn().mockReturnThis(),
     range: vi.fn(),
   };
@@ -95,6 +99,16 @@ describe("anonymous public event cache", () => {
     expect(second.events[0].isFavorite).toBe(false);
     expect(otherCity.events[0].municipality).toBe("Cagliari");
     expect(query.range).toHaveBeenCalledTimes(2);
+    expect(query.ilike).toHaveBeenCalledWith(
+      "description",
+      "%laboratorio%",
+    );
+    expect(query.limit).toHaveBeenCalledTimes(3);
+    const sharedCatalogSelects = query.select.mock.calls
+      .map(([columns]) => String(columns))
+      .filter((columns) => columns.includes("schedule_mode"));
+    expect(sharedCatalogSelects).not.toHaveLength(0);
+    expect(sharedCatalogSelects.every((columns) => !columns.includes("description"))).toBe(true);
     expect(state.favorites).toHaveBeenCalledTimes(3);
   });
 

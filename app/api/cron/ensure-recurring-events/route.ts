@@ -4,6 +4,7 @@ import { ensureRecurringSundayEvents } from "@/src/lib/admin/recurring-sunday-ev
 import { isCronAuthorized } from "@/src/lib/cron/auth";
 import { logCronRun } from "@/src/lib/cron/run-log";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
+import { revalidatePublishedEvents } from "@/src/lib/seo/revalidate-published-events";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,6 +51,12 @@ export async function GET(request: Request) {
 
   try {
     const result = await runEnsure();
+    const republished = result.skipped.some((item) =>
+      item.reason.startsWith("ripubblicato"),
+    );
+    if (result.createdCount > 0 || result.unpublishedCount > 0 || republished) {
+      revalidatePublishedEvents();
+    }
     await logCronRun({
       supabase: tryCreateAdminClient(),
       jobName: JOB_NAME,

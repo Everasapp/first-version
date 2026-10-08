@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { permanentRedirect } from "next/navigation";
+import { cache } from "react";
 import {
   Building2,
   ExternalLink,
@@ -125,11 +126,72 @@ type EventRow = {
   source_name?: string | null;
 };
 
+type EventCardRow = Pick<
+  EventRow,
+  | "id"
+  | "slug"
+  | "title"
+  | "category"
+  | "categories"
+  | "province"
+  | "municipality"
+  | "location_name"
+  | "start_at"
+  | "end_at"
+  | "schedule_mode"
+  | "image_url"
+  | "is_free"
+  | "price_from"
+  | "is_featured"
+  | "views_count"
+  | "favorites_count"
+  | "shares_count"
+>;
+
+const EVENT_DETAIL_SELECT_BASE =
+  "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
+const EVENT_DETAIL_SELECT_WITH_MODE =
+  "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
+
+function isMissingScheduleModeColumn(message: string | undefined) {
+  return Boolean(
+    message &&
+      /schedule_mode/i.test(message) &&
+      /does not exist|schema cache|column/i.test(message),
+  );
+}
+
+// generateMetadata and the page render share this request-scoped lookup.
+const getPublishedEventBySlug = cache(async (slug: string) => {
+  const supabase = await createClient();
+  let { data, error } = await supabase
+    .from("events")
+    .select(EVENT_DETAIL_SELECT_WITH_MODE)
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error && isMissingScheduleModeColumn(error.message)) {
+    ({ data, error } = await supabase
+      .from("events")
+      .select(EVENT_DETAIL_SELECT_BASE)
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle());
+  }
+
+  if (error) {
+    throw new Error(`Impossibile caricare l'evento: ${error.message}`);
+  }
+
+  return (data as EventRow | null) ?? null;
+});
+
 function formatEventDate(startAt: string, endAt: string | null) {
   return formatEventDateRange(startAt, endAt, { includeWeekday: true });
 }
 
-function mapEventForCard(event: EventRow, isFavorite = false) {
+function mapEventForCard(event: EventCardRow, isFavorite = false) {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const categoryLabels = resolveCategoryLabels(event);
 
@@ -189,18 +251,10 @@ export async function generateMetadata({
     return buildCategoryLandingMetadata(category, events.length);
   }
 
-  const supabase = await createClient();
-
-  const { data } = await supabase
-    .from("events")
-    .select(
-      "title, description, image_url, municipality, start_at, end_at, is_free, price_from",
-    )
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
+  const data = await getPublishedEventBySlug(slug);
 
   if (!data) {
+    const supabase = await createClient();
     const replacement = await findReplacementEventSlug(supabase, slug);
     permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
   }
@@ -262,34 +316,7 @@ export default async function EventSlugPage({
 
 async function EventDetailPage({ slug }: { slug: string }) {
   const supabase = await createClient();
-
-  let { data, error } = await supabase
-    .from("events")
-    .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
-    )
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle();
-
-  if (
-    error &&
-    /schedule_mode/i.test(error.message) &&
-    /does not exist|schema cache|column/i.test(error.message)
-  ) {
-    ({ data, error } = await supabase
-      .from("events")
-      .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name",
-      )
-      .eq("slug", slug)
-      .eq("status", "published")
-      .maybeSingle());
-  }
-
-  if (error) {
-    throw new Error(`Impossibile caricare l'evento: ${error.message}`);
-  }
+  const data = await getPublishedEventBySlug(slug);
 
   if (!data) {
     const replacement = await findReplacementEventSlug(supabase, slug);
@@ -332,7 +359,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const eventCardSelect =
-    "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count";
+    "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
   const activeEventFilter = `end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
 
   const [
@@ -425,8 +452,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? followedIds.has(followOrganizerId)
     : false;
 
-  const similarEventRows = (similarData ?? []) as EventRow[];
-  const cityEventRows = (cityEventsData ?? []) as EventRow[];
+  const similarEventRows = (similarData ?? []) as EventCardRow[];
+  const cityEventRows = (cityEventsData ?? []) as EventCardRow[];
   const nextEdition = isExpired
     ? findNextEventEdition(event, cityEventRows, now)
     : null;

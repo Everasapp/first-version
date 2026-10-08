@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoaderCircle, Trash2 } from "lucide-react";
 
 import { createClient } from "@/src/lib/supabase/client";
+import { requestPublishedEventsRevalidation } from "@/src/lib/seo/request-published-events-revalidation";
 
 type DeleteEventButtonProps = {
   eventId: string;
@@ -59,6 +60,11 @@ export default function DeleteEventButton({
 
     const supabase = createClient();
     let imageIsUsedByOtherEvents = true;
+
+    // The endpoint verifies ownership while the row still exists.
+    if (!isDraft) {
+      await requestPublishedEventsRevalidation(eventId);
+    }
 
     if (imageUrl) {
       const { count, error: countError } = await supabase

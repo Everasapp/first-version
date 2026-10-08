@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { LoaderCircle, Star } from "lucide-react";
 
 import { createClient } from "@/src/lib/supabase/client";
+import { requestPublishedEventsRevalidation } from "@/src/lib/seo/request-published-events-revalidation";
 
 type PromoteEventButtonProps = {
   eventId: string;
@@ -45,6 +46,8 @@ export default function PromoteEventButton({
         setErrorMessage(error.message);
         return;
       }
+
+      await requestPublishedEventsRevalidation(eventId);
 
       router.refresh();
     });

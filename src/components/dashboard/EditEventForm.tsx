@@ -39,6 +39,7 @@ import { normalizeEventDescription, stripHtml } from "@/src/lib/sanitizeHtml";
 import { getEventImageStoragePath } from "@/src/lib/images/storagePath";
 import { uploadEventImage } from "@/src/lib/images/uploadEventImageClient";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
+import { requestPublishedEventsRevalidation } from "@/src/lib/seo/request-published-events-revalidation";
 import { stripDraftSlugSuffix } from "@/src/lib/slug";
 import { createClient } from "@/src/lib/supabase/client";
 import {
@@ -438,6 +439,10 @@ export default function EditEventForm({
 
       setExistingImageUrl(nextImageUrl);
       setImageFile(null);
+
+      if (!isDraft || shouldPublish) {
+        await requestPublishedEventsRevalidation(event.id);
+      }
 
       if (shouldPublish) {
         requestAdminNotification({

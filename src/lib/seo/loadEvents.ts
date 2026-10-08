@@ -25,11 +25,14 @@ import {
   type EventTemporalContext,
 } from "@/src/lib/seo/eventAppearsInRange";
 import { sortEventsForPeriod } from "@/src/lib/seo/event-period-relevance";
+import {
+  PUBLISHED_EVENTS_CACHE_SECONDS,
+  PUBLISHED_EVENTS_CACHE_TAG,
+} from "@/src/lib/seo/published-events-cache";
 
 export type PublishedEventRow = {
   id: string;
   title: string;
-  description: string | null;
   category: string | null;
   categories?: string[] | null;
   province: string | null;
@@ -109,7 +112,6 @@ export type EventListFilters = {
 const PUBLISHED_EVENT_SELECT_BASE = `
         id,
         title,
-        description,
         category,
         categories,
         province,
@@ -131,7 +133,6 @@ const PUBLISHED_EVENT_SELECT_BASE = `
 const PUBLISHED_EVENT_SELECT_WITH_MODE = `
         id,
         title,
-        description,
         category,
         categories,
         province,
@@ -207,10 +208,10 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-event-rows-v2"],
+  ["published-event-rows-v3"],
   {
-    revalidate: 300,
-    tags: ["published-events"],
+    revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
+    tags: [PUBLISHED_EVENTS_CACHE_TAG],
   },
 );
 
@@ -224,6 +225,77 @@ async function loadPublishedEventRows(city?: string) {
         message: error instanceof Error ? error.message : "Unable to load published events",
       },
     };
+  }
+}
+
+function normalizeTitleIncludes(values: string[] | undefined) {
+  return Array.from(
+    new Set(
+      (values ?? [])
+        .map((value) => value.trim().toLocaleLowerCase("it"))
+        .filter(Boolean),
+    ),
+  ).sort();
+}
+
+async function fetchPublishedEventIdsMatching(
+  needles: string[],
+  city: string | null,
+) {
+  const supabase = createPublicClient();
+  const columns = ["title", "description", "municipality"] as const;
+  const matches = await Promise.all(
+    needles.flatMap((needle) =>
+      columns.map(async (column) => {
+        let query = supabase
+          .from("events")
+          .select("id")
+          .eq("status", "published");
+
+        if (city) {
+          query = query.ilike("municipality", city);
+        }
+
+        const { data, error } = await query
+          .ilike(column, `%${needle}%`)
+          .limit(1000);
+
+        if (error) throw new Error(error.message);
+        return (data ?? []).map((row) => row.id as string);
+      }),
+    ),
+  );
+
+  return Array.from(new Set(matches.flat()));
+}
+
+// Festival hubs need description matching, but only the matching IDs should
+// leave Supabase. The much larger shared card catalog deliberately omits it.
+const fetchCachedPublishedEventIdsMatching = unstable_cache(
+  fetchPublishedEventIdsMatching,
+  ["published-event-title-match-ids-v1"],
+  {
+    revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
+    tags: [PUBLISHED_EVENTS_CACHE_TAG],
+  },
+);
+
+async function loadPublishedEventIdsMatching(
+  needles: string[],
+  city?: string,
+) {
+  if (needles.length === 0) return null;
+
+  try {
+    return new Set(
+      await fetchCachedPublishedEventIdsMatching(
+        needles,
+        city?.toLocaleLowerCase("it") ?? null,
+      ),
+    );
+  } catch (error) {
+    console.error("Impossibile applicare il filtro testuale eventi:", error);
+    return null;
   }
 }
 
@@ -241,9 +313,11 @@ function resolveListTemporalContext(
 
 export const loadFilteredPublishedEvents = cache(
   async function loadFilteredPublishedEvents(filters: EventListFilters = {}) {
-    const [{ rows, error }, favoriteIds] = await Promise.all([
+    const needles = normalizeTitleIncludes(filters.titleIncludes);
+    const [{ rows, error }, favoriteIds, titleMatchIds] = await Promise.all([
       loadPublishedEventRows(filters.city),
       getCurrentUserFavoriteIds(),
+      loadPublishedEventIdsMatching(needles, filters.city),
     ]);
 
     const now = new Date();
@@ -296,16 +370,13 @@ export const loadFilteredPublishedEvents = cache(
           !filters.range ||
           eventAppearsInRange(rangeInput, filters.range, temporalContext);
 
-        const needles = (filters.titleIncludes ?? []).map((value) =>
-          value.toLocaleLowerCase("it"),
-        );
-        const haystack =
-          `${event.title} ${event.description ?? ""} ${event.municipality ?? ""}`.toLocaleLowerCase(
-            "it",
-          );
+        const fallbackHaystack =
+          `${event.title} ${event.municipality ?? ""}`.toLocaleLowerCase("it");
         const matchesTitle =
           needles.length === 0 ||
-          needles.some((needle) => haystack.includes(needle));
+          (titleMatchIds
+            ? titleMatchIds.has(event.id)
+            : needles.some((needle) => fallbackHaystack.includes(needle)));
 
         const matchesSlug =
           !filters.slugs?.length ||

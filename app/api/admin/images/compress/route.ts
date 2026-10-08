@@ -8,6 +8,7 @@ import {
   isAlreadyWebpUrl,
 } from "@/src/lib/images/storagePath";
 import { createAdminClient } from "@/src/lib/supabase/admin";
+import { revalidatePublishedEvents } from "@/src/lib/seo/revalidate-published-events";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -315,6 +316,10 @@ export async function POST(request: Request) {
 
     const converted = results.filter((item) => item.ok).length;
     const failed = results.filter((item) => !item.ok).length;
+
+    if (converted > 0) {
+      revalidatePublishedEvents();
+    }
 
     return NextResponse.json({
       processed: results.length,

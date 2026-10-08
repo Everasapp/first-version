@@ -1,6 +1,10 @@
 import { unstable_cache } from "next/cache";
 
 import { createPublicClient } from "@/src/lib/supabase/public";
+import {
+  PUBLISHED_EVENTS_CACHE_SECONDS,
+  PUBLISHED_EVENTS_CACHE_TAG,
+} from "@/src/lib/seo/published-events-cache";
 
 export type HomeEventRow = {
   id: string;
@@ -50,7 +54,10 @@ const fetchCachedHomeEventRows = unstable_cache(
     }
   },
   ["homepage-event-rows-v1"],
-  { revalidate: 300, tags: ["published-events"] },
+  {
+    revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
+    tags: [PUBLISHED_EVENTS_CACHE_TAG],
+  },
 );
 
 export async function loadHomeEventRows() {
