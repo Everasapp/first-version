@@ -13,6 +13,7 @@ import CalendarButton from "@/src/components/events/CalendarButton";
 import EventDescription from "@/src/components/events/EventDescription";
 import EventContextLinks from "@/src/components/events/EventContextLinks";
 import EventPracticalFacts from "@/src/components/events/EventPracticalFacts";
+import ExpiredEventNotice from "@/src/components/events/ExpiredEventNotice";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
@@ -33,6 +34,8 @@ import {
 } from "@/src/components/seo/GeoCategoryLandings";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import { eventContextLinks } from "@/src/lib/seo/internal-links";
+import { findNextEventEdition } from "@/src/lib/seo/event-edition";
+import { romeDayRange, romeYmd } from "@/src/lib/seo/rome-time";
 import { filterWorkshopRelevantEvents } from "@/src/lib/seo/workshop-relevance";
 import {
   eventCategorySlugs,
@@ -294,6 +297,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const event = data as EventRow;
+  const now = new Date();
+  const isExpired = !isPublicEventActive(
+    event.start_at,
+    event.end_at,
+    now,
+  );
 
   const {
     data: { user },
@@ -323,7 +332,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const eventCardSelect =
-    "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count";
+    "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, is_featured, organizer_id, views_count, favorites_count, shares_count";
+  const activeEventFilter = `end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
 
   const [
     { data: similarData, error: similarError },
@@ -340,16 +350,18 @@ async function EventDetailPage({ slug }: { slug: string }) {
       .eq("status", "published")
       .eq("category", event.category)
       .neq("id", event.id)
+      .or(activeEventFilter)
       .order("start_at", { ascending: true })
-      .limit(3),
+      .limit(12),
     supabase
       .from("events")
       .select(eventCardSelect)
       .eq("status", "published")
       .eq("municipality", event.municipality)
       .neq("id", event.id)
+      .or(activeEventFilter)
       .order("start_at", { ascending: true })
-      .limit(24),
+      .limit(100),
     getCurrentUserFavoriteIds(),
     getCurrentUserCalendarEventIds(),
     getCurrentUserFollowedOrganizerIds(),
@@ -413,12 +425,19 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? followedIds.has(followOrganizerId)
     : false;
 
-  const similarEvents = ((similarData ?? []) as EventRow[])
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at))
+  const similarEventRows = (similarData ?? []) as EventRow[];
+  const cityEventRows = (cityEventsData ?? []) as EventRow[];
+  const nextEdition = isExpired
+    ? findNextEventEdition(event, cityEventRows, now)
+    : null;
+
+  const similarEvents = similarEventRows
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
+    .slice(0, 3)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
-  const cityEvents = ((cityEventsData ?? []) as EventRow[])
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at))
+  const cityEvents = cityEventRows
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
     .slice(0, 6)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
@@ -501,7 +520,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 city: event.municipality,
                 province: event.province,
                 organizerName,
-                isExpired: !isPublicEventActive(event.start_at, event.end_at),
+                isExpired,
               })
             : collectionPageSchema({
                 name: event.title,
@@ -554,13 +573,15 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 size="md"
                 className="shadow-lg"
               />
-              <CalendarButton
-                eventId={event.id}
-                eventTitle={event.title}
-                initialInCalendar={inCalendar}
-                size="md"
-                className="shadow-lg"
-              />
+              {!isExpired ? (
+                <CalendarButton
+                  eventId={event.id}
+                  eventTitle={event.title}
+                  initialInCalendar={inCalendar}
+                  size="md"
+                  className="shadow-lg"
+                />
+              ) : null}
               <ShareEventButton
                 eventId={event.id}
                 title={event.title}
@@ -625,13 +646,34 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
         <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div>
+            {isExpired ? (
+              <ExpiredEventNotice
+                municipality={event.municipality}
+                cityPath={cityPath}
+                categoryLabel={categoryName}
+                categoryPath={categoryPath}
+                nextEdition={
+                  nextEdition?.slug
+                    ? {
+                        slug: nextEdition.slug,
+                        title: nextEdition.title,
+                        date: formatEventDate(
+                          nextEdition.start_at,
+                          nextEdition.end_at ?? null,
+                        ),
+                      }
+                    : null
+                }
+              />
+            ) : null}
+
             <EventPracticalFacts
               scheduleMode={scheduleMode}
               startAt={event.start_at}
               endAt={event.end_at}
               isFree={event.is_free}
               priceFrom={event.price_from}
-              ticketUrl={event.ticket_url}
+              ticketUrl={isExpired ? null : event.ticket_url}
             />
 
             <div className="py-10">
@@ -842,7 +884,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                   </Link>
                 ) : null}
 
-                {event.ticket_url && (
+                {!isExpired && event.ticket_url ? (
                   <a
                     href={event.ticket_url}
                     target="_blank"
@@ -853,30 +895,34 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     {pricing.isFree ? "Prenota" : "Acquista il biglietto"}
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
                   </a>
-                )}
+                ) : null}
 
-                <CalendarButton
-                  eventId={event.id}
-                  eventTitle={event.title}
-                  initialInCalendar={inCalendar}
-                  variant="button"
-                />
+                {!isExpired ? (
+                  <CalendarButton
+                    eventId={event.id}
+                    eventTitle={event.title}
+                    initialInCalendar={inCalendar}
+                    variant="button"
+                  />
+                ) : null}
 
                 <Link
-                  href="/eventi"
+                  href={isExpired ? cityPath : "/eventi"}
                   className="flex w-full items-center justify-center rounded-2xl border border-slate-300 px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
                 >
-                  Torna agli eventi
+                  {isExpired
+                    ? `Eventi attuali a ${event.municipality}`
+                    : "Torna agli eventi"}
                 </Link>
               </div>
 
-              {event.ticket_url && (
+              {!isExpired && event.ticket_url ? (
                 <p className="mt-5 text-center text-xs leading-5 text-slate-500">
                   {pricing.isFree
                     ? "La prenotazione è gestita sul sito esterno indicato dall’organizzatore."
                     : "La biglietteria è gestita sul sito esterno indicato dall'organizzatore."}
                 </p>
-              )}
+              ) : null}
             </div>
           </aside>
         </section>
@@ -885,12 +931,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
           <section className="border-t border-slate-200 py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Stessa città
+                {isExpired ? "In programma" : "Stessa città"}
               </p>
 
               <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <h2 className="text-3xl font-bold text-slate-900">
-                  Altri eventi a {event.municipality}
+                  {isExpired ? "Eventi attuali" : "Altri eventi"} a{" "}
+                  {event.municipality}
                 </h2>
                 <Link
                   href={cityPath}
@@ -913,11 +960,11 @@ async function EventDetailPage({ slug }: { slug: string }) {
           <section className="border-t border-slate-200 py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                Potrebbero piacerti
+                {isExpired ? "Calendario aggiornato" : "Potrebbero piacerti"}
               </p>
 
               <h2 className="mt-2 text-3xl font-bold text-slate-900">
-                Eventi simili
+                {isExpired ? "Eventi simili in programma" : "Eventi simili"}
               </h2>
 
               <div className="mt-8 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
