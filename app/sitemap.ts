@@ -35,6 +35,7 @@ import {
   eventAppearsInRange,
   type EventTemporalContext,
 } from "@/src/lib/seo/eventAppearsInRange";
+import { latestEventUpdate } from "@/src/lib/seo/last-modified";
 import { shouldIndexCityLanding } from "@/src/lib/seo/site";
 
 const SITE_URL = "https://www.everas.it";
@@ -104,13 +105,30 @@ function getEventArea(municipality: string | null | undefined) {
   )?.area;
 }
 
-function countActiveOverlapping(
+function withLastModified(
+  route: MetadataRoute.Sitemap[number],
+  lastModified: Date | undefined,
+): MetadataRoute.Sitemap[number] {
+  return lastModified ? { ...route, lastModified } : route;
+}
+
+function overlappingEvents(
   events: SitemapEventRow[],
   range: { start: Date; end: Date },
   context: EventTemporalContext = "general",
 ) {
-  return events.filter((event) => eventOverlapsRange(event, range, context))
-    .length;
+  return events.filter((event) => eventOverlapsRange(event, range, context));
+}
+
+function rollingFloorForRange(
+  range: { start: Date; end: Date },
+  rollingPageFloor: Date | undefined,
+) {
+  if (!rollingPageFloor) return undefined;
+  const floor = rollingPageFloor.getTime();
+  return range.start.getTime() <= floor && floor < range.end.getTime()
+    ? rollingPageFloor
+    : undefined;
 }
 
 /** Evergreen / always-indexable public URLs (no event-count gate). */
@@ -118,25 +136,21 @@ function alwaysIndexRoutes(): MetadataRoute.Sitemap {
   return [
     {
       url: SITE_URL,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${SITE_URL}/eventi`,
-      lastModified: new Date(),
       changeFrequency: "hourly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/eventi-sardegna`,
-      lastModified: new Date(),
       changeFrequency: "hourly",
       priority: 0.95,
     },
     {
       url: `${SITE_URL}/eventi-sardegna/sagre`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
@@ -322,6 +336,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         typeof event.start_at === "string" &&
         isPublicEventActive(event.start_at, event.end_at),
     );
+    const rollingPageFloor = getDateRange("oggi")?.start;
+    const latestUpcomingUpdate = latestEventUpdate(
+      upcomingEvents,
+      rollingPageFloor,
+    );
+    const sagreEvents = upcomingEvents.filter((event) =>
+      eventMatchesCategoryFilter(event, "sagre-tradizioni"),
+    );
+    const baseWithLastModified = base.map((route) => {
+      if (
+        route.url === SITE_URL ||
+        route.url === `${SITE_URL}/eventi` ||
+        route.url === `${SITE_URL}/eventi-sardegna`
+      ) {
+        return withLastModified(route, latestUpcomingUpdate);
+      }
+      if (route.url === `${SITE_URL}/eventi-sardegna/sagre`) {
+        return withLastModified(
+          route,
+          latestEventUpdate(sagreEvents, rollingPageFloor),
+        );
+      }
+      return route;
+    });
 
     // --- Gated by landingRobots(eventCount > 0) ---
     const dateLandingRoutes: MetadataRoute.Sitemap = [];
@@ -330,7 +368,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!range) continue;
       const context: EventTemporalContext =
         key === "weekend" ? "weekend" : "daily";
-      if (countActiveOverlapping(upcomingEvents, range, context) === 0) continue;
+      const matching = overlappingEvents(upcomingEvents, range, context);
+      if (matching.length === 0) continue;
       const path =
         key === "oggi"
           ? "/eventi-oggi"
@@ -339,99 +378,152 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             : key === "weekend"
               ? "/eventi-weekend"
               : "/eventi-domenica";
-      dateLandingRoutes.push({
-        url: `${SITE_URL}${path}`,
-        changeFrequency: key === "weekend" ? "daily" : "hourly",
-        priority: 0.85,
-      });
+      dateLandingRoutes.push(
+        withLastModified(
+          {
+            url: `${SITE_URL}${path}`,
+            changeFrequency: key === "weekend" ? "daily" : "hourly",
+            priority: 0.85,
+          },
+          latestEventUpdate(matching, rollingPageFloor),
+        ),
+      );
     }
 
     const oggiRange = getDateRange("oggi");
     if (oggiRange) {
-      const sudOggiCount = upcomingEvents.filter(
+      const sudOggiEvents = upcomingEvents.filter(
         (event) =>
           getEventArea(event.municipality) === "Sud Sardegna" &&
           eventOverlapsRange(event, oggiRange, "daily"),
-      ).length;
-      if (sudOggiCount > 0) {
-        dateLandingRoutes.push({
-          url: `${SITE_URL}/eventi-sud-sardegna-oggi`,
-          changeFrequency: "hourly",
-          priority: 0.82,
-        });
+      );
+      if (sudOggiEvents.length > 0) {
+        dateLandingRoutes.push(
+          withLastModified(
+            {
+              url: `${SITE_URL}/eventi-sud-sardegna-oggi`,
+              changeFrequency: "hourly",
+              priority: 0.82,
+            },
+            latestEventUpdate(sudOggiEvents, rollingPageFloor),
+          ),
+        );
       }
     }
 
-    const freeCount = upcomingEvents.filter((event) =>
+    const freeEvents = upcomingEvents.filter((event) =>
       resolveEventPricing(event.is_free ?? false, event.price_from ?? null)
         .isFree,
-    ).length;
+    );
     const freeRoutes: MetadataRoute.Sitemap =
-      freeCount > 0
+      freeEvents.length > 0
         ? [
-            {
-              url: `${SITE_URL}/eventi-gratuiti`,
-              changeFrequency: "daily",
-              priority: 0.8,
-            },
+            withLastModified(
+              {
+                url: `${SITE_URL}/eventi-gratuiti`,
+                changeFrequency: "daily",
+                priority: 0.8,
+              },
+              latestEventUpdate(freeEvents, rollingPageFloor),
+            ),
           ]
         : [];
 
-    const yearRoutes: MetadataRoute.Sitemap = calendarYears()
-      .filter(
-        (year) =>
-          countActiveOverlapping(upcomingEvents, getYearRange(year.year), "general") > 0,
-      )
-      .map((year) => ({
-        url: `${SITE_URL}${year.path}`,
-        lastModified: new Date(),
-        changeFrequency: "daily" as const,
-        priority: 0.9,
-      }));
+    const yearRoutes: MetadataRoute.Sitemap = calendarYears().flatMap((year) => {
+      const range = getYearRange(year.year);
+      const matching = overlappingEvents(
+        upcomingEvents,
+        range,
+        "general",
+      );
+      return matching.length > 0
+        ? [
+            withLastModified(
+              {
+                url: `${SITE_URL}${year.path}`,
+                changeFrequency: "daily" as const,
+                priority: 0.9,
+              },
+              latestEventUpdate(
+                matching,
+                rollingFloorForRange(range, rollingPageFloor),
+              ),
+            ),
+          ]
+        : [];
+    });
 
-    const monthRoutes: MetadataRoute.Sitemap = upcomingCalendarMonths(8)
-      .filter(
-        (month) =>
-          countActiveOverlapping(
-            upcomingEvents,
-            getMonthRange(month.year, month.monthIndex),
-            "month",
-          ) > 0,
-      )
-      .map((month) => ({
-        url: `${SITE_URL}${month.path}`,
-        changeFrequency: "daily" as const,
-        priority: 0.8,
-      }));
+    const monthRoutes: MetadataRoute.Sitemap = upcomingCalendarMonths(8).flatMap(
+      (month) => {
+        const range = getMonthRange(month.year, month.monthIndex);
+        const matching = overlappingEvents(
+          upcomingEvents,
+          range,
+          "month",
+        );
+        return matching.length > 0
+          ? [
+              withLastModified(
+                {
+                  url: `${SITE_URL}${month.path}`,
+                  changeFrequency: "daily" as const,
+                  priority: 0.8,
+                },
+                latestEventUpdate(
+                  matching,
+                  rollingFloorForRange(range, rollingPageFloor),
+                ),
+              ),
+            ]
+          : [];
+      },
+    );
 
-    const weekendRoutes: MetadataRoute.Sitemap = upcomingWeekends(10)
-      .filter(
-        (weekend) =>
-          countActiveOverlapping(
-            upcomingEvents,
-            {
-              start: weekend.start,
-              end: weekend.end,
-            },
-            "weekend",
-          ) > 0,
-      )
-      .map((weekend) => ({
-        url: `${SITE_URL}${weekend.path}`,
-        changeFrequency: "daily" as const,
-        priority: 0.82,
-      }));
+    const weekendRoutes: MetadataRoute.Sitemap = upcomingWeekends(10).flatMap(
+      (weekend) => {
+        const range = { start: weekend.start, end: weekend.end };
+        const matching = overlappingEvents(
+          upcomingEvents,
+          range,
+          "weekend",
+        );
+        return matching.length > 0
+          ? [
+              withLastModified(
+                {
+                  url: `${SITE_URL}${weekend.path}`,
+                  changeFrequency: "daily" as const,
+                  priority: 0.82,
+                },
+                latestEventUpdate(
+                  matching,
+                  rollingFloorForRange(range, rollingPageFloor),
+                ),
+              ),
+            ]
+          : [];
+      },
+    );
 
-    const categoryRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.filter(
-      (slug) =>
-        upcomingEvents.some((event) =>
+    const categoryRoutes: MetadataRoute.Sitemap = CATEGORY_SLUGS.flatMap(
+      (slug) => {
+        const matching = upcomingEvents.filter((event) =>
           eventMatchesCategoryFilter(event, slug),
-        ),
-    ).map((slug) => ({
-      url: `${SITE_URL}/eventi/${slug}`,
-      changeFrequency: "daily" as const,
-      priority: 0.75,
-    }));
+        );
+        return matching.length > 0
+          ? [
+              withLastModified(
+                {
+                  url: `${SITE_URL}/eventi/${slug}`,
+                  changeFrequency: "daily" as const,
+                  priority: 0.75,
+                },
+                latestEventUpdate(matching, rollingPageFloor),
+              ),
+            ]
+          : [];
+      },
+    );
 
     const eventRoutes: MetadataRoute.Sitemap = upcomingEvents
       .filter(
@@ -442,7 +534,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       )
       .map((event) => ({
         url: `${SITE_URL}/eventi/${event.slug}`,
-        lastModified: toLastModified(event.updated_at || event.start_at),
+        lastModified: toLastModified(event.updated_at),
         changeFrequency: "weekly" as const,
         priority: 0.8,
       }));
@@ -450,7 +542,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const citiesWithUpcoming = new Set<string>();
     const cityUpcomingCount = new Map<string, number>();
     const cityTotalCount = new Map<string, number>();
+    const cityUpcomingEvents = new Map<string, SitemapEventRow[]>();
     const cityCategoryPaths = new Set<string>();
+    const cityCategoryEvents = new Map<string, SitemapEventRow[]>();
 
     for (const event of rows) {
       const municipality =
@@ -468,6 +562,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           citySlug,
           (cityUpcomingCount.get(citySlug) ?? 0) + 1,
         );
+        const cityEvents = cityUpcomingEvents.get(citySlug) ?? [];
+        cityEvents.push(event);
+        cityUpcomingEvents.set(citySlug, cityEvents);
         citiesWithUpcoming.add(citySlug);
       }
     }
@@ -488,9 +585,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ) {
           continue;
         }
-        cityCategoryPaths.add(
-          cityCategoryEventsPath(municipality, categorySlug),
-        );
+        const path = cityCategoryEventsPath(municipality, categorySlug);
+        cityCategoryPaths.add(path);
+        const pathEvents = cityCategoryEvents.get(path) ?? [];
+        pathEvents.push(event);
+        cityCategoryEvents.set(path, pathEvents);
       }
     }
 
@@ -501,21 +600,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           cityTotalCount.get(slug) ?? 0,
         ),
       )
-      .map((slug) => ({
-        url: `${SITE_URL}/eventi/${slug}`,
-        changeFrequency: "daily" as const,
-        priority: 0.8,
-      }));
+      .map((slug) =>
+        withLastModified(
+          {
+            url: `${SITE_URL}/eventi/${slug}`,
+            changeFrequency: "daily" as const,
+            priority: 0.8,
+          },
+          latestEventUpdate(
+            cityUpcomingEvents.get(slug) ?? [],
+            rollingPageFloor,
+          ),
+        ),
+      );
 
     // City×category landings use landingRobots(count) — only include when
     // there is at least one upcoming event (path set is built from upcoming).
     const cityCategoryRoutes: MetadataRoute.Sitemap = [
       ...cityCategoryPaths,
-    ].map((path) => ({
-      url: `${SITE_URL}${path}`,
-      changeFrequency: "daily" as const,
-      priority: 0.7,
-    }));
+    ].map((path) =>
+      withLastModified(
+        {
+          url: `${SITE_URL}${path}`,
+          changeFrequency: "daily" as const,
+          priority: 0.7,
+        },
+        latestEventUpdate(
+          cityCategoryEvents.get(path) ?? [],
+          rollingPageFloor,
+        ),
+      ),
+    );
 
     const cultureArticleTownSlugs = new Set(
       CULTURE_TOWNS.map((article) => cityToSlug(article.town)),
@@ -556,7 +671,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
 
     return [
-      ...base,
+      ...baseWithLastModified,
       ...dateLandingRoutes,
       ...freeRoutes,
       ...yearRoutes,

@@ -1,5 +1,6 @@
 import type { EventCardData } from "@/src/components/home/EventCard";
 import { parseEventScheduleMode } from "@/src/lib/eventScheduleMode";
+import { sortEventsForPeriod } from "@/src/lib/seo/event-period-relevance";
 import { eventOverlapsRange } from "@/src/lib/seo/landing-copy";
 
 /** SSR card caps for `/eventi-sardegna` curated sections. */
@@ -171,15 +172,21 @@ export function selectEventiSardegnaHubCards(
   const sorted = sortHubEvents(input.events);
   const used = new Set<string>();
 
-  const todayPool = sorted.filter((event) =>
-    eventOverlapsRange(event, input.todayRange, "daily"),
+  const todayPool = sortEventsForPeriod(
+    sorted.filter((event) =>
+      eventOverlapsRange(event, input.todayRange, "daily"),
+    ),
+    input.todayRange,
   );
   const today = takeForSection(todayPool, HUB_SECTION_LIMITS.oggi, used);
 
-  const weekendPool = sorted.filter(
-    (event) =>
-      eventOverlapsRange(event, input.weekendRange, "weekend") &&
-      !isClaimed(event, used),
+  const weekendPool = sortEventsForPeriod(
+    sorted.filter(
+      (event) =>
+        eventOverlapsRange(event, input.weekendRange, "weekend") &&
+        !isClaimed(event, used),
+    ),
+    input.weekendRange,
   );
   const weekend = takeForSection(
     weekendPool,

@@ -24,6 +24,7 @@ import {
   temporalContextForDateFilter,
   type EventTemporalContext,
 } from "@/src/lib/seo/eventAppearsInRange";
+import { sortEventsForPeriod } from "@/src/lib/seo/event-period-relevance";
 
 export type PublishedEventRow = {
   id: string;
@@ -252,7 +253,7 @@ export const loadFilteredPublishedEvents = cache(
       : null;
     const temporalContext = resolveListTemporalContext(filters);
 
-    const events = rows
+    const mappedEvents = rows
       .filter((event) => {
         if (
           !filters.includeExpired &&
@@ -326,11 +327,15 @@ export const loadFilteredPublishedEvents = cache(
       .map((event) => ({
         ...mapPublishedEvent(event),
         isFavorite: favoriteIds.has(event.id),
-      }))
-      .sort(
-        (a, b) =>
-          new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
-      );
+      }));
+
+    const relevanceRange = dateRange ?? monthRange ?? filters.range;
+    const events = relevanceRange
+      ? sortEventsForPeriod(mappedEvents, relevanceRange)
+      : mappedEvents.sort(
+          (a, b) =>
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+        );
 
     return { events, error };
   },

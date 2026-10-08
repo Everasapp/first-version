@@ -10,6 +10,7 @@ import {
   eventAppearsInRange,
   type EventTemporalContext,
 } from "@/src/lib/seo/eventAppearsInRange";
+import { sortEventsForPeriod } from "@/src/lib/seo/event-period-relevance";
 import { formatEventHighlightList } from "@/src/lib/seo/weekends";
 
 export type LandingLink = { href: string; label: string };
@@ -329,14 +330,20 @@ export function splitCityLandingEvents(
   upcoming: EventCardData[],
   ranges: { today: { start: Date; end: Date }; weekend: { start: Date; end: Date } },
 ) {
-  const today = upcoming.filter((event) =>
-    eventOverlapsRange(event, ranges.today, "daily"),
+  const today = sortEventsForPeriod(
+    upcoming.filter((event) =>
+      eventOverlapsRange(event, ranges.today, "daily"),
+    ),
+    ranges.today,
   );
   const todayIds = new Set(today.map((event) => event.eventId));
-  const weekend = upcoming.filter(
-    (event) =>
-      eventOverlapsRange(event, ranges.weekend, "weekend") &&
-      !todayIds.has(event.eventId),
+  const weekend = sortEventsForPeriod(
+    upcoming.filter(
+      (event) =>
+        eventOverlapsRange(event, ranges.weekend, "weekend") &&
+        !todayIds.has(event.eventId),
+    ),
+    ranges.weekend,
   );
   const listedIds = new Set([
     ...todayIds,

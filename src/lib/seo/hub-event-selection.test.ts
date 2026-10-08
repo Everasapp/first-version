@@ -368,4 +368,30 @@ describe("selectEventiSardegnaHubCards", () => {
     expect(result.sections[0]?.events).toHaveLength(1);
     expect(result.ssrCards).toHaveLength(1);
   });
+
+  it("13. prioritizes a dated event over an older continuous event", () => {
+    const result = select([
+      card({
+        eventId: "ongoing",
+        id: "ongoing",
+        title: "Mostra già in corso",
+        scheduleMode: "continuous",
+        startDate: "2026-09-01T08:00:00.000Z",
+        endDate: "2026-10-15T18:00:00.000Z",
+      }),
+      card({
+        eventId: "today",
+        id: "today",
+        title: "Concerto del giorno",
+        startDate: "2026-09-29T18:00:00.000Z",
+        endDate: "2026-09-29T20:00:00.000Z",
+      }),
+    ]);
+
+    expect(
+      result.sections.find((section) => section.id === "oggi")?.events.map(
+        (event) => event.id,
+      ),
+    ).toEqual(["today", "ongoing"]);
+  });
 });
