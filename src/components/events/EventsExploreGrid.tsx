@@ -7,10 +7,7 @@ import EventCard, {
   type EventCardData,
 } from "@/src/components/home/EventCard";
 import { useUserLocation } from "@/src/hooks/useUserLocation";
-import {
-  sortEventsByProximity,
-  sortEventsByUpcomingDate,
-} from "@/src/utils/nearby-city";
+import { sortEventsByProximity } from "@/src/utils/nearby-city";
 import { EVENTS_EXPLORE_GRID_DEFAULT_INITIAL } from "@/src/lib/seo/explore-grid";
 
 type EventsExploreGridProps = {
@@ -57,7 +54,9 @@ export default function EventsExploreGrid({
     if (useNearby && coords) {
       return sortEventsByProximity(events, coords.lat, coords.lng);
     }
-    return sortEventsByUpcomingDate(events);
+    // The server already provides the correct order for each landing:
+    // chronological for general lists, relevance-first for date/month ranges.
+    return events;
   }, [coords, events, useNearby]);
 
   // Reset window when the list or sort mode changes.
