@@ -11,6 +11,7 @@ import {
 
 import CalendarButton from "@/src/components/events/CalendarButton";
 import EventDescription from "@/src/components/events/EventDescription";
+import EventContextLinks from "@/src/components/events/EventContextLinks";
 import EventPracticalFacts from "@/src/components/events/EventPracticalFacts";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
 import ClaimOrganizerButton from "@/src/components/events/ClaimOrganizerButton";
@@ -31,6 +32,7 @@ import {
   buildCityLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
+import { eventContextLinks } from "@/src/lib/seo/internal-links";
 import { filterWorkshopRelevantEvents } from "@/src/lib/seo/workshop-relevance";
 import {
   eventCategorySlugs,
@@ -463,6 +465,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   const cityPath = cityEventsPath(event.municipality);
   const categoryPath = categoryEventsPath(primaryCategorySlug);
+  const contextualLinks = eventContextLinks({
+    municipality: event.municipality,
+    categorySlug: primaryCategorySlug,
+    categoryLabel: categoryName,
+    startAt: event.start_at,
+  });
   const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
   const heroImage = event.image_url ?? "/images/concert.webp";
   const scheduleMode = parseEventScheduleMode(event.schedule_mode);
@@ -636,6 +644,11 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 />
               </div>
             </div>
+
+            <EventContextLinks
+              municipality={event.municipality}
+              links={contextualLinks}
+            />
 
             {event.youtube_url ? (
               <div className="border-t border-slate-200">
