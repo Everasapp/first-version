@@ -68,6 +68,19 @@ const PARTNER_AD_COPY: Record<
   },
 };
 
+const SPEAKING_FLUENTLY_AD: AdDef = {
+  id: "speaking-fluently",
+  storageKey: "everas-speaking-fluently-ad-dismissed",
+  href: "mailto:m.canalis@live.it",
+  ariaLabel: "Contatta Speaking Fluently via email",
+  linkLabel: "Scrivi a Speaking Fluently per le lezioni di conversazione inglese",
+  imageSrc: "/images/ads/speaking-fluently-banner.webp",
+  imageAlt:
+    "Speaking Fluently, lezioni di conversazione inglese in presenza a Sassari oppure online",
+  mediaType: "image",
+  external: false,
+};
+
 export type PaidHomeAd = {
   id: string;
   orderId: string;
@@ -268,7 +281,7 @@ export default function HomeSponsoredSection({
 }: {
   paidAds?: PaidHomeAd[];
 }) {
-  const ADS = paidAds.map(paidAdToDef);
+  const ADS = [...paidAds.map(paidAdToDef), SPEAKING_FLUENTLY_AD];
   const adsKey = ADS.map((ad) => ad.id).join("|");
 
   const sectionRef = useRef<HTMLElement>(null);
