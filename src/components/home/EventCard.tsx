@@ -37,7 +37,7 @@ export type EventCardData = {
 
   imageUrl: string;
 
-  isFree: boolean;
+  isFree: boolean | null;
   priceFrom?: number;
 
   isFeatured?: boolean;

@@ -16,11 +16,35 @@ describe("CMP Analytics consent", () => {
   });
 
   it("opens the certified CMP preferences through its API", () => {
-    const tcfapi = vi.fn();
+    const tcfapi = vi.fn((command, _version, callback) => {
+      if (command === "ping") callback({ gdprApplies: true }, true);
+    });
     vi.stubGlobal("window", { __tcfapi: tcfapi });
     expect(openConsentPreferences()).toBe(true);
     expect(tcfapi).toHaveBeenCalledWith("displayConsentUi", 2, expect.any(Function));
     vi.stubGlobal("window", {});
+    expect(openConsentPreferences()).toBe(false);
+  });
+
+  it("reopens the US preferences using the regional CMP API", () => {
+    const uspapi = vi.fn();
+    const tcfapi = vi.fn((command, _version, callback) => {
+      if (command === "ping") callback({ gdprApplies: false }, true);
+    });
+    vi.stubGlobal("window", { __tcfapi: tcfapi, __uspapi: uspapi });
+    expect(openConsentPreferences()).toBe(true);
+    expect(uspapi).toHaveBeenCalledWith("displayUspUi");
+    expect(tcfapi).not.toHaveBeenCalledWith("displayConsentUi", 2, expect.any(Function));
+  });
+
+  it("keeps the TCF fallback if the regional API is unavailable", () => {
+    const tcfapi = vi.fn((command, _version, callback) => {
+      if (command === "ping") callback({ gdprApplies: false }, true);
+    });
+    vi.stubGlobal("window", { __tcfapi: tcfapi });
+    expect(openConsentPreferences()).toBe(true);
+    expect(tcfapi).toHaveBeenCalledWith("displayConsentUi", 2, expect.any(Function));
+    vi.unstubAllGlobals();
     expect(openConsentPreferences()).toBe(false);
   });
 

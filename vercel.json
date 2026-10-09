@@ -12,5 +12,10 @@
       "path": "/api/cron/expire-advertising",
       "schedule": "30 4 * * *"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "maintenance/speaking-fluently-tracking": false
+    }
+  }
 }

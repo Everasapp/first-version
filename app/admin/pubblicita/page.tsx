@@ -3,7 +3,7 @@ import Link from "next/link";
 import AdminAdvertisingDeleteButton from "@/src/components/admin/AdminAdvertisingDeleteButton";
 import { formatCtr } from "@/src/lib/ads/banner-stats";
 import { createAdminClient } from "@/src/lib/supabase/admin";
-import type { AdvertisingOrderRow } from "@/src/lib/ads/types";
+import { EVERAS_SELF_PROMO_ORDER_ID, type AdvertisingOrderRow } from "@/src/lib/ads/types";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +35,8 @@ export default async function AdminPubblicitaPage() {
   const { data, error } = await supabase
     .from("advertising_orders")
     .select("*")
+    // Hide the retired institutional counter; its historical data stays archived.
+    .or(`id.neq.${EVERAS_SELF_PROMO_ORDER_ID},status.neq.cancelled`)
     .order("created_at", { ascending: false })
     .limit(200);
 

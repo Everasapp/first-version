@@ -9,6 +9,7 @@ import {
   MONSTERA_PROMO_ORDER_ID,
   ZOE_PROMO_ORDER_ID,
   MC_DESIGN_PROMO_ORDER_ID,
+  SPEAKING_FLUENTLY_PROMO_ORDER_ID,
 } from "@/src/lib/ads/types";
 import { resolveSponsoredMedia } from "@/src/lib/ads/sponsored-creative-media";
 import SponsoredMedia from "@/src/components/ads/SponsoredMedia";
@@ -64,6 +65,7 @@ const PARTNER_AD_COPY: Record<
 
 const SPEAKING_FLUENTLY_AD: AdDef = {
   id: "speaking-fluently",
+  orderId: SPEAKING_FLUENTLY_PROMO_ORDER_ID,
   storageKey: "everas-speaking-fluently-ad-dismissed",
   href: "mailto:m.canalis@live.it",
   ariaLabel: "Contatta Speaking Fluently via email",
@@ -277,7 +279,11 @@ export default function HomeSponsoredSection({
 }) {
   const ADS = [
     ...paidAds
-      .filter((ad) => ad.orderId !== EVERAS_SELF_PROMO_ORDER_ID)
+      .filter(
+        (ad) =>
+          ad.orderId !== EVERAS_SELF_PROMO_ORDER_ID &&
+          ad.orderId !== SPEAKING_FLUENTLY_PROMO_ORDER_ID,
+      )
       .map(paidAdToDef),
     SPEAKING_FLUENTLY_AD,
   ];

@@ -74,7 +74,7 @@ export function eventSchema(input: {
   endAt?: string | null;
   imageUrl?: string | null;
   url: string;
-  isFree: boolean;
+  isFree: boolean | null;
   priceFrom?: number;
   ticketUrl?: string | null;
   locationName: string;

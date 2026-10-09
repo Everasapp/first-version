@@ -1,16 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { stripDraftSlugSuffix } from "@/src/lib/slug";
+import { CONSOLIDATED_EVENT_SLUGS } from "./consolidated-event-slugs";
 
 /** Suffisso da import/createSlug: Date.now().toString(36). */
 const IMPORT_SUFFIX = /-[a-z0-9]{6,12}$/i;
 
 /** Vecchie URL evento → slug pubblicato attuale. */
 const EVENT_SLUG_ALIASES: Record<string, string> = {
+  ...CONSOLIDATED_EVENT_SLUGS,
   "nuracque-a-nurachi-2026-p8":
     "nuraque-mudp855p",
-  "autunno-in-barbagia-carreras-de-lollobe-nuoro-2026":
-    "autunno-in-barbagia-lollove-2026-10-10",
   "festival-internazionale-di-musiche-polifoniche-voci-d-europa-mus8doo3":
     "voci-deuropa-tallis-scholars-porto-torres-2026-10-24",
   "paolo-ehrenheim-festival-nessun-dorma-iii-edizione-mu6kmbef":
