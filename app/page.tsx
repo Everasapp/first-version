@@ -158,7 +158,6 @@ async function HomeContent() {
 
       <HappeningToday events={sections.hot} />
 
-      <Hero />
       <EditorialGuides />
 
       <HomeSponsoredSection paidAds={paidAds} />
@@ -201,7 +200,9 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="min-w-0 max-w-full">
+      {/* Keep the footer below the viewport while event sections stream in. */}
+      <main className="min-h-screen min-w-0 max-w-full">
+        <Hero />
         <Suspense
           fallback={
             <div
