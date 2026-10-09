@@ -16,12 +16,17 @@ export const ZOE_PROMO_ORDER_ID =
 export const MC_DESIGN_PROMO_ORDER_ID =
   "e7e8a500-0000-4000-8000-000000000004";
 
+/** Ordine fisso di Speaking Fluently (tracking views/click). */
+export const SPEAKING_FLUENTLY_PROMO_ORDER_ID =
+  "e7e8a500-0000-4000-8000-000000000005";
+
 /** Banner istituzionali / partner fissi: non eliminabili da admin. */
 export const PROTECTED_AD_ORDER_IDS = new Set<string>([
   EVERAS_SELF_PROMO_ORDER_ID,
   MONSTERA_PROMO_ORDER_ID,
   ZOE_PROMO_ORDER_ID,
   MC_DESIGN_PROMO_ORDER_ID,
+  SPEAKING_FLUENTLY_PROMO_ORDER_ID,
 ]);
 
 /** Ordine di pin in carosello home (più basso = più in alto). */
@@ -30,6 +35,7 @@ export const HOME_AD_PIN_RANK: Record<string, number> = {
   [MONSTERA_PROMO_ORDER_ID]: 1,
   [ZOE_PROMO_ORDER_ID]: 2,
   [MC_DESIGN_PROMO_ORDER_ID]: 3,
+  [SPEAKING_FLUENTLY_PROMO_ORDER_ID]: 4,
 };
 
 export type AdvertisingOrderRow = {
