@@ -41,13 +41,6 @@ const PARTNER_AD_COPY: Record<
   string,
   { ariaLabel: string; linkLabel: string; imageAlt: string }
 > = {
-  [EVERAS_SELF_PROMO_ORDER_ID]: {
-    ariaLabel: "Pubblicizza la tua attività su EVERAS",
-    linkLabel:
-      "Metti un banner della tua attività su EVERAS — Special Prezzo Lancio",
-    imageAlt:
-      "Metti un banner della tua attività su EVERAS. Special Prezzo Lancio.",
-  },
   [MONSTERA_PROMO_ORDER_ID]: {
     ariaLabel: "Pubblicità Monstera",
     linkLabel: "Monstera — Sala per feste, eventi e workshop a Sassari",
@@ -281,7 +274,12 @@ export default function HomeSponsoredSection({
 }: {
   paidAds?: PaidHomeAd[];
 }) {
-  const ADS = [...paidAds.map(paidAdToDef), SPEAKING_FLUENTLY_AD];
+  const ADS = [
+    ...paidAds
+      .filter((ad) => ad.orderId !== EVERAS_SELF_PROMO_ORDER_ID)
+      .map(paidAdToDef),
+    SPEAKING_FLUENTLY_AD,
+  ];
   const adsKey = ADS.map((ad) => ad.id).join("|");
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -566,8 +564,12 @@ export default function HomeSponsoredSection({
         ref={containerRef}
         className="relative mx-auto w-full min-w-0 max-w-7xl px-5 sm:px-8"
       >
-        <p className="mb-3 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-500">
+        <p className="mb-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-500">
           Pubblicità
+        </p>
+        <p className="mb-3 text-sm text-slate-600">
+          Scopri le offerte dei nostri partner: clicca sui banner per vedere le
+          promozioni.
         </p>
 
         <div className="relative w-full min-w-0">
