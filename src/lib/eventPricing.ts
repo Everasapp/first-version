@@ -48,9 +48,17 @@ export function resolveEventPricing(
     };
   }
 
+  if (isFree === false || isFree === "false" || isFree === 0 || isFree === "0") {
+    return {
+      isFree: false,
+      priceFrom: undefined,
+      label: "A pagamento",
+    };
+  }
+
   return {
-    isFree: false,
+    isFree: null,
     priceFrom: undefined,
-    label: "A pagamento",
+    label: "Prezzo da confermare",
   };
 }

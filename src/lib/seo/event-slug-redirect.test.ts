@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 import { findReplacementEventSlug } from "./event-slug-redirect";
+import { CONSOLIDATED_EVENT_SLUGS } from "./consolidated-event-slugs";
+import nextConfig from "../../../next.config";
 
 function database(target: { slug: string } | null) {
   const query = {
@@ -14,6 +16,17 @@ function database(target: { slug: string } | null) {
 }
 
 describe("consolidated event links", () => {
+  it.each(Object.entries(CONSOLIDATED_EVENT_SLUGS))(
+    "preserves %s in both configured redirects and the database fallback", async (oldSlug, canonical) => {
+      const redirects = await nextConfig.redirects!();
+      expect(redirects).toContainEqual({
+        source: `/eventi/${oldSlug}`, destination: `/eventi/${canonical}`, permanent: true,
+      });
+      expect(CONSOLIDATED_EVENT_SLUGS[canonical]).toBeUndefined();
+      expect(await findReplacementEventSlug(database({ slug: canonical }).client, oldSlug)).toBe(canonical);
+      expect(await findReplacementEventSlug(database(null).client, oldSlug)).toBeNull();
+    },
+  );
   it("keeps an old Nuracque link pointing to the published canonical event", async () => {
     const db = database({ slug: "nuraque-mudp855p" });
     expect(await findReplacementEventSlug(db.client, "nuracque-a-nurachi-2026-p8")).toBe("nuraque-mudp855p");

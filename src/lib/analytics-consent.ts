@@ -5,6 +5,7 @@ declare global {
   interface Window {
     __everasAnalyticsConsent?: AnalyticsConsent | null;
     __tcfapi?: (command: string, version: number, callback: (data: unknown, success: boolean) => void) => void;
+    __uspapi?: (command: string) => void;
   }
 }
 
@@ -15,8 +16,18 @@ export function getBrowserAnalyticsConsent(): AnalyticsConsent | null {
 }
 
 export function openConsentPreferences(): boolean {
+  if (typeof window === "undefined") return false;
   if (typeof window.__tcfapi !== "function") return false;
-  window.__tcfapi("displayConsentUi", 2, () => {});
+  const tcfapi = window.__tcfapi;
+  tcfapi("ping", 2, (data, success) => {
+    const gdprApplies = data && typeof data === "object" && "gdprApplies" in data
+      ? data.gdprApplies : undefined;
+    if (success && gdprApplies === false && typeof window.__uspapi === "function") {
+      window.__uspapi("displayUspUi");
+    } else {
+      tcfapi("displayConsentUi", 2, () => {});
+    }
+  });
   return true;
 }
 

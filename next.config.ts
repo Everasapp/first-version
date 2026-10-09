@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs";
 
 const nextConfig: NextConfig = {
   images: {
@@ -41,6 +42,11 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...Object.entries(CONSOLIDATED_EVENT_SLUGS).map(([oldSlug, canonicalSlug]) => ({
+        source: `/eventi/${oldSlug}`,
+        destination: `/eventi/${canonicalSlug}`,
+        permanent: true,
+      })),
       {
         source: "/:path*",
         has: [{ type: "host", value: "everas.it" }],

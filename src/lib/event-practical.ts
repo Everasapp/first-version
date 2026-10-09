@@ -32,6 +32,14 @@ export function formatEventAdmission(
     };
   }
 
+  if (pricing.isFree === null) {
+    return {
+      label: pricing.label,
+      detail: "Verifica costi, modalità di accesso e prenotazioni con l’organizzatore.",
+      ctaLabel: hasTicket ? "Informazioni e prenotazioni" : null,
+    };
+  }
+
   return {
     label: "A pagamento",
     detail: hasTicket

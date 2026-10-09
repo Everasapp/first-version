@@ -7,7 +7,7 @@ import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
 type EventPracticalFactsProps = {
   startAt: string;
   endAt?: string | null;
-  isFree: boolean;
+  isFree: boolean | null;
   priceFrom: number | string | null;
   ticketUrl?: string | null;
   scheduleMode?: EventScheduleMode;

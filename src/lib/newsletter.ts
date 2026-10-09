@@ -54,7 +54,7 @@ function eventPriceLabel(event: NewsletterEvent) {
       currency: "EUR",
     }).format(pricing.priceFrom)}`;
   }
-  return "A pagamento";
+  return pricing.label;
 }
 
 function eventCardHtml(event: NewsletterEvent, siteUrl: string) {
