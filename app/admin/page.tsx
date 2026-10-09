@@ -41,8 +41,8 @@ export default function AdminHomePage() {
               Import Logs
             </span>
             <span className="mt-1 block text-sm text-slate-600">
-              Controlla se il cron delle 08:00 è partito e l&apos;esito di
-              ogni fonte.
+              Controlla l&apos;esito delle importazioni per ogni fonte.
+              Importazione automatica temporaneamente sospesa.
             </span>
           </span>
         </Link>

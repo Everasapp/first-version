@@ -49,8 +49,9 @@ export default async function ImportLogsPage() {
         Import Logs
       </h1>
       <p className="mt-2 max-w-3xl text-slate-600">
-        Verifica se l&apos;import delle 08:00 è partito e come è andata ogni
-        fonte. Una riga per fonte, raggruppata per batch.
+        L&apos;importazione automatica della mattina è temporaneamente sospesa.
+        Qui puoi controllare le importazioni precedenti e avviarne una manuale.
+        Una riga per fonte, raggruppata per batch.
       </p>
       <div className="mt-8">
         <section className="mb-10 rounded-2xl border border-amber-200 bg-amber-50 p-5" aria-labelledby="draft-review-title">

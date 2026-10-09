@@ -15,7 +15,8 @@ export const maxDuration = 300;
 
 const JOB_NAME = "discover-events";
 
-// vercel.json schedule "0 6 * * *" = 08:00 Europe/Rome during CEST.
+// Automatic scheduling is temporarily suspended in vercel.json to reduce usage.
+// Keep this authenticated endpoint available to the manual admin importer.
 
 function triggeredByFrom(request: Request) {
   return request.headers.get("x-everas-triggered-by") === "admin"
