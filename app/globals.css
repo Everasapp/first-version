@@ -34,6 +34,22 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* The US CMP dialog grows as its options load. Anchor it to the viewport
+   instead of recentering it after each height change (especially on mobile). */
+#qc-cmp2-container #qc-cmp2-usp {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  bottom: auto;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 660px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: 0;
+  overflow-y: auto;
+}
+
 @keyframes pwa-slide-up {
   from {
     opacity: 0;
