@@ -109,8 +109,8 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
     <div className="space-y-8">
       <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-4">
         <p className="text-sm text-blue-900">
-          Usa lo stesso endpoint cloud del cron mattutino. Non parte un
-          importatore locale.
+          L&apos;importazione automatica è sospesa. Puoi avviare una ricerca
+          manuale quando ti serve; questa operazione utilizza risorse del server.
         </p>
         <button
           type="button"
@@ -135,8 +135,8 @@ export default function ImportLogsPanel({ runs }: { runs: ImportRunRow[] }) {
 
       {runs.length === 0 ? (
         <p className="text-sm text-slate-600">
-          Nessuna run ancora. Il cron delle 08:00 o il pulsante sopra
-          scriveranno una riga per ciascuna fonte.
+          Nessuna importazione ancora. Il pulsante sopra avvia una ricerca
+          manuale e registra una riga per ciascuna fonte.
         </p>
       ) : (
         Array.from(batches.entries()).map(([batchId, rows]) => {
