@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import Link from "next/link";
 
 import {
   EVERAS_SELF_PROMO_ORDER_ID,
@@ -567,9 +568,14 @@ export default function HomeSponsoredSection({
         <p className="mb-1 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-slate-500">
           Pubblicità
         </p>
-        <p className="mb-3 text-sm text-slate-600">
-          Scopri le offerte dei nostri partner: clicca sui banner per vedere le
-          promozioni.
+        <p className="mb-3 text-sm">
+          <Link
+            href="/pubblicita"
+            prefetch={false}
+            className="font-semibold text-[#075EAE] underline underline-offset-4 hover:text-[#c96a1a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]"
+          >
+            Scopri le promozioni per inserire il banner della tua attività
+          </Link>
         </p>
 
         <div className="relative w-full min-w-0">
