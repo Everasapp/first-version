@@ -87,6 +87,7 @@ import {
   eventSchema,
 } from "@/src/lib/seo/schema";
 import { eventShareImagePath } from "@/src/lib/seo/event-og-image";
+import { eventSharePagePath } from "@/src/lib/share/formatStory";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { findReplacementEventSlug } from "@/src/lib/seo/event-slug-redirect";
 import { findCulturaArticleForEventSlug } from "@/src/lib/seo/cultura-articles";
@@ -296,7 +297,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${seoTitle} | EVERAS`,
       description,
-      url: `/eventi/${slug}`,
+      url: eventSharePagePath(slug),
       type: "article",
       images: [shareImage],
     },
