@@ -26,9 +26,19 @@ export function formatStoryTime(startAt: string) {
   return time === "00:00" ? "" : time;
 }
 
+/**
+ * Bumps the shared link when the preview image changes.
+ * WhatsApp and iMessage keep the old card for the exact URL already sent.
+ */
+export const EVENT_SHARE_REVISION = "2";
+
+export function eventSharePagePath(slug: string) {
+  return `/eventi/${slug}?v=${EVENT_SHARE_REVISION}`;
+}
+
 export function buildEventShareUrl(slug: string, origin?: string) {
   const base =
     origin ||
     (typeof window !== "undefined" ? window.location.origin : "https://www.everas.it");
-  return `${base.replace(/\/$/, "")}/eventi/${slug}`;
+  return `${base.replace(/\/$/, "")}${eventSharePagePath(slug)}`;
 }
