@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { createPortal, flushSync } from "react-dom";
+import { createPortal } from "react-dom";
 import {
   Check,
   Download,
@@ -12,23 +12,11 @@ import {
   X,
 } from "lucide-react";
 
-import InstagramStoryTemplate from "@/src/components/share/InstagramStoryTemplate";
-import {
-  loadCanvasSafeImageUrl,
-  loadStoryLogoDataUrl,
-} from "@/src/lib/share/canvasSafeImage";
-import {
-  buildEventShareUrl,
-  formatStoryDate,
-  formatStoryTime,
-} from "@/src/lib/share/formatStory";
+import { buildEventShareUrl } from "@/src/lib/share/formatStory";
 import {
   canShareFiles,
-  generateStoryJpeg,
   shareStoryFile,
 } from "@/src/lib/share/generateStoryImage";
-import type { InstagramStoryEventData } from "@/src/lib/share/types";
-import { STORY_SITE_LABEL } from "@/src/lib/share/types";
 import { incrementEventShares } from "@/src/lib/event-engagement";
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -105,17 +93,11 @@ export default function ShareEventButton({
   eventId,
   title,
   slug,
-  imageUrl = "/images/concert.webp",
-  category = "Evento",
-  city = "Sardegna",
-  startAt,
-  dateLabel,
   size = "sm",
   className = "",
 }: ShareEventButtonProps) {
   const menuId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const storyRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState<MenuPosition | null>(null);
@@ -127,9 +109,6 @@ export default function ShareEventButton({
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [showDownloadPanel, setShowDownloadPanel] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [storyEvent, setStoryEvent] = useState<InstagramStoryEventData | null>(
-    null,
-  );
   const lastShareAtRef = useRef(0);
 
   const dimension = size === "md" ? "h-12 w-12" : "h-10 w-10";
@@ -292,38 +271,16 @@ export default function ShareEventButton({
     recordShare();
     if (copiedNow) markCopied();
 
-    let revokeSafeImage: (() => void) | undefined;
-
     try {
-      const [safe, logoUrl] = await Promise.all([
-        loadCanvasSafeImageUrl(imageUrl || "/images/concert.webp"),
-        loadStoryLogoDataUrl(),
-      ]);
-      revokeSafeImage = safe.revoke;
-
-      const payload: InstagramStoryEventData = {
-        title,
-        slug,
-        imageUrl: safe.url,
-        logoUrl,
-        category,
-        city,
-        dateLabel: startAt ? formatStoryDate(startAt) : dateLabel || "",
-        timeLabel: startAt ? formatStoryTime(startAt) : "",
-        eventUrl: eventShareUrl,
-        siteLabel: STORY_SITE_LABEL,
-      };
-
-      flushSync(() => {
-        setStoryEvent(payload);
-      });
-
-      const node = storyRef.current;
-      if (!node) {
-        throw new Error("Template Story non disponibile.");
+      const response = await fetch(`/og/story/${encodeURIComponent(slug)}`);
+      if (!response.ok) {
+        throw new Error(`Story non disponibile (${response.status}).`);
+      }
+      const blob = await response.blob();
+      if (!blob.type.startsWith("image/")) {
+        throw new Error("La Story non è un'immagine.");
       }
 
-      const blob = await generateStoryJpeg(node);
       const file = new File(
         [blob],
         `everas-story-${slug.slice(0, 40)}.jpg`,
@@ -333,7 +290,7 @@ export default function ShareEventButton({
       const shareable = await canShareFiles(file);
       if (shareable) {
         try {
-          await shareStoryFile(file, title, payload.eventUrl);
+          await shareStoryFile(file);
           setShowDownloadPanel(true);
           return;
         } catch (shareError) {
@@ -358,8 +315,6 @@ export default function ShareEventButton({
       setShowDownloadPanel(true);
     } finally {
       setStoryBusy(false);
-      setStoryEvent(null);
-      revokeSafeImage?.();
     }
   }
 
@@ -581,24 +536,6 @@ export default function ShareEventButton({
 
       {menu}
       {panel}
-
-      {storyEvent ? (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            zIndex: -1,
-            opacity: 1,
-            pointerEvents: "none",
-            overflow: "hidden",
-            transform: "translateX(-100%)",
-          }}
-        >
-          <InstagramStoryTemplate ref={storyRef} event={storyEvent} />
-        </div>
-      ) : null}
     </div>
   );
 }

@@ -52,41 +52,12 @@ export async function canShareFiles(file: File) {
   }
 }
 
-export async function shareStoryFile(file: File, title: string, eventUrl: string) {
-  const payload: ShareData = {
-    files: [file],
-    title: `${title} · EVERAS`,
-    text: `Scopri questo evento su Everas: ${title}\n${eventUrl}`,
-    url: eventUrl,
-  };
-
-  // Alcuni browser rifiutano files+url insieme: riprova solo con file + testo
-  try {
-    if (typeof navigator.canShare === "function" && !navigator.canShare(payload)) {
-      await navigator.share({
-        files: [file],
-        title: payload.title,
-        text: payload.text,
-      });
-      return;
-    }
-  } catch {
-    // continua con share completo
-  }
-
-  try {
-    await navigator.share(payload);
-  } catch (error) {
-    if (error instanceof TypeError) {
-      await navigator.share({
-        files: [file],
-        title: payload.title,
-        text: payload.text,
-      });
-      return;
-    }
-    throw error;
-  }
+/**
+ * Solo il file. Se si allega anche il link, Instagram Stories scarta la
+ * locandina e mostra la card generica di EVERAS.
+ */
+export async function shareStoryFile(file: File) {
+  await navigator.share({ files: [file] });
 }
 
 export function downloadBlob(blob: Blob, filename: string) {
