@@ -86,7 +86,8 @@ import {
   collectionPageSchema,
   eventSchema,
 } from "@/src/lib/seo/schema";
-import { absoluteUrl } from "@/src/lib/seo/site";
+import { eventShareImagePath } from "@/src/lib/seo/event-og-image";
+import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
 import { findReplacementEventSlug } from "@/src/lib/seo/event-slug-redirect";
 import { findCulturaArticleForEventSlug } from "@/src/lib/seo/cultura-articles";
 
@@ -275,6 +276,16 @@ export async function generateMetadata({
     data.price_from,
   );
 
+  const shareImage = data.image_url
+    ? {
+        url: eventShareImagePath(slug, data.image_url),
+        width: 1200,
+        height: 630,
+        alt: seoTitle,
+        type: "image/jpeg" as const,
+      }
+    : defaultOgImages()[0];
+
   return {
     title: seoTitle,
     description,
@@ -287,15 +298,13 @@ export async function generateMetadata({
       description,
       url: `/eventi/${slug}`,
       type: "article",
-      images: data.image_url
-        ? [{ url: data.image_url, alt: seoTitle }]
-        : [{ url: "/og.jpg", width: 1200, height: 630, alt: "EVERAS" }],
+      images: [shareImage],
     },
     twitter: {
       card: "summary_large_image",
       title: `${seoTitle} | EVERAS`,
       description,
-      images: data.image_url ? [data.image_url] : ["/og.jpg"],
+      images: [shareImage.url],
     },
   };
 }
@@ -519,6 +528,9 @@ async function EventDetailPage({ slug }: { slug: string }) {
   });
   const eventUrl = absoluteUrl(`/eventi/${event.slug}`);
   const heroImage = event.image_url ?? "/images/concert.webp";
+  const shareImageUrl = event.image_url
+    ? absoluteUrl(eventShareImagePath(event.slug, event.image_url))
+    : undefined;
   const scheduleMode = parseEventScheduleMode(event.schedule_mode);
   const detailDescription =
     stripHtml(event.description || "").slice(0, 300) ||
@@ -537,7 +549,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 description: detailDescription,
                 startAt: event.start_at,
                 endAt: event.end_at,
-                imageUrl: event.image_url,
+                imageUrl: shareImageUrl,
                 url: eventUrl,
                 isFree: pricing.isFree,
                 priceFrom: pricing.priceFrom,
