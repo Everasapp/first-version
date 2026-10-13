@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
 import Header from "@/src/components/home/Header";
 import Hero from "@/src/components/home/Hero";
@@ -113,29 +114,14 @@ async function HomeContent() {
     return isPublicEventActive(event.start_at, event.end_at, now);
   });
 
-  const weekCandidates = weekRows
-    .sort((a, b) => {
-      // Nuovi caricamenti per primi nel carosello Hot this week.
-      const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
-      const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
-      if (aCreated !== bCreated) return bCreated - aCreated;
-
-      const aStatus = resolveEventStatusBadge(a.start_at, a.end_at, now);
-      const bStatus = resolveEventStatusBadge(b.start_at, b.end_at, now);
-      const aRank = aStatus.happeningNow ? 0 : aStatus.isActiveEvent ? 1 : 2;
-      const bRank = bStatus.happeningNow ? 0 : bStatus.isActiveEvent ? 1 : 2;
-      if (aRank !== bRank) return aRank - bRank;
-      if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
-      return (
-        new Date(a.start_at).getTime() - new Date(b.start_at).getTime()
-      );
-    })
-    .map((event) => ({
+  const weekCandidates = mixWeekEvents(
+    weekRows.map((event) => ({
       ...mapEvent(event, now),
       isFavorite: favoriteIds.has(event.id),
-    }));
+    })),
+    now,
+  );
 
-  // Ordine = più recenti prima (niente interleave per area: altrimenti i nuovi non restano in testa).
   const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
 
   const sections = selectHomepageEventSections({

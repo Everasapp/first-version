@@ -135,8 +135,8 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
               Hot this week
             </h2>
             <p className="mt-1.5 max-w-xl text-sm text-slate-600 sm:mt-2 sm:text-base">
-              Prima le novità appena pubblicate, bilanciate tra Nord, Centro e
-              Sud Sardegna.
+              Una selezione degli eventi della settimana in ordine casuale,
+              con immagini alternate quando possibile.
               {events.length > INITIAL_CARDS ? (
                 <span className="text-slate-500">
                   {" "}
