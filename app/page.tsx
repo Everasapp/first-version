@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { isLearningTopic } from "@/src/lib/learning-courses";
 import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
 import Header from "@/src/components/home/Header";
@@ -106,7 +107,17 @@ async function HomeContent() {
       isFavorite: favoriteIds.has(event.id),
     }));
 
+  const learningRows = rows.filter((event) =>
+    (event.category === "workshop-corsi" || event.categories?.includes("workshop-corsi") || isLearningTopic(event.subcategory)) &&
+    isPublicEventActive(event.start_at, event.end_at, now),
+  );
+  const learningIds = new Set(learningRows.map((event) => event.id));
+  const learningEvents = mixWeekEvents(learningRows.map((event) => ({
+    ...mapEvent(event, now), isFavorite: favoriteIds.has(event.id),
+  })), now);
+
   const weekRows = rows.filter((event) => {
+    if (learningIds.has(event.id)) return false;
     if (!eventOverlapsRomeWeek(event, now)) {
       return false;
     }
@@ -144,7 +155,7 @@ async function HomeContent() {
 
       <HappeningToday events={sections.hot} />
 
-      <EditorialGuides />
+      <HappeningToday events={learningEvents} title="Imparare e fare in Sardegna" eyebrow="Corsi e laboratori" description="Arti, lingue e competenze per il lavoro: scopri cosa imparare in Sardegna." itemLabel="corsi e laboratori" exploreHref="/imparare-e-fare-in-sardegna" exploreLabel="Tutti i corsi e laboratori" />
 
       <HomeSponsoredSection paidAds={paidAds} />
 
@@ -178,6 +189,8 @@ async function HomeContent() {
       />
 
       <CategoriesSection />
+
+      <EditorialGuides />
     </>
   );
 }

@@ -11,6 +11,7 @@ export type HomeEventRow = {
   slug: string;
   title: string;
   category: string;
+  subcategory?: string | null;
   categories?: string[] | null;
   province: string | null;
   municipality: string;
@@ -39,7 +40,7 @@ const fetchCachedHomeEventRows = unstable_cache(
       const { data, error } = await supabase
         .from("events")
         .select(
-          "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
+          "id, slug, title, category, subcategory, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
         )
         .eq("status", "published")
         .gte("start_at", lookback.toISOString())
@@ -53,7 +54,7 @@ const fetchCachedHomeEventRows = unstable_cache(
       if (chunk.length < pageSize) return rows;
     }
   },
-  ["homepage-event-rows-v1"],
+  ["homepage-event-rows-v2"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],

@@ -8,13 +8,23 @@ import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
 
 type HappeningTodayProps = {
   events: EventCardData[];
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  itemLabel?: string;
+  exploreHref?: string;
+  exploreLabel?: string;
 };
 
 const AUTOPLAY_MS = 4500;
 const INITIAL_CARDS = 6;
 const BATCH_CARDS = 6;
 
-export default function HappeningToday({ events }: HappeningTodayProps) {
+export default function HappeningToday({
+  events, title = "Hot this week", eyebrow = "Lunedì – domenica",
+  description = "Una selezione degli eventi della settimana in ordine casuale, con immagini alternate quando possibile.",
+  itemLabel = "eventi questa settimana", exploreHref = "/eventi-sardegna", exploreLabel = "Eventi e sagre in Sardegna",
+}: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const snapRestoreTimerRef = useRef<number | null>(null);
@@ -129,18 +139,17 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#E67E22]">
-              Lunedì – domenica
+              {eyebrow}
             </p>
             <h2 className="mt-1.5 text-2xl font-bold text-slate-900 sm:mt-2 sm:text-3xl">
-              Hot this week
+              {title}
             </h2>
             <p className="mt-1.5 max-w-xl text-sm text-slate-600 sm:mt-2 sm:text-base">
-              Una selezione degli eventi della settimana in ordine casuale,
-              con immagini alternate quando possibile.
+              {description}
               {events.length > INITIAL_CARDS ? (
                 <span className="text-slate-500">
                   {" "}
-                  · {events.length} eventi questa settimana — scorri per
+                  · {events.length} {itemLabel} — scorri per
                   vederli tutti
                 </span>
               ) : null}
@@ -221,10 +230,10 @@ export default function HappeningToday({ events }: HappeningTodayProps) {
         </div>
 
         <Link
-          href="/eventi-sardegna"
+          href={exploreHref}
           className="mt-8 inline-flex font-bold text-[#075EAE] hover:underline"
         >
-          Eventi e sagre in Sardegna →
+          {exploreLabel} →
         </Link>
       </div>
     </section>
