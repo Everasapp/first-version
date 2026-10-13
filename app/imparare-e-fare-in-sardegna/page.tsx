@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/src/components/home/Header";
 import EventCard from "@/src/components/home/EventCard";
 import JsonLd from "@/src/components/seo/JsonLd";
@@ -9,11 +10,15 @@ import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema
 import { absoluteUrl } from "@/src/lib/seo/site";
 
 const title = "Imparare e fare in Sardegna";
+const heroAlt = "Scena illustrativa di apprendimento: ceramica, pittura e competenze digitali in un laboratorio sul paesaggio sardo";
+const ogImage = { url: absoluteUrl("/images/learning/imparare-sardegna-og.jpg"), width: 1200, height: 630, alt: heroAlt };
+
 const description = "Corsi e laboratori in Sardegna: arti, competenze professionali e digitali, inglese e altre lingue. Confronta programmi, costi e requisiti.";
 
 export const metadata: Metadata = {
   title, description, alternates: { canonical: LEARNING_PATH },
-  openGraph: { title: `${title} | EVERAS`, description, url: LEARNING_PATH, type: "website" },
+  openGraph: { title: `${title} | EVERAS`, description, url: LEARNING_PATH, type: "website", images: [ogImage] },
+  twitter: { card: "summary_large_image", title: `${title} | EVERAS`, description, images: [ogImage.url] },
 };
 
 export default async function LearningPage() {
@@ -25,6 +30,7 @@ export default async function LearningPage() {
     <main className="bg-slate-50 pb-16">
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+          <Image src="/images/learning/imparare-sardegna-hero.webp" alt={heroAlt} width={1200} height={630} unoptimized preload className="mb-8 aspect-[1200/630] w-full rounded-2xl object-cover" />
           <p className="text-sm font-bold uppercase tracking-widest text-[#075EAE]">Un interesse, una nuova possibilità</p>
           <h1 className="mt-3 max-w-4xl text-4xl font-black text-slate-900 sm:text-5xl">{title}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">Dedica tempo a qualcosa che vuoi imparare. Trova un laboratorio creativo, esercita una lingua o scegli una competenza da portare nel tuo lavoro: qui puoi confrontare percorsi, impegno richiesto e modalità di partecipazione.</p>
