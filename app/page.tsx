@@ -137,7 +137,7 @@ async function HomeContent() {
 
   const sections = selectHomepageEventSections({
     hotCandidates: weekCandidates,
-    allEvents: events,
+    allEvents: events.filter((event) => !learningIds.has(event.eventId!)),
   });
 
   const homepageItemList = eventsItemListSchema({
