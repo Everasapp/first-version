@@ -193,6 +193,11 @@ function alwaysIndexRoutes(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${SITE_URL}/imparare-e-fare-in-sardegna`,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/contatti`,
       changeFrequency: "monthly",
       priority: 0.5,

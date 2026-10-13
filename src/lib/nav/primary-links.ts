@@ -15,6 +15,7 @@ export function getPrimaryNavLinks(from = new Date()): PrimaryNavLink[] {
   const links: PrimaryNavLink[] = [
     { href: "/eventi-sardegna", label: "Eventi e sagre" },
     { href: "/categorie", label: "Categorie" },
+    { href: "/imparare-e-fare-in-sardegna", label: "Imparare e fare" },
     { href: "/eventi-gratuiti", label: "Eventi gratuiti" },
     { href: calendarYear.path, label: `Calendario ${calendarYear.year}` },
     { href: "/cultura-sarda", label: "Scopri la Sardegna" },

@@ -18,6 +18,7 @@ import {
 } from "@/src/lib/eventScheduleMode";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { engagementFromRow } from "@/src/lib/event-engagement";
+import { isLearningTopic } from "@/src/lib/learning-courses";
 import { getDateRange, getMonthRange } from "@/src/lib/seo/dateRange";
 import {
   eventAppearsInRange,
@@ -34,6 +35,7 @@ export type PublishedEventRow = {
   id: string;
   title: string;
   category: string | null;
+  subcategory?: string | null;
   categories?: string[] | null;
   province: string | null;
   municipality: string | null;
@@ -72,6 +74,7 @@ export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
     eventId: event.id,
     title: event.title,
     category: categoryLabels[0] ?? "Evento",
+    learningTopic: isLearningTopic(event.subcategory) ? event.subcategory : undefined,
     categories: categoryLabels,
     date: formatEventDateRange(event.start_at, event.end_at),
     startDate: event.start_at,
@@ -107,12 +110,14 @@ export type EventListFilters = {
   includeExpired?: boolean;
   /** Schede puntuali (articoli Cultura): includi questi slug. */
   slugs?: string[];
+  learningOnly?: boolean;
 };
 
 const PUBLISHED_EVENT_SELECT_BASE = `
         id,
         title,
         category,
+        subcategory,
         categories,
         province,
         municipality,
@@ -134,6 +139,7 @@ const PUBLISHED_EVENT_SELECT_WITH_MODE = `
         id,
         title,
         category,
+        subcategory,
         categories,
         province,
         municipality,
@@ -208,7 +214,7 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-event-rows-v3"],
+  ["published-event-rows-v4"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],
@@ -392,6 +398,7 @@ export const loadFilteredPublishedEvents = cache(
           matchesMonth &&
           matchesRange &&
           matchesTitle &&
+          (!filters.learningOnly || isLearningTopic(event.subcategory)) &&
           matchesSlug
         );
       })

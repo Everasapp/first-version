@@ -40,6 +40,11 @@ export default function EditorialGuides() {
             </li>
           ))}
         </ul>
+        <div className="mt-5 rounded-2xl border border-[#075EAE]/20 bg-white p-5 sm:p-6">
+          <h3 className="text-xl font-bold text-slate-900">Imparare e fare in Sardegna</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">Ceramica, pittura, fotografia, lingue e competenze per il lavoro: scegli cosa imparare e confronta corsi, costi e requisiti.</p>
+          <Link href="/imparare-e-fare-in-sardegna" prefetch={false} className="mt-3 inline-flex py-2 text-sm font-bold text-[#075EAE] hover:underline">Scopri corsi e laboratori →</Link>
+        </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#075EAE]/20 bg-white p-5 sm:p-6">
           <div>
             <h3 className="text-xl font-bold text-slate-900">Storie di Sardegna</h3>
