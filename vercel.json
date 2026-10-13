@@ -17,7 +17,8 @@
     "deploymentEnabled": {
       "maintenance/speaking-fluently-tracking": false,
       "feat/imparare-fare-sardegna-20261013": false,
-      "fix/hot-week-mixed-order-20261013": false
+      "fix/hot-week-mixed-order-20261013": false,
+      "feat/learning-hero-20261013": false
     }
   }
 }
