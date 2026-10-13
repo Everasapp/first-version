@@ -155,7 +155,7 @@ async function HomeContent() {
 
       <HappeningToday events={sections.hot} />
 
-      <HappeningToday events={learningEvents} title="Imparare e fare in Sardegna" eyebrow="Corsi e laboratori" description="Arti, lingue e competenze per il lavoro: scopri cosa imparare in Sardegna." itemLabel="corsi e laboratori" exploreHref="/imparare-e-fare-in-sardegna" exploreLabel="Tutti i corsi e laboratori" />
+      <HappeningToday showIntroLink events={learningEvents} title="Imparare e fare in Sardegna" eyebrow="Corsi e laboratori" description="Arti, lingue e competenze per il lavoro: scopri cosa imparare in Sardegna." itemLabel="corsi e laboratori" exploreHref="/imparare-e-fare-in-sardegna" exploreLabel="Tutti i corsi e laboratori" />
 
       <HomeSponsoredSection paidAds={paidAds} />
 

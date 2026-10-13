@@ -14,6 +14,7 @@ type HappeningTodayProps = {
   itemLabel?: string;
   exploreHref?: string;
   exploreLabel?: string;
+  showIntroLink?: boolean;
 };
 
 const AUTOPLAY_MS = 4500;
@@ -23,6 +24,7 @@ const BATCH_CARDS = 6;
 export default function HappeningToday({
   events, title = "Hot this week", eyebrow = "Lunedì – domenica",
   description = "Una selezione degli eventi della settimana in ordine casuale, con immagini alternate quando possibile.",
+  showIntroLink = false,
   itemLabel = "eventi questa settimana", exploreHref = "/eventi-sardegna", exploreLabel = "Eventi e sagre in Sardegna",
 }: HappeningTodayProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -153,6 +155,7 @@ export default function HappeningToday({
                   vederli tutti
                 </span>
               ) : null}
+              {showIntroLink ? <Link href={exploreHref} prefetch={false} className="ml-2 inline-block py-1 font-bold text-[#075EAE] underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">{exploreLabel} →</Link> : null}
             </p>
 
             <div className="mt-3 flex items-center gap-2 xl:hidden">
