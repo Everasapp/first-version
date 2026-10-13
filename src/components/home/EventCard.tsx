@@ -21,6 +21,7 @@ export type EventCardData = {
   title: string;
   /** Primary category display name (backward compatible). */
   category: string;
+  learningTopic?: string;
   /** All category display names. */
   categories?: string[];
 

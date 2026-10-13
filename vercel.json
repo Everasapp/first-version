@@ -15,7 +15,8 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "maintenance/speaking-fluently-tracking": false
+      "maintenance/speaking-fluently-tracking": false,
+      "feat/imparare-fare-sardegna-20261013": false
     }
   }
 }
