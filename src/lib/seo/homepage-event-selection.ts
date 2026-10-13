@@ -104,7 +104,7 @@ function takeUnique(
 export type SelectHomepageEventSectionsInput = {
   /**
    * Already ordered “Hot this week” candidates
-   * (created_at → status → featured → start_at).
+   * (mixed with repeated covers separated where possible).
    */
   hotCandidates: readonly EventCardData[];
   /** Active public events for area carousels (any order; filtered/sorted here). */
