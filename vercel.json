@@ -20,7 +20,8 @@
       "fix/hot-week-mixed-order-20261013": false,
       "feat/learning-hero-20261013": false,
       "feat/home-learning-carousel-20261013": false,
-      "fix/learning-carousel-intro-link-20261013": false
+      "fix/learning-carousel-intro-link-20261013": false,
+      "fix/home-learning-duplicates-20261013": false
     }
   }
 }
