@@ -2970,20 +2970,20 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Zeddiani",
     province: "Oristano",
     area: "Campidano di Oristano",
-    title: "Zeddiani: Campidano, pomodoro e Vernaccia",
+    title: "Zeddiani: chiese, case in ladiri e paesaggio del Campidano",
     h1: "Zeddiani",
     description:
-      "Zeddiani in Sardegna: guida al comune del Campidano di Oristano, chiesa di San Pietro, sagra del pomodoro e eventi su EVERAS.",
+      "Cosa vedere a Zeddiani: Madonna delle Grazie, San Pietro, case in ladiri, murales e paesaggio agricolo. Fonti del Comune e consigli per organizzare la visita.",
     hero: {
       src: "/images/cultura/zeddiani-panorama-everas.webp",
       alt: "Zeddiani nel Campidano di Oristano, tra campi coltivati e case della pianura",
       credit: everasHeroCredit("/cultura-sarda/centro-sardegna/zeddiani"),
     },
     intro:
-      "Zeddiani è un comune della pianura a nord di Oristano, nel Campidano settentrionale. Piccolo paese agricolo tra pomodori, vigneti e Vernaccia: questa scheda tiene storia, tradizioni e cosa visitare, e sotto trovi gli eventi in programma a Zeddiani su EVERAS.",
+      "Zeddiani è un paese della pianura a nord di Oristano. Una visita può partire dalle chiese e proseguire fra le case in terra cruda e i murales, prima di esplorare il paesaggio agricolo circostante. Questa guida distingue i luoghi del centro dalle uscite nella zona umida: per le prime puoi organizzare una passeggiata, per le seconde conviene informarsi sulle condizioni di accesso.",
     history: [
       "Zeddiani è un comune italiano di circa 1 100 abitanti della provincia di Oristano in Sardegna, nella regione del Campidano di Oristano. Il territorio è pianeggiante, su un terrazzo di sedimenti fluviali presso il fiume Cispiri, a pochi chilometri da Oristano.",
-      "Oggi Zeddiani resta un punto della directory Cultura sarda del Centro: da qui colleghi il paese, le feste locali e il calendario eventi del comune. Se organizzi o cerchi un appuntamento a Zeddiani, la scheda evento su EVERAS rimanda a questa guida.",
+      "Il Comune descrive un abitato costruito in larga parte con i ladiri, mattoni ottenuti da terra e paglia ed essiccati al sole. Alcune case ne conservano ancora testimonianze. Per leggere il paese, osserva i materiali insieme alle facciate: la storia locale passa anche dalle abitazioni, oltre che dai monumenti religiosi. Le proprietà private si osservano dalla strada, senza entrare nei cortili.",
     ],
     traditions: [
       {
@@ -2992,28 +2992,36 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
           "La Sagra del pomodoro è l’appuntamento più noto del paese, di solito all’inizio di agosto. Le date precise cambiano ogni anno: controlla il calendario eventi a Zeddiani su EVERAS per sagre, concerti e appuntamenti pubblicati da Comune, Pro Loco e organizzatori.",
       },
       {
-        title: "Il Campidano intorno",
+        title: "Murales e memoria quotidiana",
         body:
-          "Zeddiani si legge meglio insieme ai comuni vicini del Campidano di Oristano — Baratili San Pietro, Tramatza, Siamaggiore, San Vero Milis — e al capoluogo. Usa la guida dell’area Centro Sardegna per spostarti paese per paese.",
+          "I murales nelle vie e nelle piazze raffigurano la vita quotidiana del passato, secondo la presentazione del Comune. Durante la passeggiata puoi confrontare le scene dipinte con il paesaggio che attraversi: case, campi e spazi di lavoro. Se vuoi fotografarli, resta negli spazi pubblici e rispetta gli ingressi delle abitazioni. Il calendario degli eventi in fondo alla pagina aiuta a scegliere se abbinare la visita a un appuntamento in paese.",
       },
     ],
     visit: [
       {
-        name: "Centro di Zeddiani",
+        name: "Madonna delle Grazie e San Pietro Apostolo",
         body:
-          "Parti dal centro: chiesa di San Pietro Apostolo (patrono, con elementi gotico-aragonesi), piazza e servizi. In paesi piccoli gli orari di uffici e luoghi aperti cambiano: conferma sul sito del Comune prima di partire.",
+          "Le due chiese permettono di distinguere epoche diverse: il Comune colloca la fondazione della Madonna delle Grazie nella prima metà del XIII secolo e la parrocchiale di San Pietro nel XVII. Prima di programmare gli interni, chiedi al Comune o alla parrocchia quali aperture siano disponibili. Se arrivi durante una celebrazione, rimanda la visita turistica per non interromperla.",
       },
       {
-        name: "Cosa vedere nel territorio",
+        name: "Montegranatico e case del centro",
         body:
-          "Nel territorio comunale contano soprattutto la pianura coltivata, le architetture rurali in ladiri e il paesaggio agricolo verso Oristano. Se cerchi musei o siti archeologici più ampi, parti da Oristano e Cabras. Gli eventi aperti al pubblico compaiono sotto in questa stessa pagina.",
+          "Fra i luoghi segnalati dal Comune compare il Montegranatico ottocentesco. Abbinalo alla passeggiata fra le case in ladiri e i murales, senza presumere che l’edificio sia sempre aperto al pubblico. Per una visita di gruppo, chiedi prima se siano disponibili accompagnamento o iniziative culturali: vedere l’esterno e accedere agli ambienti interni sono esperienze da organizzare separatamente.",
+      },
+      {
+        name: "Rio Cispiri e Mare Foghe",
+        body: "Il Comune segnala una zona umida fra il Rio Cispiri e lo stagno di Mare Foghe, con presenza di avifauna. Non indica però un percorso attrezzato nella scheda del paese: prima di partire verifica accessi e condizioni del terreno. Per osservare gli animali porta un binocolo, mantieni distanza e silenzio e resta sui passaggi consentiti. Evita di attraversare campi o argini per cercare un punto migliore; una descrizione naturalistica non equivale a un’autorizzazione di accesso.",
       },
     ],
     faqs: [
       {
         question: "Cosa visitare a Zeddiani?",
         answer:
-          "Centro, chiesa di San Pietro e il paesaggio agricolo del Campidano. Poi apri il calendario eventi per sapere cosa c’è in programma.",
+          "La Madonna delle Grazie, San Pietro Apostolo, il Montegranatico e le testimonianze di case in ladiri e murales. Per gli interni verifica le aperture; per la zona umida di Mare Foghe chiedi indicazioni sugli accessi.",
+      },
+      {
+        question: "Si può visitare Zeddiani anche senza una sagra?",
+        answer: "Puoi organizzare una passeggiata nel centro anche senza un evento. Se vuoi entrare nelle chiese o partecipare a una visita accompagnata, concorda prima le aperture. Per abbinare una manifestazione, consulta il calendario con le date dell’edizione corrente.",
       },
       {
         question: "Dove trovo gli eventi a Zeddiani?",
@@ -3025,6 +3033,10 @@ export const CENTRO_CULTURE_TOWNS: CultureTownArticle[] = [
       {
         label: "Comune di Zeddiani",
         href: "https://www.comune.zeddiani.or.it/",
+      },
+      {
+        label: "Comune di Zeddiani, luoghi e paesaggio del paese",
+        href: "https://www.comune.zeddiani.or.it/vivere-il-comune/luoghi/il-paese/",
       },
     ],
     relatedLinks: [
