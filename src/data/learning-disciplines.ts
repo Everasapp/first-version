@@ -26,6 +26,7 @@ export const learningDisciplines: readonly LearningDiscipline[] = [
   { slug: "artigianato-tessitura", name: "Artigianato, tessitura e sartoria", areas: ["corsi-workshop"] },
   { slug: "musica", name: "Musica", areas: ["corsi-workshop"] },
   { slug: "teatro", name: "Teatro e arti espressive", areas: ["corsi-workshop"] },
+  { slug: "ballo", name: "Ballo e danza", areas: ["corsi-workshop"] },
   { slug: "cucina", name: "Cucina e pasticceria", areas: ["formazione", "corsi-workshop"] },
   { slug: "benessere-movimento", name: "Benessere e movimento", areas: ["formazione", "corsi-workshop"] },
   { slug: "ambiente-sostenibilita", name: "Ambiente e sostenibilità", areas: ["formazione", "corsi-workshop"] },
