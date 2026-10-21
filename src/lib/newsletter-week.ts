@@ -25,6 +25,11 @@ import {
   REAL_EMAIL_DISABLED_MESSAGE,
   realEmailDeliveryAllowed,
 } from "@/src/lib/notifications/resend-delivery";
+import {
+  deliverNewsletterBatch,
+  NEWSLETTER_BATCH_LIMIT,
+  type NewsletterDeliverySource,
+} from "@/src/lib/newsletter-delivery";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
 const ROME_TZ = "Europe/Rome";
@@ -44,6 +49,7 @@ export type NewsletterSubscriber = {
 type NewsletterRecipient = NewsletterSubscriber & {
   email: string | null;
   emailConfirmed: boolean;
+  source: NewsletterDeliverySource;
 };
 
 type NewsletterRecipientRow = {
@@ -77,6 +83,7 @@ export type WeeklyNewsletterSummary = {
   skipped: number;
   failed: number;
   eventsInWeek: number;
+  remaining: number;
   errors: Array<{ userId: string; error: string }>;
 };
 
@@ -139,6 +146,7 @@ export function getCurrentRomeWeekRange(now = new Date()) {
     start,
     end,
     label: formatWeekRangeLabel(start, end),
+    weekKey: monday,
   };
 }
 
@@ -313,6 +321,7 @@ function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
     newsletter_unsub_token: String(row.newsletter_unsub_token ?? ""),
     email: row.email?.trim() || null,
     emailConfirmed: Boolean(row.email_confirmed),
+    source: "profile",
   };
 }
 
@@ -374,6 +383,7 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
         ...subscriber,
         email: null,
         emailConfirmed: false,
+        source: "profile",
       });
       continue;
     }
@@ -385,6 +395,7 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
       ...subscriber,
       email: userData.user?.email ?? null,
       emailConfirmed: Boolean(userData.user?.email_confirmed_at),
+      source: "profile",
     });
   }
 
@@ -402,6 +413,7 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
       newsletter_unsub_token: subscriber.unsub_token,
       email: subscriber.email,
       emailConfirmed: true,
+      source: "subscriber",
     });
   }
 
@@ -540,14 +552,65 @@ export function composeSubscriberNewsletter({
   };
 }
 
-async function sendNewsletterEmail(to: string, subject: string, html: string) {
-  await sendCampaignEmailViaResend({
-    to,
-    subject,
-    html,
-    from: CAMPAIGN_FROM_EMAIL,
-    replyTo: CAMPAIGN_REPLY_TO,
+async function sendNewsletterEmail(
+  to: string,
+  subject: string,
+  html: string,
+  idempotencyKey: string,
+): Promise<"sent" | "skipped"> {
+  try {
+    await sendCampaignEmailViaResend({
+      to,
+      subject,
+      html,
+      from: CAMPAIGN_FROM_EMAIL,
+      replyTo: CAMPAIGN_REPLY_TO,
+      idempotencyKey,
+    });
+    return "sent";
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (/idempoten/i.test(message)) return "skipped";
+    throw error;
+  }
+}
+
+function throwNewsletterRpcError(error: { code?: string; message: string }): never {
+  const wrapped = new Error(error.message) as Error & { code?: string };
+  wrapped.code = error.code;
+  throw wrapped;
+}
+
+async function claimNewsletterDelivery(
+  client: SupabaseClient,
+  input: { recipientKey: string; weekKey: string; idempotencyKey: string },
+) {
+  const { data, error } = await client.rpc("claim_newsletter_delivery", {
+    p_recipient_key: input.recipientKey,
+    p_week_key: input.weekKey,
+    p_idempotency_key: input.idempotencyKey,
   });
+  if (error) throwNewsletterRpcError(error);
+  return data;
+}
+
+async function completeNewsletterDelivery(
+  client: SupabaseClient,
+  input: {
+    recipientKey: string;
+    weekKey: string;
+    status: "sent" | "skipped" | "failed";
+    errorMessage?: string;
+  },
+) {
+  const { error } = await client.rpc("complete_newsletter_delivery", {
+    p_recipient_key: input.recipientKey,
+    p_week_key: input.weekKey,
+    p_status: input.status,
+    p_events_count: 0,
+    p_error_message: input.errorMessage ?? null,
+  });
+  if (error) throwNewsletterRpcError(error);
 }
 
 export async function runWeeklyNewsletter(options?: {
@@ -563,6 +626,7 @@ export async function runWeeklyNewsletter(options?: {
       skipped: 0,
       failed: 0,
       eventsInWeek: 0,
+      remaining: 0,
       errors: [{ userId: "", error: REAL_EMAIL_DISABLED_MESSAGE }],
     };
   }
@@ -580,6 +644,7 @@ export async function runWeeklyNewsletter(options?: {
     skipped: 0,
     failed: 0,
     eventsInWeek: events.length,
+    remaining: 0,
     errors: [],
   };
 
@@ -600,14 +665,36 @@ export async function runWeeklyNewsletter(options?: {
       siteUrl,
     });
 
-    if (!dryRun) {
-      await sendNewsletterEmail(
-        testEmail,
-        `[TEST] ${preview.subject}`,
-        preview.html,
+    if (dryRun) {
+      summary.sent = 1;
+      return summary;
+    }
+
+    const claimClient = sessionClient ?? tryCreateAdminClient();
+    if (!claimClient) {
+      throw new Error(
+        "Per l'invio automatico manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
       );
     }
-    summary.sent = 1;
+
+    const delivery = await deliverNewsletterBatch({
+      weekKey: week.weekKey,
+      recipients: [{ id: testEmail, source: "test" }],
+      limit: 1,
+      claim: (input) => claimNewsletterDelivery(claimClient, input),
+      complete: (input) => completeNewsletterDelivery(claimClient, input),
+      perform: async (_recipient, idempotencyKey) =>
+        sendNewsletterEmail(
+          testEmail,
+          `[TEST] ${preview.subject}`,
+          preview.html,
+          idempotencyKey,
+        ),
+    });
+    summary.sent = delivery.sent;
+    summary.skipped = delivery.skipped;
+    summary.failed = delivery.failed;
+    summary.errors = delivery.errors;
     return summary;
   }
 
@@ -615,81 +702,67 @@ export async function runWeeklyNewsletter(options?: {
     await loadRecipientsForSend(sessionClient);
   summary.subscribers = recipients.length;
 
-  for (const recipient of recipients) {
-    try {
-      if (!recipient.email) {
+  const delivery = await deliverNewsletterBatch({
+    weekKey: week.weekKey,
+    recipients,
+    limit: NEWSLETTER_BATCH_LIMIT,
+    claim: (input) => claimNewsletterDelivery(writeClient, input),
+    complete: (input) => completeNewsletterDelivery(writeClient, input),
+    perform: async (recipient, idempotencyKey) => {
+      const match = recipients.find(
+        (item) => item.id === recipient.id && item.source === recipient.source,
+      );
+      if (!match?.email) {
         throw new Error("Email utente non trovata");
       }
-
-      if (!recipient.emailConfirmed) {
-        if (!dryRun) {
-          await recordNewsletterSend(writeClient, writeMode, {
-            userId: recipient.id,
-            eventsCount: 0,
-            status: "skipped",
-            errorMessage: "Email non confermata",
-          });
-        }
-        summary.skipped += 1;
-        continue;
+      if (!match.emailConfirmed) {
+        await recordNewsletterSend(writeClient, writeMode, {
+          userId: match.id,
+          eventsCount: 0,
+          status: "skipped",
+          errorMessage: "Email non confermata",
+        });
+        return "skipped";
       }
 
       const preview = composeSubscriberNewsletter({
-        subscriber: recipient,
-        email: recipient.email,
+        subscriber: match,
+        email: match.email,
         events,
         weekLabel: week.label,
         siteUrl,
       });
-
       if (preview.eventsCount === 0) {
-        if (!dryRun) {
-          await recordNewsletterSend(writeClient, writeMode, {
-            userId: recipient.id,
-            eventsCount: 0,
-            status: "skipped",
-            errorMessage: preview.skippedReason,
-          });
-        }
-        summary.skipped += 1;
-        continue;
-      }
-
-      if (!dryRun) {
-        await sendNewsletterEmail(
-          recipient.email,
-          preview.subject,
-          preview.html,
-        );
         await recordNewsletterSend(writeClient, writeMode, {
-          userId: recipient.id,
-          eventsCount: preview.eventsCount,
-          status: "sent",
+          userId: match.id,
+          eventsCount: 0,
+          status: "skipped",
+          errorMessage: preview.skippedReason,
         });
-        await sleep(120);
+        return "skipped";
       }
 
-      summary.sent += 1;
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Errore sconosciuto";
-      summary.failed += 1;
-      summary.errors.push({ userId: recipient.id, error: message });
+      const outcome = await sendNewsletterEmail(
+        match.email,
+        preview.subject,
+        preview.html,
+        idempotencyKey,
+      );
+      if (outcome === "skipped") return "skipped";
+      await recordNewsletterSend(writeClient, writeMode, {
+        userId: match.id,
+        eventsCount: preview.eventsCount,
+        status: "sent",
+      });
+      await sleep(120);
+      return "sent";
+    },
+  });
 
-      if (!dryRun) {
-        try {
-          await recordNewsletterSend(writeClient, writeMode, {
-            userId: recipient.id,
-            eventsCount: 0,
-            status: "failed",
-            errorMessage: message,
-          });
-        } catch {
-          // Keep the original send error; recording is best-effort.
-        }
-      }
-    }
-  }
-
+  summary.sent = delivery.sent;
+  summary.skipped = delivery.skipped;
+  summary.failed = delivery.failed;
+  summary.remaining = delivery.remaining;
+  summary.errors = delivery.errors;
   return summary;
 }

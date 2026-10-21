@@ -18,6 +18,7 @@ export async function postResendEmail(
   payload: Record<string, unknown>,
   env: Env = process.env,
   fetchImpl: typeof fetch = fetch,
+  idempotencyKey?: string,
 ): Promise<ResendPostResult> {
   if (!realEmailDeliveryAllowed(env)) {
     return { blocked: true };
@@ -33,6 +34,7 @@ export async function postResendEmail(
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     body: JSON.stringify(payload),
   });

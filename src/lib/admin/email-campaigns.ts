@@ -547,6 +547,7 @@ export async function sendCampaignEmailViaResend({
   from,
   replyTo,
   attachments = [],
+  idempotencyKey,
 }: {
   to: string;
   subject: string;
@@ -554,6 +555,7 @@ export async function sendCampaignEmailViaResend({
   from: string;
   replyTo: string;
   attachments?: CampaignAttachmentPayload[];
+  idempotencyKey?: string;
 }) {
   const payload: Record<string, unknown> = {
     from,
@@ -577,7 +579,7 @@ export async function sendCampaignEmailViaResend({
     });
   }
 
-  const result = await postResendEmail(payload);
+  const result = await postResendEmail(payload, process.env, fetch, idempotencyKey);
   if (result.blocked) {
     throw new Error(REAL_EMAIL_DISABLED_MESSAGE);
   }

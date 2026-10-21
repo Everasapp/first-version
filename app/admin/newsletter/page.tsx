@@ -87,7 +87,9 @@ export default async function AdminNewsletterPage() {
           <p className="mt-2 max-w-2xl text-slate-600">
             Eventi del {weekLabel}. Ogni iscritto riceve gli appuntamenti della
             sua area (Nord, Centro o Sud), con priorità alla città scelta in
-            fase di registrazione.
+            fase di registrazione. Ogni indirizzo riceve al massimo un invio
+            per settimana. Se la registrazione nel database non è ancora
+            presente, l’invio si ferma e non parte nessuna email.
           </p>
         </div>
         <SendWeeklyNewsletterButton
