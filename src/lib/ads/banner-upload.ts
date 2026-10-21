@@ -1,4 +1,5 @@
 import "server-only";
+import { MAX_PHOTO_BYTES, validateBannerSelection } from "@/src/lib/uploads/limits";
 
 const ALLOWED_MIME = new Set([
   "image/jpeg",
@@ -12,8 +13,7 @@ const EXT_BY_MIME: Record<string, string> = {
   "image/webp": "webp",
   "image/gif": "gif",
 };
-const MAX_BYTES = 5 * 1024 * 1024;
-export const MAX_BANNER_FILES = 3;
+const MAX_BYTES = MAX_PHOTO_BYTES;
 
 export function validateBannerFile(file: File) {
   if (!ALLOWED_MIME.has(file.type)) {
@@ -25,7 +25,7 @@ export function validateBannerFile(file: File) {
   if (file.size <= 0 || file.size > MAX_BYTES) {
     return {
       ok: false as const,
-      error: "Ogni banner non deve superare 5 MB.",
+      error: "Ogni banner non deve superare 3 MB.",
     };
   }
   return { ok: true as const };
@@ -117,8 +117,11 @@ export async function uploadAdvertisingBanners({
   files: File[];
   orderId: string;
 }): Promise<{ paths: string[]; publicUrls: string[] }> {
-  if (files.length < 1 || files.length > MAX_BANNER_FILES) {
-    throw new Error(`Carica da 1 a ${MAX_BANNER_FILES} immagini.`);
+  const error = validateBannerSelection(files);
+  if (error) throw new Error(error);
+  for (const file of files) {
+    const validation = validateBannerFile(file);
+    if (!validation.ok) throw new Error(validation.error);
   }
 
   const paths: string[] = [];
@@ -144,5 +147,5 @@ export function collectBannerFiles(formData: FormData): File[] {
       files.push(value);
     }
   }
-  return files.slice(0, MAX_BANNER_FILES);
+  return files;
 }

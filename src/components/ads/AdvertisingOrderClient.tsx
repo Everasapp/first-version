@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { createUploadBody, validateBannerSelection } from "@/src/lib/uploads/limits";
 import { useState } from "react";
 
 import {
@@ -50,13 +51,15 @@ export default function AdvertisingOrderClient({
     setError(null);
     setReplacePending(true);
     try {
+      const selectionError = validateBannerSelection(Array.from(files));
+      if (selectionError) throw new Error(selectionError);
       const formData = new FormData();
-      for (const file of Array.from(files).slice(0, 3)) {
+      for (const file of Array.from(files)) {
         formData.append("banner", file);
       }
       const response = await fetch(
         `/api/advertising/orders/${order.access_token}/replace-banner`,
-        { method: "POST", body: formData },
+        { method: "POST", body: await createUploadBody(formData) },
       );
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
@@ -157,7 +160,7 @@ export default function AdvertisingOrderClient({
             {order.admin_notes || "Sono necessarie modifiche al materiale."}
           </p>
           <label className="mt-4 block text-sm font-semibold text-amber-950">
-            Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF)
+            Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF), massimo 3 MB complessivi
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif,.gif"

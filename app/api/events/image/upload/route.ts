@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { readUploadFormData } from "@/src/lib/uploads/read-form-data";
+import { MAX_PHOTO_BYTES, UploadSizeError } from "@/src/lib/uploads/limits";
 
 import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import { createClient } from "@/src/lib/supabase/server";
@@ -13,7 +15,7 @@ const ALLOWED_TYPES = new Set([
   "image/gif",
 ]);
 
-const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = MAX_PHOTO_BYTES;
 
 function sanitizeSlug(value: string) {
   return value
@@ -38,8 +40,11 @@ export async function POST(request: Request) {
 
   let formData: FormData;
   try {
-    formData = await request.formData();
-  } catch {
+    formData = await readUploadFormData(request);
+  } catch (error) {
+    if (error instanceof UploadSizeError) {
+      return NextResponse.json({ error: error.message }, { status: 413 });
+    }
     return NextResponse.json(
       { error: "Richiesta non valida." },
       { status: 400 },
@@ -65,7 +70,7 @@ export async function POST(request: Request) {
 
   if (file.size > MAX_UPLOAD_BYTES) {
     return NextResponse.json(
-      { error: "La fotografia non deve superare 5 MB." },
+      { error: "La fotografia non deve superare 3 MB." },
       { status: 400 },
     );
   }

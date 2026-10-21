@@ -1,3 +1,5 @@
+import { createUploadBody, MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
+
 export type UploadedEventImage = {
   path: string;
   publicUrl: string;
@@ -10,13 +12,14 @@ export async function uploadEventImage(
   file: File,
   options: { slug: string },
 ): Promise<UploadedEventImage> {
+  if (file.size > MAX_PHOTO_BYTES) throw new Error("La fotografia non deve superare 3 MB.");
   const body = new FormData();
   body.append("file", file);
   body.append("slug", options.slug);
 
   const response = await fetch("/api/events/image/upload", {
     method: "POST",
-    body,
+    body: await createUploadBody(body),
   });
 
   const payload = (await response.json().catch(() => null)) as

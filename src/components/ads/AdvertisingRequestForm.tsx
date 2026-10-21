@@ -11,8 +11,7 @@ import {
   type ResolvedPackagePricing,
 } from "@/src/lib/ads/advertising-packages";
 
-const MAX_BANNER_BYTES = 5 * 1024 * 1024;
-const MAX_BANNER_FILES = 3;
+import { createUploadBody, validateBannerSelection } from "@/src/lib/uploads/limits";
 const ALLOWED_TYPES = new Set([
   "image/jpeg",
   "image/png",
@@ -45,19 +44,17 @@ export default function AdvertisingRequestForm({
     clearPreviews();
     if (!fileList || fileList.length === 0) return;
 
-    const files = Array.from(fileList).slice(0, MAX_BANNER_FILES);
-    if (fileList.length > MAX_BANNER_FILES) {
-      setError(`Puoi caricare al massimo ${MAX_BANNER_FILES} immagini.`);
+    const files = Array.from(fileList);
+    const selectionError = validateBannerSelection(files);
+    if (selectionError) {
+      setError(selectionError);
+      if (fileRef.current) fileRef.current.value = "";
+      return;
     }
 
     for (const file of files) {
       if (!ALLOWED_TYPES.has(file.type)) {
         setError("Formato non consentito. Usa JPG, PNG, WEBP o GIF.");
-        if (fileRef.current) fileRef.current.value = "";
-        return;
-      }
-      if (file.size > MAX_BANNER_BYTES) {
-        setError("Ogni banner non deve superare 5 MB.");
         if (fileRef.current) fileRef.current.value = "";
         return;
       }
@@ -76,6 +73,11 @@ export default function AdvertisingRequestForm({
       const formData = new FormData(form);
       formData.set("package_id", pkg.id);
 
+      const selectionError = validateBannerSelection(
+        formData.getAll("banner").filter((value): value is File => value instanceof File),
+      );
+      if (selectionError) throw new Error(selectionError);
+
       // Solo hostname: il server antepone http://
       const websiteInput = formData.get("website_url");
       if (typeof websiteInput === "string") {
@@ -84,7 +86,7 @@ export default function AdvertisingRequestForm({
 
       const response = await fetch("/api/advertising/orders", {
         method: "POST",
-        body: formData,
+        body: await createUploadBody(formData),
       });
 
       const data = (await response.json()) as {
@@ -270,8 +272,8 @@ export default function AdvertisingRequestForm({
       <fieldset className="space-y-4">
         <legend className="text-base font-bold text-slate-900">Banner</legend>
         <p className="text-sm text-slate-600">
-          Carica da 1 a 3 immagini. Formati: JPG, PNG, WEBP o GIF. Max 5 MB
-          ciascuna.
+          Carica da 1 a 3 immagini. Formati: JPG, PNG, WEBP o GIF. Max 3 MB
+          complessivi.
         </p>
         <input
           ref={fileRef}

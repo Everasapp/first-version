@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useMemo, useState } from "react";
 import {
@@ -305,10 +306,10 @@ export default function EditEventForm({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_PHOTO_BYTES) {
       setErrors((current) => ({
         ...current,
-        image: "La fotografia non deve superare 5 MB.",
+        image: "La fotografia non deve superare 3 MB.",
       }));
       return;
     }
@@ -598,7 +599,7 @@ export default function EditEventForm({
             </label>
             <p className="mt-2 text-sm text-slate-500">
               Lascia l&apos;immagine attuale o sostituiscila (JPG, PNG o WebP,
-              max 5 MB). Poi clicca Salva modifiche: senza salvataggio la nuova
+              max 3 MB). Poi clicca Salva modifiche: senza salvataggio la nuova
               foto resta solo in anteprima.
             </p>
             {imageFile ? (

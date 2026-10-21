@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -472,10 +473,10 @@ export default function PublishEventPage() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_PHOTO_BYTES) {
       setErrors((current) => ({
         ...current,
-        image: "La fotografia non deve superare 5 MB.",
+        image: "La fotografia non deve superare 3 MB.",
       }));
       return;
     }
@@ -690,7 +691,7 @@ export default function PublishEventPage() {
                             </p>
 
                             <p className="mt-1 text-sm text-slate-500">
-                              JPG, PNG o WebP (max 5 MB). Verrà compressa e
+                              JPG, PNG o WebP (max 3 MB). Verrà compressa e
                               salvata in WebP.
                             </p>
                           </>
