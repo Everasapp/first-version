@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { learningDisciplines } from "@/src/data/learning-disciplines";
 import Header from "@/src/components/home/Header";
 import EventCard from "@/src/components/home/EventCard";
 import JsonLd from "@/src/components/seo/JsonLd";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 type LearningPageProps = {
-  searchParams: Promise<{ area?: string; city?: string; q?: string }>;
+  searchParams: Promise<{ area?: string; city?: string; q?: string; disciplina?: string }>;
 };
 const areas: Record<string, string> = {
   "nord-sardegna": "Nord Sardegna",
@@ -32,12 +33,14 @@ const areas: Record<string, string> = {
 
 export default async function LearningPage({ searchParams }: LearningPageProps) {
   const params = await searchParams;
+  const selectedDiscipline = learningDisciplines.find((item) => item.slug === params.disciplina);
   const selectedArea = typeof params.area === "string" && areas[params.area] ? params.area : "";
   const selectedCity = typeof params.city === "string" ? params.city.trim() : "";
   const query = typeof params.q === "string" ? params.q.trim() : "";
   const { events: allEvents, error } = await loadFilteredPublishedEvents({ learningOnly: true });
   // Filter the same cached inventory; no new database request or city cache variant.
   const events = allEvents.filter((event) =>
+    (!selectedDiscipline || event.categories?.includes(selectedDiscipline.name) || event.category === selectedDiscipline.name) &&
     (!selectedArea || event.area === areas[selectedArea]) &&
     (!selectedCity || event.municipality?.toLocaleLowerCase("it") === selectedCity.toLocaleLowerCase("it")) &&
     (!query || `${event.title} ${event.municipality ?? ""} ${event.location}`.toLocaleLowerCase("it").includes(query.toLocaleLowerCase("it"))),
@@ -61,7 +64,7 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
         </div>
       </section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <form id="ricerca" action={LEARNING_PATH} method="get" aria-label="Cerca formazione, corsi e workshop" className="my-8 grid scroll-mt-24 gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-4">
+        <form id="ricerca" action={LEARNING_PATH} method="get" aria-label="Cerca formazione, corsi e workshop" className="my-8 grid scroll-mt-24 gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-5">
           <label className="text-sm font-semibold text-slate-900">Zona
             <select name="area" defaultValue={selectedArea} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
               <option value="">Tutte le zone</option>
@@ -71,12 +74,18 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
           <label className="text-sm font-semibold text-slate-900">Comune
             <input name="city" defaultValue={selectedCity} placeholder="Es. Sassari" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
           </label>
+          <label className="text-sm font-semibold text-slate-900">Disciplina
+            <select name="disciplina" defaultValue={selectedDiscipline?.slug ?? ""} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
+              <option value="">Tutte le discipline</option>
+              {learningDisciplines.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+            </select>
+          </label>
           <label className="text-sm font-semibold text-slate-900">Cosa vuoi imparare?
             <input name="q" defaultValue={query} placeholder="Es. ceramica o inglese" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
           </label>
           <div className="flex items-end gap-3">
             <button type="submit" className="min-h-11 rounded-xl bg-[#075EAE] px-5 py-2 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Cerca</button>
-            {selectedArea || selectedCity || query ? <Link href={`${LEARNING_PATH}#ricerca`} className="py-3 text-sm font-semibold text-[#075EAE] underline">Azzera filtri</Link> : null}
+            {selectedArea || selectedCity || query || selectedDiscipline ? <Link href={`${LEARNING_PATH}#ricerca`} className="py-3 text-sm font-semibold text-[#075EAE] underline">Azzera filtri</Link> : null}
           </div>
         </form>
         <section aria-labelledby="scegliere-corso" className="my-8 rounded-2xl border border-slate-200 bg-white p-6">

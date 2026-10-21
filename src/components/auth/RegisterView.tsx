@@ -61,7 +61,7 @@ export default function RegisterView({
 
     if (newsletterOptIn && (!newsletterCity || !newsletterCategory)) {
       setErrorMessage(
-        "Per la newsletter scegli città e categoria preferita.",
+        "Per la newsletter scegli città e disciplina preferita.",
       );
       return;
     }
@@ -258,7 +258,7 @@ export default function RegisterView({
                   </span>
                   <span className="mt-1 block text-sm text-slate-600">
                     Una volta a settimana ricevi gli eventi della tua area, con
-                    priorità alla città e alla categoria preferita.
+                    priorità alla città e alla disciplina preferita.
                   </span>
                 </span>
               </label>
@@ -293,7 +293,7 @@ export default function RegisterView({
                       htmlFor="newsletterCategory"
                       className="mb-2 block text-sm font-bold text-slate-700"
                     >
-                      Categoria preferita
+                      Disciplina preferita
                     </label>
                     <select
                       id="newsletterCategory"
@@ -304,7 +304,7 @@ export default function RegisterView({
                       }
                       className={inputClassName}
                     >
-                      <option value="">Seleziona categoria</option>
+                      <option value="">Seleziona disciplina</option>
                       {categories.map((category) => (
                         <option key={category.id} value={category.slug}>
                           {category.name}

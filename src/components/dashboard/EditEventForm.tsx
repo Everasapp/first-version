@@ -19,7 +19,8 @@ import {
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
 import LearningTopicSelect from "@/src/components/events/LearningTopicSelect";
-import { isLearningTopic } from "@/src/lib/learning-courses";
+import { retainDisciplinesForArea, isLearningDiscipline } from "@/src/data/learning-disciplines";
+import { learningAreaForTopic, isLearningTopic } from "@/src/lib/learning-courses";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import CitySelect from "@/src/components/events/CitySelect";
@@ -210,11 +211,11 @@ export default function EditEventForm({
       nextErrors.title = "Inserisci il titolo dell'evento.";
     }
 
-    if (categorySlugs.length === 0) {
-      nextErrors.category = "Seleziona almeno una categoria.";
+    if (categorySlugs.length === 0 || (isLearningTopic(learningTopic) && !categorySlugs.some(isLearningDiscipline))) {
+      nextErrors.category = "Seleziona almeno una disciplina.";
     }
-    if (categorySlugs.includes("workshop-corsi") && !isLearningTopic(learningTopic)) {
-      nextErrors.learningTopic = "Scegli la macroarea e la disciplina del corso.";
+    if ((categorySlugs.includes("workshop-corsi") || categorySlugs.some(isLearningDiscipline)) && !isLearningTopic(learningTopic)) {
+      nextErrors.learningTopic = "Scegli la macroarea e l’ambito del corso.";
     }
 
     if (!imagePreview) {
@@ -540,29 +541,26 @@ export default function EditEventForm({
             )}
           </label>
 
+          <LearningTopicSelect
+            value={learningTopic}
+            onChange={(value) => {
+              setLearningTopic(value);
+              setCategorySlugs((current) => retainDisciplinesForArea(current, learningAreaForTopic(value)));
+              clearError("learningTopic");
+            }}
+            error={errors.learningTopic}
+          />
+
           <CategoryMultiSelect
+            area={learningAreaForTopic(learningTopic)}
             value={categorySlugs}
             onChange={(next) => {
-              if (categorySlugs.includes("workshop-corsi") && !next.includes("workshop-corsi")) {
-                setLearningTopic("");
-              }
               setCategorySlugs(next);
               clearError("category");
               clearError("learningTopic");
             }}
             error={errors.category}
           />
-
-          {categorySlugs.includes("workshop-corsi") || isLearningTopic(learningTopic) ? (
-            <LearningTopicSelect
-              value={learningTopic}
-              onChange={(value) => {
-                setLearningTopic(value);
-                clearError("learningTopic");
-              }}
-              error={errors.learningTopic}
-            />
-          ) : null}
 
           <label className="block">
             <span className="text-sm font-bold text-slate-900">

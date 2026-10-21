@@ -1,4 +1,7 @@
-import { categories } from "@/src/data/categories";
+import { allCategories as categories } from "@/src/data/categories";
+import { isLearningDiscipline } from "@/src/data/learning-disciplines";
+import { REVIEWED_COURSE_DISCIPLINES } from "@/src/data/reviewed-course-disciplines";
+import { LEARNING_AREAS, learningAreaForTopic } from "@/src/lib/learning-courses";
 
 export const MAX_EVENT_CATEGORIES = 3;
 
@@ -6,7 +9,6 @@ export const MAX_EVENT_CATEGORIES = 3;
 const LEGACY_CATEGORY_ALIASES: Record<string, string> = {
   spettacoli: "musica-concerti",
   "musica e concerti": "musica-concerti",
-  teatro: "musica-concerti",
   enogastronomia: "food-drink",
   "outdoor-natura": "sport-competizioni",
   outdoor: "sport-competizioni",
@@ -66,11 +68,20 @@ export function normalizeEventCategories(slugs: string[]): string[] {
 }
 
 export function eventCategorySlugs(event: {
+  slug?: string | null;
+  subcategory?: string | null;
   category?: string | null;
   categories?: string[] | null;
 }): string[] {
+  const stored = normalizeEventCategories(event.categories?.length
+    ? event.categories : event.category?.trim() ? [event.category] : []);
+  const precise = stored.filter(isLearningDiscipline);
+  if (precise.length) return precise;
+  const reviewed = event.slug && Object.hasOwn(REVIEWED_COURSE_DISCIPLINES, event.slug)
+    ? REVIEWED_COURSE_DISCIPLINES[event.slug] : undefined;
+  if (reviewed) return [...reviewed];
   if (event.categories?.length) {
-    return normalizeEventCategories(event.categories);
+    return stored;
   }
   if (event.category?.trim()) {
     return normalizeEventCategories([event.category]);
@@ -80,6 +91,8 @@ export function eventCategorySlugs(event: {
 
 /** Display labels for UI (card, detail). */
 export function resolveCategoryLabels(event: {
+  slug?: string | null;
+  subcategory?: string | null;
   category?: string | null;
   categories?: string[] | null;
 }): string[] {
@@ -87,10 +100,14 @@ export function resolveCategoryLabels(event: {
   if (!slugs.length) {
     return event.category?.trim() ? [event.category.trim()] : ["Evento"];
   }
+  const area = LEARNING_AREAS.find((item) => item.key === learningAreaForTopic(event.subcategory));
+  if (area && !slugs.some(isLearningDiscipline)) return [area.title];
   return slugs.map(slugToName);
 }
 
 export function primaryCategorySlug(event: {
+  slug?: string | null;
+  subcategory?: string | null;
   category?: string | null;
   categories?: string[] | null;
 }): string | null {
@@ -99,7 +116,9 @@ export function primaryCategorySlug(event: {
 
 export function eventMatchesCategoryFilter(
   event: {
-    category?: string | null;
+    slug?: string | null;
+  subcategory?: string | null;
+  category?: string | null;
     categories?: string[] | null;
   },
   filterSlug: string,
@@ -107,6 +126,11 @@ export function eventMatchesCategoryFilter(
   if (!filterSlug) return true;
 
   const resolvedFilter = canonicalCategorySlug(filterSlug.toLocaleLowerCase("it"));
+  // Existing course hubs still request the former format category.
+  if (resolvedFilter === "workshop-corsi" && (
+    learningAreaForTopic(event.subcategory) ||
+    (event.slug && Object.hasOwn(REVIEWED_COURSE_DISCIPLINES, event.slug))
+  )) return true;
   const needle = resolvedFilter;
   const meta = categories.find((item) => item.slug === resolvedFilter);
   const nameNeedle = meta?.name.toLocaleLowerCase("it");

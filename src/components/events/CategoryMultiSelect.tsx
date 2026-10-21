@@ -1,12 +1,16 @@
 "use client";
 
 import { categories } from "@/src/data/categories";
+import { disciplinesForArea, isLearningDiscipline } from "@/src/data/learning-disciplines";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
+import type { LearningArea } from "@/src/lib/learning-courses";
 import {
   MAX_EVENT_CATEGORIES,
   toggleCategorySlug,
 } from "@/src/lib/event-categories";
 
 type CategoryMultiSelectProps = {
+  area?: LearningArea;
   value: string[];
   onChange: (next: string[]) => void;
   error?: string;
@@ -15,25 +19,30 @@ type CategoryMultiSelectProps = {
 };
 
 export default function CategoryMultiSelect({
+  area,
   value,
   onChange,
   error,
   name = "categories",
   id = "event-categories",
 }: CategoryMultiSelectProps) {
-  const atMax = value.length >= MAX_EVENT_CATEGORIES;
+  const current = value.filter(isLearningDiscipline);
+  const atMax = current.length >= MAX_EVENT_CATEGORIES;
+  const available = new Set(disciplinesForArea(area).map((item) => item.slug));
+  const choices = categories.filter((category) => available.has(category.slug));
+  const legacy = value.filter((slug) => !isLearningDiscipline(slug));
 
   return (
     <div>
       <span className="text-sm font-bold text-slate-900">
-        Categorie{" "}
+        Discipline{" "}
         <span className="font-medium text-slate-500">
           (fino a {MAX_EVENT_CATEGORIES})
         </span>
       </span>
 
       <p className="mt-1 text-xs text-slate-500">
-        La prima selezionata è la categoria principale.
+        La prima selezionata è la disciplina principale. Il formato (corso, workshop o laboratorio) è distinto dalla materia.
       </p>
 
       <fieldset
@@ -43,9 +52,9 @@ export default function CategoryMultiSelect({
           error ? "border-red-400" : "border-slate-300"
         }`}
       >
-        <legend className="sr-only">Seleziona fino a {MAX_EVENT_CATEGORIES} categorie</legend>
+        <legend className="sr-only">Seleziona fino a {MAX_EVENT_CATEGORIES} discipline</legend>
 
-        {categories.map((category) => {
+        {choices.map((category) => {
           const checked = value.includes(category.slug);
           const disabled = !checked && atMax;
 
@@ -67,7 +76,7 @@ export default function CategoryMultiSelect({
                 checked={checked}
                 disabled={disabled}
                 onChange={() =>
-                  onChange(toggleCategorySlug(value, category.slug))
+                  onChange(toggleCategorySlug(current, category.slug))
                 }
                 className="h-4 w-4 rounded border-slate-300 text-[#075EAE] focus:ring-[#075EAE]"
               />
@@ -84,6 +93,10 @@ export default function CategoryMultiSelect({
         })}
       </fieldset>
 
+      {legacy.length ? <p className="mt-2 text-sm text-slate-600">
+        Classificazione precedente: {resolveCategoryLabels({ categories: legacy }).join(", ")}.
+        Scegli una disciplina per sostituirla.
+      </p> : null}
       {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
     </div>
   );
