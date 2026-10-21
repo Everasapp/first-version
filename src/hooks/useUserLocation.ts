@@ -61,21 +61,23 @@ export function useUserLocation() {
   }, [applyError, applySuccess]);
 
   useEffect(() => {
-    const cached = readGeoCoords();
-    if (cached) {
-      setCoords(cached);
-      setStatus("ready");
-      return;
-    }
+    queueMicrotask(() => {
+      const cached = readGeoCoords();
+      if (cached) {
+        setCoords(cached);
+        setStatus("ready");
+        return;
+      }
 
-    if (isGeoDenied()) {
-      setStatus("denied");
-      return;
-    }
+      if (isGeoDenied()) {
+        setStatus("denied");
+        return;
+      }
 
-    if (!navigator.geolocation) {
-      setStatus("unavailable");
-    }
+      if (!navigator.geolocation) {
+        setStatus("unavailable");
+      }
+    });
   }, []);
 
   return {

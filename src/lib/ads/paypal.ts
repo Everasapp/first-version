@@ -1,5 +1,17 @@
 import "server-only";
 
+import {
+  isSandboxPayPalReady,
+  paypalApiBase,
+} from "@/src/lib/ads/paypal-checkout";
+
+export {
+  decidePayPalCheckout,
+  isSandboxPayPalReady,
+  paypalApiBase,
+} from "@/src/lib/ads/paypal-checkout";
+export type { PayPalCheckoutDecision } from "@/src/lib/ads/paypal-checkout";
+
 /**
  * PayPal Orders API (one-time payments).
  *
@@ -10,19 +22,21 @@ import "server-only";
  * - PAYPAL_WEBHOOK_ID (opzionale, per verifica webhook)
  */
 
-const SANDBOX_BASE = "https://api-m.sandbox.paypal.com";
-const LIVE_BASE = "https://api-m.paypal.com";
-
 export type PayPalEnvironment = "sandbox" | "live";
 
+type Env = Record<string, string | undefined>;
+
 export function getPayPalEnvironment(): PayPalEnvironment {
-  const raw = process.env.PAYPAL_ENVIRONMENT?.trim().toLowerCase();
-  if (raw === "sandbox") return "sandbox";
-  return "live";
+  if (process.env.VERCEL_ENV !== "production") return "sandbox";
+  return paypalApiBase() === "https://api-m.sandbox.paypal.com" ? "sandbox" : "live";
 }
 
 function getPayPalBaseUrl() {
-  return getPayPalEnvironment() === "sandbox" ? SANDBOX_BASE : LIVE_BASE;
+  const base = paypalApiBase();
+  if (!base) {
+    throw new Error("Pagamento non disponibile.");
+  }
+  return base;
 }
 
 function getCredentials() {
@@ -36,16 +50,17 @@ function getCredentials() {
   return { clientId, clientSecret };
 }
 
-export function isPayPalConfigured() {
+export function isPayPalConfigured(env: Env = process.env) {
+  if (env.VERCEL_ENV !== "production") return isSandboxPayPalReady(env);
   return Boolean(
-    process.env.PAYPAL_CLIENT_ID?.trim() &&
-      process.env.PAYPAL_CLIENT_SECRET?.trim(),
+    env.PAYPAL_CLIENT_ID?.trim() && env.PAYPAL_CLIENT_SECRET?.trim(),
   );
 }
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
 export async function getPayPalAccessToken(): Promise<string> {
+  const base = getPayPalBaseUrl();
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
     return cachedToken.value;
   }
@@ -53,7 +68,7 @@ export async function getPayPalAccessToken(): Promise<string> {
   const { clientId, clientSecret } = getCredentials();
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
-  const response = await fetch(`${getPayPalBaseUrl()}/v1/oauth2/token`, {
+  const response = await fetch(`${base}/v1/oauth2/token`, {
     method: "POST",
     headers: {
       Authorization: `Basic ${auth}`,

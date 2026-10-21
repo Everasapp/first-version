@@ -483,7 +483,7 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
     title: "Artigianato sardo: mestieri, materiali e territori",
     h1: "Artigianato sardo: mestieri, materiali e tradizioni ancora vive",
     description:
-      "Tessitura, coltelli, intreccio, sughero, corallo, ceramica e filigrana: territori associati, musei e fiere, senza vetrina commerciale.",
+      "Materiali, mestieri e territori dell’artigianato sardo: prova un esercizio di intreccio e scopri cosa chiedere prima di scegliere un laboratorio creativo.",
     intro:
       "Un mestiere sardo è spesso un paese, un materiale e una scuola di bottega. Questa guida associa filiere e territori quando le fonti (musei civici, disciplinari, letteratura locale) lo fanno. Non è un catalogo di vendita e non certifica «l’artigiano più autentico». Per visitare una bottega servono contatto e orario del laboratorio, che qui non si inventano.",
     excerpt:
@@ -498,14 +498,14 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
         title: "Tessitura",
         paragraphs: [
           "Tappeti e tessuti a mano sono documentati in più centri dell’interno e della Gallura. Aggius tiene il Museo etnografico Oliva Carta Cannas (MEOC) e una tradizione di tappeto che la guida del paese racconta senza farne una vetrina. Altri paesi della Barbagia e del Logudoro hanno sarte e telai: la presenza va verificata sul posto, comune per comune.",
-          "Fiere e dimostrazioni compaiono a volte nelle Cortes Apertas e in mostre civiche. Date: calendario EVERAS e Comuni.",
+          "Per vedere una dimostrazione o provare un telaio, verifica le attività con il museo o il laboratorio. Nel catalogo EVERAS puoi cercare i corsi creativi pubblicati, senza presumere che ogni bottega organizzi lezioni.",
         ],
       },
       {
         title: "Ceramica",
         paragraphs: [
           "Assemini, nell’area cagliaritana, è associata alla ceramica nella letteratura locale e nelle attività produttive del Novecento e contemporanee. Non è l’unico centro: botteghe esistono altrove, con stili diversi. Orari di laboratori: i produttori e il Comune, non questa pagina.",
-          "Mostre e mercati di ceramica, quando pubblicati, cadono in fiere e artigianato sul calendario.",
+          "Per iniziare con la ceramica, confronta livello, materiali e cotture inclusi nei laboratori. I percorsi creativi per passione sono raccolti in Corsi e workshop.",
         ],
       },
       {
@@ -540,9 +540,9 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
         ],
       },
       {
-        title: "Fiere, botteghe e calendario",
+        title: "Botteghe e percorsi per imparare",
         paragraphs: [
-          "Sotto: fiere, mercatini e sagre pubblicate, che a volte includono dimostrazioni di mestiere. Se non c’è nulla in programma, restano le guide dei paesi e la possibilità di pubblicare una mostra o una fiera. EVERAS non intermedia la vendita.",
+          "Una visita in bottega permette di osservare; un laboratorio dà tempo per provare. Prima di prenotare, chiedi cosa farai personalmente, chi ti seguirà e quali costi sono inclusi. Il percorso pratico in questa pagina ti aiuta a scegliere e rimanda al catalogo dei corsi disponibili. EVERAS non intermedia la vendita di manufatti.",
         ],
       },
     ],
@@ -560,7 +560,7 @@ export const CULTURA_GUIDE_ARTICLES: CulturaArticle[] = [
       {
         question: "Questa guida vende artigianato?",
         answer:
-          "No. È un testo culturale. Eventuali fiere sono schede evento di terzi.",
+          "No. La guida racconta materiali e territori, propone un esercizio e aiuta a scegliere un laboratorio. Le iscrizioni ai corsi si svolgono direttamente con gli organizzatori.",
       },
     ],
     sources: [

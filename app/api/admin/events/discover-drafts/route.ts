@@ -2,11 +2,19 @@ import { NextResponse } from "next/server";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
 import { discoverAndImportEventDrafts } from "@/src/lib/admin/discover-event-drafts";
+import {
+  IMPORT_DISABLED_MESSAGE,
+  importDisabledOutsideProduction,
+} from "@/src/lib/env/operational-origin";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
 export async function POST(request: Request) {
+  if (importDisabledOutsideProduction()) {
+    return NextResponse.json({ error: IMPORT_DISABLED_MESSAGE }, { status: 503 });
+  }
+
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 

@@ -1,7 +1,5 @@
 import "server-only";
 
-import { Resend } from "resend";
-
 import { addCalendarMonths, LAUNCH_PROMO_LIMIT, LAUNCH_PROMO_USED_OFFSET, sanitizeWebsiteUrl } from "@/src/lib/ads/advertising-packages";
 import {
   getOrderBannerUrls,
@@ -12,6 +10,11 @@ import {
   type AdvertisingOrderRow,
 } from "@/src/lib/ads/types";
 import { resolveSponsoredMedia } from "@/src/lib/ads/sponsored-creative-media";
+import { getOperationalOrigin } from "@/src/lib/env/operational-origin";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  postResendEmail,
+} from "@/src/lib/notifications/resend-delivery";
 import {
   ADMIN_NOTIFICATION_EMAIL,
   getEmailFromAddress,
@@ -45,23 +48,26 @@ async function sendResendEmail({
   subject: string;
   html: string;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  if (!process.env.RESEND_API_KEY?.trim()) {
+    if (process.env.VERCEL_ENV !== "production") {
+      return { ok: false as const, error: REAL_EMAIL_DISABLED_MESSAGE };
+    }
     console.error("[advertising] RESEND_API_KEY non configurata");
     return { ok: false as const, error: "RESEND_API_KEY mancante" };
   }
 
-  const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send({
+  const result = await postResendEmail({
     from: getEmailFromAddress(),
     to: Array.isArray(to) ? to : [to],
     subject,
     html,
   });
-
-  if (error) {
-    console.error("[advertising] Invio email fallito:", error);
-    return { ok: false as const, error: error.message };
+  if (result.blocked) {
+    return { ok: false as const, error: REAL_EMAIL_DISABLED_MESSAGE };
+  }
+  if (!result.ok) {
+    console.error("[advertising] Invio email fallito:", result.message);
+    return { ok: false as const, error: result.message };
   }
 
   return { ok: true as const };
@@ -81,7 +87,9 @@ function priceLabel(price: number, currency = "EUR") {
 }
 
 function orderPayUrl(order: AdvertisingOrderRow) {
-  return `${getSiteUrl()}/pubblicita/ordine/${order.access_token}`;
+  const origin = getOperationalOrigin();
+  if (!origin) return "";
+  return `${origin}/pubblicita/ordine/${order.access_token}`;
 }
 
 function adminOrderUrl(order: AdvertisingOrderRow) {

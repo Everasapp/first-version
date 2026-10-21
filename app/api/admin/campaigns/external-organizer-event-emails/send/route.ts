@@ -12,11 +12,22 @@ import {
   type CampaignEventLink,
 } from "@/src/lib/admin/email-campaigns";
 import { listExternalOrganizerEventCampaignRecipients } from "@/src/lib/admin/organizer-event-campaign";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  realEmailDeliveryAllowed,
+} from "@/src/lib/notifications/resend-delivery";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
 export async function POST() {
+  if (!realEmailDeliveryAllowed()) {
+    return NextResponse.json(
+      { error: REAL_EMAIL_DISABLED_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 

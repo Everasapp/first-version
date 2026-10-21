@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { readUploadFormData } from "@/src/lib/uploads/read-form-data";
+import { UploadSizeError } from "@/src/lib/uploads/limits";
 
 import {
   PHOTO_MAX_BYTES,
@@ -24,8 +26,11 @@ export async function POST(request: Request) {
 
   let formData: FormData;
   try {
-    formData = await request.formData();
-  } catch {
+    formData = await readUploadFormData(request);
+  } catch (error) {
+    if (error instanceof UploadSizeError) {
+      return NextResponse.json({ error: error.message }, { status: 413 });
+    }
     return NextResponse.json({ error: "Richiesta non valida." }, { status: 400 });
   }
 
@@ -53,7 +58,7 @@ export async function POST(request: Request) {
 
   if (file.size > PHOTO_MAX_BYTES) {
     return NextResponse.json(
-      { error: "La foto non deve superare 5 MB." },
+      { error: "La foto non deve superare 3 MB." },
       { status: 400 },
     );
   }

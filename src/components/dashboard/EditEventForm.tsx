@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useMemo, useState } from "react";
 import {
@@ -17,6 +18,8 @@ import {
 } from "lucide-react";
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import LearningTopicSelect from "@/src/components/events/LearningTopicSelect";
+import { isLearningTopic } from "@/src/lib/learning-courses";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import CitySelect from "@/src/components/events/CitySelect";
@@ -61,6 +64,7 @@ export type EditableEvent = {
   description: string | null;
   category: string;
   categories?: string[] | null;
+  subcategory?: string | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -141,6 +145,7 @@ export default function EditEventForm({
   const [categorySlugs, setCategorySlugs] = useState<string[]>(() =>
     eventCategorySlugs(event),
   );
+  const [learningTopic, setLearningTopic] = useState(event.subcategory ?? "");
   const [imagePreview, setImagePreview] = useState(event.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState(event.image_url);
@@ -207,6 +212,9 @@ export default function EditEventForm({
 
     if (categorySlugs.length === 0) {
       nextErrors.category = "Seleziona almeno una categoria.";
+    }
+    if (categorySlugs.includes("workshop-corsi") && !isLearningTopic(learningTopic)) {
+      nextErrors.learningTopic = "Scegli la macroarea e la disciplina del corso.";
     }
 
     if (!imagePreview) {
@@ -298,10 +306,10 @@ export default function EditEventForm({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_PHOTO_BYTES) {
       setErrors((current) => ({
         ...current,
-        image: "La fotografia non deve superare 5 MB.",
+        image: "La fotografia non deve superare 3 MB.",
       }));
       return;
     }
@@ -369,6 +377,7 @@ export default function EditEventForm({
           description: normalizeEventDescription(description),
           category: normalizeEventCategories(categorySlugs)[0],
           categories: normalizeEventCategories(categorySlugs),
+          subcategory: learningTopic.trim() || null,
           province: selectedCity?.province ?? null,
           municipality: city,
           location_name: venue.trim(),
@@ -534,11 +543,26 @@ export default function EditEventForm({
           <CategoryMultiSelect
             value={categorySlugs}
             onChange={(next) => {
+              if (categorySlugs.includes("workshop-corsi") && !next.includes("workshop-corsi")) {
+                setLearningTopic("");
+              }
               setCategorySlugs(next);
               clearError("category");
+              clearError("learningTopic");
             }}
             error={errors.category}
           />
+
+          {categorySlugs.includes("workshop-corsi") || isLearningTopic(learningTopic) ? (
+            <LearningTopicSelect
+              value={learningTopic}
+              onChange={(value) => {
+                setLearningTopic(value);
+                clearError("learningTopic");
+              }}
+              error={errors.learningTopic}
+            />
+          ) : null}
 
           <label className="block">
             <span className="text-sm font-bold text-slate-900">
@@ -575,7 +599,7 @@ export default function EditEventForm({
             </label>
             <p className="mt-2 text-sm text-slate-500">
               Lascia l&apos;immagine attuale o sostituiscila (JPG, PNG o WebP,
-              max 5 MB). Poi clicca Salva modifiche: senza salvataggio la nuova
+              max 3 MB). Poi clicca Salva modifiche: senza salvataggio la nuova
               foto resta solo in anteprima.
             </p>
             {imageFile ? (

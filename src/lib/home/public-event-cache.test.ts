@@ -18,6 +18,7 @@ function queryReturning(...pages: Page[]) {
   const query = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
+    or: vi.fn().mockReturnThis(),
     gte: vi.fn().mockReturnThis(),
     ilike: vi.fn().mockReturnThis(),
     limit: vi.fn().mockResolvedValue({ data: matchingIds, error: null }),
@@ -31,7 +32,7 @@ function queryReturning(...pages: Page[]) {
 }
 
 const event = {
-  id: "event-1", slug: "test-event", title: "Concerto",
+  id: "event-1", slug: "test-event", title: "Laboratorio musicale", subcategory: "imparare-arti",
   description: "Laboratorio musicale", category: "musica-concerti",
   municipality: "Sassari", province: "SS", location_name: "Piazza",
   start_at: "2099-10-01T18:00:00Z", end_at: null,
@@ -61,6 +62,7 @@ describe("anonymous public event cache", () => {
     expect((await loadHomeEventRows()).rows).toHaveLength(1);
     expect((await loadHomeEventRows()).rows).toHaveLength(1);
     expect(query.range).toHaveBeenCalledTimes(1);
+    expect(query.or).toHaveBeenCalledWith("subcategory.like.imparare-%");
     expect(state.createClient).toHaveBeenCalledWith(
       "https://example.supabase.co", "test-publishable-key",
       { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } },

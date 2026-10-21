@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { PUBLIC_LEARNING_FILTER } from "@/src/lib/learning-courses";
 
 import { createPublicClient } from "@/src/lib/supabase/public";
 import {
@@ -43,6 +44,7 @@ const fetchCachedHomeEventRows = unstable_cache(
           "id, slug, title, category, subcategory, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
         )
         .eq("status", "published")
+        .or(PUBLIC_LEARNING_FILTER)
         .gte("start_at", lookback.toISOString())
         .order("start_at", { ascending: true })
         .range(from, from + pageSize - 1);
@@ -54,7 +56,7 @@ const fetchCachedHomeEventRows = unstable_cache(
       if (chunk.length < pageSize) return rows;
     }
   },
-  ["homepage-event-rows-v2"],
+  ["homepage-learning-rows-v3"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],

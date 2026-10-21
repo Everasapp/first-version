@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 
 import { discoverAndImportEventDrafts } from "@/src/lib/admin/discover-event-drafts";
 import { isCronAuthorized } from "@/src/lib/cron/auth";
+import {
+  IMPORT_DISABLED_MESSAGE,
+  importDisabledOutsideProduction,
+} from "@/src/lib/env/operational-origin";
 import { logCronRun } from "@/src/lib/cron/run-log";
 import {
   createAdminClient,
@@ -61,6 +65,10 @@ async function runDiscovery(triggeredBy: "cron" | "admin") {
 }
 
 export async function GET(request: Request) {
+  if (importDisabledOutsideProduction()) {
+    return NextResponse.json({ error: IMPORT_DISABLED_MESSAGE }, { status: 503 });
+  }
+
   const startedAt = new Date();
   const adminClient = tryCreateAdminClient();
   const keyDiagnostics = getAdminKeyDiagnostics();

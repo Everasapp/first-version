@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { expireAdvertisingOrders } from "@/src/lib/ads/orders";
 import { isCronAuthorized } from "@/src/lib/cron/auth";
 import { logCronRun } from "@/src/lib/cron/run-log";
+import {
+  OUTSIDE_PRODUCTION_MESSAGE,
+  outsideProduction,
+} from "@/src/lib/env/operational-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +15,13 @@ export const maxDuration = 60;
 const JOB_NAME = "expire-advertising";
 
 export async function GET(request: Request) {
+  if (outsideProduction()) {
+    return NextResponse.json(
+      { error: OUTSIDE_PRODUCTION_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   const startedAt = new Date();
 
   if (!isCronAuthorized(request)) {

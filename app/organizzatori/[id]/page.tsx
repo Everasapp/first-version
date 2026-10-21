@@ -1,3 +1,4 @@
+import { isLearningEvent, PUBLIC_LEARNING_FILTER } from "@/src/lib/learning-courses";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -46,7 +47,7 @@ type OrganizerPageProps = {
 };
 
 const EVENT_SELECT =
-  "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
+  "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
 
 type ResolvedPage =
   | {
@@ -68,13 +69,14 @@ async function loadDirectoryEvents(
     .select(EVENT_SELECT)
     .eq("organizer_directory_id", directoryId)
     .eq("status", "published")
+    .or(PUBLIC_LEARNING_FILTER)
     .order("start_at", { ascending: true });
 
   if (error) {
     throw new Error(`Impossibile caricare gli eventi: ${error.message}`);
   }
 
-  return (data ?? []) as OrganizerEventRow[];
+  return ((data ?? []) as OrganizerEventRow[]).filter(isLearningEvent);
 }
 
 async function canPreviewDirectory(
@@ -269,6 +271,7 @@ export default async function OrganizerPublicPage({
     .select(EVENT_SELECT)
     .eq("organizer_id", resolved.organizer.id)
     .eq("status", "published")
+    .or(PUBLIC_LEARNING_FILTER)
     .order("start_at", { ascending: true });
 
   if (error) {
@@ -276,7 +279,7 @@ export default async function OrganizerPublicPage({
   }
 
   const { upcoming } = splitOrganizerEvents(
-    (eventsData ?? []) as OrganizerEventRow[],
+    ((eventsData ?? []) as OrganizerEventRow[]).filter(isLearningEvent),
     favoriteIds,
   );
 

@@ -17,6 +17,7 @@ export type OrganizerEventRow = {
   title: string;
   category: string;
   categories?: string[] | null;
+  subcategory?: string | null;
   province: string | null;
   municipality: string;
   location_name: string | null;

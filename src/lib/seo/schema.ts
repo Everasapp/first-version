@@ -12,7 +12,7 @@ export function websiteSearchActionSchema() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/eventi?q={search_term_string}`,
+        urlTemplate: `${SITE_URL}/imparare-e-fare-in-sardegna?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

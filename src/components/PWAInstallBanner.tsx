@@ -134,7 +134,7 @@ export default function PWAInstallBanner() {
   const [installing, setInstalling] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
   }, []);
 
   useEffect(() => {

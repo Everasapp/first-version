@@ -78,9 +78,12 @@ export default function Footer() {
 
         <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
           <div className="max-w-md space-y-3 text-base text-slate-700">
-            <p>Scopri gli eventi più belli della Sardegna.</p>
+            <p>
+              EVERAS ti aiuta a trovare formazione per il lavoro e corsi,
+              workshop ed esperienze per coltivare una passione in Sardegna.
+            </p>
             <nav
-              aria-label="Pagine eventi"
+              aria-label="Percorsi di apprendimento"
               className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold"
             >
               {primaryLinks.map((link) => (
@@ -117,10 +120,17 @@ export default function Footer() {
             </a>
 
             <Link
-              href="/segnala-evento"
+              href="/per-gli-organizzatori"
               className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
             >
-              Segnala un evento
+              Proponi un corso
+            </Link>
+
+            <Link
+              href="/per-gli-organizzatori"
+              className="text-sm font-semibold text-[#075EAE] transition hover:text-[#064E91]"
+            >
+              Per gli organizzatori
             </Link>
 
             <Link

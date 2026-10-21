@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { assertProductionBuildConfig } from "./src/lib/env/production-build";
 import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs";
 
 const nextConfig: NextConfig = {
@@ -42,6 +44,19 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...[
+        "/eventi-sardegna/:path*", "/eventi-oggi", "/eventi-domani",
+        "/eventi-weekend", "/eventi-domenica", "/eventi-gratuiti",
+      ].map((source) => ({
+        source,
+        destination: "/imparare-e-fare-in-sardegna",
+        permanent: false,
+      })),
+      ...["nord", "centro", "sud"].map((area) => ({
+        source: `/eventi-${area}-sardegna-oggi`,
+        destination: `/imparare-e-fare-in-sardegna?area=${area}-sardegna`,
+        permanent: false,
+      })),
       ...Object.entries(CONSOLIDATED_EVENT_SLUGS).map(([oldSlug, canonicalSlug]) => ({
         source: `/eventi/${oldSlug}`,
         destination: `/eventi/${canonicalSlug}`,
@@ -140,4 +155,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default function createNextConfig(phase: string): NextConfig {
+  if (phase === PHASE_PRODUCTION_BUILD) {
+    assertProductionBuildConfig();
+  }
+  return nextConfig;
+}

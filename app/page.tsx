@@ -1,15 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { isLearningTopic } from "@/src/lib/learning-courses";
+import { isLearningTopic, learningAreaForTopic, LEARNING_AREAS, LEARNING_PATH } from "@/src/lib/learning-courses";
 import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
 import Header from "@/src/components/home/Header";
+import Link from "next/link";
+import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
 import Hero from "@/src/components/home/Hero";
-import EditorialGuides from "@/src/components/home/EditorialGuides";
 import HappeningToday from "@/src/components/home/HappeningToday";
-import TownGuidesPreview from "@/src/components/home/TownGuidesPreview";
 import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
-import CategoriesSection from "@/src/components/home/CategoriesSection";
-import AreaSection from "@/src/components/home/AreaSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import JsonLd from "@/src/components/seo/JsonLd";
 import { getPaidHomeAdsForDisplay } from "@/src/lib/ads/orders";
@@ -20,14 +19,39 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { isPublicEventActive } from "@/src/lib/eventActive";
-import {
-  eventOverlapsRomeWeek,
-  pickWeeklyTownGuides,
-} from "@/src/lib/home/weekly-town-guides";
-import { selectHomepageEventSections } from "@/src/lib/seo/homepage-event-selection";
 import { eventsItemListSchema } from "@/src/lib/seo/schema";
 import { loadHomeEventRows, type HomeEventRow as EventRow } from "@/src/lib/home/load-events";
 import { engagementFromRow } from "@/src/lib/event-engagement";
+
+const homeTitle = "EVERAS | Formazione, corsi ed esperienze in Sardegna";
+const homeDescription =
+  "Formazione per il lavoro oppure corsi, workshop ed esperienze per coltivare una passione: scegli cosa imparare in Sardegna.";
+
+const homeOgImage = {
+  url: "/images/learning/imparare-sardegna-og.jpg",
+  width: 1200,
+  height: 630,
+  alt: "Corsi, laboratori e workshop in Sardegna",
+  type: "image/jpeg" as const,
+};
+
+export const metadata: Metadata = {
+  title: { absolute: homeTitle },
+  description: homeDescription,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: homeTitle,
+    description: homeDescription,
+    url: "/",
+    images: [homeOgImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: homeTitle,
+    description: homeDescription,
+    images: [homeOgImage.url],
+  },
+};
 
 function formatEventDate(startAt: string, endAt?: string | null) {
   return formatEventDateRange(startAt, endAt);
@@ -68,6 +92,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     eventId: event.id,
     title: event.title,
     category: categoryLabels[0] ?? event.category,
+    learningTopic: isLearningTopic(event.subcategory) ? event.subcategory : undefined,
     categories: categoryLabels,
     date: formatEventDate(event.start_at, event.end_at),
     startDate: event.start_at,
@@ -98,53 +123,17 @@ async function HomeContent() {
     console.error("Errore nel caricamento della homepage:", error);
   }
 
-  const events = rows
-    .filter((event) =>
-      isPublicEventActive(event.start_at, event.end_at, now),
-    )
-    .map((event) => ({
-      ...mapEvent(event, now),
-      isFavorite: favoriteIds.has(event.id),
-    }));
-
-  const learningRows = rows.filter((event) =>
-    (event.category === "workshop-corsi" || event.categories?.includes("workshop-corsi") || isLearningTopic(event.subcategory)) &&
+  const learningEvents = mixWeekEvents(rows.filter((event) =>
+    isLearningTopic(event.subcategory) &&
     isPublicEventActive(event.start_at, event.end_at, now),
-  );
-  const learningIds = new Set(learningRows.map((event) => event.id));
-  const learningEvents = mixWeekEvents(learningRows.map((event) => ({
+  ).map((event) => ({
     ...mapEvent(event, now), isFavorite: favoriteIds.has(event.id),
   })), now);
-
-  const weekRows = rows.filter((event) => {
-    if (learningIds.has(event.id)) return false;
-    if (!eventOverlapsRomeWeek(event, now)) {
-      return false;
-    }
-
-    return isPublicEventActive(event.start_at, event.end_at, now);
-  });
-
-  const weekCandidates = mixWeekEvents(
-    weekRows.map((event) => ({
-      ...mapEvent(event, now),
-      isFavorite: favoriteIds.has(event.id),
-    })),
-    now,
-  );
-
-  const weeklyTownGuides = pickWeeklyTownGuides(weekRows, now);
-
-  const sections = selectHomepageEventSections({
-    hotCandidates: weekCandidates,
-    allEvents: events.filter((event) => !learningIds.has(event.eventId!)),
-  });
-
   const homepageItemList = eventsItemListSchema({
-    name: "Eventi in Sardegna",
+    name: "Formazione, corsi e workshop in Sardegna",
     path: "/",
-    events: sections.ssrCards,
-    limit: sections.ssrCards.length,
+    events: learningEvents.slice(0, 6),
+    limit: 6,
   });
 
   const paidAds = await getPaidHomeAdsForDisplay(now);
@@ -153,44 +142,21 @@ async function HomeContent() {
     <>
       {homepageItemList ? <JsonLd data={homepageItemList} /> : null}
 
-      <HappeningToday events={sections.hot} />
-
-      <HappeningToday showIntroLink events={learningEvents} title="Imparare e fare in Sardegna" eyebrow="Corsi e laboratori" description="Arti, lingue e competenze per il lavoro: scopri cosa imparare in Sardegna." itemLabel="corsi e laboratori" exploreHref="/imparare-e-fare-in-sardegna" exploreLabel="Tutti i corsi e laboratori" />
-
+      {LEARNING_AREAS.map((area) => {
+        const proposals = learningEvents.filter((event) => learningAreaForTopic(event.learningTopic) === area.key);
+        return <HappeningToday
+          key={area.key}
+          showIntroLink
+          events={proposals}
+          title={area.title}
+          eyebrow={area.subtitle}
+          description={area.description}
+          itemLabel="proposte"
+          exploreHref={`${LEARNING_PATH}#${area.anchor}`}
+          exploreLabel={`Esplora ${area.title.toLocaleLowerCase("it")}`}
+        />;
+      })}
       <HomeSponsoredSection paidAds={paidAds} />
-
-      <TownGuidesPreview towns={weeklyTownGuides} />
-
-      <AreaSection
-        title="Nord Sardegna"
-        area="Nord Sardegna"
-        description="Dai tramonti di Alghero alle acque cristalline della Pelosa."
-        image="/images/nord-sardegna.webp"
-        events={sections.north}
-        totalCount={sections.northTotalCount}
-      />
-
-      <AreaSection
-        title="Centro Sardegna"
-        area="Centro Sardegna"
-        description="Nel cuore della Sardegna tra montagne, borghi e tradizioni."
-        image="/images/centro-sardegna.webp"
-        events={sections.center}
-        totalCount={sections.centerTotalCount}
-      />
-
-      <AreaSection
-        title="Sud Sardegna"
-        area="Sud Sardegna"
-        description="Tra Cagliari, Chia e Villasimius, vivi il meglio del sud dell'isola."
-        image="/images/sud-sardegna.webp"
-        events={sections.south}
-        totalCount={sections.southTotalCount}
-      />
-
-      <CategoriesSection />
-
-      <EditorialGuides />
     </>
   );
 }
@@ -208,12 +174,20 @@ export default function Home() {
               role="status"
               className="min-h-48 bg-white px-5 py-10 text-center text-slate-600"
             >
-              Caricamento degli eventi…
+              Caricamento dei corsi e delle esperienze…
             </div>
           }
         >
           <HomeContent />
         </Suspense>
+        <section aria-labelledby="idee-percorsi-title" className="border-t border-slate-200 bg-slate-50 py-12">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi</h2>
+            <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Parti da un luogo, un artista o un materiale. Scopri qualcosa, prova un esercizio e scegli cosa approfondire.</p>
+            <EditorialPathCards />
+            <Link href="/idee-e-percorsi" prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Esplora idee e percorsi →</Link>
+          </div>
+        </section>
       </main>
     </>
   );

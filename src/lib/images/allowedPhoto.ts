@@ -1,4 +1,6 @@
-export const PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+import { MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
+
+export const PHOTO_MAX_BYTES = MAX_PHOTO_BYTES;
 
 const ALLOWED_TYPES = new Set([
   "image/jpeg",

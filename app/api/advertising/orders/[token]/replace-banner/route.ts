@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { readUploadFormData } from "@/src/lib/uploads/read-form-data";
+import { validateBannerSelection, UploadSizeError } from "@/src/lib/uploads/limits";
 
 import {
   collectBannerFiles,
@@ -36,15 +38,19 @@ export async function POST(request: Request, { params }: Params) {
 
   let formData: FormData;
   try {
-    formData = await request.formData();
-  } catch {
+    formData = await readUploadFormData(request);
+  } catch (error) {
+    if (error instanceof UploadSizeError) {
+      return NextResponse.json({ error: error.message }, { status: 413 });
+    }
     return NextResponse.json({ error: "Richiesta non valida." }, { status: 400 });
   }
 
   const files = collectBannerFiles(formData);
-  if (files.length < 1) {
+  const selectionError = validateBannerSelection(files);
+  if (selectionError) {
     return NextResponse.json(
-      { error: "Carica da 1 a 3 banner (JPG, PNG, WEBP o GIF)." },
+      { error: selectionError },
       { status: 400 },
     );
   }

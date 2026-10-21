@@ -21,6 +21,7 @@ import { optimizeImageToWebp } from "@/src/lib/images/optimizeToWebp";
 import {
   normalizeEventDescription,
 } from "@/src/lib/sanitizeHtml";
+import { importDisabledOutsideProduction } from "@/src/lib/env/operational-origin";
 import { createSlug } from "@/src/lib/slug";
 
 const MAX_SOURCE_RETRIES = 2;
@@ -737,6 +738,10 @@ export async function discoverAndImportEventDrafts({
   triggeredBy?: ImportTriggeredBy;
   batchId?: string;
 }) {
+  if (importDisabledOutsideProduction()) {
+    throw new Error("Importazione non disponibile fuori produzione.");
+  }
+
   const sources = onlyHost
     ? LISTING_SOURCES.filter((source) =>
         source.url.toLowerCase().includes(onlyHost.toLowerCase()),

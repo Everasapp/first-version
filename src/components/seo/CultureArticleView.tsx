@@ -1,4 +1,7 @@
 import Link from "next/link";
+import EditorialLearningSection from "@/src/components/seo/EditorialLearningSection";
+import { findEditorialLearningPath } from "@/src/lib/editorial-learning-paths";
+import { LEARNING_PATH } from "@/src/lib/learning-courses";
 
 import EventsExploreGrid from "@/src/components/events/EventsExploreGrid";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -25,7 +28,10 @@ export default function CultureArticleView({
   events,
   jsonLd,
 }: CultureArticleViewProps) {
-  const eventsHref = cityEventsPath(article.town);
+  const learningPath = findEditorialLearningPath(article.path);
+  const eventsHref = learningPath
+    ? `${LEARNING_PATH}?city=${encodeURIComponent(article.town)}#ricerca`
+    : cityEventsPath(article.town);
   const townPrep = /^[aeiouàèéìòù]/i.test(article.town) ? "ad" : "a";
   const city = cities.find(
     (item) =>
@@ -66,6 +72,7 @@ export default function CultureArticleView({
               <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
                 {article.intro}
               </p>
+              {learningPath ? <Link href="#prova-e-approfondisci" className="mt-4 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Vai all’esercizio e ai consigli per imparare →</Link> : null}
             </div>
           </header>
 
@@ -226,6 +233,7 @@ export default function CultureArticleView({
                 ))}
               </div>
             </section>
+            {learningPath ? <EditorialLearningSection path={learningPath} /> : null}
             <CulturaSources sources={article.sources ?? []} />
           </div>
         </article>
@@ -235,17 +243,17 @@ export default function CultureArticleView({
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                  Calendario
+                  {learningPath ? "Catalogo" : "Calendario"}
                 </p>
                 <h2 className="mt-2 text-2xl font-bold text-slate-900">
-                  Eventi {townPrep} {article.town}
+                  {learningPath ? "Corsi e formazione" : "Eventi"} {townPrep} {article.town}
                 </h2>
               </div>
               <Link
                 href={eventsHref}
                 className="text-sm font-bold text-[#075EAE] hover:underline"
               >
-                Vedi tutti gli eventi →
+                {learningPath ? "Cerca tutti i corsi →" : "Vedi tutti gli eventi →"}
               </Link>
             </div>
 
@@ -255,7 +263,8 @@ export default function CultureArticleView({
               </div>
             ) : (
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-600">
-                Al momento non ci sono appuntamenti in programma {townPrep}{" "}
+                {learningPath ? "Al momento non ci sono corsi pubblicati" : "Al momento non ci sono appuntamenti in programma"} {townPrep}{" "}
+                {learningPath ? <>{article.town}. Puoi consultare il catalogo nelle altre zone o <Link href="/per-gli-organizzatori" className="font-semibold text-[#075EAE] hover:underline">proporre un corso o laboratorio</Link>.</> : <>
                 {article.town}. Quando Comuni e Pro Loco pubblicano sagre o
                 concerti, li trovi sul calendario EVERAS. Se organizzi un
                 evento puoi{" "}
@@ -266,6 +275,7 @@ export default function CultureArticleView({
                   pubblicarlo
                 </Link>
                 .
+                </>}
               </p>
             )}
 
@@ -285,10 +295,10 @@ export default function CultureArticleView({
                 Cultura sarda
               </Link>
               <Link
-                href="/pubblica"
+                href={learningPath ? "/per-gli-organizzatori" : "/pubblica"}
                 className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#075EAE] transition hover:border-[#075EAE]"
               >
-                Pubblica un evento
+                {learningPath ? "Proponi un corso o laboratorio" : "Pubblica un evento"}
               </Link>
             </div>
           </div>

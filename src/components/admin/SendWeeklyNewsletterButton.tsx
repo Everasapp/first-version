@@ -42,6 +42,7 @@ export default function SendWeeklyNewsletterButton({
         sent?: number;
         skipped?: number;
         failed?: number;
+        remaining?: number;
         weekLabel?: string;
       };
 
@@ -49,10 +50,13 @@ export default function SendWeeklyNewsletterButton({
         throw new Error(payload.error || "Invio non riuscito");
       }
 
+      const remainingNote = payload.remaining
+        ? ` Restano ${payload.remaining}: un invio successivo della stessa settimana li riprende.`
+        : "";
       setMessage(
         mode === "test"
           ? `Anteprima inviata a ${testEmail}.`
-          : `Newsletter inviata. Consegnate: ${payload.sent ?? 0} · saltate: ${payload.skipped ?? 0} · errori: ${payload.failed ?? 0}.`,
+          : `Newsletter inviata. Consegnate: ${payload.sent ?? 0} · saltate: ${payload.skipped ?? 0} · errori: ${payload.failed ?? 0}.${remainingNote}`,
       );
     } catch (sendError) {
       setError(

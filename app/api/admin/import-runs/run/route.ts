@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 
 import { getAdminApiContext } from "@/src/lib/admin/api-auth";
-import { getSiteUrl } from "@/src/lib/notifications/config";
+import {
+  IMPORT_DISABLED_MESSAGE,
+  importCronUrl,
+  importDisabledOutsideProduction,
+} from "@/src/lib/env/operational-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 export async function POST() {
+  if (importDisabledOutsideProduction()) {
+    return NextResponse.json({ error: IMPORT_DISABLED_MESSAGE }, { status: 503 });
+  }
+
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 
@@ -19,7 +27,15 @@ export async function POST() {
     );
   }
 
-  const response = await fetch(`${getSiteUrl()}/api/cron/discover-events`, {
+  const cronUrl = importCronUrl();
+  if (!cronUrl) {
+    return NextResponse.json(
+      { error: "Importazione non disponibile in questo ambiente." },
+      { status: 503 },
+    );
+  }
+
+  const response = await fetch(cronUrl, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${cronSecret}`,

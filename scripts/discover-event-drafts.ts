@@ -7,6 +7,7 @@
  *   npx tsx --env-file=.env.local scripts/discover-event-drafts.ts --publish --only=turismosassari.it
  */
 import { discoverAndImportEventDrafts } from "../src/lib/admin/discover-event-drafts";
+import { importDisabledOutsideProduction } from "../src/lib/env/operational-origin";
 import { createAdminClient } from "../src/lib/supabase/admin";
 
 function parseArg(name: string, fallback: string) {
@@ -19,6 +20,10 @@ function hasFlag(name: string) {
 }
 
 async function main() {
+  if (importDisabledOutsideProduction()) {
+    throw new Error("Importazione non disponibile fuori produzione.");
+  }
+
   const dryRun = hasFlag("dry-run");
   const limit = Number.parseInt(parseArg("limit", "20"), 10);
   const supabase = createAdminClient();

@@ -18,10 +18,12 @@ export default function AdvertisingPaymentComplete({
       searchParams.get("token") || searchParams.get("orderID");
 
     if (!paypalOrderId) {
-      setStatus("error");
-      setMessage(
-        "Parametro PayPal mancante. Se hai già pagato, attendi qualche minuto o contattaci.",
-      );
+      queueMicrotask(() => {
+        setStatus("error");
+        setMessage(
+          "Parametro PayPal mancante. Se hai già pagato, attendi qualche minuto o contattaci.",
+        );
+      });
       return;
     }
 

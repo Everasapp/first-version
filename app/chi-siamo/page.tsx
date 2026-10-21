@@ -3,11 +3,32 @@ import Link from "next/link";
 
 import Header from "@/src/components/home/Header";
 
+const description =
+  "EVERAS ti aiuta a trovare formazione per il lavoro e corsi, workshop ed esperienze per coltivare una passione in Sardegna.";
+const socialImage = {
+  url: "/images/learning/imparare-sardegna-og.jpg",
+  width: 1200,
+  height: 630,
+  alt: "Imparare e fare in Sardegna con EVERAS",
+};
+
 export const metadata: Metadata = {
   title: "Chi siamo",
-  description:
-    "Cos’è EVERAS: calendario eventi in Sardegna e guide alla cultura dei comuni, pensato per chi cerca cosa fare e per chi organizza.",
+  description,
   alternates: { canonical: "/chi-siamo" },
+  openGraph: {
+    title: "Chi siamo | EVERAS",
+    description,
+    url: "/chi-siamo",
+    type: "website",
+    images: [socialImage],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chi siamo | EVERAS",
+    description,
+    images: [socialImage.url],
+  },
 };
 
 export default function ChiSiamoPage() {
@@ -24,33 +45,26 @@ export default function ChiSiamoPage() {
             Chi siamo
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-slate-600">
-            EVERAS è una piattaforma per scoprire eventi, sagre, concerti e
-            attività in Sardegna, e per pubblicarli quando sei tu a
-            organizzarli.
+            EVERAS ti aiuta a trovare formazione per il lavoro e corsi,
+            workshop ed esperienze per coltivare una passione in Sardegna.
+
+          </p>
+          <p className="mt-4 text-base leading-7 text-slate-700">
+            Due percorsi guidano la scelta: Formazione, per acquisire competenze
+            professionali, e Corsi e workshop, per vivere esperienze che
+            arricchiscono. Materia e formato aiutano a trovare l’attività più
+            adatta al tuo obiettivo.
           </p>
 
           <div className="mt-10 space-y-5 text-base leading-7 text-slate-700">
             <p>
               È nata perché trovare cosa fare sull’isola è ancora frammentato:
-              locandine sparse, siti comunali, social, passaparola. EVERAS
-              riunisce in un solo calendario ciò che è pubblico e verificabile,
-              filtrabile per giorno, città e interesse.
+              locandine sparse, siti comunali, social, passaparola. Le proposte
+              per imparare sono raccolte nei due percorsi Formazione e Corsi e
+              workshop, con informazioni utili a confrontare le attività.
             </p>
             <p>
-              Accanto al calendario c’è{" "}
-              <Link
-                href="/cultura-sarda"
-                className="font-semibold text-[#075EAE] hover:underline"
-              >
-                Scopri la Sardegna
-              </Link>
-              : guide ai comuni e pagine sulla cultura e sul patrimonio sardo.
-              Non sostituiscono il calendario; lo affiancano, per chi arriva
-              anche fuori stagione o vuole capire un paese oltre la data
-              dell’evento.
-            </p>
-            <p>
-              Gli eventi su EVERAS arrivano da organizzatori che pubblicano
+              Le attività su EVERAS arrivano da organizzatori che pubblicano
               dalla piattaforma, da segnalazioni della community e da lavoro di
               raccolta e verifica. Ogni scheda riporta, quando disponibili,
               data, luogo, descrizione e collegamenti utili. Non pretendiamo di
@@ -60,10 +74,10 @@ export default function ChiSiamoPage() {
             <p>
               Se hai visto un appuntamento che manca, puoi{" "}
               <Link
-                href="/segnala-evento"
+                href="/per-gli-organizzatori"
                 className="font-semibold text-[#075EAE] hover:underline"
               >
-                segnalare un evento
+                proporre un corso o un’esperienza
               </Link>
               . Se organizzi, puoi{" "}
               <Link

@@ -26,7 +26,7 @@ export default function MonsteraHotWeekAd({
     } catch {
       // ignore storage errors
     }
-    setVisible(true);
+    queueMicrotask(() => setVisible(true));
   }, []);
 
   function dismiss() {

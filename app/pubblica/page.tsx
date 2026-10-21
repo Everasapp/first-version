@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MAX_PHOTO_BYTES } from "@/src/lib/uploads/limits";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -16,7 +17,8 @@ import {
   Ticket,
 } from "lucide-react";
 
-import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import LearningTopicSelect from "@/src/components/events/LearningTopicSelect";
+import { isLearningTopic } from "@/src/lib/learning-courses";
 import CitySelect from "@/src/components/events/CitySelect";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import Header from "@/src/components/home/Header";
@@ -51,6 +53,8 @@ import {
   normalizeYoutubeUrl,
 } from "@/src/lib/youtube";
 
+const COURSE_CATEGORY_SLUGS = ["workshop-corsi"];
+
 const steps = [
   "Informazioni",
   "Data e luogo",
@@ -70,7 +74,8 @@ export default function PublishEventPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const [title, setTitle] = useState("");
-  const [categorySlugs, setCategorySlugs] = useState<string[]>([]);
+  const categorySlugs = COURSE_CATEGORY_SLUGS;
+  const [learningTopic, setLearningTopic] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -217,6 +222,9 @@ export default function PublishEventPage() {
 
       if (categorySlugs.length === 0) {
         nextErrors.category = "Seleziona almeno una categoria.";
+      }
+      if (categorySlugs.includes("workshop-corsi") && !isLearningTopic(learningTopic)) {
+        nextErrors.learningTopic = "Scegli la macroarea e la disciplina del corso.";
       }
 
       if (!imagePreview) {
@@ -370,7 +378,7 @@ export default function PublishEventPage() {
           description: normalizeEventDescription(description),
           category: normalizeEventCategories(categorySlugs)[0],
           categories: normalizeEventCategories(categorySlugs),
-          subcategory: null,
+          subcategory: categorySlugs.includes("workshop-corsi") && isLearningTopic(learningTopic) ? learningTopic : null,
           province: cityRecord?.province ?? null,
           municipality: city,
           location_name: venue.trim(),
@@ -465,10 +473,10 @@ export default function PublishEventPage() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_PHOTO_BYTES) {
       setErrors((current) => ({
         ...current,
-        image: "La fotografia non deve superare 5 MB.",
+        image: "La fotografia non deve superare 3 MB.",
       }));
       return;
     }
@@ -637,14 +645,16 @@ export default function PublishEventPage() {
                       )}
                     </label>
 
-                    <CategoryMultiSelect
-                      value={categorySlugs}
-                      onChange={(next) => {
-                        setCategorySlugs(next);
-                        clearError("category");
-                      }}
-                      error={errors.category}
-                    />
+                    {categorySlugs.includes("workshop-corsi") ? (
+                      <LearningTopicSelect
+                        value={learningTopic}
+                        onChange={(value) => {
+                          setLearningTopic(value);
+                          clearError("learningTopic");
+                        }}
+                        error={errors.learningTopic}
+                      />
+                    ) : null}
 
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">
@@ -681,7 +691,7 @@ export default function PublishEventPage() {
                             </p>
 
                             <p className="mt-1 text-sm text-slate-500">
-                              JPG, PNG o WebP (max 5 MB). Verrà compressa e
+                              JPG, PNG o WebP (max 3 MB). Verrà compressa e
                               salvata in WebP.
                             </p>
                           </>
