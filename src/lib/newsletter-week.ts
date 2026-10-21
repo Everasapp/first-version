@@ -21,6 +21,10 @@ import {
   type NewsletterEvent,
 } from "@/src/lib/newsletter";
 import { getSiteUrl } from "@/src/lib/notifications/config";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  realEmailDeliveryAllowed,
+} from "@/src/lib/notifications/resend-delivery";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
 const ROME_TZ = "Europe/Rome";
@@ -551,6 +555,18 @@ export async function runWeeklyNewsletter(options?: {
   testEmail?: string | null;
   supabase?: SupabaseClient;
 }): Promise<WeeklyNewsletterSummary> {
+  if (!realEmailDeliveryAllowed()) {
+    return {
+      weekLabel: "",
+      subscribers: 0,
+      sent: 0,
+      skipped: 0,
+      failed: 0,
+      eventsInWeek: 0,
+      errors: [{ userId: "", error: REAL_EMAIL_DISABLED_MESSAGE }],
+    };
+  }
+
   const dryRun = Boolean(options?.dryRun);
   const testEmail = options?.testEmail?.trim().toLowerCase() || null;
   const sessionClient = options?.supabase;

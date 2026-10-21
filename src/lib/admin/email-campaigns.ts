@@ -1,5 +1,9 @@
 import { getSiteUrl } from "@/src/lib/notifications/config";
 import { escapeHtml } from "@/src/lib/notifications/format";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  postResendEmail,
+} from "@/src/lib/notifications/resend-delivery";
 
 // Resend ha verificato mail.everas.it (non everas.it).
 // Le risposte restano su info@everas.it (inoltro Outlook).
@@ -551,11 +555,6 @@ export async function sendCampaignEmailViaResend({
   replyTo: string;
   attachments?: CampaignAttachmentPayload[];
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY non configurata");
-  }
-
   const payload: Record<string, unknown> = {
     from,
     to: [to],
@@ -578,30 +577,15 @@ export async function sendCampaignEmailViaResend({
     });
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const body = (await response.json().catch(() => ({}))) as {
-    id?: string;
-    message?: string;
-    error?: { message?: string };
-  };
-
-  if (!response.ok) {
-    const message =
-      body.error?.message ||
-      body.message ||
-      `Resend error ${response.status}`;
-    throw new Error(message);
+  const result = await postResendEmail(payload);
+  if (result.blocked) {
+    throw new Error(REAL_EMAIL_DISABLED_MESSAGE);
+  }
+  if (!result.ok) {
+    throw new Error(result.message);
   }
 
-  return { id: body.id ?? null };
+  return { id: result.id };
 }
 
 export function sleep(ms: number) {

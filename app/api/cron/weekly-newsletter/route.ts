@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { isCronAuthorized } from "@/src/lib/cron/auth";
 import { logCronRun } from "@/src/lib/cron/run-log";
 import { runWeeklyNewsletter } from "@/src/lib/newsletter-week";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  realEmailDeliveryAllowed,
+} from "@/src/lib/notifications/resend-delivery";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +19,13 @@ function isAuthorized(request: Request) {
 }
 
 export async function GET(request: Request) {
+  if (!realEmailDeliveryAllowed()) {
+    return NextResponse.json(
+      { error: REAL_EMAIL_DISABLED_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   const startedAt = new Date();
 
   if (!isAuthorized(request)) {

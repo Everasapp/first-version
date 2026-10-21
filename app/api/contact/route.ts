@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 
+import {
+  PREVIEW_FORM_UNAVAILABLE_MESSAGE,
+  outsideProduction,
+} from "@/src/lib/env/operational-origin";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  postResendEmail,
+} from "@/src/lib/notifications/resend-delivery";
 import { createClient } from "@/src/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -27,34 +35,23 @@ async function sendResendEmail({
   subject: string;
   html: string;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY non configurata");
-  }
-
   const from =
     process.env.CONTACT_FROM_EMAIL ||
     process.env.NEWSLETTER_FROM_EMAIL ||
     "EVERAS <onboarding@resend.dev>";
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: replyTo,
-      subject,
-      html,
-    }),
+  const result = await postResendEmail({
+    from,
+    to: [to],
+    reply_to: replyTo,
+    subject,
+    html,
   });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Resend error ${response.status}: ${body}`);
+  if (result.blocked) {
+    throw new Error(REAL_EMAIL_DISABLED_MESSAGE);
+  }
+  if (!result.ok) {
+    throw new Error(result.message);
   }
 }
 
@@ -101,6 +98,13 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Il messaggio deve avere almeno 10 caratteri." },
       { status: 400 },
+    );
+  }
+
+  if (outsideProduction()) {
+    return NextResponse.json(
+      { error: PREVIEW_FORM_UNAVAILABLE_MESSAGE },
+      { status: 503 },
     );
   }
 

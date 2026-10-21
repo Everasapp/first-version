@@ -5,9 +5,8 @@ import { getOrderByAccessToken } from "@/src/lib/ads/orders";
 import { getOrderChargeAmount } from "@/src/lib/ads/types";
 import {
   createPayPalOrder,
-  isPayPalConfigured,
+  decidePayPalCheckout,
 } from "@/src/lib/ads/paypal";
-import { getSiteUrl } from "@/src/lib/notifications/config";
 import { createAdminClient } from "@/src/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -53,17 +52,24 @@ export async function POST(request: Request) {
     );
   }
 
-  // 1) Link NCP del pacchetto (già creati su PayPal) — funziona senza API credentials.
-  if (pkg.paypalPaymentLink) {
+  const checkout = decidePayPalCheckout(pkg.paypalPaymentLink);
+
+  if (checkout.kind === "ncp") {
     return NextResponse.json({
       ok: true,
-      approveUrl: pkg.paypalPaymentLink,
+      approveUrl: checkout.approveUrl,
       mode: "ncp",
     });
   }
 
-  // 2) Orders API (import dinamico = final_price dell'ordine).
-  if (!isPayPalConfigured()) {
+  if (checkout.kind === "unavailable") {
+    return NextResponse.json(
+      { error: "Pagamento non disponibile." },
+      { status: 503 },
+    );
+  }
+
+  if (checkout.kind === "missing-credentials") {
     return NextResponse.json(
       {
         error:
@@ -73,9 +79,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const siteUrl = getSiteUrl();
-  const returnUrl = `${siteUrl}/pubblicita/ordine/${order.access_token}/completa`;
-  const cancelUrl = `${siteUrl}/pubblicita/ordine/${order.access_token}?cancelled=1`;
+  const returnUrl = `${checkout.returnOrigin}/pubblicita/ordine/${order.access_token}/completa`;
+  const cancelUrl = `${checkout.returnOrigin}/pubblicita/ordine/${order.access_token}?cancelled=1`;
 
   try {
     const paypal = await createPayPalOrder({

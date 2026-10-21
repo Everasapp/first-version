@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 import { ensureRecurringSundayEvents } from "@/src/lib/admin/recurring-sunday-events";
 import { isCronAuthorized } from "@/src/lib/cron/auth";
 import { logCronRun } from "@/src/lib/cron/run-log";
+import {
+  OUTSIDE_PRODUCTION_MESSAGE,
+  outsideProduction,
+} from "@/src/lib/env/operational-origin";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
 import { revalidatePublishedEvents } from "@/src/lib/seo/revalidate-published-events";
 
@@ -37,6 +41,13 @@ async function runEnsure() {
 }
 
 export async function GET(request: Request) {
+  if (outsideProduction()) {
+    return NextResponse.json(
+      { error: OUTSIDE_PRODUCTION_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   const startedAt = new Date();
 
   if (!isCronAuthorized(request)) {

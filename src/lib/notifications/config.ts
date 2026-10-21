@@ -3,6 +3,7 @@ export const ADMIN_NOTIFICATION_EMAIL =
 
 export const ADMIN_NOTIFICATION_NAME = "Everas Admin";
 
+/** Public canonical and sharing origin. Operational calls use getOperationalOrigin. */
 export function getSiteUrl() {
   return (
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||

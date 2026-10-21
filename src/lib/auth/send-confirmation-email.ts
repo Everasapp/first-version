@@ -2,7 +2,13 @@ import {
   CAMPAIGN_FROM_EMAIL,
   CAMPAIGN_REPLY_TO,
 } from "@/src/lib/admin/email-campaigns";
+import { getOperationalOrigin } from "@/src/lib/env/operational-origin";
 import { getSiteUrl } from "@/src/lib/notifications/config";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  postResendEmail,
+  realEmailDeliveryAllowed,
+} from "@/src/lib/notifications/resend-delivery";
 import { escapeHtml } from "@/src/lib/notifications/format";
 import { tryCreateAdminClient } from "@/src/lib/supabase/admin";
 
@@ -17,14 +23,13 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function buildConfirmUrl(tokenHash: string, type: string) {
-  const site = getSiteUrl();
+function buildConfirmUrl(origin: string, tokenHash: string, type: string) {
   const params = new URLSearchParams({
     token_hash: tokenHash,
     type,
     next: "/dashboard",
   });
-  return `${site}/conferma-email?${params.toString()}`;
+  return `${origin}/conferma-email?${params.toString()}`;
 }
 
 function buildConfirmationHtml(confirmUrl: string) {
@@ -66,29 +71,18 @@ function buildConfirmationHtml(confirmUrl: string) {
 }
 
 async function sendViaResend(to: string, html: string) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY non configurata");
-  }
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: CAMPAIGN_FROM_EMAIL,
-      to: [to],
-      reply_to: CAMPAIGN_REPLY_TO,
-      subject: "Conferma la tua email su EVERAS",
-      html,
-    }),
+  const result = await postResendEmail({
+    from: CAMPAIGN_FROM_EMAIL,
+    to: [to],
+    reply_to: CAMPAIGN_REPLY_TO,
+    subject: "Conferma la tua email su EVERAS",
+    html,
   });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Resend error ${response.status}: ${body}`);
+  if (result.blocked) {
+    throw new Error(REAL_EMAIL_DISABLED_MESSAGE);
+  }
+  if (!result.ok) {
+    throw new Error(result.message);
   }
 }
 
@@ -99,9 +93,19 @@ export async function sendSignupConfirmationEmail(rawEmail: string) {
     return { ok: true as const };
   }
 
+  if (!realEmailDeliveryAllowed()) {
+    return { ok: false as const };
+  }
+
   const lastSent = lastSentAt.get(email);
   if (lastSent && Date.now() - lastSent < SEND_COOLDOWN_MS) {
     return { ok: true as const };
+  }
+
+  const origin = getOperationalOrigin();
+  if (!origin) {
+    console.error("[auth] Manca l'URL operativo: conferma via Resend saltata.");
+    return { ok: false as const };
   }
 
   const admin = tryCreateAdminClient();
@@ -114,7 +118,7 @@ export async function sendSignupConfirmationEmail(rawEmail: string) {
     type: "magiclink",
     email,
     options: {
-      redirectTo: `${getSiteUrl()}/auth/callback?next=/dashboard`,
+      redirectTo: `${origin}/auth/callback?next=/dashboard`,
     },
   });
 
@@ -141,7 +145,10 @@ export async function sendSignupConfirmationEmail(rawEmail: string) {
     return { ok: false as const };
   }
 
-  await sendViaResend(email, buildConfirmationHtml(buildConfirmUrl(tokenHash, type)));
+  await sendViaResend(
+    email,
+    buildConfirmationHtml(buildConfirmUrl(origin, tokenHash, type)),
+  );
   lastSentAt.set(email, Date.now());
   return { ok: true as const };
 }

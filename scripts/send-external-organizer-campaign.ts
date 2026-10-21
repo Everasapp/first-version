@@ -1,4 +1,5 @@
 import { createAdminClient } from "../src/lib/supabase/admin";
+import { realEmailDeliveryAllowed } from "../src/lib/notifications/resend-delivery";
 import { listExternalOrganizerEventCampaignRecipients } from "../src/lib/admin/organizer-event-campaign";
 import {
   applyCampaignEventLink,
@@ -12,6 +13,10 @@ import {
 } from "../src/lib/admin/email-campaigns";
 
 async function main() {
+  if (!realEmailDeliveryAllowed()) {
+    throw new Error("Invio email non disponibile fuori produzione.");
+  }
+
   const dryRun = process.argv.includes("--dry-run");
   const supabase = createAdminClient();
   const template = getCampaignTemplate("rivendica-organizzatori");

@@ -3,7 +3,7 @@
 import { createClient } from "@/src/lib/supabase/server";
 import { notifyNewUser } from "@/src/lib/notifications/notify";
 import { sendSignupConfirmationEmail } from "@/src/lib/auth/send-confirmation-email";
-import { headers } from "next/headers";
+import { getOperationalOrigin } from "@/src/lib/env/operational-origin";
 import { redirect } from "next/navigation";
 
 export type AuthFormState = {
@@ -37,16 +37,8 @@ function mapAuthError(message: string): string {
   return "Si è verificato un errore. Riprova.";
 }
 
-async function getOrigin(): Promise<string> {
-  const headerList = await headers();
-  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
-  const proto = headerList.get("x-forwarded-proto") ?? "http";
-
-  if (host) {
-    return `${proto}://${host}`;
-  }
-
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+function getOrigin() {
+  return getOperationalOrigin();
 }
 
 export async function loginAction(
@@ -117,7 +109,13 @@ export async function registerAction(
     };
   }
 
-  const origin = await getOrigin();
+  const origin = getOrigin();
+  if (!origin) {
+    return {
+      error: "Registrazione non disponibile: manca l'URL di questo ambiente.",
+    };
+  }
+
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signUp({

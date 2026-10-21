@@ -24,6 +24,10 @@ import {
   type CampaignEventLink,
 } from "@/src/lib/admin/email-campaigns";
 import { getSiteUrl } from "@/src/lib/notifications/config";
+import {
+  REAL_EMAIL_DISABLED_MESSAGE,
+  realEmailDeliveryAllowed,
+} from "@/src/lib/notifications/resend-delivery";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -82,6 +86,13 @@ async function parseAttachmentsFromForm(formData: FormData) {
 }
 
 export async function POST(request: Request) {
+  if (!realEmailDeliveryAllowed()) {
+    return NextResponse.json(
+      { error: REAL_EMAIL_DISABLED_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 
