@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
+// Exercise the existing delivery implementation independently of the release pause.
+// newsletter-paused.test.ts verifies the actual paused production entry points.
+vi.mock("@/src/lib/newsletter-availability", () => ({
+  WEEKLY_NEWSLETTER_PAUSED: false,
+  WEEKLY_NEWSLETTER_PAUSED_MESSAGE: "Newsletter sospesa",
+}));
 
 const fetchSpy = vi.hoisted(() =>
   vi.fn(() => {

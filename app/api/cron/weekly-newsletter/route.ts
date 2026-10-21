@@ -1,3 +1,7 @@
+import {
+  WEEKLY_NEWSLETTER_PAUSED,
+  WEEKLY_NEWSLETTER_PAUSED_MESSAGE,
+} from "@/src/lib/newsletter-availability";
 import { NextResponse } from "next/server";
 
 import { isCronAuthorized } from "@/src/lib/cron/auth";
@@ -26,6 +30,13 @@ function isAuthorized(request: Request) {
 }
 
 export async function GET(request: Request) {
+  if (WEEKLY_NEWSLETTER_PAUSED) {
+    return NextResponse.json(
+      { error: WEEKLY_NEWSLETTER_PAUSED_MESSAGE },
+      { status: 503 },
+    );
+  }
+
   if (!realEmailDeliveryAllowed()) {
     return NextResponse.json(
       { error: REAL_EMAIL_DISABLED_MESSAGE },

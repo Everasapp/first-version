@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
+// Keep environment-isolation coverage independent of the temporary release pause.
+vi.mock("@/src/lib/newsletter-availability", () => ({
+  WEEKLY_NEWSLETTER_PAUSED: false,
+  WEEKLY_NEWSLETTER_PAUSED_MESSAGE: "Newsletter sospesa",
+}));
 
 const adminProbe = vi.hoisted(() =>
   vi.fn(() => {

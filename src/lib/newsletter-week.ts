@@ -1,3 +1,7 @@
+import {
+  WEEKLY_NEWSLETTER_PAUSED,
+  WEEKLY_NEWSLETTER_PAUSED_MESSAGE,
+} from "@/src/lib/newsletter-availability";
 import { isLearningEvent, PUBLIC_LEARNING_FILTER } from "@/src/lib/learning-courses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -649,6 +653,10 @@ export async function runWeeklyNewsletter(options?: {
   testEmail?: string | null;
   supabase?: SupabaseClient;
 }): Promise<WeeklyNewsletterSummary> {
+  if (WEEKLY_NEWSLETTER_PAUSED) {
+    throw new Error(WEEKLY_NEWSLETTER_PAUSED_MESSAGE);
+  }
+
   if (!realEmailDeliveryAllowed()) {
     return {
       weekLabel: "",
