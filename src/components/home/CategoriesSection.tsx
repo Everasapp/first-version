@@ -11,11 +11,11 @@ export default function CategoriesSection() {
           </p>
 
           <h2 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
-            Esplora per categoria
+            Esplora per disciplina
           </h2>
 
           <p className="mt-3 text-slate-600">
-            Trova facilmente l&apos;evento più adatto ai tuoi interessi.
+            Trova il corso o il laboratorio adatto ai tuoi interessi.
           </p>
         </div>
 
@@ -26,7 +26,7 @@ export default function CategoriesSection() {
             return (
               <Link
                 key={category.id}
-                href={`/eventi/${category.slug}`}
+                href={`/imparare-e-fare-in-sardegna?disciplina=${category.slug}#ricerca`}
                 className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${category.gradient} p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl`}
               >
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 transition duration-500 group-hover:scale-125" />
@@ -46,7 +46,7 @@ export default function CategoriesSection() {
                     </h3>
 
                     <p className="mt-2 hidden text-sm text-white/80 sm:block">
-                      Scopri gli eventi
+                      Scopri corsi e laboratori
                     </p>
 
                     <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1 sm:mt-4">
@@ -59,31 +59,6 @@ export default function CategoriesSection() {
           })}
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-4 sm:gap-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-[#075EAE]">
-            <Link
-              href="/eventi-sardegna/sagre"
-              className="underline-offset-2 hover:underline"
-            >
-              Sagre in Sardegna
-            </Link>
-            <span className="hidden text-slate-300 sm:inline" aria-hidden="true">
-              ·
-            </span>
-            <Link
-              href="/eventi/musica-concerti"
-              className="underline-offset-2 hover:underline"
-            >
-              Concerti e spettacoli in Sardegna
-            </Link>
-          </div>
-          <Link
-            href="/categorie"
-            className="inline-flex rounded-xl border border-[#075EAE] px-6 py-3 text-sm font-bold text-[#075EAE] transition hover:bg-[#075EAE] hover:text-white"
-          >
-            Vedi tutte le categorie
-          </Link>
-        </div>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import { cities, type City } from "@/src/data/cities";
-import { categories, type Category } from "@/src/data/categories";
+import { allCategories as categories, type Category } from "@/src/data/categories";
+import { isLearningDiscipline } from "@/src/data/learning-disciplines";
 import { createSlug } from "@/src/lib/slug";
 
 export function cityToSlug(cityName: string) {
@@ -29,9 +30,11 @@ export function cityEventsPath(cityName: string) {
 }
 
 export function categoryEventsPath(categorySlug: string) {
+  if (isLearningDiscipline(categorySlug)) return `/imparare-e-fare-in-sardegna?disciplina=${encodeURIComponent(categorySlug)}#ricerca`;
   return `/eventi/${categorySlug}`;
 }
 
 export function cityCategoryEventsPath(cityName: string, categorySlug: string) {
+  if (isLearningDiscipline(categorySlug)) return `/imparare-e-fare-in-sardegna?city=${encodeURIComponent(cityName)}&disciplina=${encodeURIComponent(categorySlug)}#ricerca`;
   return `/eventi/${cityToSlug(cityName)}/${categorySlug}`;
 }

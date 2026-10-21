@@ -17,8 +17,10 @@ import {
   Ticket,
 } from "lucide-react";
 
+import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import { retainDisciplinesForArea } from "@/src/data/learning-disciplines";
 import LearningTopicSelect from "@/src/components/events/LearningTopicSelect";
-import { isLearningTopic } from "@/src/lib/learning-courses";
+import { learningAreaForTopic, isLearningTopic } from "@/src/lib/learning-courses";
 import CitySelect from "@/src/components/events/CitySelect";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import Header from "@/src/components/home/Header";
@@ -53,8 +55,6 @@ import {
   normalizeYoutubeUrl,
 } from "@/src/lib/youtube";
 
-const COURSE_CATEGORY_SLUGS = ["workshop-corsi"];
-
 const steps = [
   "Informazioni",
   "Data e luogo",
@@ -74,7 +74,7 @@ export default function PublishEventPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const [title, setTitle] = useState("");
-  const categorySlugs = COURSE_CATEGORY_SLUGS;
+  const [categorySlugs, setCategorySlugs] = useState<string[]>([]);
   const [learningTopic, setLearningTopic] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -221,10 +221,10 @@ export default function PublishEventPage() {
       }
 
       if (categorySlugs.length === 0) {
-        nextErrors.category = "Seleziona almeno una categoria.";
+        nextErrors.category = "Seleziona almeno una disciplina.";
       }
-      if (categorySlugs.includes("workshop-corsi") && !isLearningTopic(learningTopic)) {
-        nextErrors.learningTopic = "Scegli la macroarea e la disciplina del corso.";
+      if (!isLearningTopic(learningTopic)) {
+        nextErrors.learningTopic = "Scegli la macroarea e l’ambito del corso.";
       }
 
       if (!imagePreview) {
@@ -378,7 +378,7 @@ export default function PublishEventPage() {
           description: normalizeEventDescription(description),
           category: normalizeEventCategories(categorySlugs)[0],
           categories: normalizeEventCategories(categorySlugs),
-          subcategory: categorySlugs.includes("workshop-corsi") && isLearningTopic(learningTopic) ? learningTopic : null,
+          subcategory: isLearningTopic(learningTopic) ? learningTopic : null,
           province: cityRecord?.province ?? null,
           municipality: city,
           location_name: venue.trim(),
@@ -645,16 +645,21 @@ export default function PublishEventPage() {
                       )}
                     </label>
 
-                    {categorySlugs.includes("workshop-corsi") ? (
-                      <LearningTopicSelect
-                        value={learningTopic}
-                        onChange={(value) => {
-                          setLearningTopic(value);
-                          clearError("learningTopic");
-                        }}
-                        error={errors.learningTopic}
-                      />
-                    ) : null}
+                    <LearningTopicSelect
+                      value={learningTopic}
+                      onChange={(value) => {
+                        setLearningTopic(value);
+                        setCategorySlugs((current) => retainDisciplinesForArea(current, learningAreaForTopic(value)));
+                        clearError("learningTopic");
+                      }}
+                      error={errors.learningTopic}
+                    />
+                    <CategoryMultiSelect
+                      area={learningAreaForTopic(learningTopic)}
+                      value={categorySlugs}
+                      onChange={(next) => { setCategorySlugs(next); clearError("category"); }}
+                      error={errors.category}
+                    />
 
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">

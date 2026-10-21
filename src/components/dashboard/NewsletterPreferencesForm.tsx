@@ -36,7 +36,7 @@ export default function NewsletterPreferencesForm({
     setSuccessMessage("");
 
     if (optIn && (!city || !category)) {
-      setErrorMessage("Scegli città e categoria preferita.");
+      setErrorMessage("Scegli città e disciplina preferita.");
       return;
     }
 
@@ -85,7 +85,7 @@ export default function NewsletterPreferencesForm({
             Newsletter settimanale
           </span>
           <span className="mt-1 block text-sm text-slate-600">
-            Eventi della tua area geografica, con priorità a città e categoria.
+            Corsi e laboratori della tua area geografica, con priorità a città e disciplina.
           </span>
         </span>
       </label>
@@ -120,7 +120,7 @@ export default function NewsletterPreferencesForm({
               htmlFor="newsletter-category"
               className="text-sm font-semibold text-slate-800"
             >
-              Categoria
+              Disciplina
             </label>
             <select
               id="newsletter-category"
@@ -129,7 +129,7 @@ export default function NewsletterPreferencesForm({
               onChange={(event) => setCategory(event.target.value)}
               className={inputClassName}
             >
-              <option value="">Seleziona categoria</option>
+              <option value="">Seleziona disciplina</option>
               {categories.map((item) => (
                 <option key={item.id} value={item.slug}>
                   {item.name}

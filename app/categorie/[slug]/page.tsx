@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { categories } from "@/src/data/categories";
+import { allCategories as categories } from "@/src/data/categories";
 
 type CategorySlugPageProps = {
   params: Promise<{
@@ -19,5 +19,5 @@ export default async function CategorySlugPage({
     notFound();
   }
 
-  redirect(`/eventi/${category.slug}`);
+  redirect(`/imparare-e-fare-in-sardegna?disciplina=${encodeURIComponent(category.slug)}#ricerca`);
 }

@@ -12,7 +12,7 @@ import ShareEventButton from "@/src/components/events/ShareEventButton";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
 import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
-import { LEARNING_AREAS, LEARNING_TOPICS } from "@/src/lib/learning-courses";
+import { learningCardLabels } from "@/src/lib/learning-card-labels";
 
 export type EventCardData = {
   /** Slug used in `/eventi/[slug]` links */
@@ -81,11 +81,7 @@ export default function EventCard({
   priority = false,
 }: EventCardProps) {
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
-  const learningTopic = LEARNING_TOPICS.find((topic) => topic.key === event.learningTopic);
-  const learningArea = LEARNING_AREAS.find((area) => area.key === learningTopic?.area);
-  const categoryLabels = learningTopic && learningArea
-    ? [learningArea.title, learningTopic.title]
-    : event.categories?.length ? event.categories : [event.category];
+  const categoryLabels = learningCardLabels(event);
   const eventHref = `/eventi/${event.id}`;
 
   return (

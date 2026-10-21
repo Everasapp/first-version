@@ -15,7 +15,7 @@ export default function LearningTopicSelect({ value, onChange, error }: Learning
   return (
     <div>
       <label htmlFor={id} className="block text-sm font-bold text-slate-900">
-        Macroarea e disciplina
+        Macroarea e ambito
       </label>
       <p id={`${id}-help`} className="mt-2 text-sm leading-relaxed text-slate-600">
         Scegli in base all’obiettivo: Formazione per acquisire professionalità,
@@ -30,7 +30,7 @@ export default function LearningTopicSelect({ value, onChange, error }: Learning
         aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
         className={`mt-2 min-h-11 w-full rounded-2xl border bg-white px-4 py-3 text-base text-slate-900 outline-none focus:ring-2 ${error ? "border-red-400 focus:ring-red-100" : "border-slate-300 focus:border-[#075EAE] focus:ring-blue-100"}`}
       >
-        <option value="">Scegli macroarea e disciplina</option>
+        <option value="">Scegli macroarea e ambito</option>
         {value && !isLearningTopic(value) ? <option value={value}>Classificazione esistente da verificare</option> : null}
         {LEARNING_AREAS.map((area) => (
           <optgroup key={area.key} label={`${area.title} — ${area.subtitle}`}>
