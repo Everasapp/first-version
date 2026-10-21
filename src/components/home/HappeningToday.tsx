@@ -34,7 +34,9 @@ export default function HappeningToday({
   const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
 
   useEffect(() => {
-    setVisibleCount(Math.min(INITIAL_CARDS, events.length || INITIAL_CARDS));
+    queueMicrotask(() => {
+      setVisibleCount(Math.min(INITIAL_CARDS, events.length || INITIAL_CARDS));
+    });
   }, [events]);
 
   const visibleEvents = events.slice(0, visibleCount);

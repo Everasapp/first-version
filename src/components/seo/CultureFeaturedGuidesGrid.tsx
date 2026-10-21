@@ -16,7 +16,7 @@ export default function CultureFeaturedGuidesGrid({
   const [ordered, setOrdered] = useState(articles);
 
   useEffect(() => {
-    setOrdered(shuffleArray(articles));
+    queueMicrotask(() => setOrdered(shuffleArray(articles)));
   }, [articles]);
 
   return (

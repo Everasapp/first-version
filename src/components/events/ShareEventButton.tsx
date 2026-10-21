@@ -123,7 +123,7 @@ export default function ShareEventButton({
   }
 
   useEffect(() => {
-    setMounted(true);
+    queueMicrotask(() => setMounted(true));
   }, []);
 
   function updateMenuPosition() {

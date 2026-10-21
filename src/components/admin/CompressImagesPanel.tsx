@@ -71,7 +71,10 @@ export default function CompressImagesPanel() {
   }, []);
 
   useEffect(() => {
-    void loadStats();
+    const timer = window.setTimeout(() => {
+      void loadStats();
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [loadStats]);
 
   async function runBatch() {

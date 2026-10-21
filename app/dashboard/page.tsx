@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import Header from "@/src/components/home/Header";
+import { currentTimeMs } from "@/src/lib/clock";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import DuplicateEventButton from "@/src/components/dashboard/DuplicateEventButton";
 import EventEngagementStats from "@/src/components/events/EventEngagementStats";
@@ -191,7 +192,7 @@ async function OrganizerDashboard({
   const plan = (planResult.data as Plan | null) ?? null;
   const canPromote = canPromoteEvents(plan);
   const events = (data ?? []) as DashboardEvent[];
-  const now = Date.now();
+  const now = currentTimeMs();
   const featuredCount = events.filter((event) => event.is_featured).length;
 
   const counts = {

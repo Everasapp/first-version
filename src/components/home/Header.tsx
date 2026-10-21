@@ -38,7 +38,7 @@ export default function Header() {
   const navLinks = getPrimaryNavLinks();
 
   useEffect(() => {
-    setHasAccount(readHasEverasAccount());
+    queueMicrotask(() => setHasAccount(readHasEverasAccount()));
 
     const supabase = createClient();
 

@@ -61,7 +61,9 @@ export default function EventsExploreGrid({
 
   // Reset window when the list or sort mode changes.
   useEffect(() => {
-    setVisibleCount(Math.min(initialCount, orderedEvents.length || initialCount));
+    queueMicrotask(() => {
+      setVisibleCount(Math.min(initialCount, orderedEvents.length || initialCount));
+    });
   }, [orderedEvents, initialCount, useNearby]);
 
   const visibleEvents = orderedEvents.slice(0, visibleCount);

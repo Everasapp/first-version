@@ -1,3 +1,4 @@
+import type { ComponentType, SVGProps } from "react";
 import {
   Baby,
   BriefcaseBusiness,
@@ -18,7 +19,7 @@ export type Category = {
   id: number;
   slug: string;
   name: string;
-  icon: any;
+  icon: ComponentType<SVGProps<SVGSVGElement> & { strokeWidth?: number | string }>;
   gradient: string;
 };
 
