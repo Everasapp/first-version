@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { assertProductionBuildConfig } from "./src/lib/env/production-build";
 import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs";
 
 const nextConfig: NextConfig = {
@@ -153,4 +155,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default function createNextConfig(phase: string): NextConfig {
+  if (phase === PHASE_PRODUCTION_BUILD) {
+    assertProductionBuildConfig();
+  }
+  return nextConfig;
+}

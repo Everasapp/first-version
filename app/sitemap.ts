@@ -9,6 +9,9 @@ import { CULTURE_TOWNS, isEditorialCultureTown } from "@/src/lib/seo/cultura-tow
 import { CULTURE_AREAS } from "@/src/lib/seo/cultura-areas";
 import { PUBLISHED_EVENTS_CACHE_SECONDS, PUBLISHED_EVENTS_CACHE_TAG } from "@/src/lib/seo/published-events-cache";
 
+/** Refresh the sitemap response. Rows stay on the existing published-events cache. */
+export const revalidate = 900;
+
 type LearningSitemapRow = {
   slug: string | null;
   updated_at: string | null;

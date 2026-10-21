@@ -1,8 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 import { describe, expect, it, vi } from "vitest";
 import { findReplacementEventSlug } from "./event-slug-redirect";
 import { CONSOLIDATED_EVENT_SLUGS } from "./consolidated-event-slugs";
-import nextConfig from "../../../next.config";
+import createNextConfig from "../../../next.config";
+
+const nextConfig = createNextConfig(PHASE_DEVELOPMENT_SERVER);
 
 function database(target: { slug: string } | null) {
   const query = {
