@@ -7,6 +7,7 @@
 -- request again inside the window. After 24 hours the key expires, so a row
 -- still marked "sending" becomes "uncertain" and is not emailed again.
 -- That does not prove the first request never reached the recipient.
+-- The first staged subject and HTML stay on the row and are reused on retry.
 --
 -- The daily cron (vercel.json, once a day) continues the same week. Remove
 -- that schedule only if the send must stay off after this table exists.
@@ -18,6 +19,8 @@ CREATE TABLE IF NOT EXISTS public.newsletter_week_deliveries (
   status text NOT NULL,
   events_count integer NOT NULL DEFAULT 0,
   error_message text,
+  subject text,
+  body_html text,
   idempotency_key text NOT NULL,
   claimed_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -166,6 +169,83 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION private.stage_newsletter_body(
+  p_recipient_key text,
+  p_week_key text,
+  p_subject text,
+  p_html text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  v_subject text;
+  v_html text;
+BEGIN
+  IF coalesce(auth.role(), '') <> 'service_role'
+    AND NOT private.current_user_is_admin() THEN
+    RAISE EXCEPTION 'Accesso riservato agli admin';
+  END IF;
+
+  IF coalesce(p_subject, '') = '' OR coalesce(p_html, '') = '' THEN
+    RAISE EXCEPTION 'Contenuto newsletter mancante';
+  END IF;
+
+  SELECT subject, body_html
+  INTO v_subject, v_html
+  FROM public.newsletter_week_deliveries
+  WHERE recipient_key = p_recipient_key
+    AND week_key = p_week_key
+    AND status = 'sending'
+  FOR UPDATE;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Registrazione newsletter non trovata';
+  END IF;
+
+  IF v_subject IS NULL OR v_html IS NULL THEN
+    UPDATE public.newsletter_week_deliveries
+    SET
+      subject = p_subject,
+      body_html = p_html,
+      updated_at = now()
+    WHERE recipient_key = p_recipient_key
+      AND week_key = p_week_key
+      AND status = 'sending'
+      AND body_html IS NULL
+    RETURNING subject, body_html
+    INTO v_subject, v_html;
+  END IF;
+
+  IF v_subject IS NULL OR v_html IS NULL THEN
+    RAISE EXCEPTION 'Contenuto newsletter mancante';
+  END IF;
+
+  RETURN jsonb_build_object('subject', v_subject, 'html', v_html);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.stage_newsletter_body(
+  p_recipient_key text,
+  p_week_key text,
+  p_subject text,
+  p_html text
+)
+RETURNS jsonb
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT private.stage_newsletter_body(
+    p_recipient_key,
+    p_week_key,
+    p_subject,
+    p_html
+  );
+$$;
+
 CREATE OR REPLACE FUNCTION public.claim_newsletter_delivery(
   p_recipient_key text,
   p_week_key text,
@@ -214,5 +294,10 @@ REVOKE ALL ON FUNCTION public.complete_newsletter_delivery(text, text, text, int
 REVOKE ALL ON FUNCTION public.complete_newsletter_delivery(text, text, text, integer, text) FROM anon;
 GRANT EXECUTE ON FUNCTION public.complete_newsletter_delivery(text, text, text, integer, text) TO authenticated, service_role;
 
+REVOKE ALL ON FUNCTION public.stage_newsletter_body(text, text, text, text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.stage_newsletter_body(text, text, text, text) FROM anon;
+GRANT EXECUTE ON FUNCTION public.stage_newsletter_body(text, text, text, text) TO authenticated, service_role;
+
 REVOKE ALL ON FUNCTION private.claim_newsletter_delivery(text, text, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION private.complete_newsletter_delivery(text, text, text, integer, text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION private.stage_newsletter_body(text, text, text, text) FROM PUBLIC;

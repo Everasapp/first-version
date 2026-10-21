@@ -1,9 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { getCurrentRomeWeekRange } from "./newsletter-week";
 import {
   deliverNewsletterBatch,
   interpretNewsletterClaim,
   isMissingNewsletterStructure,
+  keepFirstNewsletterSnapshot,
   newsletterIdempotencyKey,
+  NEWSLETTER_BATCH_LIMIT,
   NEWSLETTER_STRUCTURE_MESSAGE,
 } from "./newsletter-delivery";
 
@@ -221,5 +224,122 @@ describe("weekly newsletter delivery", () => {
     expect(result.sent).toBe(2);
     expect(result.remaining).toBe(1);
     expect(send).toHaveBeenCalledTimes(2);
+  });
+
+  it("continues the next batch without skipping the people still waiting", async () => {
+    const store = memoryClaims(() => Date.now());
+    const sent: string[] = [];
+    const recipients = Array.from({ length: 25 }, (_, index) => ({
+      id: `user-${index}`,
+      source: "profile" as const,
+    }));
+    const run = () =>
+      deliverNewsletterBatch({
+        weekKey: "2026-10-19",
+        recipients,
+        limit: NEWSLETTER_BATCH_LIMIT,
+        claim: store.claim,
+        complete: store.complete,
+        perform: async (recipient) => {
+          sent.push(recipient.id);
+          return "sent";
+        },
+      });
+
+    const first = await run();
+    const second = await run();
+
+    expect(first.sent).toBe(20);
+    expect(first.remaining).toBe(5);
+    expect(second.sent).toBe(5);
+    expect(second.skipped).toBe(20);
+    expect(sent).toEqual(recipients.map((recipient) => recipient.id));
+  });
+
+  it("keeps the first subject and HTML when a retry would compose something else", async () => {
+    const store = memoryClaims(() => Date.now());
+    const snapshots = new Map<string, { subject: string; html: string }>();
+    const delivered: Array<{ key: string; html: string }> = [];
+    let attempt = 0;
+
+    const run = (composed: { subject: string; html: string }) =>
+      deliverNewsletterBatch({
+        weekKey: "2026-10-19",
+        recipients: [{ id: "user-1", source: "profile" }],
+        limit: NEWSLETTER_BATCH_LIMIT,
+        claim: store.claim,
+        complete: store.complete,
+        perform: async (_recipient, idempotencyKey) => {
+          const snapshot = keepFirstNewsletterSnapshot(
+            snapshots.get(idempotencyKey) ?? null,
+            composed,
+          );
+          snapshots.set(idempotencyKey, snapshot);
+          attempt += 1;
+          if (attempt === 1) throw new Error("processo interrotto");
+          delivered.push({ key: idempotencyKey, html: snapshot.html });
+          return "sent";
+        },
+      });
+
+    const interrupted = await run({ subject: "Settimana", html: "<p>Prima</p>" });
+    const resumed = await run({ subject: "Settimana", html: "<p>Diversa</p>" });
+
+    expect(interrupted.failed).toBe(1);
+    expect(resumed.sent).toBe(1);
+    expect(delivered).toEqual([
+      {
+        key: "newsletter/2026-10-19/profile:user-1",
+        html: "<p>Prima</p>",
+      },
+    ]);
+  });
+
+  it("completes 140 recipients in one Rome week and starts over on Monday", async () => {
+    const firstRun = new Date("2026-10-19T07:00:00Z");
+    const weekKeys = Array.from({ length: 8 }, (_, day) =>
+      getCurrentRomeWeekRange(
+        new Date(firstRun.getTime() + day * 24 * 60 * 60 * 1000),
+      ).weekKey,
+    );
+    expect(weekKeys.slice(0, 7).every((key) => key === "2026-10-19")).toBe(true);
+    expect(weekKeys[7]).toBe("2026-10-26");
+
+    const store = memoryClaims(() => Date.now());
+    const recipients = Array.from({ length: 150 }, (_, index) => ({
+      id: `user-${index}`,
+      source: "profile" as const,
+    }));
+    const sent = new Map<string, string[]>();
+    const run = (weekKey: string) =>
+      deliverNewsletterBatch({
+        weekKey,
+        recipients,
+        limit: NEWSLETTER_BATCH_LIMIT,
+        claim: store.claim,
+        complete: store.complete,
+        perform: async (recipient) => {
+          const list = sent.get(weekKey) ?? [];
+          list.push(recipient.id);
+          sent.set(weekKey, list);
+          return "sent";
+        },
+      });
+
+    for (let day = 0; day < 7; day += 1) {
+      const result = await run("2026-10-19");
+      expect(result.sent).toBe(NEWSLETTER_BATCH_LIMIT);
+    }
+    expect(sent.get("2026-10-19")).toHaveLength(140);
+    expect(sent.get("2026-10-19")).not.toContain("user-140");
+
+    const nextWeek = await run("2026-10-26");
+    expect(nextWeek.sent).toBe(20);
+    expect(sent.get("2026-10-26")?.slice(0, 3)).toEqual([
+      "user-0",
+      "user-1",
+      "user-2",
+    ]);
+    expect(sent.get("2026-10-19")).not.toContain("user-140");
   });
 });

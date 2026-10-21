@@ -14,9 +14,12 @@ export const maxDuration = 300;
 
 const JOB_NAME = "weekly-newsletter";
 
-// Hobby allows one cron run per day. The same Rome week is resumed on the
-// following days. Resend idempotency keys last 24 hours; a claim still
-// "sending" after that becomes uncertain and is not emailed again.
+// Hobby allows one cron run per day, so this stays daily and not more often.
+// Seven runs, Monday through Sunday at 07:00 UTC, fall in the same Rome week
+// and can deliver 20 new emails each (140 in that week). The next Monday
+// starts a new week and does not finish the previous queue.
+// A row still "sending" when the next day runs is past the 24 hour Resend
+// window, becomes "uncertain", and is not emailed again.
 
 function isAuthorized(request: Request) {
   return isCronAuthorized(request);

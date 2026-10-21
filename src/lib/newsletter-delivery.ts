@@ -36,6 +36,7 @@ export function isMissingNewsletterStructure(error: {
     code === "42883" ||
     code === "42P01" ||
     message.includes("claim_newsletter_delivery") ||
+    message.includes("stage_newsletter_body") ||
     message.includes("newsletter_week_deliveries") ||
     message.includes(NEWSLETTER_STRUCTURE_MESSAGE.toLowerCase())
   );
@@ -44,6 +45,19 @@ export function isMissingNewsletterStructure(error: {
 export type NewsletterClaim =
   | { type: "send"; idempotencyKey: string }
   | { type: "skip"; reason: string };
+
+export function keepFirstNewsletterSnapshot(
+  saved: { subject?: string | null; html?: string | null } | null,
+  composed: { subject: string; html: string },
+) {
+  if (saved?.subject && saved?.html) {
+    return { subject: saved.subject, html: saved.html };
+  }
+  if (!composed.subject || !composed.html) {
+    throw new Error(NEWSLETTER_STRUCTURE_MESSAGE);
+  }
+  return { subject: composed.subject, html: composed.html };
+}
 
 export function interpretNewsletterClaim(payload: unknown): NewsletterClaim {
   if (!payload || typeof payload !== "object") {
@@ -151,6 +165,16 @@ export async function deliverNewsletterBatch({
         result.skipped += 1;
       }
     } catch (error) {
+      if (
+        isMissingNewsletterStructure({
+          code: error && typeof error === "object" && "code" in error
+            ? String((error as { code?: unknown }).code ?? "")
+            : "",
+          message: error instanceof Error ? error.message : String(error),
+        })
+      ) {
+        throw new Error(NEWSLETTER_STRUCTURE_MESSAGE);
+      }
       const message = error instanceof Error ? error.message : "Errore sconosciuto";
       result.failed += 1;
       result.errors.push({ userId: recipient.id, error: message });

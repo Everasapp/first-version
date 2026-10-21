@@ -27,7 +27,9 @@ import {
 } from "@/src/lib/notifications/resend-delivery";
 import {
   deliverNewsletterBatch,
+  keepFirstNewsletterSnapshot,
   NEWSLETTER_BATCH_LIMIT,
+  newsletterRecipientKey,
   type NewsletterDeliverySource,
 } from "@/src/lib/newsletter-delivery";
 import { createAdminClient, tryCreateAdminClient } from "@/src/lib/supabase/admin";
@@ -594,6 +596,35 @@ async function claimNewsletterDelivery(
   return data;
 }
 
+async function stageNewsletterBody(
+  client: SupabaseClient,
+  input: {
+    recipientKey: string;
+    weekKey: string;
+    subject: string;
+    html: string;
+  },
+) {
+  const { data, error } = await client.rpc("stage_newsletter_body", {
+    p_recipient_key: input.recipientKey,
+    p_week_key: input.weekKey,
+    p_subject: input.subject,
+    p_html: input.html,
+  });
+  if (error) throwNewsletterRpcError(error);
+  const record =
+    data && typeof data === "object"
+      ? (data as { subject?: unknown; html?: unknown })
+      : null;
+  return keepFirstNewsletterSnapshot(
+    {
+      subject: typeof record?.subject === "string" ? record.subject : null,
+      html: typeof record?.html === "string" ? record.html : null,
+    },
+    { subject: input.subject, html: input.html },
+  );
+}
+
 async function completeNewsletterDelivery(
   client: SupabaseClient,
   input: {
@@ -683,13 +714,20 @@ export async function runWeeklyNewsletter(options?: {
       limit: 1,
       claim: (input) => claimNewsletterDelivery(claimClient, input),
       complete: (input) => completeNewsletterDelivery(claimClient, input),
-      perform: async (_recipient, idempotencyKey) =>
-        sendNewsletterEmail(
+      perform: async (recipient, idempotencyKey) => {
+        const snapshot = await stageNewsletterBody(claimClient, {
+          recipientKey: newsletterRecipientKey(recipient.source, recipient.id),
+          weekKey: week.weekKey,
+          subject: `[TEST] ${preview.subject}`,
+          html: preview.html,
+        });
+        return sendNewsletterEmail(
           testEmail,
-          `[TEST] ${preview.subject}`,
-          preview.html,
+          snapshot.subject,
+          snapshot.html,
           idempotencyKey,
-        ),
+        );
+      },
     });
     summary.sent = delivery.sent;
     summary.skipped = delivery.skipped;
@@ -742,10 +780,16 @@ export async function runWeeklyNewsletter(options?: {
         return "skipped";
       }
 
+      const snapshot = await stageNewsletterBody(writeClient, {
+        recipientKey: newsletterRecipientKey(match.source, match.id),
+        weekKey: week.weekKey,
+        subject: preview.subject,
+        html: preview.html,
+      });
       const outcome = await sendNewsletterEmail(
         match.email,
-        preview.subject,
-        preview.html,
+        snapshot.subject,
+        snapshot.html,
         idempotencyKey,
       );
       if (outcome === "skipped") return "skipped";
