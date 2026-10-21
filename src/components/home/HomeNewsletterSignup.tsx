@@ -66,7 +66,7 @@ export default function HomeNewsletterSignup() {
             Iscriviti alla newsletter
           </h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            Una volta a settimana, eventi vicino a te. Solo email, senza
+            Una volta a settimana, corsi e workshop vicino a te. Solo email, senza
             account.
           </p>
         </div>

@@ -1,3 +1,4 @@
+import { isLearningEvent, PUBLIC_LEARNING_FILTER } from "@/src/lib/learning-courses";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import {
@@ -242,9 +243,10 @@ export async function loadWeekEvents(
   const { data, error } = await client
     .from("events")
     .select(
-      "id, slug, title, municipality, location_name, start_at, end_at, category, categories, is_free, price_from, image_url, is_featured, status, province",
+      "id, slug, title, municipality, location_name, start_at, end_at, category, categories, subcategory, is_free, price_from, image_url, is_featured, status, province",
     )
     .eq("status", "published")
+    .or(PUBLIC_LEARNING_FILTER)
     .lt("start_at", week.end.toISOString())
     .order("start_at", { ascending: true });
 
@@ -253,7 +255,7 @@ export async function loadWeekEvents(
   }
 
   const events = ((data ?? []) as WeekEventRow[]).filter((event) =>
-    eventOverlapsWeek(event, week.start, week.end, now),
+    isLearningEvent(event) && eventOverlapsWeek(event, week.start, week.end, now),
   );
 
   return { week, events };

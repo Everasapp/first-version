@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { cache } from "react";
 import {
   Building2,
@@ -61,6 +61,7 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { formatHowToArrive } from "@/src/lib/event-practical";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
+import { isLearningEvent, LEARNING_PATH } from "@/src/lib/learning-courses";
 import {
   eventDetailRobots,
   eventSeoDescription,
@@ -105,6 +106,7 @@ type EventRow = {
   description: string | null;
   category: string;
   categories?: string[] | null;
+  subcategory?: string | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -135,6 +137,7 @@ type EventCardRow = Pick<
   | "title"
   | "category"
   | "categories"
+  | "subcategory"
   | "province"
   | "municipality"
   | "location_name"
@@ -151,9 +154,9 @@ type EventCardRow = Pick<
 >;
 
 const EVENT_DETAIL_SELECT_BASE =
-  "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
+  "id, slug, title, description, category, categories, subcategory, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
 const EVENT_DETAIL_SELECT_WITH_MODE =
-  "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
+  "id, slug, title, description, category, categories, subcategory, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, is_featured, organizer_id, organizer_display_name, organizer_directory_id, views_count, favorites_count, shares_count, source_url, source_name";
 
 function isMissingScheduleModeColumn(message: string | undefined) {
   return Boolean(
@@ -186,6 +189,7 @@ const getPublishedEventBySlug = cache(async (slug: string) => {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);
   }
 
+  if (data && !isLearningEvent(data as EventRow)) notFound();
   return (data as EventRow | null) ?? null;
 });
 
@@ -241,6 +245,7 @@ export async function generateMetadata({
 
   const category = findCategoryBySlug(slug);
   if (category) {
+    if (category.slug !== "workshop-corsi") notFound();
     const { events } = await loadFilteredPublishedEvents({
       categorySlug: category.slug,
     });
@@ -319,7 +324,10 @@ export default async function EventSlugPage({
   if (city) return <CityLandingPage city={city} />;
 
   const category = findCategoryBySlug(slug);
-  if (category) return <CategoryLandingPage category={category} />;
+  if (category) {
+    if (category.slug !== "workshop-corsi") notFound();
+    return <CategoryLandingPage category={category} />;
+  }
 
   return <EventDetailPage slug={slug} />;
 }
@@ -369,7 +377,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const eventCardSelect =
-    "id, slug, title, category, categories, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
+    "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
   const activeEventFilter = `end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
 
   const [
@@ -462,8 +470,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? followedIds.has(followOrganizerId)
     : false;
 
-  const similarEventRows = (similarData ?? []) as EventCardRow[];
-  const cityEventRows = (cityEventsData ?? []) as EventCardRow[];
+  const similarEventRows = ((similarData ?? []) as EventCardRow[]).filter(isLearningEvent);
+  const cityEventRows = ((cityEventsData ?? []) as EventCardRow[]).filter(isLearningEvent);
   const nextEdition = isExpired
     ? findNextEventEdition(event, cityEventRows, now)
     : null;
@@ -518,6 +526,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const categoryName = categoryLabels[0] ?? event.category;
   const primaryCategorySlug =
     eventCategorySlugs(event)[0] ?? event.category;
+  const isCourse = isLearningEvent(event);
 
   const cityPath = cityEventsPath(event.municipality);
   const categoryPath = categoryEventsPath(primaryCategorySlug);
@@ -929,10 +938,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
                     href={event.ticket_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#E67E22] px-6 py-4 text-center font-bold text-white transition hover:bg-[#C96A1A]"
+                    className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-center font-bold text-white transition ${isCourse ? "bg-[#B95408] hover:bg-[#A94B06]" : "bg-[#E67E22] hover:bg-[#C96A1A]"}`}
                   >
                     <Ticket aria-hidden="true" className="h-5 w-5" />
-                    {pricing.isFree === null
+                    {isCourse
+                      ? "Informazioni e iscrizioni"
+                      : pricing.isFree === null
                       ? "Informazioni e prenotazioni"
                       : pricing.isFree ? "Prenota" : "Acquista il biglietto"}
                     <ExternalLink aria-hidden="true" className="h-4 w-4" />
@@ -949,10 +960,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 ) : null}
 
                 <Link
-                  href={isExpired ? cityPath : "/eventi"}
+                  href={isCourse ? LEARNING_PATH : isExpired ? cityPath : "/eventi"}
                   className="flex w-full items-center justify-center rounded-2xl border border-slate-300 px-6 py-4 font-bold text-slate-700 transition hover:border-[#075EAE] hover:text-[#075EAE]"
                 >
-                  {isExpired
+                  {isCourse
+                    ? "Tutti i corsi e laboratori"
+                    : isExpired
                     ? `Eventi attuali a ${event.municipality}`
                     : "Torna agli eventi"}
                 </Link>
@@ -960,7 +973,9 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
               {!isExpired && event.ticket_url ? (
                 <p className="mt-5 text-center text-xs leading-5 text-slate-500">
-                  {pricing.isFree === null
+                  {isCourse
+                    ? "Il collegamento apre il canale esterno indicato dall’organizzatore. Verifica costi, requisiti e disponibilità prima di iscriverti."
+                    : pricing.isFree === null
                     ? "Le informazioni e le prenotazioni sono gestite sul sito esterno indicato dall’organizzatore."
                     : pricing.isFree
                     ? "La prenotazione è gestita sul sito esterno indicato dall’organizzatore."

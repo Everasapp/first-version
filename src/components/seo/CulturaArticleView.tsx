@@ -1,4 +1,6 @@
 import Link from "next/link";
+import EditorialLearningSection from "@/src/components/seo/EditorialLearningSection";
+import { findEditorialLearningPath } from "@/src/lib/editorial-learning-paths";
 
 import EventCard, {
   type EventCardData,
@@ -34,6 +36,7 @@ export default function CulturaArticleView({
   events = [],
   jsonLd,
 }: CulturaArticleViewProps) {
+  const learningPath = findEditorialLearningPath(article.path);
   return (
     <>
       {jsonLd.map((data, index) => (
@@ -63,6 +66,7 @@ export default function CulturaArticleView({
               <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
                 {article.intro}
               </p>
+              {learningPath ? <Link href="#prova-e-approfondisci" className="mt-4 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Vai all’esercizio e ai consigli per imparare →</Link> : null}
             </div>
           </header>
 
@@ -101,7 +105,9 @@ export default function CulturaArticleView({
               </section>
             ))}
 
-            {events.length > 0 || article.kind === "guide" ? (
+            {learningPath ? <EditorialLearningSection path={learningPath} /> : null}
+
+            {!learningPath && (events.length > 0 || article.kind === "guide") ? (
               <section className="mt-12 border-t border-slate-200 pt-10">
                 <h2 className="text-2xl font-bold text-slate-900">
                   {article.eventSectionTitle ?? "Scheda evento"}

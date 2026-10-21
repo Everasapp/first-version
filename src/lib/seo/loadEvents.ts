@@ -18,7 +18,7 @@ import {
 } from "@/src/lib/eventScheduleMode";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
 import { engagementFromRow } from "@/src/lib/event-engagement";
-import { isLearningTopic } from "@/src/lib/learning-courses";
+import { isLearningEvent, isLearningTopic, PUBLIC_LEARNING_FILTER } from "@/src/lib/learning-courses";
 import { getDateRange, getMonthRange } from "@/src/lib/seo/dateRange";
 import {
   eventAppearsInRange,
@@ -179,7 +179,8 @@ async function fetchAllPublishedEventRows(city?: string) {
     let query = supabase
       .from("events")
       .select(select as string)
-      .eq("status", "published");
+      .eq("status", "published")
+      .or(PUBLIC_LEARNING_FILTER);
 
     if (city) {
       query = query.ilike("municipality", city);
@@ -214,7 +215,7 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-event-rows-v4"],
+  ["published-learning-event-rows-v5"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],
@@ -256,7 +257,8 @@ async function fetchPublishedEventIdsMatching(
         let query = supabase
           .from("events")
           .select("id")
-          .eq("status", "published");
+          .eq("status", "published")
+      .or(PUBLIC_LEARNING_FILTER);
 
         if (city) {
           query = query.ilike("municipality", city);
@@ -335,6 +337,7 @@ export const loadFilteredPublishedEvents = cache(
 
     const mappedEvents = rows
       .filter((event) => {
+        if (!isLearningEvent(event)) return false;
         if (
           !filters.includeExpired &&
           !isPublicEventActive(event.start_at, event.end_at, now)

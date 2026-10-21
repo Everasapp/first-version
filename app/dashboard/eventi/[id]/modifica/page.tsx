@@ -42,7 +42,7 @@ export default async function ModificaEventoPage({
   let eventQuery = supabase
     .from("events")
     .select(
-      "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
+      "id, slug, title, description, category, categories, subcategory, province, municipality, location_name, address, start_at, end_at, schedule_mode, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
     )
     .eq("id", id);
 
@@ -60,7 +60,7 @@ export default async function ModificaEventoPage({
     let fallbackQuery = supabase
       .from("events")
       .select(
-        "id, slug, title, description, category, categories, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
+        "id, slug, title, description, category, categories, subcategory, province, municipality, location_name, address, start_at, end_at, image_url, is_free, price_from, ticket_url, youtube_url, organizer_display_name, organizer_directory_id, status",
       )
       .eq("id", id);
     if (!isAdmin) {

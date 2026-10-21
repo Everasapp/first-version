@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://www.everas.it";
 export const SITE_NAME = "EVERAS";
 export const SITE_LOCALE = "it_IT";
-export const DEFAULT_OG_IMAGE = "/og.jpg?v=20260811g";
+export const DEFAULT_OG_IMAGE = "/images/learning/imparare-sardegna-og.jpg";
 
 export function absoluteUrl(path = "/") {
   if (!path || path === "/") return SITE_URL;
@@ -17,7 +17,7 @@ export function defaultOgImages() {
       url: DEFAULT_OG_IMAGE,
       width: 1200,
       height: 630,
-      alt: "EVERAS — Eventi in Sardegna",
+      alt: "EVERAS — Imparare e fare in Sardegna",
       type: "image/jpeg" as const,
     },
   ];

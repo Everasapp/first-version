@@ -4,7 +4,7 @@ import Image from "next/image";
 import Header from "@/src/components/home/Header";
 import EventCard from "@/src/components/home/EventCard";
 import JsonLd from "@/src/components/seo/JsonLd";
-import { LEARNING_PATH, LEARNING_TOPICS } from "@/src/lib/learning-courses";
+import { LEARNING_AREAS, LEARNING_FORMATS, LEARNING_PATH, LEARNING_TOPICS, learningAreaForTopic } from "@/src/lib/learning-courses";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
@@ -13,7 +13,7 @@ const title = "Imparare e fare in Sardegna";
 const heroAlt = "Scena illustrativa di apprendimento: ceramica, pittura e competenze digitali in un laboratorio sul paesaggio sardo";
 const ogImage = { url: absoluteUrl("/images/learning/imparare-sardegna-og.jpg"), width: 1200, height: 630, alt: heroAlt };
 
-const description = "Corsi e laboratori in Sardegna: arti, competenze professionali e digitali, inglese e altre lingue. Confronta programmi, costi e requisiti.";
+const description = "Formazione per il lavoro oppure corsi, workshop ed esperienze per arricchirti: trova il tuo percorso in Sardegna e confronta programmi, costi e requisiti.";
 
 export const metadata: Metadata = {
   title, description, alternates: { canonical: LEARNING_PATH },
@@ -21,8 +21,27 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: `${title} | EVERAS`, description, images: [ogImage.url] },
 };
 
-export default async function LearningPage() {
-  const { events, error } = await loadFilteredPublishedEvents({ learningOnly: true });
+type LearningPageProps = {
+  searchParams: Promise<{ area?: string; city?: string; q?: string }>;
+};
+const areas: Record<string, string> = {
+  "nord-sardegna": "Nord Sardegna",
+  "centro-sardegna": "Centro Sardegna",
+  "sud-sardegna": "Sud Sardegna",
+};
+
+export default async function LearningPage({ searchParams }: LearningPageProps) {
+  const params = await searchParams;
+  const selectedArea = typeof params.area === "string" && areas[params.area] ? params.area : "";
+  const selectedCity = typeof params.city === "string" ? params.city.trim() : "";
+  const query = typeof params.q === "string" ? params.q.trim() : "";
+  const { events: allEvents, error } = await loadFilteredPublishedEvents({ learningOnly: true });
+  // Filter the same cached inventory; no new database request or city cache variant.
+  const events = allEvents.filter((event) =>
+    (!selectedArea || event.area === areas[selectedArea]) &&
+    (!selectedCity || event.municipality?.toLocaleLowerCase("it") === selectedCity.toLocaleLowerCase("it")) &&
+    (!query || `${event.title} ${event.municipality ?? ""} ${event.location}`.toLocaleLowerCase("it").includes(query.toLocaleLowerCase("it"))),
+  );
   return <>
     <Header />
     <JsonLd data={collectionPageSchema({ name: title, description, url: absoluteUrl(LEARNING_PATH) })} />
@@ -33,15 +52,33 @@ export default async function LearningPage() {
           <Image src="/images/learning/imparare-sardegna-hero.webp" alt={heroAlt} width={1200} height={630} unoptimized preload className="mb-8 aspect-[1200/630] w-full rounded-2xl object-cover" />
           <p className="text-sm font-bold uppercase tracking-widest text-[#075EAE]">Un interesse, una nuova possibilità</p>
           <h1 className="mt-3 max-w-4xl text-4xl font-black text-slate-900 sm:text-5xl">{title}</h1>
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">Dedica tempo a qualcosa che vuoi imparare. Trova un laboratorio creativo, esercita una lingua o scegli una competenza da portare nel tuo lavoro: qui puoi confrontare percorsi, impegno richiesto e modalità di partecipazione.</p>
-          <nav aria-label="Percorsi di apprendimento" className="mt-8 grid gap-4 md:grid-cols-3">
-            {LEARNING_TOPICS.map((topic) => <Link key={topic.key} href={`#${topic.anchor}`} className="rounded-2xl border border-slate-200 p-5 hover:border-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">
-              <h2 className="text-xl font-bold text-[#075EAE]">{topic.title} →</h2><p className="mt-2 text-sm text-slate-600">{topic.description}</p>
+          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">Scegli cosa vuoi ottenere: acquisire competenze per il lavoro oppure vivere un’esperienza che ti arricchisce. Due percorsi per trovare corsi, seminari, workshop e laboratori in Sardegna, confrontando programmi, impegno richiesto e modalità di partecipazione.</p>
+          <nav aria-label="Percorsi di apprendimento" className="mt-8 grid gap-4 md:grid-cols-2">
+            {LEARNING_AREAS.map((area) => <Link key={area.key} href={`#${area.anchor}`} className="rounded-2xl border border-slate-200 p-5 hover:border-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">
+              <h2 className="text-2xl font-bold text-[#075EAE]">{area.title} →</h2><p className="mt-2 font-semibold text-slate-900">{area.subtitle}</p><p className="mt-2 text-sm leading-relaxed text-slate-600">{area.description}</p>
             </Link>)}
           </nav>
         </div>
       </section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <form id="ricerca" action={LEARNING_PATH} method="get" aria-label="Cerca formazione, corsi e workshop" className="my-8 grid scroll-mt-24 gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="text-sm font-semibold text-slate-900">Zona
+            <select name="area" defaultValue={selectedArea} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
+              <option value="">Tutte le zone</option>
+              {Object.entries(areas).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+          </label>
+          <label className="text-sm font-semibold text-slate-900">Comune
+            <input name="city" defaultValue={selectedCity} placeholder="Es. Sassari" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          </label>
+          <label className="text-sm font-semibold text-slate-900">Cosa vuoi imparare?
+            <input name="q" defaultValue={query} placeholder="Es. ceramica o inglese" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
+          </label>
+          <div className="flex items-end gap-3">
+            <button type="submit" className="min-h-11 rounded-xl bg-[#075EAE] px-5 py-2 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Cerca</button>
+            {selectedArea || selectedCity || query ? <Link href={`${LEARNING_PATH}#ricerca`} className="py-3 text-sm font-semibold text-[#075EAE] underline">Azzera filtri</Link> : null}
+          </div>
+        </form>
         <section aria-labelledby="scegliere-corso" className="my-8 rounded-2xl border border-slate-200 bg-white p-6">
           <h2 id="scegliere-corso" className="text-2xl font-bold text-slate-900">Prima di scegliere</h2>
           <div className="mt-4 grid gap-5 md:grid-cols-3">
@@ -50,18 +87,38 @@ export default async function LearningPage() {
             <div><h3 className="font-bold">Cosa farai durante le lezioni?</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">Guarda il programma e il livello richiesto. Chiedi quanta pratica è prevista e cosa saprai fare al termine: un oggetto, un progetto o una nuova abilità da esercitare.</p></div>
           </div>
         </section>
-        {error ? <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-5">Il catalogo non è disponibile in questo momento. Riprova tra poco.</p> : LEARNING_TOPICS.map((topic) => {
-          const courses = events.filter((event) => event.learningTopic === topic.key);
-          return <section key={topic.key} id={topic.anchor} aria-labelledby={`${topic.anchor}-title`} className="scroll-mt-24 py-8">
-            <h2 id={`${topic.anchor}-title`} className="text-3xl font-black text-slate-900">{topic.title}</h2>
-            <p className="mt-3 max-w-4xl leading-relaxed text-slate-600">{topic.advice}</p>
-            {courses.length ? <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{courses.map((event) => <EventCard key={event.eventId} event={event} />)}</div> : <p className="mt-6 rounded-xl border border-slate-200 bg-white p-5 text-slate-600">Non ci sono ancora corsi pubblicati con informazioni complete in questo percorso.</p>}
+        <details className="my-8 rounded-2xl border border-slate-200 bg-white p-6">
+          <summary className="cursor-pointer text-lg font-bold text-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">Corso, workshop o seminario: quale formato cerchi?</summary>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-600">La macroarea descrive il tuo obiettivo; il formato indica come si svolge l’attività. Un workshop o un laboratorio può avere finalità professionali oppure essere un’esperienza per passione. Programma e destinatari aiutano a scegliere.</p>
+          <dl className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {LEARNING_FORMATS.map((format) => <div key={format.title}><dt className="font-bold text-slate-900">{format.title}</dt><dd className="mt-2 text-sm leading-relaxed text-slate-600">{format.description}</dd></div>)}
+          </dl>
+        </details>
+        {error ? <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-5">Il catalogo non è disponibile in questo momento. Riprova tra poco.</p> : LEARNING_AREAS.map((area) => {
+          const topics = LEARNING_TOPICS.filter((topic) => topic.area === area.key);
+          const hasCourses = events.some((event) => learningAreaForTopic(event.learningTopic) === area.key);
+          return <section key={area.key} id={area.anchor} aria-labelledby={`${area.anchor}-title`} className="scroll-mt-24 border-t border-slate-200 py-10">
+            <p className="text-sm font-semibold uppercase tracking-wider text-[#075EAE]">{area.subtitle}</p>
+            <h2 id={`${area.anchor}-title`} className="mt-2 text-3xl font-black text-slate-900">{area.title}</h2>
+            <p className="mt-3 max-w-4xl text-lg leading-relaxed text-slate-600">{area.description}</p>
+            <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-600">{area.formats}</p>
+            {!hasCourses ? <p className="mt-6 rounded-xl border border-slate-200 bg-white p-5 text-slate-600">Nessuna proposta corrisponde alla ricerca in questa macroarea. Prova un’altra zona o modifica i filtri.</p> : null}
+            {topics.map((topic) => {
+              const courses = events.filter((event) => event.learningTopic === topic.key);
+              return <section key={topic.key} id={topic.anchor} aria-labelledby={`${topic.anchor}-title`} className="scroll-mt-24">
+                {courses.length ? <>
+                  <h3 id={`${topic.anchor}-title`} className="mt-8 text-2xl font-bold text-slate-900">{topic.title}</h3>
+                  <p className="mt-3 max-w-4xl leading-relaxed text-slate-600">{topic.advice}</p>
+                  <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{courses.map((event) => <EventCard key={event.eventId} event={event} />)}</div>
+                </> : <span id={`${topic.anchor}-title`} className="sr-only">{topic.title}: nessuna proposta pubblicata</span>}
+              </section>;
+            })}
           </section>;
         })}
         <section className="mt-8 rounded-2xl bg-[#075EAE] p-6 text-white">
           <h2 className="text-2xl font-bold">Organizzi un corso o un laboratorio?</h2>
           <p className="mt-2 max-w-3xl leading-relaxed">Segnalaci programma, date, sede, costo completo e modalità di iscrizione. EVERAS raccoglie le informazioni dalle fonti degli organizzatori: iscrizione e conferma del posto avvengono direttamente con loro.</p>
-          <Link href="/segnala-evento" prefetch={false} className="mt-4 inline-flex rounded-full bg-white px-5 py-3 font-bold text-[#075EAE]">Segnala un corso</Link>
+          <Link href="/per-gli-organizzatori" prefetch={false} className="mt-4 inline-flex min-h-11 items-center rounded-full bg-white px-5 py-3 font-bold text-[#075EAE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Proponi un corso o laboratorio</Link>
         </section>
       </div>
     </main>

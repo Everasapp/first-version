@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 
 import CategoryMultiSelect from "@/src/components/events/CategoryMultiSelect";
+import LearningTopicSelect from "@/src/components/events/LearningTopicSelect";
+import { isLearningTopic } from "@/src/lib/learning-courses";
 import DeleteEventButton from "@/src/components/dashboard/DeleteEventButton";
 import OrganizerDirectorySelect from "@/src/components/events/OrganizerDirectorySelect";
 import CitySelect from "@/src/components/events/CitySelect";
@@ -61,6 +63,7 @@ export type EditableEvent = {
   description: string | null;
   category: string;
   categories?: string[] | null;
+  subcategory?: string | null;
   province: string | null;
   municipality: string;
   location_name: string | null;
@@ -141,6 +144,7 @@ export default function EditEventForm({
   const [categorySlugs, setCategorySlugs] = useState<string[]>(() =>
     eventCategorySlugs(event),
   );
+  const [learningTopic, setLearningTopic] = useState(event.subcategory ?? "");
   const [imagePreview, setImagePreview] = useState(event.image_url ?? "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState(event.image_url);
@@ -207,6 +211,9 @@ export default function EditEventForm({
 
     if (categorySlugs.length === 0) {
       nextErrors.category = "Seleziona almeno una categoria.";
+    }
+    if (categorySlugs.includes("workshop-corsi") && !isLearningTopic(learningTopic)) {
+      nextErrors.learningTopic = "Scegli la macroarea e la disciplina del corso.";
     }
 
     if (!imagePreview) {
@@ -369,6 +376,7 @@ export default function EditEventForm({
           description: normalizeEventDescription(description),
           category: normalizeEventCategories(categorySlugs)[0],
           categories: normalizeEventCategories(categorySlugs),
+          subcategory: learningTopic.trim() || null,
           province: selectedCity?.province ?? null,
           municipality: city,
           location_name: venue.trim(),
@@ -534,11 +542,26 @@ export default function EditEventForm({
           <CategoryMultiSelect
             value={categorySlugs}
             onChange={(next) => {
+              if (categorySlugs.includes("workshop-corsi") && !next.includes("workshop-corsi")) {
+                setLearningTopic("");
+              }
               setCategorySlugs(next);
               clearError("category");
+              clearError("learningTopic");
             }}
             error={errors.category}
           />
+
+          {categorySlugs.includes("workshop-corsi") || isLearningTopic(learningTopic) ? (
+            <LearningTopicSelect
+              value={learningTopic}
+              onChange={(value) => {
+                setLearningTopic(value);
+                clearError("learningTopic");
+              }}
+              error={errors.learningTopic}
+            />
+          ) : null}
 
           <label className="block">
             <span className="text-sm font-bold text-slate-900">

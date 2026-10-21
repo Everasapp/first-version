@@ -38,11 +38,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.everas.it"),
   title: {
-    default: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
+    default: "EVERAS | Formazione, corsi e workshop in Sardegna",
     template: "%s | EVERAS",
   },
   description:
-    "EVERAS è la piattaforma per scoprire eventi, sagre, concerti, workshop e attività in tutta la Sardegna. Cerca per giorno, città o interesse.",
+    "Formazione per il lavoro e corsi, workshop, laboratori ed esperienze per coltivare una passione in Sardegna.",
   applicationName: "EVERAS",
   alternates: {
     canonical: "/",
@@ -59,29 +59,29 @@ export const metadata: Metadata = {
     "google-adsense-account": "ca-pub-5513319548780658",
   },
   openGraph: {
-    title: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
+    title: "EVERAS | Formazione, corsi e workshop in Sardegna",
     description:
-      "Scopri eventi, sagre, concerti, workshop e attività in tutta la Sardegna. Cerca per giorno, città o interesse su EVERAS.",
+      "Scopri formazione per il lavoro e corsi, workshop ed esperienze per passione in Sardegna.",
     url: "/",
     siteName: "EVERAS",
     locale: "it_IT",
     type: "website",
     images: [
       {
-        url: "/og.jpg?v=20260811g",
+        url: "/images/learning/imparare-sardegna-og.jpg",
         width: 1200,
         height: 630,
-        alt: "EVERAS — Eventi in Sardegna",
+        alt: "EVERAS — Imparare e fare in Sardegna",
         type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "EVERAS | Eventi, sagre e cose da fare in Sardegna",
+    title: "EVERAS | Formazione, corsi e workshop in Sardegna",
     description:
-      "Scopri eventi, sagre, concerti, workshop e attività in tutta la Sardegna.",
-    images: ["/og.jpg?v=20260811g"],
+      "Scopri formazione, corsi, workshop ed esperienze in Sardegna.",
+    images: ["/images/learning/imparare-sardegna-og.jpg"],
   },
 };
 

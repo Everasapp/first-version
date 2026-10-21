@@ -23,10 +23,10 @@ export const NORD_CULTURE_TOWNS: CultureTownArticle[] = [
     town: "Sassari",
     province: "Sassari",
     area: "Sassarese",
-    title: "Sassari: Candelieri, Museo Sanna e Cavalcata",
+    title: "Sassari: cultura, luoghi e percorsi per imparare",
     h1: "Sassari",
     description:
-      "Sassari: Faradda dei Candelieri Unesco, Museo Sanna, Cavalcata Sarda, cattedrale e centro.",
+      "Conosci Sassari tra luoghi, arte e tradizioni, prova un esercizio di osservazione e scopri come scegliere formazione, corsi e workshop in città.",
     hero: {
       src: "/images/cultura/sassari-panorama-everas.webp",
       alt: "Piazza d’Italia a Sassari, con il Palazzo della Provincia e le palme",

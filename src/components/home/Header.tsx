@@ -9,7 +9,10 @@ import {
   markEverasAccountKnown,
   readHasEverasAccount,
 } from "@/src/lib/auth-preference";
-import { getPrimaryNavLinks } from "@/src/lib/nav/primary-links";
+import {
+  featuredNavLinks,
+  getPrimaryNavLinks,
+} from "@/src/lib/nav/primary-links";
 import { isOrganizerRole, type UserRole } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/client";
 
@@ -17,7 +20,7 @@ const authButtonClassName =
   "inline-flex h-9 touch-manipulation items-center justify-center rounded-lg border border-[#075EAE] bg-white px-2.5 text-xs font-bold text-[#075EAE] shadow-sm transition [@media(hover:hover)]:hover:bg-[#075EAE] [@media(hover:hover)]:hover:text-white active:bg-[#075EAE] active:text-white sm:px-3.5";
 
 function scrollToRicerca(event: MouseEvent<HTMLAnchorElement>) {
-  if (window.location.pathname !== "/") return;
+  if (window.location.pathname !== "/imparare-e-fare-in-sardegna") return;
   event.preventDefault();
   document
     .getElementById("ricerca")
@@ -120,26 +123,26 @@ export default function Header() {
 
         <div className="relative z-10 ml-auto flex min-w-0 shrink items-end gap-1 sm:gap-2">
           <Link
-            href="/#ricerca"
+            href="/imparare-e-fare-in-sardegna#ricerca"
             className={`${authButtonClassName} shrink-0`}
             onClick={scrollToRicerca}
           >
             Ricerca
           </Link>
 
-          <Link
-            href="/cultura-sarda"
-            className="hidden h-9 touch-manipulation items-center justify-center rounded-lg bg-[#E67E22] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#C96A1A] active:bg-[#C96A1A]"
-          >
-            Scopri la Sardegna
-          </Link>
-          <Link
-            href="/cultura"
-            className="hidden h-9 shrink-0 touch-manipulation items-center justify-center rounded-lg bg-[#075EAE] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#E67E22] active:bg-[#C96A1A]"
-          >
-            Cultura sarda
-          </Link>
-
+          {featuredNavLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={
+                link.href === "/imparare-e-fare-in-sardegna#corsi-workshop"
+                  ? "hidden h-9 shrink-0 touch-manipulation items-center justify-center whitespace-nowrap rounded-lg bg-[#B95408] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#A94B06] active:bg-[#A94B06]"
+                  : "hidden h-9 shrink-0 touch-manipulation items-center justify-center whitespace-nowrap rounded-lg bg-[#075EAE] px-3.5 text-xs font-bold text-white transition lg:inline-flex [@media(hover:hover)]:hover:bg-[#B95408] active:bg-[#A94B06]"
+              }
+            >
+              {link.label}
+            </Link>
+          ))}
           {isAuthenticated && isOrganizerAccount ? (
             <Link href="/dashboard" className={authButtonClassName}>
               Dashboard

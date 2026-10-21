@@ -5,10 +5,6 @@
       "schedule": "0 7 * * 1"
     },
     {
-      "path": "/api/cron/ensure-recurring-events",
-      "schedule": "15 5 * * *"
-    },
-    {
       "path": "/api/cron/expire-advertising",
       "schedule": "30 4 * * *"
     }
@@ -21,7 +17,8 @@
       "feat/learning-hero-20261013": false,
       "feat/home-learning-carousel-20261013": false,
       "fix/learning-carousel-intro-link-20261013": false,
-      "fix/home-learning-duplicates-20261013": false
+      "fix/home-learning-duplicates-20261013": false,
+      "revision/homepage-learning-handoff-20261021": false
     }
   }
 }

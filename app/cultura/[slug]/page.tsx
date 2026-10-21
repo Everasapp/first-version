@@ -14,6 +14,7 @@ import {
   faqPageSchema,
 } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
+import { findEditorialLearningPath } from "@/src/lib/editorial-learning-paths";
 
 type CulturaArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -75,7 +76,8 @@ export default async function CulturaArticlePage({
     Promise<Awaited<ReturnType<typeof loadFilteredPublishedEvents>>>
   > = [];
 
-  if (article.relatedEventSlugs && article.relatedEventSlugs.length > 0) {
+  const learningPath = findEditorialLearningPath(article.path);
+  if (!learningPath && article.relatedEventSlugs && article.relatedEventSlugs.length > 0) {
     eventQueries.push(
       loadFilteredPublishedEvents({
         slugs: article.relatedEventSlugs,
@@ -84,7 +86,7 @@ export default async function CulturaArticlePage({
     );
   }
 
-  for (const categorySlug of article.relatedCategorySlugs ?? []) {
+  for (const categorySlug of learningPath ? [] : article.relatedCategorySlugs ?? []) {
     eventQueries.push(loadFilteredPublishedEvents({ categorySlug }));
   }
 
