@@ -35,7 +35,7 @@ export function matchesLearningSeoPage(event: {
   learningTopic?: string;
   categories?: string[];
   category?: string;
-  isFree?: boolean;
+  isFree?: boolean | null;
 }, page: LearningSeoPage) {
   if (page.city && event.municipality?.toLocaleLowerCase("it") !== page.city.toLocaleLowerCase("it")) return false;
   if (page.freeOnly && !event.isFree) return false;
