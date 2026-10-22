@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { preload } from "react-dom";
 
+import { learningDisciplines } from "@/src/data/learning-disciplines";
+
 import { LEARNING_PATH } from "@/src/lib/learning-courses";
 
 const HERO_IMAGE = "/images/learning/imparare-sardegna-hero.webp";
@@ -61,9 +63,45 @@ export default function Hero() {
           method="get"
           role="search"
           aria-label="Cerca nel catalogo corsi"
-          className="mt-6 grid max-w-5xl gap-3 rounded-2xl bg-white p-4 text-slate-900 sm:grid-cols-2 lg:grid-cols-[2fr_1.25fr_1.25fr_auto]"
+          className="mt-6 grid max-w-5xl gap-3 rounded-2xl bg-white p-4 text-slate-900 sm:grid-cols-2 lg:grid-cols-[1.25fr_1.25fr_1.6fr_2fr_auto]"
         >
-          <label className="text-sm font-semibold">
+          <label className="min-w-0 text-sm font-semibold">
+            Zona
+            <select
+              name="area"
+              defaultValue=""
+              className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+            >
+              <option value="">Tutte le zone</option>
+              <option value="nord-sardegna">Nord Sardegna</option>
+              <option value="centro-sardegna">Centro Sardegna</option>
+              <option value="sud-sardegna">Sud Sardegna</option>
+            </select>
+          </label>
+          <label className="min-w-0 text-sm font-semibold">
+            Comune
+            <input
+              name="city"
+              placeholder="Es. Sassari"
+              className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+            />
+          </label>
+          <label className="min-w-0 text-sm font-semibold">
+            Disciplina
+            <select
+              name="disciplina"
+              defaultValue=""
+              className="mt-2 min-h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+            >
+              <option value="">Tutte le discipline</option>
+              {learningDisciplines.map((discipline) => (
+                <option key={discipline.slug} value={discipline.slug}>
+                  {discipline.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="min-w-0 text-sm font-semibold">
             Cosa vuoi imparare?
             <input
               type="search"
@@ -72,30 +110,9 @@ export default function Hero() {
               className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
             />
           </label>
-          <label className="text-sm font-semibold">
-            Comune
-            <input
-              name="city"
-              placeholder="Es. Sassari"
-              className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
-            />
-          </label>
-          <label className="text-sm font-semibold">
-            Zona
-            <select
-              name="area"
-              defaultValue=""
-              className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
-            >
-              <option value="">Tutta la Sardegna</option>
-              <option value="nord-sardegna">Nord Sardegna</option>
-              <option value="centro-sardegna">Centro Sardegna</option>
-              <option value="sud-sardegna">Sud Sardegna</option>
-            </select>
-          </label>
           <button
             type="submit"
-            className="min-h-11 self-end rounded-xl bg-[#075EAE] px-5 py-2 text-sm font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
+            className="min-h-11 self-end rounded-xl bg-[#075EAE] px-5 py-2 text-sm font-bold text-white hover:bg-[#064a8a] sm:col-span-2 lg:col-span-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
           >
             Cerca corsi
           </button>
