@@ -17,9 +17,14 @@ describe("upload request limits", () => {
     expect(validateBannerSelection(Array.from({ length: 4 }, () => ({ size: 1 })))).toBeTruthy();
   });
   it("roundtrips a valid multipart request at the photo limit, preserving file and fields", async () => {
-    const body = await createUploadBody(formWithFile(MAX_BANNERS_TOTAL_BYTES));
-    expect(body.size).toBeLessThan(MAX_UPLOAD_REQUEST_BYTES);
-    const request = new Request("https://example.test/upload", { method: "POST", body });
+    const upload = await createUploadBody(formWithFile(MAX_BANNERS_TOTAL_BYTES));
+    expect(upload.body.size).toBeLessThan(MAX_UPLOAD_REQUEST_BYTES);
+    expect(upload.contentType).toMatch(/boundary=/);
+    const request = new Request("https://example.test/upload", {
+      method: "POST",
+      body: upload.body,
+      headers: { "content-type": upload.contentType },
+    });
     const received = await readUploadFormData(request);
     expect(received.get("company_name")).toBe("Attività di prova");
     expect((received.get("banner") as File).size).toBe(MAX_BANNERS_TOTAL_BYTES);

@@ -84,9 +84,11 @@ export default function AdvertisingRequestForm({
         formData.set("website_url", websiteInput.trim());
       }
 
+      const upload = await createUploadBody(formData);
       const response = await fetch("/api/advertising/orders", {
         method: "POST",
-        body: await createUploadBody(formData),
+        body: upload.body,
+        headers: { "content-type": upload.contentType },
       });
 
       const data = (await response.json()) as {
