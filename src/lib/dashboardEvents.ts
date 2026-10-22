@@ -1,3 +1,5 @@
+import { isPublicEventExpired } from "@/src/lib/eventActive";
+
 export type DashboardFilter = "pubblicati" | "bozze" | "scaduti";
 
 export type DashboardEventStatus =
@@ -10,6 +12,7 @@ type EventForBucket = {
   status: DashboardEventStatus;
   start_at: string;
   end_at?: string | null;
+  slug?: string | null;
 };
 
 type EventForSearch = {
@@ -22,8 +25,9 @@ type EventForSearch = {
 const ROME_TZ = "Europe/Rome";
 
 export function isEventExpired(event: EventForBucket, now = Date.now()) {
-  const reference = new Date(event.end_at ?? event.start_at).getTime();
-  return Number.isFinite(reference) && reference < now;
+  return isPublicEventExpired(event.start_at, event.end_at, new Date(now), {
+    slug: event.slug,
+  });
 }
 
 export function getEventBucket(

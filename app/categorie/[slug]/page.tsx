@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
+import { isLearningDiscipline } from "@/src/data/learning-disciplines";
 import { allCategories as categories } from "@/src/data/categories";
 
 type CategorySlugPageProps = {
@@ -15,7 +16,7 @@ export default async function CategorySlugPage({
   const { slug } = await params;
   const category = categories.find((item) => item.slug === slug);
 
-  if (!category) {
+  if (!category || !isLearningDiscipline(category.slug)) {
     notFound();
   }
 

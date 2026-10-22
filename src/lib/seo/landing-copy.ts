@@ -304,7 +304,6 @@ export function buildDateLandingLinks(
     { href: "/eventi-sardegna", label: "Calendario eventi in Sardegna" },
     { href: "/eventi-sardegna/sagre", label: "Sagre in Sardegna" },
     { href: "/eventi", label: "Cerca e filtra tutti gli eventi" },
-    { href: "/eventi/musica-concerti", label: "Concerti e spettacoli" },
   ];
 
   return { quickLinks, relatedLinks };

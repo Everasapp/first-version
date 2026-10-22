@@ -3,8 +3,8 @@ import Link from "next/link";
 type ExpiredEventNoticeProps = {
   municipality: string;
   cityPath: string;
-  categoryLabel: string;
-  categoryPath: string;
+  categoryLabel?: string | null;
+  categoryPath?: string | null;
   nextEdition?: {
     slug: string;
     title: string;
@@ -19,9 +19,11 @@ export default function ExpiredEventNotice({
   categoryPath,
   nextEdition,
 }: ExpiredEventNoticeProps) {
-  const categoryCta = /sardegna/i.test(categoryLabel)
-    ? categoryLabel
-    : `${categoryLabel} in Sardegna`;
+  const categoryCta = categoryLabel
+    ? /sardegna/i.test(categoryLabel)
+      ? categoryLabel
+      : `${categoryLabel} in Sardegna`
+    : null;
 
   return (
     <section
@@ -29,18 +31,17 @@ export default function ExpiredEventNotice({
       className="mb-8 rounded-3xl border border-amber-200 bg-amber-50 p-6 sm:p-7"
     >
       <p className="text-xs font-bold uppercase tracking-[0.16em] text-amber-800">
-        Edizione conclusa
+        Evento concluso
       </p>
       <h2
         id="expired-event-title"
         className="mt-2 text-2xl font-black text-slate-900"
       >
-        Questo evento è terminato
+        Evento concluso
       </h2>
       <p className="mt-3 max-w-3xl leading-relaxed text-slate-700">
-        Conserviamo online date, programma e informazioni di questa edizione.
-        Per scegliere cosa fare ora, consulta gli appuntamenti aggiornati a{" "}
-        {municipality} o nella stessa categoria.
+        Le informazioni originali di questa edizione restano su questa pagina:
+        date, programma e luogo non vengono sostituiti.
       </p>
 
       {nextEdition ? (
@@ -68,14 +69,16 @@ export default function ExpiredEventNotice({
               Eventi attuali a {municipality}
             </Link>
           </li>
-          <li>
-            <Link
-              href={categoryPath}
-              className="inline-flex min-h-11 items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE] hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#075EAE] focus-visible:ring-offset-2"
-            >
-              {categoryCta}
-            </Link>
-          </li>
+          {categoryPath && categoryCta ? (
+            <li>
+              <Link
+                href={categoryPath}
+                className="inline-flex min-h-11 items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE] hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#075EAE] focus-visible:ring-offset-2"
+              >
+                {categoryCta}
+              </Link>
+            </li>
+          ) : null}
         </ul>
       </nav>
     </section>

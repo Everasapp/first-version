@@ -9,7 +9,12 @@ import { CULTURE_TOWNS, isEditorialCultureTown } from "@/src/lib/seo/cultura-tow
 import { CULTURE_AREAS } from "@/src/lib/seo/cultura-areas";
 import { PUBLISHED_EVENTS_CACHE_SECONDS, PUBLISHED_EVENTS_CACHE_TAG } from "@/src/lib/seo/published-events-cache";
 
-/** Refresh the sitemap response. Rows stay on the existing published-events cache. */
+/**
+ * Course sitemap only. A published card outside the catalog keeps its canonical
+ * URL. Concluded cards are noindex, so they stay out. Still-open legacy cards
+ * are not added here: that would read every published row.
+ * Refresh uses the existing published-events cache window.
+ */
 export const revalidate = 900;
 
 type LearningSitemapRow = {

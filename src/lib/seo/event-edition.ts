@@ -77,7 +77,7 @@ export function findNextEventEdition(
           eventEditionTitleKey(candidate.title) !== currentKey ||
           !sameMunicipality(candidate.municipality, current.municipality) ||
           !sharesCategory(current, candidate) ||
-          !isPublicEventActive(candidate.start_at, candidate.end_at, now)
+          !isPublicEventActive(candidate.start_at, candidate.end_at, now, { slug: candidate.slug })
         ) {
           return false;
         }

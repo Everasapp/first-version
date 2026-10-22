@@ -269,8 +269,9 @@ export function eventSeoDescription(
 export function eventDetailRobots(
   startAt: string,
   endAt: string | null | undefined,
+  listing?: { slug?: string | null },
 ): { index: false; follow: true } | undefined {
-  return isPublicEventExpired(startAt, endAt)
+  return isPublicEventExpired(startAt, endAt, new Date(), listing)
     ? { index: false, follow: true }
     : undefined;
 }

@@ -117,7 +117,7 @@ export function splitOrganizerEvents(
 
   for (const event of events) {
     const card = toOrganizerEventCard(event, favoriteIds);
-    if (isPublicEventActive(event.start_at, event.end_at, now)) {
+    if (isPublicEventActive(event.start_at, event.end_at, now, { slug: event.slug })) {
       upcoming.push(card);
     } else {
       past.push(card);

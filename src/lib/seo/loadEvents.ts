@@ -340,7 +340,7 @@ export const loadFilteredPublishedEvents = cache(
         if (!isLearningEvent(event)) return false;
         if (
           !filters.includeExpired &&
-          !isPublicEventActive(event.start_at, event.end_at, now)
+          !isPublicEventActive(event.start_at, event.end_at, now, { slug: event.slug })
         ) {
           return false;
         }

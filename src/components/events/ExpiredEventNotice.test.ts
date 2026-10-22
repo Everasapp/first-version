@@ -8,7 +8,7 @@ const BASE_PROPS = {
   municipality: "Sassari",
   cityPath: "/eventi/sassari",
   categoryLabel: "Musica e spettacoli",
-  categoryPath: "/eventi/musica-concerti",
+  categoryPath: null,
 };
 
 describe("ExpiredEventNotice", () => {
@@ -17,11 +17,11 @@ describe("ExpiredEventNotice", () => {
       createElement(ExpiredEventNotice, BASE_PROPS),
     );
 
-    expect(html).toContain("Questo evento è terminato");
+    expect(html).toContain("Evento concluso");
+    expect(html).toContain("informazioni originali");
     expect(html).toContain('href="/eventi/sassari"');
     expect(html).toContain("Eventi attuali a Sassari");
-    expect(html).toContain('href="/eventi/musica-concerti"');
-    expect(html).toContain("Musica e spettacoli in Sardegna");
+    expect(html).not.toContain('href="/eventi/musica-concerti"');
     expect(html).not.toContain("Nuova edizione disponibile");
   });
 
@@ -47,6 +47,7 @@ describe("ExpiredEventNotice", () => {
       createElement(ExpiredEventNotice, {
         ...BASE_PROPS,
         categoryLabel: "Concerti in Sardegna",
+        categoryPath: "/eventi/musica-concerti",
       }),
     );
 
