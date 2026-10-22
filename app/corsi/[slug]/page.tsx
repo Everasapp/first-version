@@ -55,7 +55,7 @@ export default async function LearningSeoLanding({ params }: Props) {
         <div className="mt-6 max-w-3xl rounded-xl border border-blue-100 bg-white p-5">
           <h2 className="text-lg font-bold text-slate-900">Prima di iscriverti</h2>
           <p className="mt-2 leading-relaxed text-slate-700">{page.advice}</p>
-          <p className="mt-2 text-sm text-slate-600">Date, requisiti, prezzi e disponibilità possono cambiare: confermali sempre con l'organizzatore.</p>
+          <p className="mt-2 text-sm text-slate-600">Date, requisiti, prezzi e disponibilità possono cambiare: confermali sempre con l’organizzatore.</p>
         </div>
         <section className="mt-12" aria-labelledby="courses-list-title">
           <h2 id="courses-list-title" className="text-2xl font-bold text-slate-900">Corsi disponibili</h2>
