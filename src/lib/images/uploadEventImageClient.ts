@@ -17,9 +17,11 @@ export async function uploadEventImage(
   body.append("file", file);
   body.append("slug", options.slug);
 
+  const upload = await createUploadBody(body);
   const response = await fetch("/api/events/image/upload", {
     method: "POST",
-    body: await createUploadBody(body),
+    body: upload.body,
+    headers: { "content-type": upload.contentType },
   });
 
   const payload = (await response.json().catch(() => null)) as

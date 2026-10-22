@@ -87,6 +87,8 @@ type EditEventFormProps = {
   event: EditableEvent;
   canAssignOrganizer: boolean;
   accountOrganizerName: string;
+  /** Admin editing a card they do not own. The server route checks the role again. */
+  adminSave?: boolean;
 };
 
 function toDateInputValue(iso: string | null | undefined) {
@@ -136,6 +138,7 @@ export default function EditEventForm({
   event,
   canAssignOrganizer,
   accountOrganizerName,
+  adminSave = false,
 }: EditEventFormProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -371,53 +374,79 @@ export default function EditEventForm({
         ? normalizeYoutubeUrl(youtubeUrl)
         : null;
 
-      const { data: updatedEvent, error: updateError } = await supabase
-        .from("events")
-        .update({
-          title: title.trim(),
-          description: normalizeEventDescription(description),
-          category: normalizeEventCategories(categorySlugs)[0],
-          categories: normalizeEventCategories(categorySlugs),
-          subcategory: learningTopic.trim() || null,
-          province: selectedCity?.province ?? null,
-          municipality: city,
-          location_name: venue.trim(),
-          address: venue.trim(),
-          start_at: startAt,
-          end_at: endAt,
-          schedule_mode: scheduleMode,
-          image_url: nextImageUrl,
-          is_free: pricing === "free",
-          price_from: numericPrice,
-          price: numericPrice ?? 0,
-          ticket_url: normalizedTicketUrl,
-          youtube_url: normalizedYoutubeUrl,
-          organizer_display_name: canAssignOrganizer
-            ? organizer.trim() || accountOrganizerName
-            : accountOrganizerName,
-          organizer_directory_id: canAssignOrganizer
-            ? organizerDirectoryId
-            : null,
-          updated_at: new Date().toISOString(),
-          ...(publicSlug !== event.slug ? { slug: publicSlug } : {}),
-          ...(shouldPublish ? { status: "published" as const } : {}),
-        })
-        .eq("id", event.id)
-        .eq("organizer_id", user.id)
-        .select("id")
-        .maybeSingle();
+      const changes = {
+        title: title.trim(),
+        description: normalizeEventDescription(description),
+        category: normalizeEventCategories(categorySlugs)[0],
+        categories: normalizeEventCategories(categorySlugs),
+        subcategory: learningTopic.trim() || null,
+        province: selectedCity?.province ?? null,
+        municipality: city,
+        location_name: venue.trim(),
+        address: venue.trim(),
+        start_at: startAt,
+        end_at: endAt,
+        schedule_mode: scheduleMode,
+        image_url: nextImageUrl,
+        is_free: pricing === "free",
+        price_from: numericPrice,
+        price: numericPrice ?? 0,
+        ticket_url: normalizedTicketUrl,
+        youtube_url: normalizedYoutubeUrl,
+        organizer_display_name: canAssignOrganizer
+          ? organizer.trim() || accountOrganizerName
+          : accountOrganizerName,
+        organizer_directory_id: canAssignOrganizer
+          ? organizerDirectoryId
+          : null,
+        updated_at: new Date().toISOString(),
+        ...(publicSlug !== event.slug ? { slug: publicSlug } : {}),
+        ...(shouldPublish ? { status: "published" as const } : {}),
+      };
 
-      if (updateError) {
-        if (uploadedPath) {
-          await supabase.storage.from("event-images").remove([uploadedPath]);
+      let saved = false;
+      if (adminSave) {
+        const response = await fetch(`/api/events/${event.id}/admin-update`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(changes),
+        });
+        const payload = (await response.json().catch(() => null)) as
+          | { id?: string; error?: string }
+          | null;
+        if (!response.ok || !payload?.id) {
+          if (uploadedPath) {
+            await supabase.storage.from("event-images").remove([uploadedPath]);
+          }
+          throw new Error(
+            payload?.error ||
+              "Salvataggio non riuscito: l’evento non è stato aggiornato.",
+          );
+        }
+        saved = true;
+      } else {
+        const { data: updatedEvent, error: updateError } = await supabase
+          .from("events")
+          .update(changes)
+          .eq("id", event.id)
+          .eq("organizer_id", user.id)
+          .select("id")
+          .maybeSingle();
+
+        if (updateError) {
+          if (uploadedPath) {
+            await supabase.storage.from("event-images").remove([uploadedPath]);
+          }
+
+          throw new Error(
+            `Salvataggio non riuscito: ${updateError.message}`,
+          );
         }
 
-        throw new Error(
-          `Salvataggio non riuscito: ${updateError.message}`,
-        );
+        saved = Boolean(updatedEvent);
       }
 
-      if (!updatedEvent) {
+      if (!saved) {
         if (uploadedPath) {
           await supabase.storage.from("event-images").remove([uploadedPath]);
         }

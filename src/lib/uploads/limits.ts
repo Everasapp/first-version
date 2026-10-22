@@ -25,14 +25,25 @@ export function validateBannerSelection(files: readonly { size: number }[]) {
   return null;
 }
 
+export type PreparedUpload = {
+  body: Blob;
+  /** Includes the multipart boundary. Must be sent explicitly: some browsers drop it from blob.type. */
+  contentType: string;
+};
+
 /** Serialize once so the checked size includes fields and multipart overhead. */
-export async function createUploadBody(formData: FormData): Promise<Blob> {
+export async function createUploadBody(formData: FormData): Promise<PreparedUpload> {
   let size = 0;
   for (const value of formData.values()) {
     size += typeof value === "string" ? new TextEncoder().encode(value).length : value.size;
     if (size > MAX_UPLOAD_REQUEST_BYTES) throw new UploadSizeError();
   }
-  const body = await new Response(formData).blob();
+  const encoded = new Response(formData);
+  const contentType = encoded.headers.get("content-type") ?? "";
+  if (!/boundary=/i.test(contentType)) {
+    throw new Error("Richiesta non valida.");
+  }
+  const body = await encoded.blob();
   if (body.size > MAX_UPLOAD_REQUEST_BYTES) throw new UploadSizeError();
-  return body;
+  return { body, contentType };
 }

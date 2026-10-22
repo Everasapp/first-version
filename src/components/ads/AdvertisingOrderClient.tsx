@@ -57,9 +57,14 @@ export default function AdvertisingOrderClient({
       for (const file of Array.from(files)) {
         formData.append("banner", file);
       }
+      const upload = await createUploadBody(formData);
       const response = await fetch(
         `/api/advertising/orders/${order.access_token}/replace-banner`,
-        { method: "POST", body: await createUploadBody(formData) },
+        {
+          method: "POST",
+          body: upload.body,
+          headers: { "content-type": upload.contentType },
+        },
       );
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
