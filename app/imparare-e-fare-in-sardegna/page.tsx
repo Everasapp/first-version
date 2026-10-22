@@ -17,7 +17,7 @@ const ogImage = { url: absoluteUrl("/images/learning/imparare-sardegna-og.jpg"),
 
 const description = "Formazione per il lavoro oppure corsi, workshop ed esperienze per arricchirti: trova il tuo percorso in Sardegna e confronta programmi, costi e requisiti.";
 
-export const metadata: Metadata = {
+const pageMetadata: Metadata = {
   title, description, alternates: { canonical: LEARNING_PATH },
   openGraph: { title: `${title} | EVERAS`, description, url: LEARNING_PATH, type: "website", images: [ogImage] },
   twitter: { card: "summary_large_image", title: `${title} | EVERAS`, description, images: [ogImage.url] },
@@ -32,48 +32,101 @@ const areas: Record<string, string> = {
   "sud-sardegna": "Sud Sardegna",
 };
 
-export default async function LearningPage({ searchParams }: LearningPageProps) {
-  const params = await searchParams;
-  const selectedDiscipline = learningDisciplines.find((item) => item.slug === params.disciplina);
+function readLearningSearch(params: {
+  area?: string;
+  city?: string;
+  q?: string;
+  disciplina?: string;
+}) {
+  const selectedDiscipline = learningDisciplines.find((item) => item.slug === params.disciplina) ?? null;
   const selectedArea = typeof params.area === "string" && areas[params.area] ? params.area : "";
   const selectedCity = typeof params.city === "string" ? params.city.trim() : "";
   const query = typeof params.q === "string" ? params.q.trim() : "";
-  const { events: allEvents, error } = await loadFilteredPublishedEvents({ learningOnly: true });
-  // Filter the same cached inventory; no new database request or city cache variant.
-  const events = allEvents.filter((event) =>
-    (!selectedDiscipline || event.categories?.includes(selectedDiscipline.name) || event.category === selectedDiscipline.name) &&
-    (!selectedArea || event.area === areas[selectedArea]) &&
-    (!selectedCity || event.municipality?.toLocaleLowerCase("it") === selectedCity.toLocaleLowerCase("it")) &&
-    (!query || `${event.title} ${event.municipality ?? ""} ${event.location}`.toLocaleLowerCase("it").includes(query.toLocaleLowerCase("it"))),
-  );
-  const isFilteredSearch = Boolean(selectedDiscipline || selectedArea || selectedCity || query);
+  return {
+    selectedDiscipline,
+    selectedArea,
+    selectedCity,
+    query,
+    isFilteredSearch: Boolean(selectedDiscipline || selectedArea || selectedCity || query),
+  };
+}
+
+export async function generateMetadata({ searchParams }: LearningPageProps): Promise<Metadata> {
+  const search = readLearningSearch(await searchParams);
+  if (!search.isFilteredSearch) return pageMetadata;
+  return { ...pageMetadata, robots: { index: false, follow: true } };
+}
+
+export default async function LearningPage({ searchParams }: LearningPageProps) {
+  const search = readLearningSearch(await searchParams);
+  const { selectedDiscipline, selectedArea, selectedCity, query, isFilteredSearch } = search;
+  const { events: matchedEvents, error } = await loadFilteredPublishedEvents({
+    learningOnly: true,
+    categorySlug: selectedDiscipline?.slug,
+    areaLabel: selectedArea ? areas[selectedArea] : undefined,
+    city: selectedCity || undefined,
+  });
+  const needle = query.toLocaleLowerCase("it");
+  const events = needle
+    ? matchedEvents.filter((event) =>
+        `${event.title} ${event.municipality ?? ""} ${event.location}`
+          .toLocaleLowerCase("it")
+          .includes(needle),
+      )
+    : matchedEvents;
   if (isFilteredSearch) {
     const searchTitle = selectedDiscipline
       ? `Corsi di ${selectedDiscipline.name.toLocaleLowerCase("it")}`
       : "Risultati della ricerca corsi";
+    const context = [
+      selectedCity,
+      selectedArea ? areas[selectedArea] : "",
+      query ? `Ricerca: ${query}` : "",
+    ].filter(Boolean).join(" · ");
     return <>
       <Header />
       <main className="min-h-screen bg-slate-50 pb-16">
         <div className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
-          <nav aria-label="Percorso" className="mb-5 text-sm text-slate-600">
-            <Link href="/" className="underline">Home</Link> / <Link href={LEARNING_PATH} className="underline">Corsi e formazione</Link> / Risultati
-          </nav>
           <h1 className="text-3xl font-black text-slate-900 sm:text-4xl">{searchTitle}</h1>
           <p className="mt-3 text-slate-600">
             {error ? "Il catalogo non è disponibile in questo momento." : `${events.length} ${events.length === 1 ? "corso trovato" : "corsi trovati"}`}
-            {selectedCity ? ` · ${selectedCity}` : selectedArea ? ` · ${areas[selectedArea]}` : ""}
-            {query ? ` · Ricerca: ${query}` : ""}
+            {context ? ` · ${context}` : ""}
           </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link href={`${LEARNING_PATH}#ricerca`} className="rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white hover:bg-[#064a8a]">Modifica la ricerca</Link>
-            <Link href={LEARNING_PATH} className="rounded-full border border-[#075EAE] bg-white px-5 py-3 text-sm font-bold text-[#075EAE]">Tutti i corsi</Link>
-          </div>
-          {error ? <p role="alert" className="mt-8 rounded-xl border border-amber-200 bg-white p-5">Riprova tra poco.</p>
+          {error ? <p role="alert" className="mt-6 rounded-xl border border-amber-200 bg-white p-5">Riprova tra poco.</p>
             : events.length > 0
-              ? <section aria-label="Corsi trovati" className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              ? <section aria-label="Corsi trovati" className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {events.map((event) => <EventCard key={event.eventId} event={event} />)}
                 </section>
-              : <p className="mt-8 rounded-xl border border-slate-200 bg-white p-6 text-slate-700">Non ci sono corsi che corrispondono a questi filtri. Prova un'altra disciplina o una zona diversa.</p>}
+              : <p className="mt-6 rounded-xl border border-slate-200 bg-white p-6 text-slate-700">Non ci sono corsi che corrispondono a questi filtri. Prova un’altra disciplina o una zona diversa.</p>}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <details className="w-full" open={events.length === 0}>
+              <summary className="inline-flex cursor-pointer list-none rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Modifica la ricerca</summary>
+              <form action={LEARNING_PATH} method="get" className="mt-4 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-5">
+                <label className="text-sm font-semibold text-slate-900">Zona
+                  <select name="area" defaultValue={selectedArea} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
+                    <option value="">Tutte le zone</option>
+                    {Object.entries(areas).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </label>
+                <label className="text-sm font-semibold text-slate-900">Comune
+                  <input name="city" defaultValue={selectedCity} placeholder="Es. Sassari" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                </label>
+                <label className="text-sm font-semibold text-slate-900">Disciplina
+                  <select name="disciplina" defaultValue={selectedDiscipline?.slug ?? ""} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
+                    <option value="">Tutte le discipline</option>
+                    {learningDisciplines.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+                  </select>
+                </label>
+                <label className="text-sm font-semibold text-slate-900">Cosa vuoi imparare?
+                  <input name="q" defaultValue={query} placeholder="Es. ceramica o inglese" className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 px-3 py-2" />
+                </label>
+                <div className="flex items-end">
+                  <button type="submit" className="min-h-11 rounded-xl bg-[#075EAE] px-5 py-2 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Cerca corsi</button>
+                </div>
+              </form>
+            </details>
+            <Link href={LEARNING_PATH} className="rounded-full border border-[#075EAE] bg-white px-5 py-3 text-sm font-bold text-[#075EAE]">Tutti i corsi</Link>
+          </div>
         </div>
       </main>
     </>;
