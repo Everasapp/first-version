@@ -16,14 +16,19 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 export async function POST(request: Request) {
-  if (WEEKLY_NEWSLETTER_PAUSED) {
+  const body = (await request.json().catch(() => ({}))) as {
+    dryRun?: boolean;
+    testEmail?: string | null;
+  };
+  const dryRun = body.dryRun === true;
+  if (WEEKLY_NEWSLETTER_PAUSED && !dryRun) {
     return NextResponse.json(
       { error: WEEKLY_NEWSLETTER_PAUSED_MESSAGE },
       { status: 503 },
     );
   }
 
-  if (!realEmailDeliveryAllowed()) {
+  if (!dryRun && !realEmailDeliveryAllowed()) {
     return NextResponse.json(
       { error: REAL_EMAIL_DISABLED_MESSAGE },
       { status: 503 },
@@ -33,14 +38,9 @@ export async function POST(request: Request) {
   const auth = await getAdminApiContext();
   if (!auth.ok) return auth.response;
 
-  const body = (await request.json().catch(() => ({}))) as {
-    dryRun?: boolean;
-    testEmail?: string | null;
-  };
-
   try {
     const summary = await runWeeklyNewsletter({
-      dryRun: Boolean(body.dryRun),
+      dryRun,
       testEmail: body.testEmail ?? null,
       supabase: auth.supabase,
     });

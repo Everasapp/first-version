@@ -14,6 +14,7 @@ type Row = {
   status: "sending" | "sent" | "skipped" | "failed" | "uncertain";
   idempotencyKey: string;
   claimedAt: number;
+  firstClaimedAt: number;
 };
 
 function memoryClaims(now: () => number) {
@@ -39,20 +40,21 @@ function memoryClaims(now: () => number) {
             status: "sending",
             idempotencyKey: input.idempotencyKey,
             claimedAt: now(),
+            firstClaimedAt: now(),
           });
           return { action: "send", idempotency_key: input.idempotencyKey };
         }
         if (existing.status === "sent" || existing.status === "skipped" || existing.status === "uncertain") {
           return { action: "skip", reason: existing.status };
         }
+        if (now() - existing.firstClaimedAt >= 24 * 60 * 60 * 1000) {
+          existing.status = "uncertain";
+          return { action: "skip", reason: "uncertain" };
+        }
         if (existing.status === "failed") {
           existing.status = "sending";
           existing.claimedAt = now();
           return { action: "send", idempotency_key: existing.idempotencyKey };
-        }
-        if (now() - existing.claimedAt >= 24 * 60 * 60 * 1000) {
-          existing.status = "uncertain";
-          return { action: "skip", reason: "uncertain" };
         }
         if (now() - existing.claimedAt >= 10 * 60 * 1000) {
           existing.claimedAt = now();
@@ -165,6 +167,7 @@ describe("weekly newsletter delivery", () => {
           status: "sending",
           idempotencyKey: "newsletter/2026-10-19/profile:user-1",
           claimedAt: started,
+          firstClaimedAt: started,
         });
         return later.claim({
           recipientKey: "profile:user-1",
@@ -187,6 +190,7 @@ describe("weekly newsletter delivery", () => {
       status: "sending",
       idempotencyKey: "newsletter/2026-10-19/profile:user-1",
       claimedAt: started,
+      firstClaimedAt: started,
     });
     const send = vi.fn(async () => "sent" as const);
 
@@ -203,6 +207,38 @@ describe("weekly newsletter delivery", () => {
     expect(send).not.toHaveBeenCalled();
     expect(store.rows.get("profile:user-1|2026-10-19")?.status).toBe("uncertain");
   });
+
+  it.each(["sending", "failed"] as const)(
+    "does not extend the provider window after a retry in status %s",
+    async (status) => {
+      const started = Date.parse("2026-10-21T08:00:00Z");
+      let clock = started + 23 * 60 * 60 * 1000;
+      const store = memoryClaims(() => clock);
+      const rowKey = "profile:user-1|2026-10-19";
+      store.rows.set(rowKey, {
+        status,
+        idempotencyKey: "newsletter/2026-10-19/profile:user-1",
+        claimedAt: started,
+        firstClaimedAt: started,
+      });
+      const input = {
+        recipientKey: "profile:user-1",
+        weekKey: "2026-10-19",
+        idempotencyKey: "newsletter/2026-10-19/profile:user-1",
+      };
+      expect((await store.claim(input)).action).toBe("send");
+      expect(store.rows.get(rowKey)?.firstClaimedAt).toBe(started);
+      expect(store.rows.get(rowKey)?.claimedAt).toBe(clock);
+      // The last attempt was only two hours ago, but the first was 25h ago.
+      // Even a failed post-send database write must not make this retryable.
+      if (status === "failed") {
+        await store.complete({ ...input, status: "failed" });
+      }
+      clock = started + 25 * 60 * 60 * 1000;
+      expect(await store.claim(input)).toEqual({ action: "skip", reason: "uncertain" });
+      expect(store.rows.get(rowKey)?.firstClaimedAt).toBe(started);
+    },
+  );
 
   it("leaves the rest of a week for the next limited batch", async () => {
     const store = memoryClaims(() => Date.now());

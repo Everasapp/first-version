@@ -29,7 +29,7 @@ export function formatNewsletterCategoryLabels(
   value: string | null | undefined,
 ): string {
   const slugs = parseNewsletterCategories(value);
-  if (slugs.length === 0) return "Tutte le categorie";
+  if (slugs.length === 0) return "Tutte le discipline";
   const labels = slugs.map(
     (slug) => categories.find((category) => category.slug === slug)?.name ?? slug,
   );

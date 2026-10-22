@@ -5,7 +5,7 @@ import SendWeeklyNewsletterButton from "@/src/components/admin/SendWeeklyNewslet
 import { requireAdmin } from "@/src/lib/auth";
 import { getCategoryLabel } from "@/src/lib/newsletter";
 import {
-  loadNewsletterSubscribers,
+  loadNewsletterRecipients,
   loadWeekEvents,
   pickEventsForGeo,
 } from "@/src/lib/newsletter-week";
@@ -34,7 +34,7 @@ export default async function AdminNewsletterPage() {
   let eventsCount = 0;
   let loadError = "";
   let recipientRows: Array<{
-    subscriber: Awaited<ReturnType<typeof loadNewsletterSubscribers>>[number];
+    subscriber: Awaited<ReturnType<typeof loadNewsletterRecipients>>[number];
     geo: ReturnType<typeof resolveGeoPreference>;
     eventsCount: number;
   }> = [];
@@ -42,7 +42,7 @@ export default async function AdminNewsletterPage() {
   try {
     const [{ week, events }, subscribers] = await Promise.all([
       loadWeekEvents(new Date(), supabase),
-      loadNewsletterSubscribers(supabase),
+      loadNewsletterRecipients(supabase),
     ]);
     weekLabel = week.label;
     eventsCount = events.length;
@@ -67,7 +67,7 @@ export default async function AdminNewsletterPage() {
     loadError =
       error instanceof Error
         ? error.message
-        : "Non riesco a caricare eventi o iscritti.";
+        : "Non riesco a caricare corsi o iscritti.";
   }
 
   return (
@@ -85,7 +85,7 @@ export default async function AdminNewsletterPage() {
             Newsletter settimanale
           </h1>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Eventi del {weekLabel}. Ogni iscritto riceve gli appuntamenti della
+            Selezione del {weekLabel}: corsi in corso o in partenza nelle prossime quattro settimane. Ogni iscritto riceve le proposte della
             sua area (Nord, Centro o Sud), con priorità alla città scelta in
             fase di registrazione. Ogni indirizzo riceve al massimo un invio
             per settimana. Se la registrazione nel database non è ancora
@@ -109,7 +109,7 @@ export default async function AdminNewsletterPage() {
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Eventi in settimana
+            Corsi selezionabili
           </p>
           <p className="mt-2 text-3xl font-black text-slate-900">
             {eventsCount}
@@ -138,8 +138,8 @@ export default async function AdminNewsletterPage() {
             <tr>
               <th className="px-4 py-3 font-semibold">Iscritto</th>
               <th className="px-4 py-3 font-semibold">Zona</th>
-              <th className="px-4 py-3 font-semibold">Categoria</th>
-              <th className="px-4 py-3 font-semibold">Eventi</th>
+              <th className="px-4 py-3 font-semibold">Disciplina</th>
+              <th className="px-4 py-3 font-semibold">Corsi</th>
             </tr>
           </thead>
           <tbody>
@@ -149,7 +149,7 @@ export default async function AdminNewsletterPage() {
                 className="border-b border-slate-100 align-top"
               >
                 <td className="px-4 py-3 font-semibold text-slate-900">
-                  {subscriber.full_name || "Utente"}
+                  {subscriber.full_name || subscriber.email || "Iscritto senza account"}
                 </td>
                 <td className="px-4 py-3 text-slate-700">
                   {geo.city || "—"}

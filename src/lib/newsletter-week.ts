@@ -12,6 +12,7 @@ import {
   sleep,
 } from "@/src/lib/admin/email-campaigns";
 import { isPublicEventActive } from "@/src/lib/eventActive";
+import { parseNewsletterCategories } from "@/src/lib/newsletter-categories";
 import { eventMatchesCategoryFilter } from "@/src/lib/event-categories";
 import { findCityByName } from "@/src/utils/nearby-city";
 import {
@@ -33,6 +34,8 @@ import {
   deliverNewsletterBatch,
   keepFirstNewsletterSnapshot,
   NEWSLETTER_BATCH_LIMIT,
+  isMissingNewsletterStructure,
+  NEWSLETTER_STRUCTURE_MESSAGE,
   newsletterRecipientKey,
   type NewsletterDeliverySource,
 } from "@/src/lib/newsletter-delivery";
@@ -52,7 +55,7 @@ export type NewsletterSubscriber = {
   newsletter_unsub_token: string;
 };
 
-type NewsletterRecipient = NewsletterSubscriber & {
+export type NewsletterRecipient = NewsletterSubscriber & {
   email: string | null;
   emailConfirmed: boolean;
   source: NewsletterDeliverySource;
@@ -68,6 +71,7 @@ type NewsletterRecipientRow = {
   newsletter_unsub_token: string;
   email: string | null;
   email_confirmed: boolean | null;
+  recipient_source: "profile" | "subscriber";
 };
 
 export type NewsletterPreview = {
@@ -91,6 +95,8 @@ export type WeeklyNewsletterSummary = {
   eventsInWeek: number;
   remaining: number;
   errors: Array<{ userId: string; error: string }>;
+  simulated?: number;
+  dryRun?: boolean;
 };
 
 type WeekEventRow = NewsletterEvent & {
@@ -184,10 +190,7 @@ function rankEvent(
   if (sameCity(event.municipality, geo.city)) score += 100;
   if (geo.area && eventArea(event) === geo.area) score += 40;
   if (event.is_featured) score += 12;
-  const preferred = (category ?? "")
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
+  const preferred = parseNewsletterCategories(category);
   if (
     preferred.length > 0 &&
     preferred.some((slug) => eventMatchesCategoryFilter(event, slug))
@@ -203,7 +206,8 @@ export function pickEventsForGeo(
   category: string | null,
 ) {
   const ranked = [...events]
-    .filter((event) => event.slug && !isLikelyDuplicateTitle(event.title))
+    .filter((event) => event.slug && !isLikelyDuplicateTitle(event.title) &&
+      (!geo.area || eventArea(event) === geo.area))
     .sort((a, b) => {
       const scoreDiff = rankEvent(b, geo, category) - rankEvent(a, geo, category);
       if (scoreDiff !== 0) return scoreDiff;
@@ -227,28 +231,32 @@ export function pickEventsForGeo(
 
 export function buildNewsletterSubject(area: GeoArea | null, weekLabel: string) {
   if (area) {
-    return `Cosa fare questa settimana nel ${area} · ${weekLabel}`;
+    return `Corsi e laboratori da scoprire nel ${area} · ${weekLabel}`;
   }
-  return `Cosa fare questa settimana in Sardegna · ${weekLabel}`;
+  return `Corsi e laboratori da scoprire in Sardegna · ${weekLabel}`;
 }
 
 function getClient(supabase?: SupabaseClient) {
   return supabase ?? createAdminClient();
 }
 
-function eventOverlapsWeek(
-  event: Pick<WeekEventRow, "start_at" | "end_at">,
-  weekStart: Date,
-  weekEnd: Date,
-  now: Date,
-) {
-  if (!isPublicEventActive(event.start_at, event.end_at, now)) {
-    return false;
-  }
+export const NEWSLETTER_LOOKAHEAD_DAYS = 28;
 
-  const start = new Date(event.start_at).getTime();
-  const end = event.end_at ? new Date(event.end_at).getTime() : start;
-  return start < weekEnd.getTime() && end >= weekStart.getTime();
+export function newsletterCourseWindow(now = new Date()) {
+  const today = romeYmd(now);
+  return {
+    start: zonedTimeToUtc(today, "00:00:00", ROME_TZ),
+    end: zonedTimeToUtc(addDaysYmd(today, NEWSLETTER_LOOKAHEAD_DAYS), "00:00:00", ROME_TZ),
+  };
+}
+
+export function courseFitsNewsletterWindow(
+  event: Pick<WeekEventRow, "start_at" | "end_at">,
+  now: Date,
+  window = newsletterCourseWindow(now),
+) {
+  return isPublicEventActive(event.start_at, event.end_at, now) &&
+    new Date(event.start_at).getTime() < window.end.getTime();
 }
 
 export async function loadWeekEvents(
@@ -257,6 +265,7 @@ export async function loadWeekEvents(
 ) {
   const week = getCurrentRomeWeekRange(now);
   const client = getClient(supabase);
+  const window = newsletterCourseWindow(now);
 
   const { data, error } = await client
     .from("events")
@@ -265,7 +274,8 @@ export async function loadWeekEvents(
     )
     .eq("status", "published")
     .or(PUBLIC_LEARNING_FILTER)
-    .lt("start_at", week.end.toISOString())
+    .lt("start_at", window.end.toISOString())
+    .or(`end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${window.start.toISOString()})`)
     .order("start_at", { ascending: true });
 
   if (error) {
@@ -273,7 +283,7 @@ export async function loadWeekEvents(
   }
 
   const events = ((data ?? []) as WeekEventRow[]).filter((event) =>
-    isLearningEvent(event) && eventOverlapsWeek(event, week.start, week.end, now),
+    isLearningEvent(event) && courseFitsNewsletterWindow(event, now, window),
   );
 
   return { week, events };
@@ -295,27 +305,6 @@ export async function loadNewsletterSubscribers(supabase?: SupabaseClient) {
   return (data ?? []) as NewsletterSubscriber[];
 }
 
-type EmailOnlySubscriberRow = {
-  id: string;
-  email: string;
-  city: string;
-  category: string;
-  unsub_token: string;
-};
-
-async function loadEmailOnlySubscribers(supabase: SupabaseClient) {
-  const { data, error } = await supabase
-    .from("newsletter_subscribers")
-    .select("id, email, city, category, unsub_token")
-    .eq("opt_in", true);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return (data ?? []) as EmailOnlySubscriberRow[];
-}
-
 function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
   return {
     id: row.id,
@@ -325,108 +314,26 @@ function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
     newsletter_city: row.newsletter_city,
     newsletter_category: row.newsletter_category,
     newsletter_unsub_token: String(row.newsletter_unsub_token ?? ""),
-    email: row.email?.trim() || null,
+    email: row.email?.trim().toLowerCase() || null,
     emailConfirmed: Boolean(row.email_confirmed),
-    source: "profile",
+    source: row.recipient_source,
   };
 }
 
-function dedupeRecipientsByEmail(recipients: NewsletterRecipient[]) {
-  const seen = new Set<string>();
-  const result: NewsletterRecipient[] = [];
-
-  for (const recipient of recipients) {
-    const email = recipient.email?.trim().toLowerCase();
-    if (email) {
-      if (seen.has(email)) continue;
-      seen.add(email);
-    }
-    result.push(recipient);
-  }
-
-  return result;
+/** One database request, including email-only subscribers; no per-user Auth calls. */
+export async function loadNewsletterRecipients(client: SupabaseClient) {
+  const { data, error } = await client.rpc("newsletter_delivery_recipients");
+  if (error) throwNewsletterRpcError(error);
+  return ((data ?? []) as NewsletterRecipientRow[]).map(mapRpcRecipient);
 }
 
-async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
-  recipients: NewsletterRecipient[];
-  writeMode: "rpc" | "admin";
-  writeClient: SupabaseClient;
-}> {
-  if (sessionClient) {
-    const { data, error } = await sessionClient.rpc("admin_newsletter_recipients");
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return {
-      recipients: ((data ?? []) as NewsletterRecipientRow[]).map(mapRpcRecipient),
-      writeMode: "rpc",
-      writeClient: sessionClient,
-    };
-  }
-
-  const admin = tryCreateAdminClient();
-  if (!admin) {
-    throw new Error(
-      "Per l'invio automatico manca SUPABASE_SERVICE_ROLE_KEY su Vercel.",
-    );
-  }
-
-  const [profileSubscribers, emailSubscribers] = await Promise.all([
-    loadNewsletterSubscribers(admin),
-    loadEmailOnlySubscribers(admin),
-  ]);
-
-  const recipients: NewsletterRecipient[] = [];
-  const profileEmails = new Set<string>();
-
-  for (const subscriber of profileSubscribers) {
-    const { data: userData, error: userError } =
-      await admin.auth.admin.getUserById(subscriber.id);
-
-    if (userError) {
-      recipients.push({
-        ...subscriber,
-        email: null,
-        emailConfirmed: false,
-        source: "profile",
-      });
-      continue;
-    }
-
-    const email = userData.user?.email?.trim().toLowerCase() || null;
-    if (email) profileEmails.add(email);
-
-    recipients.push({
-      ...subscriber,
-      email: userData.user?.email ?? null,
-      emailConfirmed: Boolean(userData.user?.email_confirmed_at),
-      source: "profile",
-    });
-  }
-
-  for (const subscriber of emailSubscribers) {
-    const email = subscriber.email.trim().toLowerCase();
-    if (profileEmails.has(email)) continue;
-
-    recipients.push({
-      id: subscriber.id,
-      full_name: null,
-      municipality: subscriber.city,
-      province: null,
-      newsletter_city: subscriber.city,
-      newsletter_category: subscriber.category,
-      newsletter_unsub_token: subscriber.unsub_token,
-      email: subscriber.email,
-      emailConfirmed: true,
-      source: "subscriber",
-    });
-  }
-
+async function loadRecipientsForSend(sessionClient?: SupabaseClient) {
+  const client = sessionClient ?? tryCreateAdminClient();
+  if (!client) throw new Error("Per l'invio automatico manca la chiave server Supabase su Vercel.");
   return {
-    recipients: dedupeRecipientsByEmail(recipients),
-    writeMode: "admin",
-    writeClient: admin,
+    recipients: await loadNewsletterRecipients(client),
+    writeMode: sessionClient ? "rpc" as const : "admin" as const,
+    writeClient: client,
   };
 }
 
@@ -554,7 +461,7 @@ export function composeSubscriberNewsletter({
     subject: buildNewsletterSubject(geo.area, weekLabel),
     html,
     eventsCount,
-    skippedReason: eventsCount === 0 ? "Nessun evento in settimana" : undefined,
+    skippedReason: eventsCount === 0 ? "Nessun corso pertinente nelle prossime quattro settimane" : undefined,
   };
 }
 
@@ -564,24 +471,17 @@ async function sendNewsletterEmail(
   html: string,
   idempotencyKey: string,
 ): Promise<"sent" | "skipped"> {
-  try {
-    await sendCampaignEmailViaResend({
-      to,
-      subject,
-      html,
-      from: CAMPAIGN_FROM_EMAIL,
-      replyTo: CAMPAIGN_REPLY_TO,
-      idempotencyKey,
-    });
-    return "sent";
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "";
-    if (/idempoten/i.test(message)) return "skipped";
-    throw error;
-  }
+  await sendCampaignEmailViaResend({
+    to, subject, html,
+    from: CAMPAIGN_FROM_EMAIL,
+    replyTo: CAMPAIGN_REPLY_TO,
+    idempotencyKey,
+  });
+  return "sent";
 }
 
 function throwNewsletterRpcError(error: { code?: string; message: string }): never {
+  if (isMissingNewsletterStructure(error)) throw new Error(NEWSLETTER_STRUCTURE_MESSAGE);
   const wrapped = new Error(error.message) as Error & { code?: string };
   wrapped.code = error.code;
   throw wrapped;
@@ -620,6 +520,9 @@ async function stageNewsletterBody(
     data && typeof data === "object"
       ? (data as { subject?: unknown; html?: unknown })
       : null;
+  if (typeof record?.subject !== "string" || typeof record?.html !== "string" || !record.subject || !record.html) {
+    throw new Error(NEWSLETTER_STRUCTURE_MESSAGE);
+  }
   return keepFirstNewsletterSnapshot(
     {
       subject: typeof record?.subject === "string" ? record.subject : null,
@@ -636,13 +539,14 @@ async function completeNewsletterDelivery(
     weekKey: string;
     status: "sent" | "skipped" | "failed";
     errorMessage?: string;
+    eventsCount?: number;
   },
 ) {
   const { error } = await client.rpc("complete_newsletter_delivery", {
     p_recipient_key: input.recipientKey,
     p_week_key: input.weekKey,
     p_status: input.status,
-    p_events_count: 0,
+    p_events_count: input.eventsCount ?? 0,
     p_error_message: input.errorMessage ?? null,
   });
   if (error) throwNewsletterRpcError(error);
@@ -653,11 +557,12 @@ export async function runWeeklyNewsletter(options?: {
   testEmail?: string | null;
   supabase?: SupabaseClient;
 }): Promise<WeeklyNewsletterSummary> {
-  if (WEEKLY_NEWSLETTER_PAUSED) {
+  const dryRun = options?.dryRun === true;
+  if (WEEKLY_NEWSLETTER_PAUSED && !dryRun) {
     throw new Error(WEEKLY_NEWSLETTER_PAUSED_MESSAGE);
   }
 
-  if (!realEmailDeliveryAllowed()) {
+  if (!dryRun && !realEmailDeliveryAllowed()) {
     return {
       weekLabel: "",
       subscribers: 0,
@@ -670,7 +575,6 @@ export async function runWeeklyNewsletter(options?: {
     };
   }
 
-  const dryRun = Boolean(options?.dryRun);
   const testEmail = options?.testEmail?.trim().toLowerCase() || null;
   const sessionClient = options?.supabase;
   const { week, events } = await loadWeekEvents(new Date(), sessionClient);
@@ -705,7 +609,8 @@ export async function runWeeklyNewsletter(options?: {
     });
 
     if (dryRun) {
-      summary.sent = 1;
+      summary.dryRun = true;
+      summary.simulated = preview.eventsCount ? 1 : 0;
       return summary;
     }
 
@@ -718,13 +623,13 @@ export async function runWeeklyNewsletter(options?: {
 
     const delivery = await deliverNewsletterBatch({
       weekKey: week.weekKey,
-      recipients: [{ id: testEmail, source: "test" }],
+      recipients: [{ id: testEmail, source: "test", email: testEmail }],
       limit: 1,
       claim: (input) => claimNewsletterDelivery(claimClient, input),
       complete: (input) => completeNewsletterDelivery(claimClient, input),
       perform: async (recipient, idempotencyKey) => {
         const snapshot = await stageNewsletterBody(claimClient, {
-          recipientKey: newsletterRecipientKey(recipient.source, recipient.id),
+          recipientKey: newsletterRecipientKey(recipient.source, recipient.id, recipient.email),
           weekKey: week.weekKey,
           subject: `[TEST] ${preview.subject}`,
           html: preview.html,
@@ -747,6 +652,18 @@ export async function runWeeklyNewsletter(options?: {
   const { recipients, writeMode, writeClient } =
     await loadRecipientsForSend(sessionClient);
   summary.subscribers = recipients.length;
+  if (dryRun) {
+    summary.dryRun = true;
+    summary.simulated = recipients.filter((recipient) => recipient.email &&
+      recipient.emailConfirmed && composeSubscriberNewsletter({
+        subscriber: recipient, events, weekLabel: week.label, siteUrl,
+      }).eventsCount > 0).length;
+    summary.skipped = recipients.length - summary.simulated;
+    return summary;
+  }
+  const recipientByKey = new Map(recipients.map((recipient) => [
+    newsletterRecipientKey(recipient.source, recipient.id, recipient.email), recipient,
+  ]));
 
   const delivery = await deliverNewsletterBatch({
     weekKey: week.weekKey,
@@ -755,9 +672,7 @@ export async function runWeeklyNewsletter(options?: {
     claim: (input) => claimNewsletterDelivery(writeClient, input),
     complete: (input) => completeNewsletterDelivery(writeClient, input),
     perform: async (recipient, idempotencyKey) => {
-      const match = recipients.find(
-        (item) => item.id === recipient.id && item.source === recipient.source,
-      );
+      const match = recipientByKey.get(newsletterRecipientKey(recipient.source, recipient.id, recipient.email));
       if (!match?.email) {
         throw new Error("Email utente non trovata");
       }
@@ -789,7 +704,7 @@ export async function runWeeklyNewsletter(options?: {
       }
 
       const snapshot = await stageNewsletterBody(writeClient, {
-        recipientKey: newsletterRecipientKey(match.source, match.id),
+        recipientKey: newsletterRecipientKey(match.source, match.id, match.email),
         weekKey: week.weekKey,
         subject: preview.subject,
         html: preview.html,
@@ -807,7 +722,7 @@ export async function runWeeklyNewsletter(options?: {
         status: "sent",
       });
       await sleep(120);
-      return "sent";
+      return { status: "sent", eventsCount: preview.eventsCount };
     },
   });
 

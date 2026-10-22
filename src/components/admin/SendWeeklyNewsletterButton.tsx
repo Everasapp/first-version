@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { WEEKLY_NEWSLETTER_PAUSED } from "@/src/lib/newsletter-availability";
 import { LoaderCircle, Mail, Send } from "lucide-react";
 
 type SendWeeklyNewsletterButtonProps = {
@@ -12,11 +13,11 @@ export default function SendWeeklyNewsletterButton({
   subscriberCount,
   testEmail,
 }: SendWeeklyNewsletterButtonProps) {
-  const [isSending, setIsSending] = useState<"test" | "all" | null>(null);
+  const [isSending, setIsSending] = useState<"test" | "all" | "dry" | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function send(mode: "test" | "all") {
+  async function send(mode: "test" | "all" | "dry") {
     setError("");
     setMessage("");
 
@@ -33,7 +34,7 @@ export default function SendWeeklyNewsletterButton({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          mode === "test" ? { testEmail } : {},
+          mode === "test" ? { testEmail } : mode === "dry" ? { dryRun: true } : {},
         ),
       });
       const payload = (await response.json().catch(() => ({}))) as {
@@ -44,6 +45,7 @@ export default function SendWeeklyNewsletterButton({
         failed?: number;
         remaining?: number;
         weekLabel?: string;
+        simulated?: number;
       };
 
       if (!response.ok || !payload.ok) {
@@ -54,7 +56,9 @@ export default function SendWeeklyNewsletterButton({
         ? ` Restano ${payload.remaining}: un invio successivo della stessa settimana li riprende.`
         : "";
       setMessage(
-        mode === "test"
+        mode === "dry"
+          ? `Simulazione completata: ${payload.simulated ?? 0} destinatari con corsi pertinenti. Nessuna email inviata.`
+          : mode === "test"
           ? `Anteprima inviata a ${testEmail}.`
           : `Newsletter inviata. Consegnate: ${payload.sent ?? 0} · saltate: ${payload.skipped ?? 0} · errori: ${payload.failed ?? 0}.${remainingNote}`,
       );
@@ -69,10 +73,15 @@ export default function SendWeeklyNewsletterButton({
 
   return (
     <div className="space-y-3">
+      {WEEKLY_NEWSLETTER_PAUSED ? <p className="text-sm text-slate-600">Invii sospesi. Puoi verificare la selezione con la simulazione, senza inviare email.</p> : null}
       <div className="flex flex-wrap gap-3">
+        <button type="button" disabled={isSending !== null} onClick={() => send("dry")}
+          className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold disabled:opacity-60">
+          {isSending === "dry" ? "Simulazione in corso…" : "Simula senza inviare"}
+        </button>
         <button
           type="button"
-          disabled={isSending !== null}
+          disabled={isSending !== null || WEEKLY_NEWSLETTER_PAUSED}
           onClick={() => send("test")}
           className="inline-flex items-center gap-2 rounded-xl border border-[#075EAE] px-4 py-2.5 text-sm font-bold text-[#075EAE] transition hover:bg-sky-50 disabled:opacity-60"
         >
@@ -85,7 +94,7 @@ export default function SendWeeklyNewsletterButton({
         </button>
         <button
           type="button"
-          disabled={isSending !== null || subscriberCount === 0}
+          disabled={isSending !== null || WEEKLY_NEWSLETTER_PAUSED || subscriberCount === 0}
           onClick={() => send("all")}
           className="inline-flex items-center gap-2 rounded-xl bg-[#E67E22] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:opacity-60"
         >
@@ -98,12 +107,12 @@ export default function SendWeeklyNewsletterButton({
         </button>
       </div>
       {message ? (
-        <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
+        <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
           {message}
         </p>
       ) : null}
       {error ? (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
           {error}
         </p>
       ) : null}
