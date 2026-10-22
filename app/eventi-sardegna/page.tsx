@@ -235,9 +235,9 @@ export default async function EventiSardegnaHubPage() {
       meta: "Laboratori e attività formative",
     },
     {
-      href: "/eventi/musica-concerti",
-      label: "Concerti e spettacoli",
-      meta: "Musica live sull’isola",
+      href: "/imparare-e-fare-in-sardegna",
+      label: "Formazione, corsi e workshop",
+      meta: "Il catalogo attuale",
     },
     {
       href: year.path,
@@ -311,7 +311,7 @@ export default async function EventiSardegnaHubPage() {
           { href: year.path, label: `Calendario ${year.year}` },
           { href: month.path, label: month.name },
           { href: "/eventi-sardegna/sagre", label: "Sagre" },
-          { href: "/eventi/musica-concerti", label: "Concerti" },
+          { href: "/imparare-e-fare-in-sardegna", label: "Corsi e workshop" },
           { href: "/eventi-gratuiti", label: "Gratuiti" },
           ...weekendLinks,
           ...geoQuickLinks.slice(0, 10),

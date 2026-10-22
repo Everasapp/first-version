@@ -3,8 +3,8 @@ import Link from "next/link";
 type ExpiredEventNoticeProps = {
   municipality: string;
   cityPath: string;
-  categoryLabel: string;
-  categoryPath: string;
+  categoryLabel?: string;
+  categoryPath?: string | null;
   nextEdition?: {
     slug: string;
     title: string;
@@ -19,9 +19,11 @@ export default function ExpiredEventNotice({
   categoryPath,
   nextEdition,
 }: ExpiredEventNoticeProps) {
-  const categoryCta = /sardegna/i.test(categoryLabel)
-    ? categoryLabel
-    : `${categoryLabel} in Sardegna`;
+  const categoryCta = categoryLabel
+    ? /sardegna/i.test(categoryLabel)
+      ? categoryLabel
+      : `${categoryLabel} in Sardegna`
+    : null;
 
   return (
     <section
@@ -68,14 +70,16 @@ export default function ExpiredEventNotice({
               Eventi attuali a {municipality}
             </Link>
           </li>
-          <li>
-            <Link
-              href={categoryPath}
-              className="inline-flex min-h-11 items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE] hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#075EAE] focus-visible:ring-offset-2"
-            >
-              {categoryCta}
-            </Link>
-          </li>
+          {categoryPath && categoryCta ? (
+            <li>
+              <Link
+                href={categoryPath}
+                className="inline-flex min-h-11 items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-[#075EAE] transition hover:border-[#075EAE] hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#075EAE] focus-visible:ring-offset-2"
+              >
+                {categoryCta}
+              </Link>
+            </li>
+          ) : null}
         </ul>
       </nav>
     </section>

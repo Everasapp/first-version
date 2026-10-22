@@ -255,7 +255,6 @@ export const CULTURA_GUIDE_ARTICLES_PHASE2: CulturaArticle[] = [
         label: "Guida Mamoiada",
       },
       { href: "/eventi-sardegna/jazzalguer", label: "JazzAlguer" },
-      { href: "/eventi/musica-concerti", label: "Musica e spettacoli" },
       { href: "/pubblica", label: "Pubblica un evento" },
     ],
     relatedCategorySlugs: ["musica-concerti"],
