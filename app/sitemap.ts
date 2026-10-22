@@ -1,4 +1,9 @@
 import type { MetadataRoute } from "next";
+import { learningSeoPages, matchesLearningSeoPage } from "@/src/lib/seo/learning-pages";
+import { loadHomeEventRows } from "@/src/lib/home/load-events";
+import { resolveCategoryLabels } from "@/src/lib/event-categories";
+import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { isPublicEventActive } from "@/src/lib/eventActive";
 import { unstable_cache } from "next/cache";
 
 import { createPublicClient } from "@/src/lib/supabase/public";
@@ -50,6 +55,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...CULTURE_AREAS.filter((area) => area.townPagesLive).map((area) => area.path),
     ...CULTURE_TOWNS.filter(isEditorialCultureTown).map((article) => article.path),
   ])];
+  // Only list populated evergreen SEO pages; empty ones remain noindex.
+  const { rows: homeRows, error: homeError } = await loadHomeEventRows();
+  const activeLearning = homeRows.filter((row) => isPublicEventActive(row.start_at, row.end_at));
+  if (!homeError) {
+    for (const page of learningSeoPages) {
+      if (activeLearning.some((row) => matchesLearningSeoPage({
+        title: row.title,
+        municipality: row.municipality,
+        learningTopic: row.subcategory ?? undefined,
+        categories: resolveCategoryLabels(row),
+        category: row.category,
+        isFree: resolveEventPricing(row.is_free, row.price_from).isFree,
+      }, page))) {
+        pages.push(`/corsi/${page.slug}`);
+      }
+    }
+  }
+
   const base: MetadataRoute.Sitemap = pages.map((path) => ({
     url: `${SITE_URL}${path === "/" ? "" : path}`,
     changeFrequency: path === "/" || path === LEARNING_PATH ? "daily" : "monthly",

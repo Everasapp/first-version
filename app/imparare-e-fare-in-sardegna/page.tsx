@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { learningDisciplines } from "@/src/data/learning-disciplines";
+import { learningSeoPages } from "@/src/lib/seo/learning-pages";
 import Header from "@/src/components/home/Header";
 import EventCard from "@/src/components/home/EventCard";
 import JsonLd from "@/src/components/seo/JsonLd";
@@ -88,6 +89,13 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
             {selectedArea || selectedCity || query || selectedDiscipline ? <Link href={`${LEARNING_PATH}#ricerca`} className="py-3 text-sm font-semibold text-[#075EAE] underline">Azzera filtri</Link> : null}
           </div>
         </form>
+        <nav aria-label="Esplora corsi per argomento e città" className="my-8 rounded-2xl border border-slate-200 bg-white p-6">
+          <h2 className="text-2xl font-bold text-slate-900">Trova corsi per città, disciplina o obiettivo</h2>
+          <p className="mt-2 max-w-3xl text-slate-600">Esplora percorsi dedicati a formazione professionale, corsi gratuiti, lingue, creatività e attività per bambini.</p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {learningSeoPages.map((page) => <Link key={page.slug} href={`/corsi/${page.slug}`} className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#075EAE] hover:border-[#075EAE]">{page.title}</Link>)}
+          </div>
+        </nav>
         <section aria-labelledby="scegliere-corso" className="my-8 rounded-2xl border border-slate-200 bg-white p-6">
           <h2 id="scegliere-corso" className="text-2xl font-bold text-slate-900">Prima di scegliere</h2>
           <div className="mt-4 grid gap-5 md:grid-cols-3">

@@ -7,9 +7,9 @@ import {
 } from "@/src/lib/seo/calendar";
 import type { LandingLink, LandingStats } from "@/src/lib/seo/landing-copy";
 import {
-  categoryEventsPath,
   cityCategoryEventsPath,
   cityEventsPath,
+  publicCategoryHref,
 } from "@/src/lib/seo/paths";
 
 export function dedupeLinks(links: LandingLink[]): LandingLink[] {
@@ -74,10 +74,6 @@ export function temporalExploreLinks(excludeHref?: string): LandingLink[] {
         label: "Sagre in Sardegna",
       },
       {
-        href: "/eventi/musica-concerti",
-        label: "Concerti e spettacoli in Sardegna",
-      },
-      {
         href: "/eventi",
         label: "Cerca e filtra tutti gli eventi",
       },
@@ -133,6 +129,7 @@ export function eventContextLinks(
   const categoryLabel = /sardegna/i.test(input.categoryLabel)
     ? input.categoryLabel
     : `${input.categoryLabel} in Sardegna`;
+  const categoryHref = publicCategoryHref(input.categorySlug);
 
   return dedupeLinks(
     [
@@ -140,10 +137,7 @@ export function eventContextLinks(
         href: cityEventsPath(input.municipality),
         label: `Eventi a ${input.municipality}`,
       },
-      {
-        href: categoryEventsPath(input.categorySlug),
-        label: categoryLabel,
-      },
+      categoryHref ? { href: categoryHref, label: categoryLabel } : null,
       month,
       {
         href: "/eventi-weekend",
@@ -188,12 +182,14 @@ export function linksFromLandingStats(
 
   const categoryQuick = stats.topCategories
     .slice(0, maxCategories)
-    .map((category) => ({
-      href: options.cityNameForCategories
-        ? cityCategoryEventsPath(options.cityNameForCategories, category.slug)
-        : categoryEventsPath(category.slug),
-      label: category.name,
-    }));
+    .flatMap((category) => {
+      const href = options.cityNameForCategories
+        ? publicCategoryHref(category.slug)
+          ? cityCategoryEventsPath(options.cityNameForCategories, category.slug)
+          : null
+        : publicCategoryHref(category.slug);
+      return href ? [{ href, label: category.name }] : [];
+    });
 
   const relatedCityLinks = stats.topCities.slice(0, maxCities).map((city) => ({
     href: cityEventsPath(city.name),
@@ -202,14 +198,14 @@ export function linksFromLandingStats(
 
   const relatedCategoryLinks =
     stats.topCategories.length > 0
-      ? stats.topCategories.slice(0, maxCategories).map((category) => ({
-          href: categoryEventsPath(category.slug),
-          label: category.name,
-        }))
-      : categories.slice(0, 4).map((category) => ({
-          href: categoryEventsPath(category.slug),
-          label: category.name,
-        }));
+      ? stats.topCategories.slice(0, maxCategories).flatMap((category) => {
+          const href = publicCategoryHref(category.slug);
+          return href ? [{ href, label: category.name }] : [];
+        })
+      : categories.slice(0, 4).flatMap((category) => {
+          const href = publicCategoryHref(category.slug);
+          return href ? [{ href, label: category.name }] : [];
+        });
 
   return {
     quickLinks: dedupeLinks([...cityQuick, ...categoryQuick]),

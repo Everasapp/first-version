@@ -22,10 +22,6 @@ describe("eventContextLinks", () => {
         label: "Eventi a Santa Maria Coghinas",
       },
       {
-        href: "/eventi/musica-concerti",
-        label: "Musica e spettacoli in Sardegna",
-      },
-      {
         href: "/eventi-sardegna/ottobre-2026",
         label: "Eventi Sardegna ottobre 2026",
       },
@@ -51,7 +47,7 @@ describe("eventContextLinks", () => {
       REFERENCE_DATE,
     );
 
-    expect(links[2]).toEqual({
+    expect(links[1]).toEqual({
       href: "/eventi-sardegna/ottobre-2026",
       label: "Eventi Sardegna ottobre 2026",
     });
@@ -68,8 +64,9 @@ describe("eventContextLinks", () => {
       REFERENCE_DATE,
     );
 
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(3);
     expect(links.some((link) => link.href.includes("ottobre-2026"))).toBe(false);
+    expect(links.some((link) => link.href.includes("sagre-tradizioni"))).toBe(false);
   });
 
   it("omits unsupported historical month landings", () => {
@@ -83,7 +80,7 @@ describe("eventContextLinks", () => {
       REFERENCE_DATE,
     );
 
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(3);
     expect(links.some((link) => link.href.includes("agosto-2025"))).toBe(false);
   });
 
@@ -98,6 +95,6 @@ describe("eventContextLinks", () => {
       REFERENCE_DATE,
     );
 
-    expect(links[1]?.label).toBe("Concerti in Sardegna");
+    expect(links.some((link) => link.label === "Concerti in Sardegna")).toBe(false);
   });
 });

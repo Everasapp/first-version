@@ -37,8 +37,8 @@ export const HUB_SECTION_CTAS: Record<
     label: "Vedi tutte le sagre",
   },
   concerti: {
-    href: "/eventi/musica-concerti",
-    label: "Vedi tutti i concerti e spettacoli",
+    href: "/eventi-sardegna",
+    label: "Calendario eventi in Sardegna",
   },
   gratuiti: {
     href: "/eventi-gratuiti",

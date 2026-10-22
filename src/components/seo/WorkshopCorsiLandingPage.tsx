@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 
 import EventLandingView from "@/src/components/seo/EventLandingView";
-import { categories } from "@/src/data/categories";
 import { getDateRange } from "@/src/lib/seo/dateRange";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import {
   buildLandingStats,
   splitCityLandingEvents,
 } from "@/src/lib/seo/landing-copy";
-import { currentMonthLanding } from "@/src/lib/seo/calendar";
-import { coreDateLinks, dedupeLinks } from "@/src/lib/seo/internal-links";
+import { dedupeLinks } from "@/src/lib/seo/internal-links";
 import {
   breadcrumbListSchema,
   collectionPageSchema,
@@ -22,9 +20,7 @@ import {
   landingRobots,
 } from "@/src/lib/seo/site";
 import {
-  categoryEventsPath,
   cityCategoryEventsPath,
-  cityEventsPath,
 } from "@/src/lib/seo/paths";
 import {
   filterWorkshopRelevantEvents,
@@ -85,7 +81,6 @@ export async function WorkshopCorsiLandingPage() {
   });
   const events = filterWorkshopRelevantEvents(rawEvents);
 
-  const month = currentMonthLanding();
   const todayRange = getDateRange("oggi");
   const weekendRange = getDateRange("weekend");
   const { today, weekend, upcomingRest } = splitCityLandingEvents(events, {
@@ -153,7 +148,7 @@ export async function WorkshopCorsiLandingPage() {
     );
   } else {
     paragraphs.push(
-      "Nel frattempo esplora gli eventi di oggi e del weekend in Sardegna, o passa al calendario mensile.",
+      "Nel frattempo esplora formazione, corsi e workshop nel catalogo EVERAS.",
     );
   }
 
@@ -167,7 +162,7 @@ export async function WorkshopCorsiLandingPage() {
                 ? "appuntamento formativo"
                 : "appuntamenti formativi"
             } in programma, con sezioni per oggi, weekend e prossimi corsi e workshop.`
-          : "Quando sono pubblicati compaiono qui. Intanto guarda oggi, weekend e il calendario mensile su EVERAS.",
+          : "Quando sono pubblicati compaiono qui. Intanto esplora il catalogo della formazione su EVERAS.",
     },
     {
       question: "Ci sono corsi e workshop a Cagliari e Sassari?",
@@ -182,8 +177,8 @@ export async function WorkshopCorsiLandingPage() {
       question: "Come trovare workshop nel weekend?",
       answer:
         weekend.length > 0
-          ? `Apri la sezione «Corsi e workshop questo weekend» più sotto, oppure la pagina Eventi Sardegna questo weekend per tutto il calendario dell’isola.`
-          : "Quando ci sono workshop nel fine settimana li trovi nella sezione dedicata di questa pagina e in Eventi Sardegna questo weekend.",
+          ? `Apri la sezione «Corsi e workshop questo weekend» più sotto, oppure esplora il catalogo dei corsi su EVERAS.`
+          : "Quando ci sono workshop nel fine settimana li trovi nella sezione dedicata di questa pagina e nel catalogo dei corsi.",
     },
     {
       question: "Come trovare laboratori in una località specifica?",
@@ -232,13 +227,6 @@ export async function WorkshopCorsiLandingPage() {
     label: `Corsi e workshop a ${city.name}`,
   }));
 
-  const otherCategories = categories
-    .filter((item) => item.slug !== "workshop-corsi")
-    .slice(0, 4)
-    .map((item) => ({
-      href: categoryEventsPath(item.slug),
-      label: item.name,
-    }));
 
   return (
     <EventLandingView
@@ -252,25 +240,19 @@ export async function WorkshopCorsiLandingPage() {
       errorMessage={error?.message}
       breadcrumbs={[
         { name: "Home", href: "/" },
-        { name: "Eventi", href: "/eventi" },
+        { name: "Formazione e corsi", href: "/imparare-e-fare-in-sardegna" },
         { name: CATEGORY_NAME },
       ]}
       faqs={faqs}
       quickLinks={[
-        { href: "/eventi-oggi", label: "Oggi" },
-        { href: "/eventi-weekend", label: "Weekend" },
-        { href: month.path, label: `${month.name} ${month.year}` },
+        { href: "/imparare-e-fare-in-sardegna#formazione", label: "Formazione professionale" },
+        { href: "/imparare-e-fare-in-sardegna#corsi-workshop", label: "Corsi e workshop" },
         ...cityQuickLinks,
       ]}
       relatedLinks={dedupeLinks([
-        ...coreDateLinks(PATH),
-        { href: "/eventi-sardegna", label: "Eventi in Sardegna" },
-        { href: month.path, label: `Eventi ${month.name} ${month.year}` },
-        ...stats.topCities.slice(0, 4).map((city) => ({
-          href: cityEventsPath(city.name),
-          label: `Eventi a ${city.name}`,
-        })),
-        ...otherCategories,
+        { href: "/imparare-e-fare-in-sardegna", label: "Esplora corsi e formazione in Sardegna" },
+        { href: "/idee-e-percorsi", label: "Idee e percorsi per imparare" },
+        { href: "/per-gli-organizzatori", label: "Proponi un corso" },
       ])}
       jsonLd={[
         collectionPageSchema({
@@ -285,7 +267,7 @@ export async function WorkshopCorsiLandingPage() {
         }),
         breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Eventi", path: "/eventi" },
+          { name: "Formazione e corsi", path: "/imparare-e-fare-in-sardegna" },
           { name: CATEGORY_NAME, path: PATH },
         ]),
         faqPageSchema(faqs),
