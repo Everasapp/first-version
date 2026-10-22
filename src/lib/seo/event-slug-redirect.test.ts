@@ -23,7 +23,7 @@ describe("consolidated event links", () => {
     "preserves %s in both configured redirects and the database fallback", async (oldSlug, canonical) => {
       const redirects = await nextConfig.redirects!();
       expect(redirects).toContainEqual({
-        source: `/eventi/${oldSlug}`, destination: `/eventi/${canonical}`, permanent: true,
+        source: `/eventi/${oldSlug}`, destination: `/eventi/${canonical}`, statusCode: 301,
       });
       expect(CONSOLIDATED_EVENT_SLUGS[canonical]).toBeUndefined();
       expect(await findReplacementEventSlug(database({ slug: canonical }).client, oldSlug)).toBe(canonical);

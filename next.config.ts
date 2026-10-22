@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { assertProductionBuildConfig } from "./src/lib/env/production-build";
-import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs";
+import { EVENT_SLUG_ALIASES } from "./src/lib/seo/event-slug-aliases";
 
 const nextConfig: NextConfig = {
   images: {
@@ -44,61 +44,15 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      ...[
-        "/eventi-sardegna/:path*", "/eventi-oggi", "/eventi-domani",
-        "/eventi-weekend", "/eventi-domenica", "/eventi-gratuiti",
-      ].map((source) => ({
-        source,
-        destination: "/imparare-e-fare-in-sardegna",
-        permanent: false,
-      })),
-      ...["nord", "centro", "sud"].map((area) => ({
-        source: `/eventi-${area}-sardegna-oggi`,
-        destination: `/imparare-e-fare-in-sardegna?area=${area}-sardegna`,
-        permanent: false,
-      })),
-      ...Object.entries(CONSOLIDATED_EVENT_SLUGS).map(([oldSlug, canonicalSlug]) => ({
+      ...Object.entries(EVENT_SLUG_ALIASES).map(([oldSlug, canonicalSlug]) => ({
         source: `/eventi/${oldSlug}`,
         destination: `/eventi/${canonicalSlug}`,
-        permanent: true,
+        statusCode: 301,
       })),
       {
         source: "/:path*",
         has: [{ type: "host", value: "everas.it" }],
         destination: "https://www.everas.it/:path*",
-        permanent: true,
-      },
-      {
-        source: "/eventi/spettacoli",
-        destination: "/eventi/musica-concerti",
-        permanent: true,
-      },
-      {
-        source: "/categorie/spettacoli",
-        destination: "/eventi/musica-concerti",
-        permanent: true,
-      },
-      {
-        source: "/eventi/:city/spettacoli",
-        destination: "/eventi/:city/musica-concerti",
-        permanent: true,
-      },
-      {
-        source: "/eventi/festa-del-gusto",
-        destination:
-          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
-        permanent: true,
-      },
-      {
-        source: "/eventi/festa-del-gusto-santa-teresa-gallura",
-        destination:
-          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
-        permanent: true,
-      },
-      {
-        source: "/eventi/festa-del-gusto-santa-teresa-gallura-turismo",
-        destination:
-          "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
         permanent: true,
       },
       {
@@ -144,12 +98,12 @@ const nextConfig: NextConfig = {
       {
         source: "/eventi/:slug(.*)-draft2",
         destination: "/eventi/:slug",
-        permanent: true,
+        statusCode: 301,
       },
       {
         source: "/eventi/:slug(.*)-draft",
         destination: "/eventi/:slug",
-        permanent: true,
+        statusCode: 301,
       },
     ];
   },

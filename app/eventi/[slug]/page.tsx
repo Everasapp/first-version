@@ -78,8 +78,8 @@ import { findCultureTown } from "@/src/lib/seo/cultura-towns";
 import {
   findCategoryBySlug,
   findCityBySlug,
-  categoryEventsPath,
   cityEventsPath,
+  publicCategoryHref,
   cityToSlug,
 } from "@/src/lib/seo/paths";
 import {
@@ -90,7 +90,7 @@ import {
 import { eventShareImagePath } from "@/src/lib/seo/event-og-image";
 import { eventSharePagePath } from "@/src/lib/share/formatStory";
 import { absoluteUrl, defaultOgImages } from "@/src/lib/seo/site";
-import { findReplacementEventSlug } from "@/src/lib/seo/event-slug-redirect";
+import { verifiedEventRedirectSlug } from "@/src/lib/seo/event-slug-aliases";
 import { findCulturaArticleForEventSlug } from "@/src/lib/seo/cultura-articles";
 
 type EventDetailPageProps = {
@@ -189,9 +189,14 @@ const getPublishedEventBySlug = cache(async (slug: string) => {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);
   }
 
-  if (data && !isLearningEvent(data as EventRow)) notFound();
   return (data as EventRow | null) ?? null;
 });
+
+function missingPublishedEvent(slug: string): never {
+  const replacement = verifiedEventRedirectSlug(slug);
+  if (replacement) permanentRedirect(`/eventi/${replacement}`);
+  notFound();
+}
 
 function formatEventDate(startAt: string, endAt: string | null) {
   return formatEventDateRange(startAt, endAt, { includeWeekday: true });
@@ -235,7 +240,7 @@ export async function generateMetadata({
       includeExpired: true,
     });
     const upcoming = events.filter((event) =>
-      isPublicEventActive(event.startDate, event.endDate),
+      isPublicEventActive(event.startDate, event.endDate, new Date(), { slug: event.id }),
     );
     return buildCityLandingMetadata(city, {
       upcoming: upcoming.length,
@@ -260,11 +265,7 @@ export async function generateMetadata({
 
   const data = await getPublishedEventBySlug(slug);
 
-  if (!data) {
-    const supabase = await createClient();
-    const replacement = await findReplacementEventSlug(supabase, slug);
-    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
-  }
+  if (!data) missingPublishedEvent(slug);
 
   const seoTitle = eventSeoTitle(
     data.title,
@@ -295,7 +296,7 @@ export async function generateMetadata({
   return {
     title: seoTitle,
     description,
-    robots: eventDetailRobots(data.start_at, data.end_at),
+    robots: eventDetailRobots(data.start_at, data.end_at, { slug }),
     alternates: {
       canonical: `/eventi/${slug}`,
     },
@@ -336,10 +337,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const supabase = await createClient();
   const data = await getPublishedEventBySlug(slug);
 
-  if (!data) {
-    const replacement = await findReplacementEventSlug(supabase, slug);
-    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
-  }
+  if (!data) missingPublishedEvent(slug);
 
   const event = data as EventRow;
   const now = new Date();
@@ -347,6 +345,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     event.start_at,
     event.end_at,
     now,
+    { slug: event.slug },
   );
 
   const {
@@ -376,9 +375,11 @@ async function EventDetailPage({ slug }: { slug: string }) {
     displayedViews = 1;
   }
 
+  const showRelatedCourses = isLearningEvent(event);
   const eventCardSelect =
     "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
   const activeEventFilter = `end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
+  const noRelatedRows = Promise.resolve({ data: [] as EventCardRow[] | null, error: null });
 
   const [
     { data: similarData, error: similarError },
@@ -389,24 +390,28 @@ async function EventDetailPage({ slug }: { slug: string }) {
     { data: organizerData },
     { data: directoryData },
   ] = await Promise.all([
-    supabase
-      .from("events")
-      .select(eventCardSelect)
-      .eq("status", "published")
-      .eq("category", event.category)
-      .neq("id", event.id)
-      .or(activeEventFilter)
-      .order("start_at", { ascending: true })
-      .limit(12),
-    supabase
-      .from("events")
-      .select(eventCardSelect)
-      .eq("status", "published")
-      .eq("municipality", event.municipality)
-      .neq("id", event.id)
-      .or(activeEventFilter)
-      .order("start_at", { ascending: true })
-      .limit(100),
+    showRelatedCourses
+      ? supabase
+          .from("events")
+          .select(eventCardSelect)
+          .eq("status", "published")
+          .eq("category", event.category)
+          .neq("id", event.id)
+          .or(activeEventFilter)
+          .order("start_at", { ascending: true })
+          .limit(12)
+      : noRelatedRows,
+    showRelatedCourses
+      ? supabase
+          .from("events")
+          .select(eventCardSelect)
+          .eq("status", "published")
+          .eq("municipality", event.municipality)
+          .neq("id", event.id)
+          .or(activeEventFilter)
+          .order("start_at", { ascending: true })
+          .limit(100)
+      : noRelatedRows,
     getCurrentUserFavoriteIds(),
     getCurrentUserCalendarEventIds(),
     getCurrentUserFollowedOrganizerIds(),
@@ -477,12 +482,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
     : null;
 
   const similarEvents = similarEventRows
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now, { slug: item.slug }))
     .slice(0, 3)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
   const cityEvents = cityEventRows
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now, { slug: item.slug }))
     .slice(0, 6)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
@@ -529,7 +534,14 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const isCourse = isLearningEvent(event);
 
   const cityPath = cityEventsPath(event.municipality);
-  const categoryPath = categoryEventsPath(primaryCategorySlug);
+  const categoryPath = publicCategoryHref(primaryCategorySlug);
+  const detailCrumbs = [
+    { name: "Home", path: "/" },
+    { name: "Eventi", path: "/eventi" },
+    { name: event.municipality, path: cityPath },
+    ...(categoryPath ? [{ name: categoryName, path: categoryPath }] : []),
+    { name: event.title, path: `/eventi/${event.slug}` },
+  ];
   const contextualLinks = eventContextLinks({
     municipality: event.municipality,
     categorySlug: primaryCategorySlug,
@@ -579,13 +591,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
         }
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { name: "Home", path: "/" },
-          { name: "Eventi", path: "/eventi" },
-          { name: event.municipality, path: cityPath },
-          { name: categoryName, path: categoryPath },
-          { name: event.title, path: `/eventi/${event.slug}` },
-        ])}
+        data={breadcrumbListSchema(detailCrumbs)}
       />
 
       <Header />
@@ -593,13 +599,10 @@ async function EventDetailPage({ slug }: { slug: string }) {
       <main className="min-h-screen bg-white">
         <section className="mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-10">
           <Breadcrumbs
-            items={[
-              { name: "Home", href: "/" },
-              { name: "Eventi", href: "/eventi" },
-              { name: event.municipality, href: cityPath },
-              { name: categoryName, href: categoryPath },
-              { name: event.title },
-            ]}
+            items={detailCrumbs.map((crumb, index) => ({
+              name: crumb.name,
+              ...(index < detailCrumbs.length - 1 ? { href: crumb.path } : {}),
+            }))}
           />
 
           <div className="relative overflow-hidden rounded-[32px] bg-slate-100">
@@ -649,15 +652,17 @@ async function EventDetailPage({ slug }: { slug: string }) {
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
               {categoryLabels.map((label, index) => {
                 const slug = eventCategorySlugs(event)[index];
-                const href = slug
-                  ? categoryEventsPath(slug)
-                  : categoryPath;
+                const href = publicCategoryHref(slug);
                 return (
                   <span key={`${label}-${index}`}>
                     {index > 0 ? " · " : null}
-                    <Link href={href} className="hover:underline">
-                      {label}
-                    </Link>
+                    {href ? (
+                      <Link href={href} className="hover:underline">
+                        {label}
+                      </Link>
+                    ) : (
+                      label
+                    )}
                   </span>
                 );
               })}

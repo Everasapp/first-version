@@ -157,7 +157,7 @@ export async function CityLandingPage({ city }: { city: City }) {
   const month = currentMonthLanding();
 
   const upcoming = published.filter((event) =>
-    isPublicEventActive(event.startDate, event.endDate),
+    isPublicEventActive(event.startDate, event.endDate, new Date(), { slug: event.id }),
   );
   const todayRange = getDateRange("oggi");
   const weekendRange = getDateRange("weekend");

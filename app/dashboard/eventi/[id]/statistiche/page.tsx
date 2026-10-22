@@ -98,6 +98,7 @@ export default async function StatisticheEventoPage({
     status,
     start_at: event.start_at,
     end_at: event.end_at,
+    slug: event.slug,
   });
   const views = event.views_count ?? 0;
   const likes = event.favorites_count ?? 0;

@@ -125,7 +125,7 @@ async function HomeContent() {
 
   const learningEvents = mixWeekEvents(rows.filter((event) =>
     isLearningTopic(event.subcategory) &&
-    isPublicEventActive(event.start_at, event.end_at, now),
+    isPublicEventActive(event.start_at, event.end_at, now, { slug: event.slug }),
   ).map((event) => ({
     ...mapEvent(event, now), isFavorite: favoriteIds.has(event.id),
   })), now);

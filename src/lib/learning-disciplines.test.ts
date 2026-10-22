@@ -46,6 +46,16 @@ describe("learning disciplines", () => {
     expect(disciplinesForArea("corsi-workshop").some((item) => item.slug === "ceramica")).toBe(true);
     expect(retainDisciplinesForArea(["ceramica", "lingue"], "formazione")).toEqual(["lingue"]);
   });
+  it("offers theatre and dance inside enrichment courses, from the shared list", () => {
+    const enrichment = disciplinesForArea("corsi-workshop").map((item) => item.slug);
+    const training = disciplinesForArea("formazione").map((item) => item.slug);
+    expect(enrichment).toEqual(expect.arrayContaining(["teatro", "ballo"]));
+    expect(training).not.toEqual(expect.arrayContaining(["teatro", "ballo"]));
+    expect(categories.filter((item) => item.slug === "teatro" || item.slug === "ballo").map((item) => item.name)).toEqual(["Teatro e arti espressive", "Ballo e danza"]);
+    expect(resolveCategoryLabels({ category: "ballo", categories: ["ballo"] })).toEqual(["Ballo e danza"]);
+    expect(learningCardLabels({ learningTopic: "imparare-musica-movimento", category: "Ballo e danza", categories: ["Ballo e danza"] })).toEqual(["Corsi e workshop", "Ballo e danza"]);
+    expect(learningCardLabels({ learningTopic: "imparare-musica-movimento", category: "Teatro e arti espressive" })).toEqual(["Corsi e workshop", "Teatro e arti espressive"]);
+  });
   it("shows the macroarea and the actual subject without generic repetition", () => {
     expect(learningCardLabels({ learningTopic: "imparare-professioni", category: "Sicurezza sul lavoro", categories: ["Sicurezza sul lavoro"] })).toEqual(["Formazione", "Sicurezza sul lavoro"]);
     expect(learningCardLabels({ learningTopic: "imparare-professioni", category: "Workshop e corsi" })).toEqual(["Formazione"]);
