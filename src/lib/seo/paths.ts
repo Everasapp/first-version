@@ -34,6 +34,15 @@ export function categoryEventsPath(categorySlug: string) {
   return `/eventi/${categorySlug}`;
 }
 
+/** Hubs that still resolve. Legacy concert and festival indexes do not. */
+export function publicCategoryHref(categorySlug: string | null | undefined): string | null {
+  if (!categorySlug) return null;
+  if (isLearningDiscipline(categorySlug) || categorySlug === "workshop-corsi") {
+    return categoryEventsPath(categorySlug);
+  }
+  return null;
+}
+
 export function cityCategoryEventsPath(cityName: string, categorySlug: string) {
   if (isLearningDiscipline(categorySlug)) return `/imparare-e-fare-in-sardegna?city=${encodeURIComponent(cityName)}&disciplina=${encodeURIComponent(categorySlug)}#ricerca`;
   return `/eventi/${cityToSlug(cityName)}/${categorySlug}`;

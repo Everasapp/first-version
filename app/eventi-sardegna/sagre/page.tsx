@@ -150,7 +150,6 @@ export default async function SagreHubPage() {
         { href: "/eventi-weekend", label: "Weekend" },
         { href: year.path, label: `Calendario ${year.year}` },
         { href: month.path, label: `Sagre di ${month.name}` },
-        { href: "/eventi/sagre-tradizioni", label: "Categoria sagre" },
         { href: "/eventi-gratuiti", label: "Gratuiti" },
         ...weekends,
         ...geoChips.slice(0, 6),

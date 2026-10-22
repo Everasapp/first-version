@@ -78,7 +78,7 @@ import { findCultureTown } from "@/src/lib/seo/cultura-towns";
 import {
   findCategoryBySlug,
   findCityBySlug,
-  categoryEventsPath,
+  publicCategoryHref,
   cityEventsPath,
   cityToSlug,
 } from "@/src/lib/seo/paths";
@@ -533,7 +533,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   const isCourse = isLearningEvent(event);
 
   const cityPath = cityEventsPath(event.municipality);
-  const categoryPath = categoryEventsPath(primaryCategorySlug);
+  const categoryPath = publicCategoryHref(primaryCategorySlug);
   const contextualLinks = eventContextLinks({
     municipality: event.municipality,
     categorySlug: primaryCategorySlug,
@@ -587,7 +587,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
           { name: "Home", path: "/" },
           { name: "Eventi", path: "/eventi" },
           { name: event.municipality, path: cityPath },
-          { name: categoryName, path: categoryPath },
+          ...(categoryPath ? [{ name: categoryName, path: categoryPath }] : []),
           { name: event.title, path: `/eventi/${event.slug}` },
         ])}
       />
@@ -601,7 +601,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
               { name: "Home", href: "/" },
               { name: "Eventi", href: "/eventi" },
               { name: event.municipality, href: cityPath },
-              { name: categoryName, href: categoryPath },
+              ...(categoryPath ? [{ name: categoryName, href: categoryPath }] : []),
               { name: event.title },
             ]}
           />
@@ -653,15 +653,17 @@ async function EventDetailPage({ slug }: { slug: string }) {
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
               {categoryLabels.map((label, index) => {
                 const slug = eventCategorySlugs(event)[index];
-                const href = slug
-                  ? categoryEventsPath(slug)
-                  : categoryPath;
+                const href = slug ? publicCategoryHref(slug) : categoryPath;
                 return (
                   <span key={`${label}-${index}`}>
                     {index > 0 ? " · " : null}
-                    <Link href={href} className="hover:underline">
-                      {label}
-                    </Link>
+                    {href ? (
+                      <Link href={href} className="hover:underline">
+                        {label}
+                      </Link>
+                    ) : (
+                      label
+                    )}
                   </span>
                 );
               })}
@@ -703,7 +705,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
               <ExpiredEventNotice
                 municipality={event.municipality}
                 cityPath={cityPath}
-                categoryLabel={categoryName}
+                categoryLabel={categoryPath ? categoryName : undefined}
                 categoryPath={categoryPath}
                 nextEdition={
                   nextEdition?.slug
