@@ -46,6 +46,39 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
     (!selectedCity || event.municipality?.toLocaleLowerCase("it") === selectedCity.toLocaleLowerCase("it")) &&
     (!query || `${event.title} ${event.municipality ?? ""} ${event.location}`.toLocaleLowerCase("it").includes(query.toLocaleLowerCase("it"))),
   );
+  const isFilteredSearch = Boolean(selectedDiscipline || selectedArea || selectedCity || query);
+  if (isFilteredSearch) {
+    const searchTitle = selectedDiscipline
+      ? `Corsi di ${selectedDiscipline.name.toLocaleLowerCase("it")}`
+      : "Risultati della ricerca corsi";
+    return <>
+      <Header />
+      <main className="min-h-screen bg-slate-50 pb-16">
+        <div className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
+          <nav aria-label="Percorso" className="mb-5 text-sm text-slate-600">
+            <Link href="/" className="underline">Home</Link> / <Link href={LEARNING_PATH} className="underline">Corsi e formazione</Link> / Risultati
+          </nav>
+          <h1 className="text-3xl font-black text-slate-900 sm:text-4xl">{searchTitle}</h1>
+          <p className="mt-3 text-slate-600">
+            {error ? "Il catalogo non è disponibile in questo momento." : `${events.length} ${events.length === 1 ? "corso trovato" : "corsi trovati"}`}
+            {selectedCity ? ` · ${selectedCity}` : selectedArea ? ` · ${areas[selectedArea]}` : ""}
+            {query ? ` · Ricerca: ${query}` : ""}
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href={`${LEARNING_PATH}#ricerca`} className="rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white hover:bg-[#064a8a]">Modifica la ricerca</Link>
+            <Link href={LEARNING_PATH} className="rounded-full border border-[#075EAE] bg-white px-5 py-3 text-sm font-bold text-[#075EAE]">Tutti i corsi</Link>
+          </div>
+          {error ? <p role="alert" className="mt-8 rounded-xl border border-amber-200 bg-white p-5">Riprova tra poco.</p>
+            : events.length > 0
+              ? <section aria-label="Corsi trovati" className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {events.map((event) => <EventCard key={event.eventId} event={event} />)}
+                </section>
+              : <p className="mt-8 rounded-xl border border-slate-200 bg-white p-6 text-slate-700">Non ci sono corsi che corrispondono a questi filtri. Prova un'altra disciplina o una zona diversa.</p>}
+        </div>
+      </main>
+    </>;
+  }
+
   return <>
     <Header />
     <JsonLd data={collectionPageSchema({ name: title, description, url: absoluteUrl(LEARNING_PATH) })} />
