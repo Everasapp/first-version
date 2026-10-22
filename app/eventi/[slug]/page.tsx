@@ -189,7 +189,9 @@ const getPublishedEventBySlug = cache(async (slug: string) => {
     throw new Error(`Impossibile caricare l'evento: ${error.message}`);
   }
 
-  if (data && !isLearningEvent(data as EventRow)) notFound();
+  // Preserve published legacy event detail URLs for search visitors.
+  // The public discovery catalog remains restricted to learning content.
+
   return (data as EventRow | null) ?? null;
 });
 
@@ -263,7 +265,8 @@ export async function generateMetadata({
   if (!data) {
     const supabase = await createClient();
     const replacement = await findReplacementEventSlug(supabase, slug);
-    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
+    if (replacement) permanentRedirect(`/eventi/${replacement}`);
+    notFound();
   }
 
   const seoTitle = eventSeoTitle(
@@ -338,7 +341,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   if (!data) {
     const replacement = await findReplacementEventSlug(supabase, slug);
-    permanentRedirect(replacement ? `/eventi/${replacement}` : "/eventi");
+    if (replacement) permanentRedirect(`/eventi/${replacement}`);
+    notFound();
   }
 
   const event = data as EventRow;
