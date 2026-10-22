@@ -1,16 +1,16 @@
--- Local migration only. Do not apply from this change set.
+-- Weekly delivery register. Delivery remains paused independently of this migration.
 --
 -- One row per recipient and Rome week. The primary key makes the claim atomic:
 -- two concurrent runs cannot both insert the same pair.
 --
 -- Resend keeps an Idempotency-Key for 24 hours and will not send that same
 -- request again inside the window. After 24 hours the key expires, so a row
--- still marked "sending" becomes "uncertain" and is not emailed again.
+-- in "sending" or "failed" becomes "uncertain" and is not emailed again.
+-- first_claimed_at never moves on retry; claimed_at is only the short lease.
 -- That does not prove the first request never reached the recipient.
 -- The first staged subject and HTML stay on the row and are reused on retry.
 --
--- The daily cron (vercel.json, once a day) continues the same week. Remove
--- that schedule only if the send must stay off after this table exists.
+-- Each batch is bounded. The newsletter schedule stays disabled until release.
 -- Until this migration is applied, the senders refuse before calling Resend.
 
 CREATE TABLE IF NOT EXISTS public.newsletter_week_deliveries (
@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS public.newsletter_week_deliveries (
   subject text,
   body_html text,
   idempotency_key text NOT NULL,
+  first_claimed_at timestamptz NOT NULL DEFAULT now(),
   claimed_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT newsletter_week_deliveries_pkey PRIMARY KEY (recipient_key, week_key),
@@ -54,10 +55,11 @@ AS $$
 DECLARE
   v_status text;
   v_claimed timestamptz;
+  v_first_claimed timestamptz;
   v_key text;
   v_inserted integer;
 BEGIN
-  IF coalesce(auth.role(), '') <> 'service_role'
+  IF coalesce(auth.jwt() ->> 'role', '') <> 'service_role'
     AND NOT private.current_user_is_admin() THEN
     RAISE EXCEPTION 'Accesso riservato agli admin';
   END IF;
@@ -79,8 +81,8 @@ BEGIN
     );
   END IF;
 
-  SELECT status, claimed_at, idempotency_key
-  INTO v_status, v_claimed, v_key
+  SELECT status, claimed_at, first_claimed_at, idempotency_key
+  INTO v_status, v_claimed, v_first_claimed, v_key
   FROM public.newsletter_week_deliveries
   WHERE recipient_key = p_recipient_key
     AND week_key = p_week_key
@@ -88,6 +90,20 @@ BEGIN
 
   IF v_status IN ('sent', 'skipped', 'uncertain') THEN
     RETURN jsonb_build_object('action', 'skip', 'reason', v_status);
+  END IF;
+
+  -- The provider window is anchored to the FIRST claim, never the last retry.
+  -- A failure may mean the provider accepted the email but the response or a
+  -- later database write failed. It must obey the same absolute deadline.
+  IF v_status IN ('sending', 'failed')
+    AND v_first_claimed <= now() - interval '24 hours' THEN
+    UPDATE public.newsletter_week_deliveries
+    SET status = 'uncertain', updated_at = now()
+    WHERE recipient_key = p_recipient_key
+      AND week_key = p_week_key
+      AND status IN ('sending', 'failed');
+
+    RETURN jsonb_build_object('action', 'skip', 'reason', 'uncertain');
   END IF;
 
   IF v_status = 'failed' THEN
@@ -106,16 +122,6 @@ BEGIN
     END IF;
 
     RETURN jsonb_build_object('action', 'skip', 'reason', 'sending');
-  END IF;
-
-  IF v_status = 'sending' AND v_claimed <= now() - interval '24 hours' THEN
-    UPDATE public.newsletter_week_deliveries
-    SET status = 'uncertain', updated_at = now()
-    WHERE recipient_key = p_recipient_key
-      AND week_key = p_week_key
-      AND status = 'sending';
-
-    RETURN jsonb_build_object('action', 'skip', 'reason', 'uncertain');
   END IF;
 
   IF v_status = 'sending' AND v_claimed <= now() - interval '10 minutes' THEN
@@ -148,7 +154,7 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  IF coalesce(auth.role(), '') <> 'service_role'
+  IF coalesce(auth.jwt() ->> 'role', '') <> 'service_role'
     AND NOT private.current_user_is_admin() THEN
     RAISE EXCEPTION 'Accesso riservato agli admin';
   END IF;
@@ -184,7 +190,7 @@ DECLARE
   v_subject text;
   v_html text;
 BEGIN
-  IF coalesce(auth.role(), '') <> 'service_role'
+  IF coalesce(auth.jwt() ->> 'role', '') <> 'service_role'
     AND NOT private.current_user_is_admin() THEN
     RAISE EXCEPTION 'Accesso riservato agli admin';
   END IF;
@@ -301,3 +307,56 @@ GRANT EXECUTE ON FUNCTION public.stage_newsletter_body(text, text, text, text) T
 REVOKE ALL ON FUNCTION private.claim_newsletter_delivery(text, text, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION private.complete_newsletter_delivery(text, text, text, integer, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION private.stage_newsletter_body(text, text, text, text) FROM PUBLIC;
+
+
+-- Resolve both signup sources in one request. Prefer a confirmed account for
+-- duplicate addresses, while keeping an independent email-only subscription
+-- usable when the account email is not confirmed.
+CREATE OR REPLACE FUNCTION private.newsletter_delivery_recipients()
+RETURNS TABLE (
+  id uuid, full_name text, municipality text, province text,
+  newsletter_city text, newsletter_category text, newsletter_unsub_token uuid,
+  email text, email_confirmed boolean, recipient_source text
+)
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = ''
+AS $$
+BEGIN
+  IF coalesce(auth.jwt() ->> 'role', '') <> 'service_role'
+    AND NOT private.current_user_is_admin() THEN
+    RAISE EXCEPTION 'Accesso riservato agli admin';
+  END IF;
+  RETURN QUERY
+  SELECT DISTINCT ON (lower(trim(r.email)))
+    r.id, r.full_name, r.municipality, r.province,
+    r.newsletter_city, r.newsletter_category, r.newsletter_unsub_token,
+    lower(trim(r.email)), r.email_confirmed, r.recipient_source
+  FROM (
+    SELECT p.id, p.full_name, p.municipality, p.province,
+      p.newsletter_city, p.newsletter_category, p.newsletter_unsub_token,
+      u.email::text, (u.email_confirmed_at IS NOT NULL) AS email_confirmed,
+      'profile'::text AS recipient_source
+    FROM public.profiles p JOIN auth.users u ON u.id = p.id
+    WHERE p.newsletter_opt_in IS TRUE
+    UNION ALL
+    SELECT s.id, NULL::text, s.city, NULL::text, s.city, s.category,
+      s.unsub_token, s.email::text, true, 'subscriber'::text
+    FROM public.newsletter_subscribers s WHERE s.opt_in IS TRUE
+  ) r
+  WHERE coalesce(trim(r.email), '') <> ''
+  ORDER BY lower(trim(r.email)), r.email_confirmed DESC,
+    CASE WHEN r.recipient_source = 'profile' THEN 0 ELSE 1 END, r.id;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.newsletter_delivery_recipients()
+RETURNS TABLE (
+  id uuid, full_name text, municipality text, province text,
+  newsletter_city text, newsletter_category text, newsletter_unsub_token uuid,
+  email text, email_confirmed boolean, recipient_source text
+)
+LANGUAGE sql SECURITY DEFINER SET search_path = ''
+AS $$ SELECT * FROM private.newsletter_delivery_recipients(); $$;
+
+REVOKE ALL ON FUNCTION private.newsletter_delivery_recipients() FROM PUBLIC;
+REVOKE ALL ON FUNCTION public.newsletter_delivery_recipients() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.newsletter_delivery_recipients() TO authenticated, service_role;

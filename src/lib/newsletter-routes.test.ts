@@ -65,7 +65,7 @@ const fakeClient = {
     return queryResult([]);
   },
   rpc(name: string) {
-    if (name === "admin_newsletter_recipients") {
+    if (name === "newsletter_delivery_recipients") {
       return Promise.resolve({
         data: [
           {
@@ -78,6 +78,7 @@ const fakeClient = {
             newsletter_unsub_token: "token",
             email: "ada@example.test",
             email_confirmed: true,
+            recipient_source: "profile",
           },
         ],
         error: null,

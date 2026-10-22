@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 export const NEWSLETTER_BATCH_LIMIT = 20;
 
 export const NEWSLETTER_STRUCTURE_MESSAGE =
@@ -8,12 +10,20 @@ export type NewsletterDeliverySource = "profile" | "subscriber" | "test";
 export type NewsletterDeliveryRecipient = {
   id: string;
   source: NewsletterDeliverySource;
+  email?: string | null;
 };
 
 export function newsletterRecipientKey(
   source: NewsletterDeliverySource,
   id: string,
+  email?: string | null,
 ) {
+  // A person may move from email-only signup to an account during the week.
+  // The address, rather than the signup source, is the delivery identity.
+  if (email?.trim()) {
+    const digest = createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+    return `${source === "test" ? "test" : "email"}:${digest}`;
+  }
   return `${source}:${id}`;
 }
 
@@ -35,6 +45,7 @@ export function isMissingNewsletterStructure(error: {
     code === "PGRST202" ||
     code === "42883" ||
     code === "42P01" ||
+    message.includes("newsletter_delivery_recipients") ||
     message.includes("claim_newsletter_delivery") ||
     message.includes("stage_newsletter_body") ||
     message.includes("newsletter_week_deliveries") ||
@@ -102,12 +113,13 @@ export async function deliverNewsletterBatch({
   perform: (
     recipient: NewsletterDeliveryRecipient,
     idempotencyKey: string,
-  ) => Promise<"sent" | "skipped">;
+  ) => Promise<"sent" | "skipped" | { status: "sent" | "skipped"; eventsCount: number }>;
   complete: (input: {
     recipientKey: string;
     weekKey: string;
     status: "sent" | "skipped" | "failed";
     errorMessage?: string;
+    eventsCount?: number;
   }) => Promise<void>;
 }): Promise<NewsletterBatchResult> {
   const result: NewsletterBatchResult = {
@@ -117,15 +129,15 @@ export async function deliverNewsletterBatch({
     remaining: 0,
     errors: [],
   };
-  let delivered = 0;
+  let attempted = 0;
 
   for (const recipient of recipients) {
-    if (delivered >= limit) {
+    if (attempted >= limit) {
       result.remaining += 1;
       continue;
     }
 
-    const recipientKey = newsletterRecipientKey(recipient.source, recipient.id);
+    const recipientKey = newsletterRecipientKey(recipient.source, recipient.id, recipient.email);
     const idempotencyKey = newsletterIdempotencyKey(weekKey, recipientKey);
     let decision: NewsletterClaim;
     try {
@@ -151,15 +163,18 @@ export async function deliverNewsletterBatch({
       continue;
     }
 
+    attempted += 1;
+
     try {
-      const outcome = await perform(recipient, decision.idempotencyKey);
+      const performed = await perform(recipient, decision.idempotencyKey);
+      const outcome = typeof performed === "string" ? performed : performed.status;
       await complete({
         recipientKey,
         weekKey,
         status: outcome,
+        eventsCount: typeof performed === "string" ? 0 : performed.eventsCount,
       });
       if (outcome === "sent") {
-        delivered += 1;
         result.sent += 1;
       } else {
         result.skipped += 1;

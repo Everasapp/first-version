@@ -3,7 +3,8 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import type { GeoArea } from "@/src/lib/geo-area";
-import { areaExplorePath } from "@/src/lib/geo-area";
+import { areaToSlug } from "@/src/utils/nearby-city";
+import { LEARNING_PATH } from "@/src/lib/learning-courses";
 import { formatNewsletterCategoryLabels } from "@/src/lib/newsletter-categories";
 
 export type NewsletterEvent = {
@@ -59,9 +60,9 @@ function eventPriceLabel(event: NewsletterEvent) {
 
 function eventCardHtml(event: NewsletterEvent, siteUrl: string) {
   const href = `${siteUrl}/eventi/${encodeURIComponent(event.slug)}`;
-  const image = event.image_url || `${siteUrl}/images/concert.webp`;
+  const image = event.image_url || `${siteUrl}/images/learning/imparare-sardegna-hero.webp`;
   const place = event.location_name || event.municipality;
-  const category = resolveCategoryLabels(event)[0] ?? "Evento";
+  const category = resolveCategoryLabels(event)[0] ?? "Corso o laboratorio";
   const price = eventPriceLabel(event);
 
   return `
@@ -111,7 +112,7 @@ export function buildNewsletterHtml({
 }) {
   const greeting = fullName?.trim().split(/\s+/)[0] || "ciao";
   const logoUrl = `${siteUrl}/images/everas-logo-v2.png`;
-  const exploreHref = `${siteUrl}${areaExplorePath(area)}`;
+  const exploreHref = `${siteUrl}${LEARNING_PATH}${area ? `?area=${areaToSlug(area)}` : ""}`;
   const areaLabel = area || "Sardegna";
   const categoryLabel = category ? getCategoryLabel(category) : null;
   const introPlace = city
@@ -145,7 +146,7 @@ export function buildNewsletterHtml({
                         Newsletter settimanale · ${escapeHtml(weekLabel)}
                       </div>
                       <h1 style="margin:12px 0 0;font-size:28px;line-height:1.2;font-weight:800;">
-                        Cosa fare questa settimana
+                        Impara qualcosa di nuovo
                       </h1>
                       <p style="margin:10px 0 0;font-size:15px;line-height:1.5;opacity:0.92;">
                         ${escapeHtml(areaLabel)}${categoryLabel ? ` · ${escapeHtml(categoryLabel)}` : ""}
@@ -158,7 +159,7 @@ export function buildNewsletterHtml({
                         Ciao ${escapeHtml(greeting)},
                       </p>
                       <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">
-                        Ecco gli eventi in programma ${escapeHtml(introPlace)} dal ${escapeHtml(weekLabel)}.
+                        Una selezione di formazione, corsi e workshop ${escapeHtml(introPlace)}, in corso o in partenza nelle prossime quattro settimane. Verifica nella scheda requisiti e modalità di iscrizione.
                       </p>
                       ${
                         hasEvents
@@ -176,11 +177,11 @@ export function buildNewsletterHtml({
                             : ""
                         }
                       `
-                          : `<p style="margin:0;color:#64748b;font-size:15px;">Questa settimana non abbiamo trovato eventi per la tua zona. Intanto puoi esplorare tutta la Sardegna su EVERAS.</p>`
+                          : `<p style="margin:0;color:#64748b;font-size:15px;">Non abbiamo trovato corsi pertinenti per la tua zona. Puoi consultare il catalogo di tutta la Sardegna su EVERAS.</p>`
                       }
                       <p style="margin:12px 0 0;">
                         <a href="${escapeHtml(exploreHref)}" style="display:inline-block;background:#E67E22;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:14px;">
-                          Vedi tutti gli eventi
+                          Esplora corsi e laboratori
                         </a>
                       </p>
                     </td>
