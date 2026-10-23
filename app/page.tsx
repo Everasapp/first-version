@@ -5,6 +5,7 @@ import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
 import Header from "@/src/components/home/Header";
 import Link from "next/link";
+import LearningCollectionLinks from "@/src/components/seo/LearningCollectionLinks";
 import CareerPathCards from "@/src/components/seo/CareerPathCards";
 import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
 import { PASSION_PATH } from "@/src/lib/editorial-learning-paths";
@@ -180,6 +181,7 @@ export default function Home() {
         >
           <HomeContent />
         </Suspense>
+        <LearningCollectionLinks />
         <section aria-labelledby="idee-percorsi-title" className="border-t border-slate-200 bg-slate-50 py-12">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi - Career change</h2>
