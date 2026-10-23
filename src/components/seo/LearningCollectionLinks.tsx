@@ -4,6 +4,9 @@ const collections = [
   { slug: "per-disoccupati", title: "Corsi gratuiti per disoccupati", text: "Confronta i percorsi e verifica con l’ente i requisiti di accesso." },
   { slug: "nord-sardegna", title: "Corsi e workshop nel Nord Sardegna", text: "Trova attività a Sassari, in Gallura e negli altri comuni del Nord." },
   { slug: "iscrizioni-in-scadenza", title: "Iscrizioni in scadenza", text: "Consulta i termini ufficiali verificati nei prossimi 30 giorni." },
+  { slug: "in-partenza-prossimo-mese", title: "Corsi in partenza", text: "Organizza il prossimo mese con i corsi che hanno già una data di avvio." },
+  { slug: "inglese-nord-sardegna", title: "Inglese nel Nord Sardegna", text: "Confronta livelli, sedi e condizioni dei corsi di lingua inglese." },
+  { slug: "amministrazione-contabilita", title: "Lavorare in amministrazione", text: "Scegli i corsi di amministrazione e contabilità e consulta il percorso per cambiare lavoro." },
 ] as const;
 
 export default function LearningCollectionLinks() {

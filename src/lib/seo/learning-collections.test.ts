@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { findLearningSeoPage, matchesLearningSeoPage } from "./learning-pages";
+import { findLearningSeoPage, learningCollectionMonth, matchesLearningSeoPage } from "./learning-pages";
 import { getCourseDeadline } from "../course-registration-deadlines";
 import type { EventCardData } from "@/src/components/home/EventCard";
 
@@ -58,6 +58,68 @@ describe("course collections", () => {
     expect(matchesLearningSeoPage({ ...eligible, title: "Corso di Excel" }, unemployed, now)).toBe(false);
     expect(matchesLearningSeoPage({ ...eligible, title: "Mongolfiere", learningTopic: "imparare-professioni" }, unemployed, now)).toBe(false);
     expect(matchesLearningSeoPage({ ...eligible, learningTopic: "imparare-arti" }, unemployed, now)).toBe(false);
+  });
+  it("combines English discipline and northern location without including unrelated courses", () => {
+    const page = findLearningSeoPage("inglese-nord-sardegna")!;
+    const english = { ...card, title: "Inglese base", category: "Lingue" };
+    expect(matchesLearningSeoPage(english, page, now)).toBe(true);
+    expect(matchesLearningSeoPage({ ...english, municipality: "Online" }, page, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...english, title: "Spagnolo base" }, page, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...english, category: "Turismo", title: "Booking con inglese" }, page, now)).toBe(false);
+  });
+  it("keeps central, southern and Olbia collections geographically distinct", () => {
+    for (const [slug, inside, outside] of [["centro-sardegna", "Nuoro", "Cagliari"], ["sud-sardegna", "Cagliari", "Sassari"], ["olbia", "Olbia", "Sassari"]]) {
+      const page = findLearningSeoPage(slug)!;
+      expect(matchesLearningSeoPage({ title: "Corso", municipality: inside }, page, now)).toBe(true);
+      expect(matchesLearningSeoPage({ title: "Corso", municipality: outside }, page, now)).toBe(false);
+    }
+  });
+  it("selects the administrative discipline in Formazione and links to the existing career guide", () => {
+    const page = findLearningSeoPage("amministrazione-contabilita")!;
+    const event = { ...card, category: "Amministrazione e contabilità", learningTopic: "imparare-professioni" };
+    expect(matchesLearningSeoPage(event, page, now)).toBe(true);
+    expect(matchesLearningSeoPage({ ...event, category: "Lingue" }, page, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...event, learningTopic: "imparare-arti" }, page, now)).toBe(false);
+    expect(page.relatedPath?.href).toBe("/idee-e-percorsi/diventare-addetto-amministrativo-contabile");
+  });
+  it("uses the course start, not its end, to group upcoming starts by month", () => {
+    const october = findLearningSeoPage("in-partenza-questo-mese", now)!;
+    const november = findLearningSeoPage("in-partenza-prossimo-mese", now)!;
+    expect(matchesLearningSeoPage(card, november, now)).toBe(true);
+    expect(matchesLearningSeoPage(card, october, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...card, startDate: "2026-10-28T09:00:00Z" }, october, now)).toBe(true);
+    expect(matchesLearningSeoPage({ ...card, startDate: "2026-10-01T09:00:00Z" }, october, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...card, startDate: "", scheduleMode: "enrollment" }, november, now)).toBe(false);
+    expect(matchesLearningSeoPage({ ...card, startDate: "not-a-date" }, november, now)).toBe(false);
+  });
+  it("uses Rome midnight for both month boundaries and current-day inclusion", () => {
+    const october = findLearningSeoPage("in-partenza-questo-mese", now)!;
+    const november = findLearningSeoPage("in-partenza-prossimo-mese", now)!;
+    expect(matchesLearningSeoPage({ ...card, startDate: "2026-10-31T23:15:00Z" }, november, now)).toBe(true);
+    expect(matchesLearningSeoPage({ ...card, startDate: "2026-10-31T23:15:00Z" }, october, now)).toBe(false);
+    const romeNovember = new Date("2026-10-31T23:30:00Z");
+    expect(learningCollectionMonth(0, romeNovember).key).toBe("2026-11");
+    expect(findLearningSeoPage("in-partenza-questo-mese", romeNovember)?.title).toContain("novembre 2026");
+  });
+  it("rolls month and year without requiring a new page or deploy", () => {
+    const december = new Date("2026-12-20T12:00:00Z");
+    expect(learningCollectionMonth(1, december)).toEqual({ key: "2027-01", label: "gennaio 2027" });
+    const page = findLearningSeoPage("in-partenza-prossimo-mese", december)!;
+    expect(page.title).toContain("gennaio 2027");
+    expect(matchesLearningSeoPage({ ...card, startDate: "2027-01-10T10:00:00Z" }, page, december)).toBe(true);
+    expect(matchesLearningSeoPage(card, page, december)).toBe(false);
+  });
+  it("renders month-specific metadata and orders the original course links chronologically", async () => {
+    vi.useFakeTimers(); vi.setSystemTime(now);
+    loader.mockResolvedValue({ events: [card, { ...card, id: "early-course", eventId: "early", title: "Early course", startDate: "2026-11-02T09:00:00Z" }], error: null });
+    const params = Promise.resolve({ slug: "in-partenza-prossimo-mese" });
+    const metadata = await generateMetadata({ params });
+    expect(metadata.title).toBe("Corsi in partenza a novembre 2026");
+    expect(metadata.alternates?.canonical).toBe("/corsi/in-partenza-prossimo-mese");
+    const html = renderToStaticMarkup(await LearningSeoLanding({ params }));
+    expect(html.indexOf("/eventi/early-course")).toBeLessThan(html.indexOf(`/eventi/${slug}`));
+    expect(html).toContain("Questo mese");
+    expect(html).toContain("Il prossimo mese");
   });
   it("uses the original course URL and renders official deadline evidence", async () => {
     vi.useFakeTimers(); vi.setSystemTime(now);

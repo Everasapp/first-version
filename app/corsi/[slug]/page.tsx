@@ -41,6 +41,7 @@ export default async function LearningSeoLanding({ params }: Props) {
   const { events, error } = await loadFilteredPublishedEvents({ learningOnly: true });
   const now = new Date();
   const filtered = events.filter((event) => matchesLearningSeoPage(event, page, now));
+  if (page.startMonthOffset !== undefined) filtered.sort((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate) || a.title.localeCompare(b.title, "it"));
   if (page.closingSoon) filtered.sort((a, b) =>
     Date.parse(getCourseDeadline(a.id, now)!.closesAt) - Date.parse(getCourseDeadline(b.id, now)!.closesAt)
     || a.title.localeCompare(b.title, "it"));
@@ -69,7 +70,16 @@ export default async function LearningSeoLanding({ params }: Props) {
             <p className="mt-3 leading-relaxed text-slate-700">{item.text}</p>
           </div>)}
         </section> : null}
-        {page.area ? <p className="mt-6 text-slate-700">Cerchi in città? <Link href="/corsi/sassari" prefetch={false} className="font-semibold text-[#075EAE] underline">Vedi i corsi a Sassari</Link>. Per altre sedi usa <Link href="/imparare-e-fare-in-sardegna#ricerca" prefetch={false} className="font-semibold text-[#075EAE] underline">la ricerca per comune</Link>.</p> : null}
+        {page.relatedPath ? <aside className="mt-6 rounded-2xl border border-blue-100 bg-white p-5">
+          <h2 className="text-lg font-bold text-slate-900">Costruisci un percorso di studio</h2>
+          <p className="mt-2 text-slate-700">Usa la guida per capire cosa imparare prima, quali esercizi fare e come collegare i corsi alle competenze del ruolo.</p>
+          <Link href={page.relatedPath.href} prefetch={false} className="mt-3 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">{page.relatedPath.label} →</Link>
+        </aside> : null}
+        {page.area ? <p className="mt-6 text-slate-700">Cerchi in città? <Link href={page.area === "Sud Sardegna" ? "/corsi/cagliari" : page.area === "Nord Sardegna" ? "/corsi/sassari" : "/imparare-e-fare-in-sardegna#ricerca"} prefetch={false} className="font-semibold text-[#075EAE] underline">{page.area === "Sud Sardegna" ? "Vedi i corsi a Cagliari" : page.area === "Nord Sardegna" ? "Vedi i corsi a Sassari" : "Scegli il comune"}</Link>. Per altre sedi usa <Link href="/imparare-e-fare-in-sardegna#ricerca" prefetch={false} className="font-semibold text-[#075EAE] underline">la ricerca per comune</Link>.</p> : null}
+        {page.startMonthOffset !== undefined ? <nav aria-label="Scegli il mese di avvio" className="mt-6 flex flex-wrap gap-3">
+          <Link href="/corsi/in-partenza-questo-mese" prefetch={false} aria-current={page.startMonthOffset === 0 ? "page" : undefined} className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-4 py-2 font-semibold text-[#075EAE] aria-[current=page]:border-[#075EAE]">Questo mese</Link>
+          <Link href="/corsi/in-partenza-prossimo-mese" prefetch={false} aria-current={page.startMonthOffset === 1 ? "page" : undefined} className="inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-4 py-2 font-semibold text-[#075EAE] aria-[current=page]:border-[#075EAE]">Il prossimo mese</Link>
+        </nav> : null}
         <section className="mt-12" aria-labelledby="courses-list-title">
           <h2 id="courses-list-title" className="text-2xl font-bold text-slate-900">{page.closingSoon ? "Scadenze verificate nei prossimi 30 giorni" : "Corsi disponibili"}</h2>
           {!error ? <p className="mt-2 text-slate-600">{filtered.length} {filtered.length === 1 ? "proposta nel catalogo" : "proposte nel catalogo"}</p> : null}
