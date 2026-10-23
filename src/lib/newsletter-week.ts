@@ -279,14 +279,13 @@ export async function loadWeekEvents(
     )
     .eq("status", "published")
     .or(PUBLIC_LEARNING_FILTER)
-    .gte("start_at", now.toISOString())
     .lt("start_at", end.toISOString())
     .order("start_at", { ascending: true });
 
   if (error) throw new Error(error.message);
 
   const events = ((data ?? []) as WeekEventRow[]).filter((event) =>
-    isLearningEvent(event) && !isLikelyDuplicateTitle(event.title),
+    isLearningEvent(event) && new Date(event.start_at).getTime() >= now.getTime() && !isLikelyDuplicateTitle(event.title),
   );
 
   return { week, events };
