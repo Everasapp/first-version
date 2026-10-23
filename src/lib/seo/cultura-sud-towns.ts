@@ -117,7 +117,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
       credit: everasHeroCredit("/cultura-sarda/sud-sardegna/assemini"),
     },
     intro:
-      "Ad Assemini il mestiere visibile è il tornio. Il Comune si presenta come paese della ceramica; il municipio è socio dell’Associazione Italiana Città della Ceramica. Cagliari è vicina: qui il punto non è l’hinterland, è su strexu.",
+      "Assemini offre due percorsi che si completano: la ceramica, con il vasellame tradizionale chiamato su strexu, e il centro storico, dove San Giovanni conserva testimonianze dell’età bizantina e giudicale. Per organizzare una visita conviene scegliere prima il luogo che richiede un’apertura concordata, una bottega o la collezione ceramica, e dedicare il resto della passeggiata alle architetture del paese.",
     historyHeading: "Nel Campidano, dietro Cagliari",
     history: [
       "Assemini sta in pianura alle spalle del capoluogo, dove il Cixerri e il Flumini Mannu arrivano alla laguna di Santa Gilla. Il Comune descrive un abitato di campi, orti e botteghe, e mette al centro i ceramisti. Non allarghiamo questa scheda alla città metropolitana né alla laguna come guida naturalistica: il riconoscimento culturale che il Comune rivendica è la ceramica.",
@@ -135,11 +135,19 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         body: "Il Comune ha dedicato all’arte una mostra mercato permanente, con produzioni locali. L’AiCC e Mater Ceramica indicano il Centro Pilota per la Ceramica (via Lazio) come sede della collezione e del confronto con altri centri italiani. Orari, aperture e laboratori si chiedono al Comune (ufficio attività produttive): qui non si copiano. La guida EVERAS all’artigianato colloca Assemini nella filiera della ceramica senza fare catalogo di vendita.",
       },
     ],
-    visitHeading: "Dove si vede il mestiere",
+    visitHeading: "Ceramica e centro storico: cosa vedere",
     visit: [
       {
         name: "Centro Pilota per la Ceramica",
         body: "È il punto civico della filiera: collezione e mostra dei ceramisti asseminesi, non un museo statale. Contatti sul Comune e sulle pagine AiCC / Buongiorno Ceramica. Una bottega in paese non è automaticamente visitabile: si conferma con l’artigiano.",
+      },
+      {
+        name: "Chiesa di San Giovanni Battista",
+        body: "In via San Giovanni, l’edificio presenta una pianta cruciforme e una cupola centrale. SardegnaCultura ne propone una datazione al X secolo, segnalando che la cronologia è discussa. Al suo interno sono conservate iscrizioni greche legate ai nomi di Torcotorio e Getite: una testimonianza del passaggio fra il mondo bizantino e quello dei giudicati. Prima di partire verifica l’accesso all’interno; una passeggiata nel centro non garantisce che la chiesa sia aperta.",
+      },
+      {
+        name: "Una visita in bottega",
+        body: "Se vuoi conoscere il lavoro del ceramista, chiedi all’artigiano se è possibile assistere a una lavorazione e in quale momento. Tornitura, essiccazione e cottura sono fasi diverse: non tutte si possono vedere nella stessa visita. Per un laboratorio, chiarisci prima durata, costo, età dei partecipanti e modalità di ritiro dell’oggetto. Sono domande utili anche per distinguere una dimostrazione da un’attività pratica prenotata.",
       },
     ],
     faqs: [
@@ -153,9 +161,14 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         answer:
           "Nella scheda AiCC di Assemini è il vasellame d’uso — scodelle, tegami, brocche e affini — prodotto al tornio. Non è un marchio IGP.",
       },
+      {
+        question: "Cosa vedere ad Assemini oltre alla ceramica?",
+        answer: "La chiesa di San Giovanni Battista nel centro storico, documentata da SardegnaCultura per le forme bizantine e le iscrizioni greche. Verifica l’apertura prima di programmare la visita interna.",
+      },
     ],
     sources: [
       { label: "Comune di Assemini", href: "https://www.comune.assemini.ca.it/" },
+      { label: "SardegnaCultura, chiesa di San Giovanni", href: "https://www.sardegnacultura.it/articolo/assemini-chiesa-di-san-giovanni" },
       {
         label: "Comune di Assemini, Città e territorio",
         href: "https://www.comune.assemini.ca.it/vivere-il-comune/citta-e-territorio.html",
@@ -2648,7 +2661,7 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
     slug: "samugheo",
     path: "/cultura-sarda/sud-sardegna/samugheo",
     town: "Samugheo",
-    province: "Sud Sardegna",
+    province: "Oristano",
     area: "Barigadu",
     title: "Samugheo e l’arte tessile sarda",
     h1: "I telai di Samugheo",
@@ -2683,6 +2696,14 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         name: "Museo Unico Regionale dell’Arte Tessile Sarda",
         body: "Via Bologna, alla periferia del paese. Proprietà comunale, servizio pubblico. La collezione permanente — lana, cotone, lino — comprende biancheria, abiti, teli da campagna e strumenti da telaio. Tra i pezzi che il museo segnala come rari: i tapinos ’e mortu, drappi usati per la veglia funebre. Orari e tariffe: murats.it. La guida EVERAS all’artigianato parla di tessitura soprattutto da Aggius: qui il rinvio è inverso, dal paese-museo alla filiera.",
       },
+      {
+        name: "Come leggere la collezione",
+        body: "Per orientarti, osserva prima la funzione degli oggetti: un telo da lavoro, un capo da festa e la biancheria domestica rispondono a esigenze diverse. Poi confronta materiali e motivi decorativi, aiutandoti con le didascalie e con le spiegazioni della guida. La carta dei servizi del MURATS descrive una raccolta proveniente da più località sarde: non tutti i pezzi esposti sono prodotti a Samugheo. Chiedere la provenienza aiuta a cogliere le differenze fra le tradizioni dell’isola.",
+      },
+      {
+        name: "Visite con bambini e accessibilità",
+        body: "Il Comune descrive attività didattiche con piccoli telai e una prova di tessitura. Contatta il museo per conoscere disponibilità, prenotazione e condizioni del laboratorio: non va considerato automaticamente incluso in ogni ingresso. La carta dei servizi segnala parcheggio, ascensore e servizi dedicati per persone con difficoltà motorie. Se hai esigenze specifiche, concorda l’assistenza prima dell’arrivo, chiamando il museo al numero 0783 631052.",
+      },
     ],
     faqs: [
       {
@@ -2694,6 +2715,14 @@ export const SUD_CULTURE_TOWNS: CultureTownArticle[] = [
         question: "Tessingiu e il MURATS sono la stessa cosa?",
         answer:
           "No. Il MURATS è il museo, aperto lungo l’anno secondo il proprio calendario. Tessingiu è la mostra dell’artigianato. In alcune edizioni il Comune ha previsto un biglietto unico: resta un’organizzazione, non una fusione delle due istituzioni.",
+      },
+      {
+        question: "Il museo è adatto a una visita con bambini?",
+        answer: "Il Comune documenta un percorso didattico di tessitura. Prima di organizzare la visita, chiedi al MURATS se l’attività è disponibile, per quali età e con quale prenotazione. Museo e laboratorio possono avere modalità diverse.",
+      },
+      {
+        question: "Dove verificare orari e prezzi del MURATS?",
+        answer: "Sul sito ufficiale del museo o contattandolo direttamente. Le pagine del Comune e la carta dei servizi riportano condizioni di gratuità non coincidenti per alcune fasce d’età: per il tuo gruppo chiedi conferma prima dell’acquisto.",
       },
     ],
     sources: [
