@@ -65,7 +65,7 @@ export default function NewsletterHtmlPreview({
           ? error
           : eventsCount == null
             ? "Caricamento anteprima…"
-            : `${eventsCount} eventi · ${subject}`}
+            : `${eventsCount} corsi · ${subject}`}
       </p>
       {html ? (
         <iframe
