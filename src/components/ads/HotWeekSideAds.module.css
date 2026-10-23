@@ -7,6 +7,14 @@
   scroll-snap-align: start;
 }
 
+/* Fill a static homepage row while preserving the existing 16.6rem / 22rem ratio.
+   Keep the minimum width so overflow detection can still switch to the carousel. */
+.fullWidthRow > .item {
+  flex-grow: 1;
+  height: auto;
+  aspect-ratio: 83 / 110;
+}
+
 .card {
   position: relative;
   width: 100%;

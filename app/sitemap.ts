@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { NEW_PASSION_PATHS, PASSION_PATH } from "@/src/lib/editorial-learning-paths";
 import { CAREER_LEARNING_PATHS, careerPathUrl } from "@/src/lib/career-learning-paths";
 import { learningSeoPages, matchesLearningSeoPage } from "@/src/lib/seo/learning-pages";
 import { loadHomeEventRows } from "@/src/lib/home/load-events";
@@ -52,6 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = [...new Set([
     "/", LEARNING_PATH, "/idee-e-percorsi", "/cultura", "/cultura-sarda",
     ...CAREER_LEARNING_PATHS.map((path) => careerPathUrl(path.slug)),
+    PASSION_PATH, ...NEW_PASSION_PATHS.map((path) => path.path),
     "/per-gli-organizzatori", "/chi-siamo", "/contatti", "/privacy", "/cookie", "/termini", "/pubblicita",
     ...CULTURA_ARTICLES.map((article) => article.path),
     ...CULTURE_AREAS.filter((area) => area.townPagesLive).map((area) => area.path),

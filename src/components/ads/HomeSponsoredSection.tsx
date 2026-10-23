@@ -420,7 +420,7 @@ export default function HomeSponsoredSection({
       const contentWidth = last.right - first.left;
 
       setDesktopOverflows(
-        contentWidth > container.clientWidth + 2,
+        contentWidth > scroller.clientWidth + 2,
       );
     };
 
@@ -612,7 +612,7 @@ export default function HomeSponsoredSection({
               className={
                 useCarousel
                   ? "flex h-full w-max max-w-none items-stretch gap-4 sm:gap-5"
-                  : "flex h-full flex-wrap items-stretch justify-start gap-4 sm:gap-5"
+                  : `flex h-full items-stretch gap-4 sm:gap-5 ${ads.length > 1 ? styles.fullWidthRow : ""}`
               }
             >
               {slides.map((ad, index) => {

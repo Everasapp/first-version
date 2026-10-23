@@ -6,6 +6,8 @@ import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 import Header from "@/src/components/home/Header";
 import Link from "next/link";
 import CareerPathCards from "@/src/components/seo/CareerPathCards";
+import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
+import { PASSION_PATH } from "@/src/lib/editorial-learning-paths";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
 import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
@@ -186,6 +188,12 @@ export default function Home() {
             <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Vuoi cambiare lavoro? Scegli una professione, scopri le tappe per formarti e costruisci un progetto da mostrare. Nella sezione trovi sei percorsi professionali, corsi collegati e idee per coltivare un interesse.</p>
             <CareerPathCards featured />
             <Link href="/idee-e-percorsi" prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Esplora idee e percorsi →</Link>
+            <div className="mt-12 border-t border-slate-200 pt-10">
+              <h2 className="text-2xl font-bold text-slate-900">Per passione: arte, materiali e territorio</h2>
+              <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Sperimenta con le mani, osserva il territorio e coltiva un interesse. Parti da un esercizio semplice e scegli un corso da approfondire.</p>
+              <EditorialPathCards featured />
+              <Link href={PASSION_PATH} prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Tutti i percorsi per passione →</Link>
+            </div>
           </div>
         </section>
       </main>
