@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { categories } from "@/src/data/categories";
-import { cities } from "@/src/data/cities";
+import NewsletterPreferenceFields from "@/src/components/newsletter/NewsletterPreferenceFields";
 import { buildAuthHref } from "@/src/lib/auth-urls";
+import { sanitizeNewsletterSelection } from "@/src/lib/newsletter-preferences";
 import { requestAdminNotification } from "@/src/lib/notifications/client";
 import { markEverasAccountKnown } from "@/src/lib/auth-preference";
 import { requestConfirmationEmail } from "@/src/lib/auth/request-confirmation-email";
@@ -29,8 +29,8 @@ export default function RegisterView({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
-  const [newsletterCity, setNewsletterCity] = useState("");
-  const [newsletterCategory, setNewsletterCategory] = useState("");
+  const [newsletterAreas, setNewsletterAreas] = useState<string[]>([]);
+  const [newsletterDisciplines, setNewsletterDisciplines] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -38,11 +38,6 @@ export default function RegisterView({
     redirect: redirectPath,
     email,
   });
-
-  const sortedCities = useMemo(
-    () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
-    [],
-  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,10 +54,11 @@ export default function RegisterView({
       return;
     }
 
-    if (newsletterOptIn && (!newsletterCity || !newsletterCategory)) {
-      setErrorMessage(
-        "Per la newsletter scegli città e disciplina preferita.",
-      );
+    const newsletterSelection = newsletterOptIn
+      ? sanitizeNewsletterSelection(newsletterAreas, newsletterDisciplines)
+      : null;
+    if (newsletterSelection && !newsletterSelection.ok) {
+      setErrorMessage(newsletterSelection.error);
       return;
     }
 
@@ -76,8 +72,10 @@ export default function RegisterView({
         data: {
           full_name: fullName.trim(),
           newsletter_opt_in: newsletterOptIn,
-          newsletter_city: newsletterOptIn ? newsletterCity : null,
-          newsletter_category: newsletterOptIn ? newsletterCategory : null,
+          newsletter_areas: newsletterSelection?.ok ? newsletterSelection.selection.areas : [],
+          newsletter_disciplines: newsletterSelection?.ok
+            ? newsletterSelection.selection.disciplines
+            : [],
         },
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
       },
@@ -123,8 +121,8 @@ export default function RegisterView({
     setPassword("");
     setConfirmPassword("");
     setNewsletterOptIn(false);
-    setNewsletterCity("");
-    setNewsletterCategory("");
+    setNewsletterAreas([]);
+    setNewsletterDisciplines([]);
     setIsLoading(false);
   }
 
@@ -257,61 +255,22 @@ export default function RegisterView({
                     Voglio la newsletter settimanale
                   </span>
                   <span className="mt-1 block text-sm text-slate-600">
-                    Una volta a settimana ricevi gli eventi della tua area, con
-                    priorità alla città e alla disciplina preferita.
+                    Una volta a settimana, i corsi delle zone e delle discipline che
+                    scegli. Puoi farne a meno: la newsletter resta disponibile anche
+                    senza account.
                   </span>
                 </span>
               </label>
 
               {newsletterOptIn ? (
-                <div className="mt-4 grid gap-4">
-                  <div>
-                    <label
-                      htmlFor="newsletterCity"
-                      className="mb-2 block text-sm font-bold text-slate-700"
-                    >
-                      Città preferita
-                    </label>
-                    <select
-                      id="newsletterCity"
-                      required={newsletterOptIn}
-                      value={newsletterCity}
-                      onChange={(event) => setNewsletterCity(event.target.value)}
-                      className={inputClassName}
-                    >
-                      <option value="">Seleziona città</option>
-                      {sortedCities.map((city) => (
-                        <option key={city.id} value={city.city}>
-                          {city.city} ({city.province})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="newsletterCategory"
-                      className="mb-2 block text-sm font-bold text-slate-700"
-                    >
-                      Disciplina preferita
-                    </label>
-                    <select
-                      id="newsletterCategory"
-                      required={newsletterOptIn}
-                      value={newsletterCategory}
-                      onChange={(event) =>
-                        setNewsletterCategory(event.target.value)
-                      }
-                      className={inputClassName}
-                    >
-                      <option value="">Seleziona disciplina</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.slug}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="mt-4">
+                  <NewsletterPreferenceFields
+                    areas={newsletterAreas}
+                    disciplines={newsletterDisciplines}
+                    onAreasChange={setNewsletterAreas}
+                    onDisciplinesChange={setNewsletterDisciplines}
+                    name="register"
+                  />
                 </div>
               ) : null}
             </fieldset>

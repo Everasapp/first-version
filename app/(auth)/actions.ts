@@ -1,5 +1,6 @@
 "use server";
 
+import { sanitizeNewsletterSelection } from "@/src/lib/newsletter-preferences";
 import { createClient } from "@/src/lib/supabase/server";
 import { notifyNewUser } from "@/src/lib/notifications/notify";
 import { sendSignupConfirmationEmail } from "@/src/lib/auth/send-confirmation-email";
@@ -76,10 +77,12 @@ export async function registerAction(
   const passwordConfirm = String(formData.get("password_confirm") ?? "");
   const privacyAccepted = formData.get("privacy") === "on";
   const newsletterOptIn = formData.get("newsletter") === "on";
-  const newsletterCity = String(formData.get("newsletter_city") ?? "").trim();
-  const newsletterCategory = String(
-    formData.get("newsletter_category") ?? "",
-  ).trim();
+  const newsletterSelection = newsletterOptIn
+    ? sanitizeNewsletterSelection(
+        formData.getAll("register_areas"),
+        formData.getAll("register_disciplines"),
+      )
+    : null;
 
   if (!fullName || !email || !password || !passwordConfirm) {
     return { error: "Compila tutti i campi obbligatori." };
@@ -103,10 +106,8 @@ export async function registerAction(
     };
   }
 
-  if (newsletterOptIn && (!newsletterCity || !newsletterCategory)) {
-    return {
-      error: "Per la newsletter scegli città e categoria preferita.",
-    };
+  if (newsletterSelection && !newsletterSelection.ok) {
+    return { error: newsletterSelection.error };
   }
 
   const origin = getOrigin();
@@ -125,8 +126,10 @@ export async function registerAction(
       data: {
         full_name: fullName,
         newsletter_opt_in: newsletterOptIn,
-        newsletter_city: newsletterOptIn ? newsletterCity : null,
-        newsletter_category: newsletterOptIn ? newsletterCategory : null,
+        newsletter_areas: newsletterSelection?.ok ? newsletterSelection.selection.areas : [],
+        newsletter_disciplines: newsletterSelection?.ok
+          ? newsletterSelection.selection.disciplines
+          : [],
       },
       emailRedirectTo: `${origin}/auth/callback?next=/accedi`,
     },

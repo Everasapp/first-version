@@ -92,7 +92,9 @@ export function buildNewsletterHtml({
   fullName,
   city,
   area,
+  areas,
   category,
+  disciplineLabel,
   weekLabel,
   nearbyEvents,
   areaEvents,
@@ -102,7 +104,9 @@ export function buildNewsletterHtml({
   fullName: string | null;
   city: string | null;
   area: GeoArea | null;
+  areas?: string[] | null;
   category: string | null;
+  disciplineLabel?: string | null;
   weekLabel: string;
   nearbyEvents: NewsletterEvent[];
   areaEvents: NewsletterEvent[];
@@ -112,8 +116,8 @@ export function buildNewsletterHtml({
   const greeting = fullName?.trim().split(/\s+/)[0] || "ciao";
   const logoUrl = `${siteUrl}/images/everas-logo-v2.png`;
   const exploreHref = `${siteUrl}${areaExplorePath(area)}`;
-  const areaLabel = area || "Sardegna";
-  const categoryLabel = category ? getCategoryLabel(category) : null;
+  const areaLabel = areas?.length ? areas.join(" · ") : area || "Sardegna";
+  const categoryLabel = disciplineLabel || (category ? getCategoryLabel(category) : null);
   const introPlace = city
     ? `vicino a ${city}${area ? ` e nel ${area}` : ""}`
     : area

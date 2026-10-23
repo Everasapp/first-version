@@ -4,7 +4,10 @@ import { Mail } from "lucide-react";
 import NewsletterPreferencesForm from "@/src/components/dashboard/NewsletterPreferencesForm";
 import Header from "@/src/components/home/Header";
 import { requireOrganizer } from "@/src/lib/auth";
-import { getCategoryLabel } from "@/src/lib/newsletter";
+import {
+  formatDisciplineList,
+  resolveStoredNewsletterPreferences,
+} from "@/src/lib/newsletter-preferences";
 
 export default async function NewsletterPreferencesPage() {
   const { profile } = await requireOrganizer("/dashboard/newsletter");
@@ -24,18 +27,19 @@ export default async function NewsletterPreferencesPage() {
                 Newsletter
               </h1>
               <p className="mt-3 text-lg text-slate-600">
-                Ricevi ogni settimana gli eventi della tua area, con priorità
-                alla città e alla categoria che preferisci.
+                Ricevi ogni settimana i corsi delle zone e delle discipline che scegli.
               </p>
               {profile.newsletter_opt_in ? (
                 <p className="mt-2 text-sm text-slate-500">
                   Attiva per{" "}
                   <span className="font-semibold text-slate-700">
-                    {profile.newsletter_city}
+                    {resolveStoredNewsletterPreferences(profile).areas.join(", ")}
                   </span>
                   {" · "}
                   <span className="font-semibold text-slate-700">
-                    {getCategoryLabel(profile.newsletter_category)}
+                    {formatDisciplineList(
+                      resolveStoredNewsletterPreferences(profile).disciplines,
+                    )}
                   </span>
                 </p>
               ) : null}

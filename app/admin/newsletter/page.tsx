@@ -3,12 +3,15 @@ import Link from "next/link";
 import NewsletterHtmlPreview from "@/src/components/admin/NewsletterHtmlPreview";
 import SendWeeklyNewsletterButton from "@/src/components/admin/SendWeeklyNewsletterButton";
 import { requireAdmin } from "@/src/lib/auth";
-import { getCategoryLabel } from "@/src/lib/newsletter";
 import {
+  composeSubscriberNewsletter,
   loadNewsletterSubscribers,
   loadWeekEvents,
-  pickEventsForGeo,
 } from "@/src/lib/newsletter-week";
+import {
+  formatDisciplineList,
+  resolveStoredNewsletterPreferences,
+} from "@/src/lib/newsletter-preferences";
 import { ADMIN_NOTIFICATION_EMAIL } from "@/src/lib/notifications/config";
 import { resolveGeoPreference } from "@/src/lib/geo-area";
 
@@ -52,15 +55,15 @@ export default async function AdminNewsletterPage() {
         municipality: subscriber.municipality,
         province: subscriber.province,
       });
-      const picked = pickEventsForGeo(
+      const preview = composeSubscriberNewsletter({
+        subscriber,
         events,
-        geo,
-        subscriber.newsletter_category,
-      );
+        weekLabel: week.label,
+      });
       return {
         subscriber,
         geo,
-        eventsCount: picked.nearbyEvents.length + picked.areaEvents.length,
+        eventsCount: preview.eventsCount,
       };
     });
   } catch (error) {
@@ -152,14 +155,15 @@ export default async function AdminNewsletterPage() {
                   {subscriber.full_name || "Utente"}
                 </td>
                 <td className="px-4 py-3 text-slate-700">
-                  {geo.city || "—"}
-                  {geo.area ? ` · ${geo.area}` : ""}
+                  {resolveStoredNewsletterPreferences(subscriber).areas.join(", ") || "—"}
                   <span className="mt-1 block text-xs text-slate-500">
                     {geoSourceLabel(geo.source)}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-slate-700">
-                  {getCategoryLabel(subscriber.newsletter_category)}
+                  {formatDisciplineList(
+                    resolveStoredNewsletterPreferences(subscriber).disciplines,
+                  )}
                 </td>
                 <td className="px-4 py-3 text-slate-700">{eventsCount}</td>
               </tr>
