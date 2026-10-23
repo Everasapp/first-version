@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+  <title id="title">Addetto paghe e amministrazione del personale</title>
+  <desc id="desc">Percorso di formazione EVERAS. Grafica blu con un simbolo della professione.</desc>
+  <rect width="800" height="450" fill="#eaf3fb"/>
+  <path d="M520 0h280v450H520z" fill="#e2edf8"/>
+  <circle cx="656" cy="225" r="114" fill="#f6f9fd"/>
+  <circle cx="656" cy="225" r="140" fill="none" stroke="#075eae" stroke-opacity=".08" stroke-width="2"/>
+  <text x="48" y="61" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" letter-spacing="4" fill="#075eae">EVERAS</text>
+  <path d="M48 110h42" stroke="#c96a1a" stroke-width="5" stroke-linecap="round"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="-.6" fill="#123550"><tspan x="48" y="177">Addetto paghe</tspan><tspan x="48" y="223">e amministrazione</tspan><tspan x="48" y="269">del personale</tspan></text>
+  <g transform="translate(656 225)" fill="none" stroke="#075eae" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="-27" cy="-35" r="23"/><path d="M-73 43c0-34 20-48 46-48s46 14 46 48"/><rect x="13" y="-19" width="65" height="91" rx="9" fill="#eaf3fb"/><path d="M30 3h31M30 23h31M30 43h18"/></g>
+  <path d="M48 365h704" stroke="#075eae" stroke-opacity=".15"/>
+  <text x="48" y="402" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#075eae">IDEE E PERCORSI</text>
+</svg>

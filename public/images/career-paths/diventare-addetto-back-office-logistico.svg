@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+  <title id="title">Addetto back office logistico e gestione ordini</title>
+  <desc id="desc">Percorso di formazione EVERAS. Grafica blu con un simbolo della professione.</desc>
+  <rect width="800" height="450" fill="#eaf3fb"/>
+  <path d="M520 0h280v450H520z" fill="#e2edf8"/>
+  <circle cx="656" cy="225" r="114" fill="#f6f9fd"/>
+  <circle cx="656" cy="225" r="140" fill="none" stroke="#075eae" stroke-opacity=".08" stroke-width="2"/>
+  <text x="48" y="61" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" letter-spacing="4" fill="#075eae">EVERAS</text>
+  <path d="M48 110h42" stroke="#c96a1a" stroke-width="5" stroke-linecap="round"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="-.6" fill="#123550"><tspan x="48" y="177">Addetto back office</tspan><tspan x="48" y="223">logistico e gestione</tspan><tspan x="48" y="269">ordini</tspan></text>
+  <g transform="translate(656 225)" fill="none" stroke="#075eae" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="m-55-24 49-27 49 27v60L-6 64-55 36zM-55-24-6 4l49-28M-6 4v60M-30-38 49 7"/><path d="M48-57h28v34M76-23l-10-12M76-23l10-12M-76 2v48h14" stroke="#c96a1a"/></g>
+  <path d="M48 365h704" stroke="#075eae" stroke-opacity=".15"/>
+  <text x="48" y="402" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#075eae">IDEE E PERCORSI</text>
+</svg>
