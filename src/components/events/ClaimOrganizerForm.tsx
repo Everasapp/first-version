@@ -40,7 +40,7 @@ export default function ClaimOrganizerForm({
     <div className="space-y-5">
       <p className="text-sm leading-6 text-slate-600">
         {isAlreadyOrganizer
-          ? `Per gestire ${organizerName} e i ${eventCount} corsi già pubblicati, richiedi la verifica del tuo ruolo nell'organizzazione.`
+          ? `Per gestire ${organizerName} e i ${eventCount} corsi già pubblicati, richiedi la verifica del tuo ruolo nell’organizzazione.`
           : `Per gestire il profilo ${organizerName} e i ${eventCount} corsi già pubblicati, invia una richiesta di verifica al team EVERAS.`}
       </p>
       <p className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-900">
