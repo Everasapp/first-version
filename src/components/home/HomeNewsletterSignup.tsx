@@ -91,12 +91,14 @@ export default function HomeNewsletterSignup() {
           />
         </label>
 
-        <NewsletterPreferenceFields
-          areas={areas}
-          disciplines={disciplines}
-          onAreasChange={setAreas}
-          onDisciplinesChange={setDisciplines}
-        />
+        {email.trim() ? (
+          <NewsletterPreferenceFields
+            areas={areas}
+            disciplines={disciplines}
+            onAreasChange={setAreas}
+            onDisciplinesChange={setDisciplines}
+          />
+        ) : null}
 
         <button
           type="submit"
