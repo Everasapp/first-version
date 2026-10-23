@@ -4,7 +4,7 @@ import Header from "@/src/components/home/Header";
 import CareerPathCards from "@/src/components/seo/CareerPathCards";
 import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
 import JsonLd from "@/src/components/seo/JsonLd";
-import { IDEAS_PATH } from "@/src/lib/editorial-learning-paths";
+import { IDEAS_PATH, PASSION_PATH } from "@/src/lib/editorial-learning-paths";
 import { LEARNING_PATH } from "@/src/lib/learning-courses";
 import { breadcrumbListSchema, collectionPageSchema } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
@@ -40,6 +40,7 @@ export default function IdeasPage() {
         <section aria-labelledby="percorsi-title" className="mt-12">
           <h2 id="percorsi-title" className="mb-6 text-2xl font-bold text-slate-900">Per passione: arte, materiali e territorio</h2>
           <EditorialPathCards />
+          <Link href={PASSION_PATH} prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Tutti i percorsi per passione →</Link>
         </section>
         <section className="mt-12 rounded-2xl border border-slate-200 bg-white p-6">
           <h2 className="text-2xl font-bold text-slate-900">Continua a conoscere la Sardegna</h2>
