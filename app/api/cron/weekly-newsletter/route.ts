@@ -45,6 +45,20 @@ export async function GET(request: Request) {
   }
 
   const startedAt = new Date();
+  // Vercel schedules are UTC: two Monday invocations account for DST.
+  // Only the request in the 09:00 Europe/Rome hour is allowed to send.
+  if ((request.headers.get("user-agent") || "").includes("vercel-cron")) {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Rome",
+      weekday: "long",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(startedAt);
+    if (parts.find(p => p.type === "weekday")?.value !== "Monday" ||
+        parts.find(p => p.type === "hour")?.value !== "09") {
+      return NextResponse.json({ ok: true, skipped: "Outside Monday 09:00 Europe/Rome" });
+    }
+  }
 
   if (!isAuthorized(request)) {
     await logCronRun({
