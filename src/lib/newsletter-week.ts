@@ -105,6 +105,7 @@ export type WeeklyNewsletterSummary = {
 type WeekEventRow = NewsletterEvent & {
   slug: string | null;
   status: string;
+  created_at?: string | null;
   province?: string | null;
 };
 
@@ -203,6 +204,12 @@ function rankEvent(
   ) {
     score += 18;
   }
+  // Recently added courses have a modest advantage without overriding locality.
+  if (event.created_at) {
+    const ageDays = (Date.now() - new Date(event.created_at).getTime()) / 86400000;
+    if (ageDays >= 0 && ageDays <= 14) score += 16;
+    else if (ageDays > 14 && ageDays <= 30) score += 8;
+  }
   return score;
 }
 
@@ -240,12 +247,12 @@ export function buildNewsletterSubject(
   areas?: readonly string[] | null,
 ) {
   if (areas && areas.length > 1) {
-    return `Cosa fare questa settimana nelle tue zone · ${weekLabel}`;
+    return `Nuovi corsi e opportunità di formazione nelle tue zone · ${weekLabel}`;
   }
   if (area) {
-    return `Cosa fare questa settimana nel ${area} · ${weekLabel}`;
+    return `Nuovi corsi e opportunità di formazione nel ${area} · ${weekLabel}`;
   }
-  return `Cosa fare questa settimana in Sardegna · ${weekLabel}`;
+  return `Nuovi corsi e opportunità di formazione in Sardegna · ${weekLabel}`;
 }
 
 function getClient(supabase?: SupabaseClient) {
@@ -271,25 +278,31 @@ export async function loadWeekEvents(
   now = new Date(),
   supabase?: SupabaseClient,
 ) {
-  const week = getCurrentRomeWeekRange(now);
+  // Rolling 30-day window, not only the current calendar week.
+  const end = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const week = {
+    start: now,
+    end,
+    label: formatWeekRangeLabel(now, end),
+    weekKey: getCurrentRomeWeekRange(now).weekKey,
+  };
   const client = getClient(supabase);
 
   const { data, error } = await client
     .from("events")
     .select(
-      "id, slug, title, municipality, location_name, start_at, end_at, category, categories, subcategory, is_free, price_from, image_url, is_featured, status, province",
+      "id, slug, title, municipality, location_name, start_at, end_at, category, categories, subcategory, is_free, price_from, image_url, is_featured, status, province, created_at",
     )
     .eq("status", "published")
     .or(PUBLIC_LEARNING_FILTER)
-    .lt("start_at", week.end.toISOString())
+    .gte("start_at", now.toISOString())
+    .lt("start_at", end.toISOString())
     .order("start_at", { ascending: true });
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) throw new Error(error.message);
 
   const events = ((data ?? []) as WeekEventRow[]).filter((event) =>
-    isLearningEvent(event) && eventOverlapsWeek(event, week.start, week.end, now),
+    isLearningEvent(event) && !isLikelyDuplicateTitle(event.title),
   );
 
   return { week, events };
