@@ -11,7 +11,6 @@ import {
   sendCampaignEmailViaResend,
   sleep,
 } from "@/src/lib/admin/email-campaigns";
-import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesCategoryFilter } from "@/src/lib/event-categories";
 import {
   formatDisciplineList,
@@ -257,21 +256,6 @@ export function buildNewsletterSubject(
 
 function getClient(supabase?: SupabaseClient) {
   return supabase ?? createAdminClient();
-}
-
-function eventOverlapsWeek(
-  event: Pick<WeekEventRow, "start_at" | "end_at">,
-  weekStart: Date,
-  weekEnd: Date,
-  now: Date,
-) {
-  if (!isPublicEventActive(event.start_at, event.end_at, now)) {
-    return false;
-  }
-
-  const start = new Date(event.start_at).getTime();
-  const end = event.end_at ? new Date(event.end_at).getTime() : start;
-  return start < weekEnd.getTime() && end >= weekStart.getTime();
 }
 
 export async function loadWeekEvents(
