@@ -85,10 +85,10 @@ export default async function AdminNewsletterPage() {
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            Newsletter settimanale
+            Newsletter corsi · prossimi 30 giorni
           </h1>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Eventi del {weekLabel}. Ogni iscritto riceve gli appuntamenti della
+            Corsi in partenza dal {weekLabel}. Ogni iscritto riceve i corsi della
             sua area (Nord, Centro o Sud), con priorità alla città scelta in
             fase di registrazione. Ogni indirizzo riceve al massimo un invio
             per settimana. Se la registrazione nel database non è ancora
@@ -112,7 +112,7 @@ export default async function AdminNewsletterPage() {
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Eventi in settimana
+            Corsi nei prossimi 30 giorni
           </p>
           <p className="mt-2 text-3xl font-black text-slate-900">
             {eventsCount}
