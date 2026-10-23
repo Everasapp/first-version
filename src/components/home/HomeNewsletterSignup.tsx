@@ -78,18 +78,35 @@ export default function HomeNewsletterSignup() {
       </div>
 
       <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
-        <label>
-          <span className="sr-only">Email</span>
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            placeholder="La tua email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            className="h-11 w-full rounded-xl border border-[#c5d8ec] bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-[#075EAE] focus:ring-2 focus:ring-[#075EAE]/25"
-          />
-        </label>
+        <div className="flex items-center gap-2">
+          <label className="min-w-0 w-full max-w-72">
+            <span className="sr-only">Email</span>
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="La tua email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="h-11 w-full rounded-xl border border-[#c5d8ec] bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-[#075EAE] focus:ring-2 focus:ring-[#075EAE]/25"
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoading ? (
+              <>
+                <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin" />
+                Iscrizione...
+              </>
+            ) : (
+              "Iscriviti"
+            )}
+          </button>
+        </div>
 
         {email.trim() ? (
           <NewsletterPreferenceFields
@@ -99,21 +116,6 @@ export default function HomeNewsletterSignup() {
             onDisciplinesChange={setDisciplines}
           />
         ) : null}
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 text-sm font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-        >
-          {isLoading ? (
-            <>
-              <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin" />
-              Iscrizione...
-            </>
-          ) : (
-            "Iscriviti"
-          )}
-        </button>
 
         {errorMessage ? (
           <p className="rounded-xl bg-red-50 px-3 py-2 text-sm font-medium text-red-700 ring-1 ring-red-200">
