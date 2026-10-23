@@ -65,6 +65,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!homeError) {
     for (const page of learningSeoPages) {
       if (activeLearning.some((row) => matchesLearningSeoPage({
+        id: row.slug ?? undefined,
+        startDate: row.start_at ?? undefined,
+        scheduleMode: row.schedule_mode ?? undefined,
         title: row.title,
         municipality: row.municipality,
         learningTopic: row.subcategory ?? undefined,
