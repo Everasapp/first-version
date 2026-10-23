@@ -1,12 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { BadgeCheck, LoaderCircle } from "lucide-react";
-
-import { requestAdminNotification } from "@/src/lib/notifications/client";
-import type { ClaimOrganizerResult } from "@/src/lib/organizer-claim";
-import { createClient } from "@/src/lib/supabase/client";
+import { Mail } from "lucide-react";
 
 type ClaimOrganizerFormProps = {
   directoryId: string;
@@ -15,80 +9,55 @@ type ClaimOrganizerFormProps = {
   isAlreadyOrganizer: boolean;
 };
 
+/**
+ * Ownership must be verified by Everas before any courses are transferred.
+ * The old public claim_organizer_directory RPC is intentionally not called.
+ */
 export default function ClaimOrganizerForm({
   directoryId,
   organizerName,
   eventCount,
   isAlreadyOrganizer,
 }: ClaimOrganizerFormProps) {
-  const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  async function handleClaim() {
-    setErrorMessage("");
-    setIsLoading(true);
-
-    const { data, error } = await supabase.rpc("claim_organizer_directory", {
-      p_directory_id: directoryId,
-    });
-
-    if (error) {
-      setErrorMessage(error.message);
-      setIsLoading(false);
-      return;
-    }
-
-    const result = data as ClaimOrganizerResult | null;
-    if (result?.became_organizer) {
-      requestAdminNotification({ type: "organizer_registered" });
-    }
-
-    router.push("/dashboard?rivendicato=1");
-    router.refresh();
-  }
-
-  const eventsLabel =
-    eventCount === 1
-      ? "1 evento già pubblicato"
-      : `${eventCount} eventi già pubblicati`;
+  const subject = `Richiesta di rivendicazione profilo – ${organizerName}`;
+  const body = [
+    "Buongiorno team EVERAS,",
+    "",
+    `Vorrei richiedere la gestione del profilo organizzatore "${organizerName}".`,
+    `ID profilo: ${directoryId}`,
+    "",
+    "Nome e cognome del referente:",
+    "Ruolo nell'organizzazione:",
+    "Email aziendale di riferimento:",
+    "",
+    "Potete indicarmi come completare la verifica dell'autorizzazione?",
+    "",
+    "Grazie.",
+  ].join("\n");
+  const mailto = `mailto:info@everas.it?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   return (
     <div className="space-y-5">
       <p className="text-sm leading-6 text-slate-600">
         {isAlreadyOrganizer
-          ? `Confermi di rappresentare ${organizerName}? Potrai modificare ${eventsLabel}, pubblicarne altri e creare la pagina pubblica con tutti gli appuntamenti.`
-          : `Con lo stesso account diventi organizzatore di ${organizerName}, puoi modificare ${eventsLabel}, crearne di nuovi e pubblicare la pagina con tutti gli appuntamenti.`}
+          ? `Per gestire ${organizerName} e i ${eventCount} corsi già pubblicati, richiedi la verifica del tuo ruolo nell’organizzazione.`
+          : `Per gestire il profilo ${organizerName} e i ${eventCount} corsi già pubblicati, invia una richiesta di verifica al team EVERAS.`}
       </p>
-
-      {errorMessage ? (
-        <p
-          role="alert"
-          className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
-        >
-          {errorMessage}
-        </p>
-      ) : null}
-
-      <button
-        type="button"
-        onClick={() => void handleClaim()}
-        disabled={isLoading}
-        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 font-bold text-white transition hover:bg-[#C96A1A] disabled:cursor-not-allowed disabled:opacity-60"
+      <p className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-900">
+        Per proteggere gli organizzatori, il profilo e i corsi saranno assegnati
+        soltanto dopo la verifica e l’approvazione del team EVERAS.
+      </p>
+      <a
+        href={mailto}
+        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#E67E22] px-5 py-3 text-center font-bold text-white transition hover:bg-[#C96A1A]"
       >
-        {isLoading ? (
-          <>
-            <LoaderCircle aria-hidden="true" className="h-5 w-5 animate-spin" />
-            Rivendicazione in corso...
-          </>
-        ) : (
-          <>
-            <BadgeCheck aria-hidden="true" className="h-5 w-5" />
-            Rivendica organizzatore
-          </>
-        )}
-      </button>
+        <Mail aria-hidden="true" className="h-5 w-5" />
+        Richiedi la gestione del profilo
+      </a>
+      <p className="text-xs text-slate-500">
+        Si aprirà la tua applicazione email con una richiesta precompilata. Nessuna
+        proprietà viene trasferita automaticamente.
+      </p>
     </div>
   );
 }
