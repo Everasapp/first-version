@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import EventCard, { type EventCardData } from "@/src/components/home/EventCard";
+import { shuffleCarouselEvents } from "@/src/lib/home/shuffle-carousel-events";
 
 type HappeningTodayProps = {
   events: EventCardData[];
@@ -32,14 +33,25 @@ export default function HappeningToday({
   const snapRestoreTimerRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
+  const [shuffled, setShuffled] = useState<{
+    source: EventCardData[];
+    events: EventCardData[];
+  } | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     queueMicrotask(() => {
+      if (cancelled) return;
+      setShuffled({ source: events, events: shuffleCarouselEvents(events) });
       setVisibleCount(Math.min(INITIAL_CARDS, events.length || INITIAL_CARDS));
+      if (scrollerRef.current) scrollerRef.current.scrollLeft = 0;
     });
+    return () => { cancelled = true; };
   }, [events]);
 
-  const visibleEvents = events.slice(0, visibleCount);
+  // Match the server on the first client render; randomize only after hydration.
+  const orderedEvents = shuffled?.source === events ? shuffled.events : events;
+  const visibleEvents = orderedEvents.slice(0, visibleCount);
   const hasMore = visibleCount < events.length;
 
   useEffect(() => {
