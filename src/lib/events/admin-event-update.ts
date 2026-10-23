@@ -20,6 +20,7 @@ const STRING_FIELDS = [
 ] as const;
 
 const NULLABLE_STRINGS = new Set<string>([
+  "start_at",
   "description",
   "subcategory",
   "province",

@@ -5,7 +5,7 @@ import { formatEventHoursDetail } from "@/src/lib/formatEventDate";
 import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
 
 type EventPracticalFactsProps = {
-  startAt: string;
+  startAt: string | null;
   endAt?: string | null;
   isFree: boolean | null;
   priceFrom: number | string | null;
@@ -33,7 +33,7 @@ export default function EventPracticalFacts({
             className="mt-1 h-5 w-5 shrink-0 text-[#075EAE]"
           />
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Orari</h2>
+            <h2 className="text-lg font-bold text-slate-900">{scheduleMode === "enrollment" ? "Avvio del corso" : "Orari"}</h2>
             <p className="mt-1 text-slate-600">
               {hours.lines[0] || hours.summary}
             </p>
@@ -53,7 +53,7 @@ export default function EventPracticalFacts({
             className="mt-1 h-5 w-5 shrink-0 text-[#075EAE]"
           />
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Ingresso</h2>
+            <h2 className="text-lg font-bold text-slate-900">{scheduleMode === "enrollment" ? "Partecipazione" : "Ingresso"}</h2>
             <p className="mt-1 font-semibold text-slate-800">{admission.label}</p>
             <p className="mt-1 text-sm text-slate-600">{admission.detail}</p>
             {admission.ctaLabel && ticketUrl ? (

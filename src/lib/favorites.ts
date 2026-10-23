@@ -37,7 +37,8 @@ export type FavoriteEventListItem = {
   categories?: string[] | null;
   municipality: string;
   location_name: string | null;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
   end_at: string | null;
   image_url: string | null;
   is_free: boolean;
@@ -65,6 +66,7 @@ export async function getFavoriteEvents(userId: string) {
         municipality,
         location_name,
         start_at,
+        schedule_mode,
         end_at,
         image_url,
         is_free,
@@ -101,7 +103,8 @@ export async function getFavoriteEvents(userId: string) {
       categories: (event.categories as string[] | null) ?? null,
       municipality: event.municipality as string,
       location_name: event.location_name as string | null,
-      start_at: event.start_at as string,
+      start_at: event.start_at as string | null,
+      schedule_mode: event.schedule_mode as string | null,
       end_at: event.end_at as string | null,
       image_url: event.image_url as string | null,
       is_free: Boolean(event.is_free),

@@ -6,13 +6,15 @@ export type EventScheduleMode =
   | "single"
   | "continuous"
   | "series"
-  | "container";
+  | "container"
+  | "enrollment";
 
 export const EVENT_SCHEDULE_MODES: readonly EventScheduleMode[] = [
   "single",
   "continuous",
   "series",
   "container",
+  "enrollment",
 ] as const;
 
 export type EventScheduleModeOption = {
@@ -21,7 +23,10 @@ export type EventScheduleModeOption = {
   description: string;
 };
 
+export const ENROLLMENT_LABEL = "Preiscrizioni aperte · Avvio da definire";
+
 export const EVENT_SCHEDULE_MODE_OPTIONS: readonly EventScheduleModeOption[] = [
+  { value: "enrollment", label: "Preiscrizioni aperte, avvio da definire", description: "Corso con preiscrizioni confermate e calendario non ancora comunicato. Non inserire date provvisorie." },
   {
     value: "single",
     label: "Singolo appuntamento",

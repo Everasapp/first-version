@@ -61,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ])];
   // Only list populated evergreen SEO pages; empty ones remain noindex.
   const { rows: homeRows, error: homeError } = await loadHomeEventRows();
-  const activeLearning = homeRows.filter((row) => isPublicEventActive(row.start_at, row.end_at));
+  const activeLearning = homeRows.filter((row) => isPublicEventActive(row.start_at, row.end_at, new Date(), row.schedule_mode));
   if (!homeError) {
     for (const page of learningSeoPages) {
       if (activeLearning.some((row) => matchesLearningSeoPage({

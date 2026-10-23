@@ -86,10 +86,11 @@ export type EventContextLinkInput = {
   municipality: string;
   categorySlug: string;
   categoryLabel: string;
-  startAt: string;
+  startAt: string | null;
 };
 
-function eventMonthLink(startAt: string, from: Date): LandingLink | null {
+function eventMonthLink(startAt: string | null, from: Date): LandingLink | null {
+  if (!startAt) return null;
   const eventDate = new Date(startAt);
   if (Number.isNaN(eventDate.getTime())) return null;
 

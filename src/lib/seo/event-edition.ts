@@ -8,7 +8,7 @@ type EventEditionCandidate = {
   category?: string | null;
   categories?: string[] | null;
   municipality: string | null;
-  start_at: string;
+  start_at: string | null;
   end_at?: string | null;
 };
 
@@ -63,6 +63,7 @@ export function findNextEventEdition(
   candidates: EventEditionCandidate[],
   now = new Date(),
 ): EventEditionCandidate | null {
+  if (!current.start_at) return null;
   const currentKey = eventEditionTitleKey(current.title);
   const currentStart = new Date(current.start_at).getTime();
 
@@ -72,6 +73,7 @@ export function findNextEventEdition(
     candidates
       .filter((candidate) => {
         if (
+          !candidate.start_at ||
           candidate.id === current.id ||
           !candidate.slug ||
           eventEditionTitleKey(candidate.title) !== currentKey ||
@@ -82,13 +84,13 @@ export function findNextEventEdition(
           return false;
         }
 
-        const candidateStart = new Date(candidate.start_at).getTime();
+        const candidateStart = new Date(candidate.start_at ?? "").getTime();
         return Number.isFinite(candidateStart) && candidateStart > currentStart;
       })
       .sort(
         (left, right) =>
-          new Date(left.start_at).getTime() -
-          new Date(right.start_at).getTime(),
+          new Date(left.start_at ?? "").getTime() -
+          new Date(right.start_at ?? "").getTime(),
       )[0] ?? null
   );
 }

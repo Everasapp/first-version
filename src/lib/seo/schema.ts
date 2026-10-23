@@ -251,3 +251,17 @@ export function faqPageSchema(
     })),
   };
 }
+
+/** An open course intake with no scheduled CourseInstance yet. */
+export function enrollmentCourseSchema(input: {
+  name: string; description: string; url: string; organizerName?: string | null;
+  imageUrl?: string; isFree: boolean | null;
+}) {
+  return {
+    "@context": "https://schema.org", "@type": "Course", name: input.name,
+    description: input.description, url: input.url, inLanguage: "it-IT",
+    isAccessibleForFree: input.isFree ?? undefined,
+    image: input.imageUrl ? [input.imageUrl] : undefined,
+    provider: input.organizerName ? { "@type": "Organization", name: input.organizerName } : undefined,
+  };
+}

@@ -1,3 +1,4 @@
+import { enrollmentCourseSchema } from "@/src/lib/seo/schema";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -111,7 +112,7 @@ type EventRow = {
   municipality: string;
   location_name: string | null;
   address: string | null;
-  start_at: string;
+  start_at: string | null;
   end_at: string | null;
   schedule_mode?: string | null;
   image_url: string | null;
@@ -195,7 +196,7 @@ const getPublishedEventBySlug = cache(async (slug: string) => {
   return (data as EventRow | null) ?? null;
 });
 
-function formatEventDate(startAt: string, endAt: string | null) {
+function formatEventDate(startAt: string | null, endAt: string | null) {
   return formatEventDateRange(startAt, endAt, { includeWeekday: true });
 }
 
@@ -212,8 +213,8 @@ function mapEventForCard(event: EventCardRow, isFavorite = false) {
     area: event.province ?? "Sardegna",
     location: event.municipality,
     municipality: event.municipality,
-    date: formatEventDate(event.start_at, event.end_at),
-    startDate: event.start_at,
+    date: formatEventDateRange(event.start_at, event.end_at, { scheduleMode: event.schedule_mode }),
+    startDate: event.start_at ?? "",
     endDate: event.end_at ?? undefined,
     scheduleMode: parseEventScheduleMode(event.schedule_mode),
     imageUrl: event.image_url ?? "/images/concert.webp",
@@ -237,7 +238,7 @@ export async function generateMetadata({
       includeExpired: true,
     });
     const upcoming = events.filter((event) =>
-      isPublicEventActive(event.startDate, event.endDate),
+      isPublicEventActive(event.startDate, event.endDate, new Date(), event.scheduleMode),
     );
     return buildCityLandingMetadata(city, {
       upcoming: upcoming.length,
@@ -298,7 +299,7 @@ export async function generateMetadata({
   return {
     title: seoTitle,
     description,
-    robots: eventDetailRobots(data.start_at, data.end_at),
+    robots: eventDetailRobots(data.start_at, data.end_at, data.schedule_mode),
     alternates: {
       canonical: `/eventi/${slug}`,
     },
@@ -351,6 +352,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
     event.start_at,
     event.end_at,
     now,
+    event.schedule_mode,
   );
 
   const {
@@ -382,7 +384,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
   const eventCardSelect =
     "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
-  const activeEventFilter = `end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
+  const activeEventFilter = `schedule_mode.eq.enrollment,end_at.gte.${now.toISOString()},and(end_at.is.null,start_at.gte.${romeDayRange(romeYmd(now)).start.toISOString()})`;
 
   const [
     { data: similarData, error: similarError },
@@ -481,12 +483,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
     : null;
 
   const similarEvents = similarEventRows
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now, item.schedule_mode))
     .slice(0, 3)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
   const cityEvents = cityEventRows
-    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now))
+    .filter((item) => isPublicEventActive(item.start_at, item.end_at, now, item.schedule_mode))
     .slice(0, 6)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
@@ -557,7 +559,9 @@ async function EventDetailPage({ slug }: { slug: string }) {
       ) : null}
       <JsonLd
         data={
-          scheduleModeUsesEventSchema(scheduleMode)
+          scheduleMode === "enrollment"
+            ? enrollmentCourseSchema({ name: event.title, description: detailDescription, url: eventUrl, organizerName, imageUrl: shareImageUrl, isFree: pricing.isFree })
+            : scheduleModeUsesEventSchema(scheduleMode) && event.start_at
             ? eventSchema({
                 name: event.title,
                 description: detailDescription,
@@ -626,7 +630,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 size="md"
                 className="shadow-lg"
               />
-              {!isExpired ? (
+              {!isExpired && event.start_at ? (
                 <CalendarButton
                   eventId={event.id}
                   eventTitle={event.title}
@@ -956,7 +960,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                   </a>
                 ) : null}
 
-                {!isExpired ? (
+                {!isExpired && event.start_at ? (
                   <CalendarButton
                     eventId={event.id}
                     eventTitle={event.title}

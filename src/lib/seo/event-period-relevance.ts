@@ -16,6 +16,7 @@ const MODE_PRIORITY: Record<EventScheduleMode, number> = {
   continuous: 1,
   series: 2,
   container: 3,
+  enrollment: 4,
 };
 
 function timestamp(value: string | undefined, fallback: number) {

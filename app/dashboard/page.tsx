@@ -56,7 +56,8 @@ type DashboardEvent = {
   title: string;
   municipality: string;
   location_name: string | null;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
   end_at: string | null;
   image_url: string | null;
   status: DashboardEventStatus;
@@ -142,7 +143,7 @@ const emptyCopy: Record<
   },
 };
 
-function formatDate(startAt: string, endAt?: string | null) {
+function formatDate(startAt: string | null, endAt?: string | null) {
   return formatEventDateRange(startAt, endAt);
 }
 
@@ -172,7 +173,7 @@ async function OrganizerDashboard({
     supabase
       .from("events")
       .select(
-        "id, slug, title, municipality, location_name, start_at, end_at, image_url, status, is_free, price_from, views_count, favorites_count, shares_count, is_featured",
+        "id, slug, title, municipality, location_name, start_at, end_at, schedule_mode, image_url, status, is_free, price_from, views_count, favorites_count, shares_count, is_featured",
       )
       .eq("organizer_id", userId)
       .order("created_at", { ascending: false }),

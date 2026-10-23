@@ -1,3 +1,4 @@
+import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import type { EventCardData } from "@/src/components/home/EventCard";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { isPublicEventActive } from "@/src/lib/eventActive";
@@ -21,7 +22,8 @@ export type OrganizerEventRow = {
   province: string | null;
   municipality: string;
   location_name: string | null;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
   end_at: string | null;
   image_url: string | null;
   is_free: boolean;
@@ -92,8 +94,8 @@ export function toOrganizerEventCard(
     title: event.title,
     category: categoryLabels[0] ?? event.category,
     categories: categoryLabels,
-    date: formatOrganizerEventDate(event.start_at),
-    startDate: event.start_at,
+    date: event.schedule_mode === "enrollment" || !event.start_at ? formatEventDateRange(event.start_at, event.end_at, { scheduleMode: event.schedule_mode }) : formatOrganizerEventDate(event.start_at),
+    startDate: event.start_at ?? "",
     endDate: event.end_at ?? undefined,
     location: event.location_name || event.municipality,
     municipality: event.municipality ?? undefined,
@@ -117,7 +119,7 @@ export function splitOrganizerEvents(
 
   for (const event of events) {
     const card = toOrganizerEventCard(event, favoriteIds);
-    if (isPublicEventActive(event.start_at, event.end_at, now)) {
+    if (isPublicEventActive(event.start_at, event.end_at, now, event.schedule_mode)) {
       upcoming.push(card);
     } else {
       past.push(card);

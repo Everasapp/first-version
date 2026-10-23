@@ -70,7 +70,7 @@ export type EditableEvent = {
   municipality: string;
   location_name: string | null;
   address: string | null;
-  start_at: string;
+  start_at: string | null;
   end_at: string | null;
   schedule_mode?: string | null;
   image_url: string | null;
@@ -221,23 +221,25 @@ export default function EditEventForm({
       nextErrors.learningTopic = "Scegli la macroarea e l’ambito del corso.";
     }
 
+    if (scheduleMode === "enrollment" && !isLearningTopic(learningTopic)) nextErrors.learningTopic = "La preiscrizione è disponibile solo per corsi e workshop.";
+
     if (!imagePreview) {
       nextErrors.image = "Carica una fotografia principale.";
     }
 
-    if (!startDate) {
+    if (scheduleMode !== "enrollment" && !startDate) {
       nextErrors.startDate = "Seleziona la data di inizio.";
     }
 
-    if (!startTime) {
+    if (scheduleMode !== "enrollment" && !startTime) {
       nextErrors.startTime = "Seleziona l'ora di inizio.";
     }
 
-    if (endDate && startDate && endDate < startDate) {
+    if (scheduleMode !== "enrollment" && endDate && startDate && endDate < startDate) {
       nextErrors.endDate = "La data di fine è precedente all’inizio.";
     }
 
-    if (endTime && !endDate) {
+    if (scheduleMode !== "enrollment" && endTime && !endDate) {
       nextErrors.endDate = "Inserisci anche la data di fine.";
     }
 
@@ -361,9 +363,9 @@ export default function EditEventForm({
       }
 
       const selectedCity = cities.find((item) => item.city === city);
-      const startAt = buildRomeIso(startDate, startTime);
+      const startAt = scheduleMode === "enrollment" ? null : buildRomeIso(startDate, startTime);
       let endAt: string | null = null;
-      if (endDate.trim()) {
+      if (scheduleMode !== "enrollment" && endDate.trim()) {
         endAt = buildRomeIso(endDate.trim(), endTime.trim() || "23:59");
       }
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
@@ -648,6 +650,7 @@ export default function EditEventForm({
               </span>
               <input
                 type="date"
+                disabled={scheduleMode === "enrollment"}
                 value={startDate}
                 onChange={(changeEvent) => {
                   setStartDate(changeEvent.target.value);
@@ -669,6 +672,7 @@ export default function EditEventForm({
               </span>
               <input
                 type="time"
+                disabled={scheduleMode === "enrollment"}
                 value={startTime}
                 onChange={(changeEvent) => {
                   setStartTime(changeEvent.target.value);
@@ -690,6 +694,7 @@ export default function EditEventForm({
               </span>
               <input
                 type="date"
+                disabled={scheduleMode === "enrollment"}
                 value={endDate}
                 onChange={(changeEvent) => {
                   setEndDate(changeEvent.target.value);
@@ -711,6 +716,7 @@ export default function EditEventForm({
               </span>
               <input
                 type="time"
+                disabled={scheduleMode === "enrollment"}
                 value={endTime}
                 onChange={(changeEvent) => {
                   setEndTime(changeEvent.target.value);
@@ -732,7 +738,7 @@ export default function EditEventForm({
                 «weekend».
               </p>
               <div className="mt-3 grid gap-3">
-                {EVENT_SCHEDULE_MODE_OPTIONS.map((option) => (
+                {EVENT_SCHEDULE_MODE_OPTIONS.filter((option) => option.value !== "enrollment" || isLearningTopic(learningTopic)).map((option) => (
                   <label
                     key={option.value}
                     className={`flex cursor-pointer gap-3 rounded-2xl border px-4 py-3 ${

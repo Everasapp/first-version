@@ -17,6 +17,7 @@ import { getPaidHomeAdsForDisplay } from "@/src/lib/ads/orders";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
 import { cities } from "@/src/data/cities";
 import { getCurrentUserFavoriteIds } from "@/src/lib/favorites";
+import { parseEventScheduleMode } from "@/src/lib/eventScheduleMode";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
@@ -55,10 +56,6 @@ export const metadata: Metadata = {
   },
 };
 
-function formatEventDate(startAt: string, endAt?: string | null) {
-  return formatEventDateRange(startAt, endAt);
-}
-
 function getArea(event: EventRow) {
   const city = cities.find(
     (item) =>
@@ -86,7 +83,7 @@ function getArea(event: EventRow) {
 
 function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
   const pricing = resolveEventPricing(event.is_free, event.price_from);
-  const status = resolveEventStatusBadge(event.start_at, event.end_at, now);
+  const status = resolveEventStatusBadge(event.start_at, event.end_at, now, event.schedule_mode);
   const categoryLabels = resolveCategoryLabels(event);
 
   return {
@@ -96,8 +93,9 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     category: categoryLabels[0] ?? event.category,
     learningTopic: isLearningTopic(event.subcategory) ? event.subcategory : undefined,
     categories: categoryLabels,
-    date: formatEventDate(event.start_at, event.end_at),
-    startDate: event.start_at,
+    date: formatEventDateRange(event.start_at, event.end_at, { scheduleMode: event.schedule_mode }),
+    startDate: event.start_at ?? "",
+    scheduleMode: parseEventScheduleMode(event.schedule_mode),
     endDate: event.end_at ?? undefined,
     location: event.location_name || event.municipality,
     municipality: event.municipality,
@@ -127,7 +125,7 @@ async function HomeContent() {
 
   const learningEvents = mixWeekEvents(rows.filter((event) =>
     isLearningTopic(event.subcategory) &&
-    isPublicEventActive(event.start_at, event.end_at, now),
+    isPublicEventActive(event.start_at, event.end_at, now, event.schedule_mode),
   ).map((event) => ({
     ...mapEvent(event, now), isFavorite: favoriteIds.has(event.id),
   })), now);

@@ -33,7 +33,8 @@ const statusLabels: Record<DashboardEventStatus, string> = {
   rejected: "Non approvato",
 };
 
-function formatDate(value: string) {
+function formatDate(value: string | null) {
+  if (!value) return "Avvio da definire";
   return new Intl.DateTimeFormat("it-IT", {
     day: "numeric",
     month: "long",
@@ -44,7 +45,8 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function getRelativeLabel(startAt: string, endAt: string | null) {
+function getRelativeLabel(startAt: string | null, endAt: string | null) {
+  if (!startAt) return "Avvio da definire";
   const now = Date.now();
   const reference = new Date(endAt ?? startAt).getTime();
   const diffMs = reference - now;

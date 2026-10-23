@@ -40,7 +40,7 @@ export type PublishedEventRow = {
   province: string | null;
   municipality: string | null;
   location_name: string | null;
-  start_at: string;
+  start_at: string | null;
   end_at: string | null;
   schedule_mode?: string | null;
   image_url: string | null;
@@ -64,7 +64,7 @@ function getEventArea(municipality: string | null) {
 }
 
 export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
-  const status = resolveEventStatusBadge(event.start_at, event.end_at);
+  const status = resolveEventStatusBadge(event.start_at, event.end_at, new Date(), event.schedule_mode);
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const categoryLabels = resolveCategoryLabels(event);
   const scheduleMode = parseEventScheduleMode(event.schedule_mode);
@@ -76,8 +76,8 @@ export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
     category: categoryLabels[0] ?? "Evento",
     learningTopic: isLearningTopic(event.subcategory) ? event.subcategory : undefined,
     categories: categoryLabels,
-    date: formatEventDateRange(event.start_at, event.end_at),
-    startDate: event.start_at,
+    date: formatEventDateRange(event.start_at, event.end_at, { scheduleMode }),
+    startDate: event.start_at ?? "",
     endDate: event.end_at || undefined,
     scheduleMode,
     location: event.municipality || event.location_name || "Sardegna",
@@ -215,7 +215,7 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-learning-event-rows-v5"],
+  ["published-learning-event-rows-v6"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],
@@ -340,7 +340,7 @@ export const loadFilteredPublishedEvents = cache(
         if (!isLearningEvent(event)) return false;
         if (
           !filters.includeExpired &&
-          !isPublicEventActive(event.start_at, event.end_at, now)
+          !isPublicEventActive(event.start_at, event.end_at, now, event.schedule_mode)
         ) {
           return false;
         }
