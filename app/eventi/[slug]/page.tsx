@@ -247,6 +247,7 @@ export async function generateMetadata({
 
   const category = findCategoryBySlug(slug);
   if (category) {
+    if (category.slug === "arte-cultura") permanentRedirect(`${LEARNING_PATH}#arti`);
     if (category.slug !== "workshop-corsi") notFound();
     const { events } = await loadFilteredPublishedEvents({
       categorySlug: category.slug,
@@ -328,6 +329,7 @@ export default async function EventSlugPage({
 
   const category = findCategoryBySlug(slug);
   if (category) {
+    if (category.slug === "arte-cultura") permanentRedirect(`${LEARNING_PATH}#arti`);
     if (category.slug !== "workshop-corsi") notFound();
     return <CategoryLandingPage category={category} />;
   }
