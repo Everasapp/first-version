@@ -146,10 +146,10 @@ export function buildNewsletterHtml({
                   <tr>
                     <td style="padding:28px 28px 12px;background:#075EAE;color:#ffffff;">
                       <div style="font-size:12px;letter-spacing:0.16em;text-transform:uppercase;opacity:0.85;">
-                        Newsletter settimanale · ${escapeHtml(weekLabel)}
+                        Formazione · Prossimi 30 giorni · ${escapeHtml(weekLabel)}
                       </div>
                       <h1 style="margin:12px 0 0;font-size:28px;line-height:1.2;font-weight:800;">
-                        Cosa fare questa settimana
+                        Nuovi corsi e opportunità per imparare
                       </h1>
                       <p style="margin:10px 0 0;font-size:15px;line-height:1.5;opacity:0.92;">
                         ${escapeHtml(areaLabel)}${categoryLabel ? ` · ${escapeHtml(categoryLabel)}` : ""}
@@ -162,7 +162,7 @@ export function buildNewsletterHtml({
                         Ciao ${escapeHtml(greeting)},
                       </p>
                       <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">
-                        Ecco gli eventi in programma ${escapeHtml(introPlace)} dal ${escapeHtml(weekLabel)}.
+                        Scopri i corsi in partenza ${escapeHtml(introPlace)} nei prossimi 30 giorni (${escapeHtml(weekLabel)}).
                       </p>
                       ${
                         hasEvents
@@ -180,11 +180,11 @@ export function buildNewsletterHtml({
                             : ""
                         }
                       `
-                          : `<p style="margin:0;color:#64748b;font-size:15px;">Questa settimana non abbiamo trovato eventi per la tua zona. Intanto puoi esplorare tutta la Sardegna su EVERAS.</p>`
+                          : `<p style="margin:0;color:#64748b;font-size:15px;">Non abbiamo trovato corsi in partenza nei prossimi 30 giorni per la tua zona. Esplora tutte le opportunità di formazione su EVERAS.</p>`
                       }
                       <p style="margin:12px 0 0;">
                         <a href="${escapeHtml(exploreHref)}" style="display:inline-block;background:#E67E22;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:14px;">
-                          Vedi tutti gli eventi
+                          Scopri tutti i corsi
                         </a>
                       </p>
                     </td>
