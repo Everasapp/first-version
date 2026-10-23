@@ -45,7 +45,7 @@ export default function ClaimOrganizerForm({
       </p>
       <p className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-900">
         Per proteggere gli organizzatori, il profilo e i corsi saranno assegnati
-        soltanto dopo la verifica e l'approvazione del team EVERAS.
+        soltanto dopo la verifica e l’approvazione del team EVERAS.
       </p>
       <a
         href={mailto}
