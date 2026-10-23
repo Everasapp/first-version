@@ -5,7 +5,7 @@ import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
 import Header from "@/src/components/home/Header";
 import Link from "next/link";
-import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
+import CareerPathCards from "@/src/components/seo/CareerPathCards";
 import Hero from "@/src/components/home/Hero";
 import HappeningToday from "@/src/components/home/HappeningToday";
 import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
@@ -183,8 +183,8 @@ export default function Home() {
         <section aria-labelledby="idee-percorsi-title" className="border-t border-slate-200 bg-slate-50 py-12">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi</h2>
-            <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Parti da un luogo, un artista o un materiale. Scopri qualcosa, prova un esercizio e scegli cosa approfondire.</p>
-            <EditorialPathCards />
+            <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Vuoi cambiare lavoro? Scegli una professione, scopri le tappe per formarti e costruisci un progetto da mostrare. Nella sezione trovi sei percorsi professionali, corsi collegati e idee per coltivare un interesse.</p>
+            <CareerPathCards featured />
             <Link href="/idee-e-percorsi" prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Esplora idee e percorsi →</Link>
           </div>
         </section>

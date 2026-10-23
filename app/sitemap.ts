@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { CAREER_LEARNING_PATHS, careerPathUrl } from "@/src/lib/career-learning-paths";
 import { learningSeoPages, matchesLearningSeoPage } from "@/src/lib/seo/learning-pages";
 import { loadHomeEventRows } from "@/src/lib/home/load-events";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
@@ -50,6 +51,7 @@ const loadLearningSitemapRows = unstable_cache(async () => {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = [...new Set([
     "/", LEARNING_PATH, "/idee-e-percorsi", "/cultura", "/cultura-sarda",
+    ...CAREER_LEARNING_PATHS.map((path) => careerPathUrl(path.slug)),
     "/per-gli-organizzatori", "/chi-siamo", "/contatti", "/privacy", "/cookie", "/termini", "/pubblicita",
     ...CULTURA_ARTICLES.map((article) => article.path),
     ...CULTURE_AREAS.filter((area) => area.townPagesLive).map((area) => area.path),
