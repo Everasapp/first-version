@@ -13,6 +13,11 @@ import {
 } from "@/src/lib/admin/email-campaigns";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import { eventMatchesCategoryFilter } from "@/src/lib/event-categories";
+import {
+  formatDisciplineList,
+  resolveStoredNewsletterPreferences,
+  selectNewsletterCourses,
+} from "@/src/lib/newsletter-preferences";
 import { findCityByName } from "@/src/utils/nearby-city";
 import {
   type GeoArea,
@@ -49,6 +54,8 @@ export type NewsletterSubscriber = {
   province: string | null;
   newsletter_city: string | null;
   newsletter_category: string | null;
+  newsletter_areas?: string[] | null;
+  newsletter_disciplines?: string[] | null;
   newsletter_unsub_token: string;
 };
 
@@ -65,6 +72,8 @@ type NewsletterRecipientRow = {
   province: string | null;
   newsletter_city: string | null;
   newsletter_category: string | null;
+  newsletter_areas?: string[] | null;
+  newsletter_disciplines?: string[] | null;
   newsletter_unsub_token: string;
   email: string | null;
   email_confirmed: boolean | null;
@@ -225,7 +234,14 @@ export function pickEventsForGeo(
   return { nearbyEvents: nearby, areaEvents: rest };
 }
 
-export function buildNewsletterSubject(area: GeoArea | null, weekLabel: string) {
+export function buildNewsletterSubject(
+  area: GeoArea | null,
+  weekLabel: string,
+  areas?: readonly string[] | null,
+) {
+  if (areas && areas.length > 1) {
+    return `Cosa fare questa settimana nelle tue zone · ${weekLabel}`;
+  }
   if (area) {
     return `Cosa fare questa settimana nel ${area} · ${weekLabel}`;
   }
@@ -284,7 +300,7 @@ export async function loadNewsletterSubscribers(supabase?: SupabaseClient) {
   const { data, error } = await client
     .from("profiles")
     .select(
-      "id, full_name, municipality, province, newsletter_city, newsletter_category, newsletter_unsub_token",
+      "id, full_name, municipality, province, newsletter_city, newsletter_category, newsletter_areas, newsletter_disciplines, newsletter_unsub_token",
     )
     .eq("newsletter_opt_in", true);
 
@@ -300,13 +316,15 @@ type EmailOnlySubscriberRow = {
   email: string;
   city: string;
   category: string;
+  areas?: string[] | null;
+  disciplines?: string[] | null;
   unsub_token: string;
 };
 
 async function loadEmailOnlySubscribers(supabase: SupabaseClient) {
   const { data, error } = await supabase
     .from("newsletter_subscribers")
-    .select("id, email, city, category, unsub_token")
+    .select("id, email, city, category, areas, disciplines, unsub_token")
     .eq("opt_in", true);
 
   if (error) {
@@ -324,6 +342,8 @@ function mapRpcRecipient(row: NewsletterRecipientRow): NewsletterRecipient {
     province: row.province,
     newsletter_city: row.newsletter_city,
     newsletter_category: row.newsletter_category,
+    newsletter_areas: row.newsletter_areas ?? [],
+    newsletter_disciplines: row.newsletter_disciplines ?? [],
     newsletter_unsub_token: String(row.newsletter_unsub_token ?? ""),
     email: row.email?.trim() || null,
     emailConfirmed: Boolean(row.email_confirmed),
@@ -416,6 +436,8 @@ async function loadRecipientsForSend(sessionClient?: SupabaseClient): Promise<{
       province: null,
       newsletter_city: subscriber.city,
       newsletter_category: subscriber.category,
+      newsletter_areas: subscriber.areas ?? [],
+      newsletter_disciplines: subscriber.disciplines ?? [],
       newsletter_unsub_token: subscriber.unsub_token,
       email: subscriber.email,
       emailConfirmed: true,
@@ -522,22 +544,34 @@ export function composeSubscriberNewsletter({
   weekLabel: string;
   siteUrl?: string;
 }): NewsletterPreview {
+  const preferences = resolveStoredNewsletterPreferences({
+    areas: subscriber.newsletter_areas,
+    disciplines: subscriber.newsletter_disciplines,
+    city: subscriber.newsletter_city,
+    category: subscriber.newsletter_category,
+    municipality: subscriber.municipality,
+    province: subscriber.province,
+  });
   const geo = resolveGeoPreference({
     newsletterCity: subscriber.newsletter_city,
     municipality: subscriber.municipality,
     province: subscriber.province,
   });
+  const matching = selectNewsletterCourses(events, preferences.areas, preferences.disciplines);
   const { nearbyEvents, areaEvents } = pickEventsForGeo(
-    events,
+    matching,
     geo,
-    subscriber.newsletter_category,
+    preferences.disciplines.join(","),
   );
   const eventsCount = nearbyEvents.length + areaEvents.length;
+  const primaryArea = preferences.areas.length === 1 ? preferences.areas[0] : geo.area;
   const html = buildNewsletterHtml({
     fullName: subscriber.full_name,
     city: geo.city,
-    area: geo.area,
-    category: subscriber.newsletter_category,
+    area: primaryArea,
+    areas: preferences.areas,
+    category: preferences.disciplines.join(","),
+    disciplineLabel: formatDisciplineList(preferences.disciplines),
     weekLabel,
     nearbyEvents,
     areaEvents,
@@ -550,8 +584,8 @@ export function composeSubscriberNewsletter({
     fullName: subscriber.full_name,
     email: email ?? null,
     geo,
-    category: subscriber.newsletter_category,
-    subject: buildNewsletterSubject(geo.area, weekLabel),
+    category: preferences.disciplines.join(","),
+    subject: buildNewsletterSubject(primaryArea, weekLabel, preferences.areas),
     html,
     eventsCount,
     skippedReason: eventsCount === 0 ? "Nessun evento in settimana" : undefined,

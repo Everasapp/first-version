@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { cities } from "@/src/data/cities";
+import { sanitizeNewsletterSelection } from "@/src/lib/newsletter-preferences";
 import { createClient } from "@/src/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 type SubscribeBody = {
   email?: unknown;
-  city?: unknown;
+  areas?: unknown;
+  disciplines?: unknown;
 };
 
 function asTrimmedString(value: unknown) {
@@ -20,35 +21,24 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as SubscribeBody;
   } catch {
-    return NextResponse.json(
-      { error: "Richiesta non valida." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Richiesta non valida." }, { status: 400 });
   }
 
   const email = asTrimmedString(body.email).toLowerCase();
-  const city = asTrimmedString(body.city);
-
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json(
-      { error: "Inserisci un’email valida." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Inserisci un’email valida." }, { status: 400 });
   }
 
-  const cityExists = cities.some((item) => item.city === city);
-  if (!cityExists) {
-    return NextResponse.json(
-      { error: "Seleziona una città dalla lista." },
-      { status: 400 },
-    );
+  const selection = sanitizeNewsletterSelection(body.areas, body.disciplines);
+  if (!selection.ok) {
+    return NextResponse.json({ error: selection.error }, { status: 400 });
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("subscribe_newsletter", {
     p_email: email,
-    p_city: city,
-    p_category: "",
+    p_areas: selection.selection.areas,
+    p_disciplines: selection.selection.disciplines,
   });
 
   if (error) {

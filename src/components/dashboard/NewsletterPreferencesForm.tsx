@@ -1,13 +1,15 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LoaderCircle, Save } from "lucide-react";
 
-import { categories } from "@/src/data/categories";
-import { cities } from "@/src/data/cities";
+import NewsletterPreferenceFields from "@/src/components/newsletter/NewsletterPreferenceFields";
 import type { Profile } from "@/src/lib/profile";
-import { createClient } from "@/src/lib/supabase/client";
+import {
+  resolveStoredNewsletterPreferences,
+  sanitizeNewsletterSelection,
+} from "@/src/lib/newsletter-preferences";
 
 type NewsletterPreferencesFormProps = {
   profile: Profile;
@@ -17,15 +19,18 @@ export default function NewsletterPreferencesForm({
   profile,
 }: NewsletterPreferencesFormProps) {
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
-  const sortedCities = useMemo(
-    () => [...cities].sort((a, b) => a.city.localeCompare(b.city, "it")),
-    [],
-  );
+  const stored = resolveStoredNewsletterPreferences({
+    areas: profile.newsletter_areas,
+    disciplines: profile.newsletter_disciplines,
+    city: profile.newsletter_city,
+    category: profile.newsletter_category,
+    municipality: profile.municipality,
+    province: profile.province,
+  });
 
   const [optIn, setOptIn] = useState(profile.newsletter_opt_in);
-  const [city, setCity] = useState(profile.newsletter_city ?? "");
-  const [category, setCategory] = useState(profile.newsletter_category ?? "");
+  const [areas, setAreas] = useState<string[]>(stored.areas);
+  const [disciplines, setDisciplines] = useState<string[]>(stored.disciplines);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -35,41 +40,39 @@ export default function NewsletterPreferencesForm({
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (optIn && (!city || !category)) {
-      setErrorMessage("Scegli città e disciplina preferita.");
-      return;
+    if (optIn) {
+      const selection = sanitizeNewsletterSelection(areas, disciplines);
+      if (!selection.ok) {
+        setErrorMessage(selection.error);
+        return;
+      }
     }
 
     setIsLoading(true);
+    const response = await fetch("/api/newsletter/preferences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ optIn, areas, disciplines }),
+    });
+    const payload = (await response.json().catch(() => null)) as
+      | { error?: string; message?: string }
+      | null;
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        newsletter_opt_in: optIn,
-        newsletter_city: optIn ? city : null,
-        newsletter_category: optIn ? category : null,
-        newsletter_opted_at: optIn ? new Date().toISOString() : null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", profile.id);
-
-    if (error) {
-      setErrorMessage(error.message);
+    if (!response.ok) {
+      setErrorMessage(payload?.error || "Salvataggio non riuscito.");
       setIsLoading(false);
       return;
     }
 
     setSuccessMessage(
-      optIn
-        ? "Preferenze salvate. Riceverai la newsletter ogni settimana."
-        : "Ti sei disiscritto dalla newsletter.",
+      payload?.message ||
+        (optIn
+          ? "Preferenze salvate. Riceverai la newsletter ogni settimana."
+          : "Ti sei disiscritto dalla newsletter."),
     );
     setIsLoading(false);
     router.refresh();
   }
-
-  const inputClassName =
-    "mt-2 h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-slate-900 outline-none transition focus:border-[#075EAE] focus:ring-4 focus:ring-blue-100";
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
@@ -85,59 +88,19 @@ export default function NewsletterPreferencesForm({
             Newsletter settimanale
           </span>
           <span className="mt-1 block text-sm text-slate-600">
-            Corsi e laboratori della tua area geografica, con priorità a città e disciplina.
+            Una email a settimana con i corsi delle zone e delle discipline che scegli.
           </span>
         </span>
       </label>
 
       {optIn ? (
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="newsletter-city"
-              className="text-sm font-semibold text-slate-800"
-            >
-              Città
-            </label>
-            <select
-              id="newsletter-city"
-              required={optIn}
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              className={inputClassName}
-            >
-              <option value="">Seleziona città</option>
-              {sortedCities.map((item) => (
-                <option key={item.id} value={item.city}>
-                  {item.city} ({item.province})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="newsletter-category"
-              className="text-sm font-semibold text-slate-800"
-            >
-              Disciplina
-            </label>
-            <select
-              id="newsletter-category"
-              required={optIn}
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-              className={inputClassName}
-            >
-              <option value="">Seleziona disciplina</option>
-              {categories.map((item) => (
-                <option key={item.id} value={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <NewsletterPreferenceFields
+          areas={areas}
+          disciplines={disciplines}
+          onAreasChange={setAreas}
+          onDisciplinesChange={setDisciplines}
+          name="preferences"
+        />
       ) : null}
 
       {errorMessage ? (
