@@ -63,9 +63,10 @@ function formatSingleRomeDay(parts: RomeDayParts) {
  * Cross-month: "28 settembre–2 ottobre 2026".
  */
 export function formatSeoEventDay(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
 ) {
+  if (!startAt) return "";
   const start = romeDayParts(startAt);
   if (!start) return "";
 
@@ -202,7 +203,7 @@ function usefulDescriptionExcerpt(
 export function eventSeoTitle(
   title: string,
   municipality: string,
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
 ) {
   const name = title.trim();
@@ -224,7 +225,7 @@ export function eventSeoTitle(
 export function eventSeoDescription(
   title: string,
   municipality: string,
-  startAt: string,
+  startAt: string | null,
   description: string | null,
   endAt?: string | null,
   isFree?: boolean | string | number | null,
@@ -267,10 +268,11 @@ export function eventSeoDescription(
 }
 
 export function eventDetailRobots(
-  startAt: string,
+  startAt: string | null,
   endAt: string | null | undefined,
+  scheduleMode?: string | null,
 ): { index: false; follow: true } | undefined {
-  return isPublicEventExpired(startAt, endAt)
+  return isPublicEventExpired(startAt, endAt, new Date(), scheduleMode)
     ? { index: false, follow: true }
     : undefined;
 }

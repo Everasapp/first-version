@@ -16,11 +16,13 @@ export type EventStatusBadge = {
  * - senza end_at o fuori intervallo → nessun badge
  */
 export function resolveEventStatusBadge(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
   now: Date = new Date(),
+  scheduleMode?: string | null,
 ): EventStatusBadge {
-  if (!endAt) {
+  if (scheduleMode === "enrollment") return { happeningNow: false, isActiveEvent: false, statusLabel: "Preiscrizioni aperte" };
+  if (!startAt || !endAt) {
     return { happeningNow: false, isActiveEvent: false };
   }
 

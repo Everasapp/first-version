@@ -17,7 +17,8 @@ export type HomeEventRow = {
   province: string | null;
   municipality: string;
   location_name: string | null;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
   end_at: string | null;
   image_url: string | null;
   is_free: boolean;
@@ -41,11 +42,11 @@ const fetchCachedHomeEventRows = unstable_cache(
       const { data, error } = await supabase
         .from("events")
         .select(
-          "id, slug, title, category, subcategory, categories, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
+          "id, slug, title, category, subcategory, categories, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, created_at, views_count, favorites_count, shares_count",
         )
         .eq("status", "published")
         .or(PUBLIC_LEARNING_FILTER)
-        .gte("start_at", lookback.toISOString())
+        .or(`start_at.gte.${lookback.toISOString()},schedule_mode.eq.enrollment`)
         .order("start_at", { ascending: true })
         .range(from, from + pageSize - 1);
 
@@ -56,7 +57,7 @@ const fetchCachedHomeEventRows = unstable_cache(
       if (chunk.length < pageSize) return rows;
     }
   },
-  ["homepage-learning-rows-v3"],
+  ["homepage-learning-rows-v4"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],

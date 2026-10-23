@@ -47,7 +47,7 @@ type OrganizerPageProps = {
 };
 
 const EVENT_SELECT =
-  "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
+  "id, slug, title, category, categories, subcategory, province, municipality, location_name, start_at, end_at, schedule_mode, image_url, is_free, price_from, is_featured, views_count, favorites_count, shares_count";
 
 type ResolvedPage =
   | {

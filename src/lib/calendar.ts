@@ -81,7 +81,7 @@ export async function getCalendarEvents(userId: string) {
 
   for (const row of data ?? []) {
     const event = Array.isArray(row.events) ? row.events[0] : row.events;
-    if (!event || event.status !== "published") {
+    if (!event || event.status !== "published" || !event.start_at) {
       continue;
     }
 

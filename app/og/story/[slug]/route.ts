@@ -17,7 +17,7 @@ export async function GET(_request: Request, context: StoryContext) {
     const supabase = await createClient();
     const { data } = await supabase
       .from("events")
-      .select("title, image_url, municipality, start_at, category, categories")
+      .select("title, image_url, municipality, start_at, schedule_mode, category, categories")
       .eq("slug", slug)
       .eq("status", "published")
       .maybeSingle();
@@ -32,7 +32,7 @@ export async function GET(_request: Request, context: StoryContext) {
       title: data.title,
       category: resolveCategoryLabels(data)[0] ?? "Evento",
       city: data.municipality || "Sardegna",
-      dateLabel: data.start_at ? formatStoryDate(data.start_at) : "",
+      dateLabel: data.schedule_mode === "enrollment" ? "Preiscrizioni aperte · Avvio da definire" : data.start_at ? formatStoryDate(data.start_at) : "",
       timeLabel: data.start_at ? formatStoryTime(data.start_at) : "",
       poster,
     });

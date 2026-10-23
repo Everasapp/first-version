@@ -4,10 +4,14 @@
  * - senza end_at → scaduto dopo la giornata di inizio (Europe/Rome)
  */
 export function isPublicEventExpired(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
   now: Date = new Date(),
+  scheduleMode?: string | null,
 ) {
+  if (scheduleMode === "enrollment") return false;
+  if (!startAt) return true;
+
   if (endAt) {
     const end = new Date(endAt).getTime();
     return !Number.isFinite(end) || end < now.getTime();
@@ -30,9 +34,10 @@ export function isPublicEventExpired(
 }
 
 export function isPublicEventActive(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
   now: Date = new Date(),
+  scheduleMode?: string | null,
 ) {
-  return !isPublicEventExpired(startAt, endAt, now);
+  return !isPublicEventExpired(startAt, endAt, now, scheduleMode);
 }

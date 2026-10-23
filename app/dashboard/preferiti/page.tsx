@@ -12,10 +12,6 @@ import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { getFavoriteEvents } from "@/src/lib/favorites";
 import { requireOrganizer } from "@/src/lib/auth";
 
-function formatEventDate(startAt: string, endAt: string | null) {
-  return formatEventDateRange(startAt, endAt);
-}
-
 export default async function PreferitiPage() {
   const { user } = await requireOrganizer("/dashboard/preferiti");
   const favorites = await getFavoriteEvents(user.id);
@@ -30,8 +26,8 @@ export default async function PreferitiPage() {
       title: event.title,
       category: categoryLabels[0] ?? event.category,
       categories: categoryLabels,
-      date: formatEventDate(event.start_at, event.end_at),
-      startDate: event.start_at,
+      date: formatEventDateRange(event.start_at, event.end_at, { scheduleMode: event.schedule_mode }),
+      startDate: event.start_at ?? "",
       endDate: event.end_at ?? undefined,
       location: event.location_name || event.municipality,
       municipality: event.municipality ?? undefined,

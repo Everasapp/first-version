@@ -8,7 +8,8 @@ export type DashboardEventStatus =
 
 type EventForBucket = {
   status: DashboardEventStatus;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
   end_at?: string | null;
 };
 
@@ -16,13 +17,17 @@ type EventForSearch = {
   title: string;
   municipality: string;
   location_name?: string | null;
-  start_at: string;
+  start_at: string | null;
+  schedule_mode?: string | null;
 };
 
 const ROME_TZ = "Europe/Rome";
 
 export function isEventExpired(event: EventForBucket, now = Date.now()) {
-  const reference = new Date(event.end_at ?? event.start_at).getTime();
+  if (event.schedule_mode === "enrollment") return false;
+  const value = event.end_at ?? event.start_at;
+  if (!value) return false;
+  const reference = new Date(value).getTime();
   return Number.isFinite(reference) && reference < now;
 }
 
@@ -77,7 +82,8 @@ export function parseDashboardFlag(value: string | string[] | undefined) {
   return raw === "1" || raw === "true";
 }
 
-function eventStartDayRome(startAt: string): string {
+function eventStartDayRome(startAt: string | null): string {
+  if (!startAt) return "";
   const date = new Date(startAt);
   if (Number.isNaN(date.getTime())) return "";
   return new Intl.DateTimeFormat("en-CA", {

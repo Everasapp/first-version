@@ -81,7 +81,7 @@ type ShareEventButtonProps = {
   imageUrl?: string;
   category?: string;
   city?: string;
-  startAt?: string;
+  startAt?: string | null;
   dateLabel?: string;
   size?: "sm" | "md";
   className?: string;

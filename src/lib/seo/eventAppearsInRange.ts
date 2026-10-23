@@ -7,7 +7,7 @@ import {
 export type EventTemporalContext = "daily" | "weekend" | "month" | "general";
 
 export type EventRangeInput = {
-  startAt: string;
+  startAt: string | null;
   endAt?: string | null;
   scheduleMode?: EventScheduleMode | string | null;
 };
@@ -26,6 +26,7 @@ export function eventIntervalOverlapsRange(
   event: Pick<EventRangeInput, "startAt" | "endAt">,
   range: DateTimeRange,
 ): boolean {
+  if (!event.startAt) return false;
   const eventStart = new Date(event.startAt);
   if (Number.isNaN(eventStart.getTime())) {
     return false;
@@ -51,6 +52,7 @@ export function eventAppearsInRange(
   context: EventTemporalContext,
 ): boolean {
   const mode = parseEventScheduleMode(event.scheduleMode);
+  if (mode === "enrollment") return false;
 
   if (
     (context === "daily" || context === "weekend") &&

@@ -233,11 +233,11 @@ export default function PublishEventPage() {
     }
 
     if (step === 1) {
-      if (!startDate) {
+      if (scheduleMode !== "enrollment" && !startDate) {
         nextErrors.startDate = "Seleziona la data di inizio.";
       }
 
-      if (!startTime) {
+      if (scheduleMode !== "enrollment" && !startTime) {
         nextErrors.startTime = "Seleziona l'ora di inizio.";
       }
 
@@ -360,7 +360,7 @@ export default function PublishEventPage() {
       uploadedPath = uploaded.path;
       const publicUrl = uploaded.publicUrl;
 
-      const startAt = new Date(`${startDate}T${startTime}:00`).toISOString();
+      const startAt = scheduleMode === "enrollment" ? null : new Date(`${startDate}T${startTime}:00`).toISOString();
       const numericPrice = pricing === "paid" ? parsePrice(price) : null;
       const normalizedTicketUrl = ticketUrl.trim()
         ? normalizeTicketUrl(ticketUrl)
@@ -732,6 +732,7 @@ export default function PublishEventPage() {
 
                       <input
                         type="date"
+                        disabled={scheduleMode === "enrollment"}
                         name="startDate"
                         value={startDate}
                         onChange={(event) => {
@@ -761,6 +762,7 @@ export default function PublishEventPage() {
 
                       <input
                         type="time"
+                        disabled={scheduleMode === "enrollment"}
                         name="startTime"
                         value={startTime}
                         onChange={(event) => {

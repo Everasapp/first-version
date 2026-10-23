@@ -1,4 +1,4 @@
-import type { EventScheduleMode } from "@/src/lib/eventScheduleMode";
+import { ENROLLMENT_LABEL, type EventScheduleMode } from "@/src/lib/eventScheduleMode";
 
 const ROME_TZ = "Europe/Rome";
 
@@ -33,10 +33,12 @@ function isEndOfDayRome(value: Date) {
  * Mostra la data di fine solo se presente e diversa / con orario diverso.
  */
 export function formatEventDateRange(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
-  options?: { includeWeekday?: boolean },
+  options?: { includeWeekday?: boolean; scheduleMode?: EventScheduleMode | string | null },
 ) {
+  if (options?.scheduleMode === "enrollment") return ENROLLMENT_LABEL;
+  if (!startAt) return "Avvio da definire";
   const start = new Date(startAt);
   if (Number.isNaN(start.getTime())) return "";
 
@@ -93,11 +95,13 @@ export function formatEventDateRange(
 }
 
 export function formatEventHoursDetail(
-  startAt: string,
+  startAt: string | null,
   endAt?: string | null,
   scheduleMode?: EventScheduleMode,
 ) {
+  if (scheduleMode === "enrollment") return { summary: ENROLLMENT_LABEL, lines: ["Preiscrizioni aperte", "Avvio e orari da definire con l’ente. La preiscrizione non conferma l’ammissione al corso."] };
   const summary = formatEventDateRange(startAt, endAt, { includeWeekday: true });
+  if (!startAt) return { summary, lines: [] as string[] };
   const start = new Date(startAt);
   if (Number.isNaN(start.getTime())) {
     return { summary, lines: [] as string[] };
