@@ -184,7 +184,7 @@ export default function Home() {
         </Suspense>
         <section aria-labelledby="idee-percorsi-title" className="border-t border-slate-200 bg-slate-50 py-12">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
-            <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi</h2>
+            <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi - Career change</h2>
             <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Vuoi cambiare lavoro? Scegli una professione, scopri le tappe per formarti e costruisci un progetto da mostrare. Nella sezione trovi sei percorsi professionali, corsi collegati e idee per coltivare un interesse.</p>
             <CareerPathCards featured />
             <Link href="/idee-e-percorsi" prefetch={false} className="mt-6 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Esplora idee e percorsi →</Link>

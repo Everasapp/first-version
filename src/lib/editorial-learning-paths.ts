@@ -24,7 +24,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Sassari: dal territorio a una nuova competenza",
     category: "Imparare in città",
     summary: "Osserva la città con un taccuino e scegli tra un percorso per il lavoro e un corso per passione.",
-    image: { src: "/images/cultura/sassari-panorama-everas.webp", alt: "Piazza d’Italia a Sassari" },
+    image: { src: "/images/passion-paths/sassari-territorio-orange.svg", alt: "Sassari: città e territorio, grafica EVERAS su fondo arancione" },
     discover: "Una città può diventare un punto di partenza per imparare: un dettaglio architettonico da disegnare, una scena da fotografare o un mestiere da approfondire. La guida qui sopra racconta Sassari; questo percorso ti aiuta a trasformare la curiosità in una scelta concreta.",
     exercise: {
       title: "Un taccuino di osservazione in 20 minuti",
@@ -49,7 +49,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Giuseppe Biasi: osservare per iniziare a dipingere",
     category: "Arte da sperimentare",
     summary: "Dalla lettura delle opere a un esercizio personale di colore e composizione, senza esperienza richiesta.",
-    image: { src: "/images/cultura/giuseppe-biasi-ballo-tondo-everas.webp", alt: "Dettaglio dell’opera Ballo tondo di Giuseppe Biasi", credit: { label: "Giuseppe Biasi · Foto Sailko, CC BY 3.0 · ritaglio", href: "https://commons.wikimedia.org/wiki/File:Giuseppe_biasi,_ballo_tondo,_1934-35.jpg" } },
+    image: { src: "/images/passion-paths/giuseppe-biasi-pittura-orange.svg", alt: "Giuseppe Biasi: osservare e dipingere, grafica EVERAS su fondo arancione" },
     discover: "Dopo aver letto la storia dell’artista, torna a una delle immagini della guida. Guarda come sono distribuite le figure, dove cade l’attenzione e quali colori ricompaiono. Puoi osservare questi elementi senza cercare subito di riprodurre il dipinto.",
     exercise: {
       title: "Tre colori, una composizione: prova in 30 minuti",
@@ -71,7 +71,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Artigianato sardo: scegli cosa provare con le mani",
     category: "Materiali e manualità",
     summary: "Ceramica, tessuti e intreccio: parti dai materiali e impara a valutare un laboratorio creativo.",
-    image: { src: "/images/cultura/pattada-coltellinaio-everas.webp", alt: "Illustrazione di un artigiano al lavoro in bottega" },
+    image: { src: "/images/passion-paths/artigianato-materiali-orange.svg", alt: "Artigianato sardo: materiali e manualità, grafica EVERAS su fondo arancione" },
     discover: "Le tecniche raccontate nella guida richiedono strumenti e tempi diversi. Per scegliere il primo laboratorio, parti dal materiale che ti incuriosisce e dal tipo di esperienza che vuoi fare: provare un gesto, completare un oggetto o seguire un percorso continuativo.",
     exercise: {
       title: "Una trama di carta in 20 minuti",
@@ -99,7 +99,7 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
     title: "Ceramica: dalla curiosità al primo oggetto",
     category: "Ceramica e manualità",
     summary: "Esplora forme e superfici, prepara una piccola idea e scegli un laboratorio adatto a chi comincia.",
-    image: { src: "/images/passion-paths/ceramica-forme-e-materiali.svg", alt: "Ceramica: forme e materiali, percorso creativo EVERAS" },
+    image: { src: "/images/passion-paths/ceramica-forme-e-materiali-orange.svg", alt: "Ceramica: forme e materiali, percorso creativo EVERAS" },
     discover: "La ceramica invita a osservare gli oggetti di ogni giorno: una ciotola, un vaso, il bordo di un piatto. Prima di scegliere un laboratorio, prova a capire cosa ti attrae: costruire una forma, lavorare una superficie o dare colore a un oggetto. Questo percorso parte dall’osservazione e ti aiuta a portare al docente un’idea semplice, lasciando spazio alla sperimentazione.",
     body: [
       { title: "Un punto di partenza in Sardegna", text: "Assemini è uno dei centri sardi legati alla lavorazione della ceramica, come racconta il portale regionale SardegnaTurismo. Puoi prendere spunto dalle forme che incontri in una bottega, in un museo o nelle immagini di una collezione, annotando luogo e autore quando li conosci. Usa questi riferimenti per allenare lo sguardo: il tuo primo progetto può essere personale, senza riprodurre un manufatto tradizionale." },
@@ -126,7 +126,7 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
     title: "Fotografia: racconta un luogo con sei immagini",
     category: "Fotografia e territorio",
     summary: "Un percorso da provare anche con lo smartphone: osserva la luce, scegli un soggetto e costruisci un piccolo racconto.",
-    image: { src: "/images/passion-paths/fotografia-luce-e-territorio.svg", alt: "Fotografia: luce e territorio, percorso creativo EVERAS" },
+    image: { src: "/images/passion-paths/fotografia-luce-e-territorio-orange.svg", alt: "Fotografia: luce e territorio, percorso creativo EVERAS" },
     discover: "Un angolo di Sassari, una passeggiata nel tuo comune o un dettaglio del paesaggio possono diventare il tema di un piccolo racconto fotografico. Per cominciare non devi visitare un posto lontano né comprare una fotocamera: scegli un luogo accessibile che conosci e prova a guardarlo con una domanda precisa. Il percorso propone esercizi di osservazione e selezione, da approfondire poi con un corso.",
     body: [
       { title: "Parti da una domanda, non dall’attrezzatura", text: "Chiediti cosa vuoi raccontare: i colori di una strada, le tracce del lavoro artigiano oppure il rapporto tra edifici e vegetazione. Scrivi una frase prima di uscire e limita il progetto a un’area piccola. Avere un tema ti aiuta a distinguere una fotografia coerente con il racconto da una bella immagine che appartiene a un’altra storia." },
@@ -152,7 +152,7 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
     title: "Tessitura: comincia da trame e colori",
     category: "Tessuti e artigianato",
     summary: "Dall’osservazione dei tessuti a un piccolo intreccio di carta: scopri cosa chiedere al tuo primo laboratorio.",
-    image: { src: "/images/passion-paths/tessitura-trame-e-colori.svg", alt: "Tessitura: trame e colori, percorso creativo EVERAS" },
+    image: { src: "/images/passion-paths/tessitura-trame-e-colori-orange.svg", alt: "Tessitura: trame e colori, percorso creativo EVERAS" },
     discover: "Un tessuto si può osservare come una superficie fatta di ritmo, colore e ripetizione. Questo percorso parte da materiali che hai già per aiutarti a capire se ti incuriosiscono soprattutto il gesto, la struttura o la composizione. L’esercizio di carta è un primo esperimento di manualità; per imparare a preparare e usare un telaio serve un insegnamento pratico dedicato.",
     body: [
       { title: "Guarda i tessuti come un piccolo archivio", text: "Scegli tre tessuti diversi che puoi osservare da vicino e annota colore, regolarità e sensazione al tatto. Se ti interessa la Sardegna, il MURATS di Samugheo è un riferimento per conoscere il patrimonio tessile dell’Isola, presentato anche dal portale regionale SardegnaTurismo. Consulta le informazioni del museo prima di organizzare una visita: questo percorso non annuncia un laboratorio o una visita già prenotabile su EVERAS." },

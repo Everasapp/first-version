@@ -26,7 +26,7 @@ export default function IdeasPage() {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
           <p className="text-sm font-bold uppercase tracking-wider text-[#075EAE]">Scegli · Impara · Metti in pratica</p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-black text-slate-900 sm:text-5xl">Idee e percorsi</h1>
+          <h1 className="mt-3 max-w-4xl text-4xl font-black text-slate-900 sm:text-5xl">Idee e percorsi - Career change</h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">Vuoi cambiare lavoro o dare spazio a un interesse? Parti da una professione: scopri le competenze da acquisire, segui un piano di studio e costruisci un progetto concreto. Qui trovi corsi collegati in Sardegna e online, insieme a percorsi per esplorare arte e territorio.</p>
           <Link href={LEARNING_PATH} prefetch={false} className="mt-6 inline-flex min-h-11 items-center rounded-full bg-[#075EAE] px-5 py-3 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">Vai al catalogo corsi</Link>
         </div>
