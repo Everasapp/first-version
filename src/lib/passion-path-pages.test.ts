@@ -36,7 +36,11 @@ describe("passion collection and guides", () => {
     expect(html).toContain(guide.image.src);
     expect(html).toContain(`https://www.everas.it${guide.image.src}`);
     expect(html).not.toContain("/images/learning/imparare-sardegna-og.jpg");
-    expect(html).toContain("disciplina=");
+    if (slug === "stretching-relax-preghiera") {
+      expect(html).toContain("Corsi di benessere e movimento");
+    } else {
+      expect(html).toContain("disciplina=");
+    }
     const metadata = await generateMetadata(props(slug));
     expect(metadata.alternates?.canonical).toBe(guide.path);
     const ogImages = metadata.openGraph?.images;
