@@ -76,7 +76,9 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
     : matchedEvents;
   if (isFilteredSearch) {
     const searchTitle = selectedDiscipline
-      ? `Corsi di ${selectedDiscipline.name.toLocaleLowerCase("it")}`
+      ? selectedDiscipline.slug === "benessere-movimento"
+        ? selectedDiscipline.name
+        : `Corsi di ${selectedDiscipline.name.toLocaleLowerCase("it")}`
       : "Risultati della ricerca corsi";
     const context = [
       selectedCity,
