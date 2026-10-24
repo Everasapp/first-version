@@ -6,6 +6,7 @@ import { EDITORIAL_LEARNING_PATHS, NEW_PASSION_PATHS } from "@/src/lib/editorial
 export default function EditorialPathCards({ featured = false }: { featured?: boolean }) {
   const paths = featured ? NEW_PASSION_PATHS : EDITORIAL_LEARNING_PATHS;
   const cards = (
+    <>
     {paths.map((path) => <article data-carousel-card={featured ? "" : undefined} key={path.path} className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <Image src={path.image.src} alt={path.image.alt} width={600} height={400} unoptimized className="aspect-[3/2] w-full object-cover" />
       <div className="p-6">
@@ -16,6 +17,7 @@ export default function EditorialPathCards({ featured = false }: { featured?: bo
         <Link href={`${path.path}#prova-e-approfondisci`} prefetch={false} className="mt-4 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline underline-offset-4">Leggi la guida e prova l’esercizio →</Link>
       </div>
     </article>)}
+    </>
   );
   return featured ? <HomepageCardCarousel label="Guide pratiche">{cards}</HomepageCardCarousel> : <div className="grid gap-6 md:grid-cols-3">{cards}</div>;
 }
