@@ -53,7 +53,7 @@ export default async function PassionGuidePage({ params }: Props) {
   return <>
     <Header />
     <JsonLd data={breadcrumbListSchema([{ name: "Home", path: "/" }, { name: "Idee e percorsi", path: IDEAS_PATH }, { name: "Per passione", path: PASSION_PATH }, { name: guide.title, path: guide.path }])} />
-    <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.summary, dateModified: "2026-10-23", author: { "@type": "Organization", name: "EVERAS", url: absoluteUrl("/") }, mainEntityOfPage: absoluteUrl(guide.path), image: absoluteUrl(guide.image.src) }} />
+    <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.summary, dateModified: guide.updatedAt ?? "2026-10-23", author: guide.author ? { "@type": "Person", name: guide.author.name, url: guide.author.url } : { "@type": "Organization", name: "EVERAS", url: absoluteUrl("/") }, mainEntityOfPage: absoluteUrl(guide.path), image: absoluteUrl(guide.image.src) }} />
     <main className="bg-slate-50 pb-16">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
@@ -61,16 +61,17 @@ export default async function PassionGuidePage({ params }: Props) {
           <p className="mt-4 text-sm font-bold uppercase tracking-wider text-[#075EAE]">{guide.category}</p>
           <h1 className="mt-3 text-4xl font-black text-slate-900 sm:text-5xl">{guide.title}</h1>
           <p className="mt-5 max-w-3xl text-xl leading-relaxed text-slate-600">{guide.summary}</p>
+          {guide.author ? <p className="mt-4 text-sm leading-relaxed text-slate-600">Di <a href={guide.author.url} className="font-semibold text-[#075EAE] underline">{guide.author.name}</a> · {guide.author.role}{guide.updatedAt ? <> · Aggiornata il <time dateTime={guide.updatedAt}>{new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Rome" }).format(new Date(guide.updatedAt))}</time></> : null}</p> : null}
           <a href="#prova-e-approfondisci" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-[#075EAE] px-5 py-3 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">Prova l’esercizio e scegli un corso</a>
         </div>
       </header>
       <article className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
         <Image src={guide.image.src} alt={guide.image.alt} width={800} height={533} unoptimized className="aspect-[3/2] w-full rounded-2xl border border-slate-200 object-cover" />
-        <div className="mt-10 space-y-8">{guide.body?.map((section) => <section key={section.title}><h2 className="text-2xl font-bold text-slate-900">{section.title}</h2><p className="mt-3 leading-relaxed text-slate-700">{section.text}</p></section>)}</div>
+        <div className="mt-10 space-y-8">{guide.body?.map((section) => <section key={section.title}><h2 className="text-2xl font-bold text-slate-900">{section.title}</h2><p className="mt-3 leading-relaxed text-slate-700">{section.text}</p>{section.items?.length ? <ul className="mt-4 list-disc space-y-3 pl-6 leading-relaxed text-slate-700">{section.items.map((item) => <li key={item}>{item}</li>)}</ul> : null}</section>)}</div>
         <EditorialLearningSection path={guide} wellnessCourses={wellnessCourses} />
         <section aria-labelledby="note-title" className="mt-10 border-t border-slate-200 pt-6">
           <h2 id="note-title" className="text-xl font-bold text-slate-900">Per continuare a esplorare</h2>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">Percorso ed esercizi originali di EVERAS. I riferimenti culturali sono spunti di osservazione: non indicano corsi attivi o appuntamenti organizzati dai musei citati.</p>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{guide.sourcesNote ?? "Percorso ed esercizi originali di EVERAS. I riferimenti culturali sono spunti di osservazione: non indicano corsi attivi o appuntamenti organizzati dai musei citati."}</p>
           {guide.sources ? <ul className="mt-4 space-y-2">{guide.sources.map((source) => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-semibold text-[#075EAE] underline">{source.label} ↗</a></li>)}</ul> : null}
           <Link href={PASSION_PATH} prefetch={false} className="mt-5 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Scegli un altro percorso per passione →</Link>
         </section>

@@ -13,7 +13,10 @@ export type EditorialLearningPath = {
   exercise: { title: string; steps: string[] };
   choose: string[];
   links: { label: string; href: string }[];
-  body?: { title: string; text: string }[];
+  body?: { title: string; text: string; items?: string[] }[];
+  author?: { name: string; role: string; url: string };
+  updatedAt?: string;
+  sourcesNote?: string;
   sources?: { label: string; href: string }[];
 };
 
@@ -218,15 +221,122 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
     links: [{ label: "Cerca corsi e laboratori", href: `${LEARNING_PATH}?disciplina=pittura-disegno&q=acquerello` }],
   },
   {
-    path: `${PASSION_PATH}/primo-sito-web-da-zero`,
-    title: "Creare il tuo primo sito web: parti dalle persone", category: "Competenze digitali",
-    summary: "Un esercizio pratico per capire contenuti, pagine e navigazione prima di scegliere uno strumento.",
-    image: { src: "/images/passion-paths/primo-sito-web-da-zero.webp", alt: "Computer con la bozza di una pagina web e un quaderno di schemi" },
-    discover: "Un percorso pratico per iniziare anche senza un corso attivo in zona. Leggi i consigli, prova l'esercizio con ciò che hai e scopri quali domande fare a un insegnante.",
-    body: [{"title":"La domanda prima del software","text":"Un sito deve aiutare una persona a compiere un’azione: conoscere un servizio, vedere lavori o mettersi in contatto. Scrivi chi sarà il visitatore e quale informazione dovrà trovare. Solo dopo scegli colori, piattaforma e animazioni."},{"title":"Progetta una pagina su carta","text":"Disegna un titolo esplicito, una breve spiegazione, tre elementi informativi e un contatto. Fai attenzione alla leggibilità sul telefono e alle parole che usi: un testo chiaro conta più di molti effetti."},{"title":"Oltre al design","text":"Pubblicare significa occuparsi anche di dominio, hosting, accessibilità, privacy, aggiornamenti e immagini utilizzabili legalmente. Un corso su strumenti visuali può avere un programma diverso da uno su HTML e CSS."}],
-    exercise: { title: "Esercizio pratico: prova in autonomia", steps: ["Scrivi in una frase per chi è il tuo sito e a cosa serve.","Disegna una homepage composta da cinque sezioni.","Prepara testi originali per ogni sezione.","Mostra la bozza a qualcuno e verifica se capisce subito cosa offre."] },
-    choose: ["Chiedi se il corso insegna struttura dei contenuti oltre al software.","Verifica se comprende un progetto finale concreto.","Controlla i costi ricorrenti di dominio, hosting e strumenti."],
-    links: [{ label: "Cerca corsi e laboratori", href: `${LEARNING_PATH}?disciplina=digitale-informatica&q=web` }],
+    "path": "/idee-e-percorsi/per-passione/primo-sito-web-da-zero",
+    "title": "Creare il tuo primo sito web: dal progetto alla pubblicazione",
+    "category": "Competenze digitali",
+    "summary": "Un metodo per principianti, un progetto reale dal portfolio MC Design e un esercizio guidato per organizzare pagine, contenuti e controlli prima di andare online.",
+    "image": {
+      "src": "/images/passion-paths/primo-sito-web-da-zero.webp",
+      "alt": "Computer con la bozza di una pagina web e un quaderno di schemi"
+    },
+    "author": {
+      "name": "Marina Canalis",
+      "role": "Web designer e sviluppatrice, fondatrice di MC Design e ideatrice di EVERAS",
+      "url": "https://www.mc-design.site/it/about"
+    },
+    "updatedAt": "2026-10-24",
+    "discover": "Per iniziare non devi già saper programmare né acquistare un abbonamento. Il risultato di questo esercizio è un piccolo progetto verificabile: obiettivo, mappa delle pagine, bozza della homepage e prova con un lettore. Puoi prepararlo su carta e usarlo per scegliere un corso, costruire il sito in autonomia o spiegare le tue esigenze a un professionista.",
+    "body": [
+      {
+        "title": "1. Decidi chi deve usare il sito e per fare cosa",
+        "text": "Il primo lavoro è completare due frasi: «Questo sito si rivolge a…» e «Dopo averlo visitato, una persona dovrebbe…». Un portfolio aiuta a valutare dei lavori; il sito di un servizio aiuta a capire un’offerta e chiedere informazioni. Se provi a fare tutto nella prima schermata, chi legge deve decidere da solo cosa conta. Scegli un’azione principale e raccogli le informazioni necessarie per compierla. Nel metodo presentato da MC Design, obiettivi, pubblico e contenuti precedono la scelta della soluzione tecnica."
+      },
+      {
+        "title": "2. Un caso reale: il portfolio di Kate Tojeiro",
+        "text": "Nel portfolio MC Design, il sito di Kate Tojeiro è documentato come un progetto progettato e sviluppato da zero in Webflow, con design visivo, architettura del sito e impaginazioni responsive pensati per presentare il lavoro creativo e l’identità personale. Sono previste anche interazioni e animazioni discrete. È un esempio reale di come struttura e presentazione possano lavorare insieme. La descrizione pubblica non fornisce dati su richieste ricevute o risultati commerciali: qui lo usiamo per osservare il progetto, senza attribuirgli risultati non documentati."
+      },
+      {
+        "title": "3. Dal caso reale alla tua mappa delle pagine",
+        "text": "Per un primo portfolio puoi partire da quattro pagine. È una proposta didattica per il tuo esercizio, non la ricostruzione delle pagine del sito di Kate Tojeiro. Disegna quattro rettangoli e collega ciascuno alla pagina che dovrebbe seguire. Per ogni pagina scrivi una domanda del visitatore e una risposta breve. Se due pagine rispondono alla stessa domanda con gli stessi contenuti, valuta se unirle.",
+        "items": [
+          "Home: che cosa fai, per chi e dove posso vedere un esempio?",
+          "Progetti: quali lavori mostrano le tue capacità e quale problema affronta ciascuno?",
+          "Chi sono: quale esperienza è rilevante per il tipo di lavoro che presenti?",
+          "Contatti: come posso scriverti e quali informazioni ti servono per rispondere?"
+        ]
+      },
+      {
+        "title": "4. Una homepage di esempio, già impostata",
+        "text": "Immagina, solo per questo esercizio, un illustratore che lavora per piccole attività. Il suo obiettivo è ricevere richieste per illustrazioni personalizzate. Un titolo utilizzabile come punto di partenza è «Illustrazioni per dare un volto alla tua attività». Il testo successivo può chiarire «Creo immagini per menu, confezioni e comunicazione di piccoli marchi». È un esempio inventato: adattalo a ciò che sai fare davvero, evitando clienti, esperienze o risultati che non puoi documentare.",
+        "items": [
+          "Apertura: titolo, spiegazione breve e collegamento «Guarda i progetti».",
+          "Selezione: tre lavori con immagine, contesto e ruolo svolto. Se sono esercitazioni personali, dichiaralo.",
+          "Metodo: tre passaggi comprensibili, per esempio confronto iniziale, proposta e consegna.",
+          "Presentazione: poche righe sull’esperienza pertinente e un collegamento alla pagina Chi sono.",
+          "Contatto: un invito specifico, per esempio «Descrivimi il progetto», con un recapito o un modulo essenziale."
+        ]
+      },
+      {
+        "title": "5. Prepara testi e immagini prima di rifinire il design",
+        "text": "Per ogni progetto seleziona un’immagine principale e scrivi cosa doveva comunicare, quale parte hai realizzato e perché hai fatto una scelta. «Ho usato titoli brevi perché le persone consultano il menu dal telefono» spiega più di «Design moderno e innovativo». Usa immagini che puoi pubblicare e riducine il peso senza perdere la qualità necessaria. Aggiungi un testo alternativo quando l’immagine comunica informazioni. Sulla bozza sostituisci i blocchi segnaposto con contenuti realistici: la lunghezza dei testi e le proporzioni delle immagini cambiano l’equilibrio della pagina."
+      },
+      {
+        "title": "6. Scegli lo strumento dopo aver definito le esigenze",
+        "text": "La scelta dipende da cosa devi costruire e da come vuoi aggiornarlo. Prima di confrontare le piattaforme, scrivi se ti servono articoli, progetti aggiornabili, moduli, prenotazioni o vendite. Un CMS è un sistema per gestire contenuti ricorrenti, come le schede dei progetti, senza ridisegnare ogni pagina. Webflow compare nel caso reale MC Design, ma non è un passaggio obbligatorio dell’esercizio. Se vuoi imparare il codice, cerca un percorso che affronti HTML, CSS e pratica guidata; se preferisci strumenti visuali, verifica comunque che insegni struttura, responsive e gestione dei contenuti."
+      },
+      {
+        "title": "7. Prova la navigazione anche sul telefono",
+        "text": "Controlla che titoli e pulsanti si capiscano senza spiegazioni, che i testi non richiedano uno zoom e che immagini e menu non coprano i contenuti. Prova a raggiungere un progetto e poi il contatto: il percorso deve funzionare anche partendo da una pagina interna. Usa inoltre il tasto Tab per muoverti tra i collegamenti e verifica di riconoscere dove si trova il focus. Le animazioni possono accompagnare la lettura, ma le informazioni principali devono restare comprensibili anche senza di esse. Prima risolvi un collegamento che non funziona, poi rifinisci gli effetti."
+      },
+      {
+        "title": "8. Cosa controllare prima della pubblicazione",
+        "text": "Il dominio è l’indirizzo del sito; l’hosting è il servizio che lo rende disponibile online. Prima di acquistare, annota costi iniziali, rinnovi e ciò che il piano comprende. Prepara inoltre una breve descrizione per ogni pagina e un titolo che ne chiarisca il contenuto. Queste basi aiutano a presentare il sito, ma non garantiscono una posizione su Google. Pubblicare richiede anche una verifica concreta di contenuti, strumenti utilizzati e modalità di contatto.",
+        "items": [
+          "Apri tutti i collegamenti principali, inclusi logo, menu, pulsanti e contatti.",
+          "Invia una prova dal modulo e verifica di riceverla davvero; controlla anche i messaggi di errore.",
+          "Rimuovi testi segnaposto, pagine vuote e recapiti di prova.",
+          "Verifica chi può aggiornare il sito, chi controlla dominio e account e come recuperare gli accessi.",
+          "Controlla quali dati personali raccogli e quali strumenti di tracciamento attivi; predisponi informative e gestione del consenso adeguate alla configurazione.",
+          "Assegna a qualcuno il controllo periodico di contenuti, collegamenti e rinnovi."
+        ]
+      },
+      {
+        "title": "9. Come capire se il primo progetto funziona",
+        "text": "Mostra la bozza a una persona che non conosce la tua idea e chiedile: «Che cosa offre questo sito?», «Dove guarderesti un lavoro?» e «Come chiederesti informazioni?». Non indicare i pulsanti e non spiegare mentre prova. Annota dove esita e modifica un elemento alla volta, per esempio il titolo o il nome di una voce del menu. Ripeti la prova: se la persona riesce a completare il compito più facilmente, hai un riscontro sul progetto. Questa piccola verifica serve a migliorare una bozza, non misura da sola l’efficacia commerciale del futuro sito."
+      }
+    ],
+    "exercise": {
+      "title": "Il tuo primo progetto su carta: una sessione di 60 minuti",
+      "steps": [
+        "Primi 10 minuti: scegli una tua attività reale o un progetto personale. Scrivi destinatario, bisogno e azione principale. Esempio: «Il mio portfolio aiuta una piccola attività a valutare le mie illustrazioni e chiedermi informazioni».",
+        "Successivi 10 minuti: disegna la mappa di massimo quattro pagine. Per ciascuna indica una domanda a cui risponde e il passo successivo.",
+        "Per 15 minuti: prepara la homepage in cinque sezioni usando l’esempio della guida. Scrivi un titolo preciso, due frasi introduttive e il testo di un pulsante.",
+        "Per 10 minuti: scegli un lavoro da mostrare. Descrivi contesto, contributo personale e una scelta motivata; indica chiaramente se è un’esercitazione.",
+        "Negli ultimi 15 minuti: fai provare la bozza a una persona, annota un ostacolo e correggilo. Conserva le due versioni e scrivi perché hai cambiato quell’elemento."
+      ]
+    },
+    "choose": [
+      "Se parti da zero, cerca un corso con obiettivo e prerequisiti chiari. Chiedi quale sito realizzerai e cosa dovrai già saper fare.",
+      "Verifica che ci siano esercitazioni, revisione del tuo progetto e prove sul telefono, oltre alle dimostrazioni del docente.",
+      "Per un percorso su Webflow o altri strumenti visuali, controlla se comprende CMS, aggiornamenti e pubblicazione. Per un percorso sul codice, chiedi quanta pratica è prevista su HTML e CSS.",
+      "Chiedi se account e dominio resteranno sotto il tuo controllo e quali costi continueranno dopo il corso.",
+      "Porta al docente mappa, testi e prove con il lettore: sono una base concreta per capire quali competenze ti mancano."
+    ],
+    "links": [
+      {
+        "label": "Cerca corsi per creare siti web",
+        "href": "/imparare-e-fare-in-sardegna?disciplina=digitale-informatica&q=web"
+      },
+      {
+        "label": "Tutti i corsi di competenze digitali",
+        "href": "/imparare-e-fare-in-sardegna?disciplina=digitale-informatica"
+      }
+    ],
+    "sourcesNote": "Guida originale EVERAS sviluppata a partire dall’esperienza professionale di Marina Canalis e dal metodo presentato su MC Design. MC Design ed EVERAS sono progetti della stessa autrice. Il caso Kate Tojeiro è documentato nel portfolio; la mappa delle pagine, i testi dell’illustratore e l’esercizio sono esempi didattici originali.",
+    "sources": [
+      {
+        "label": "MC Design: portfolio e progetto Kate Tojeiro",
+        "href": "https://www.mc-design.site/work"
+      },
+      {
+        "label": "MC Design: metodo di progettazione dei siti web",
+        "href": "https://www.mc-design.site/it/web-design-sassari"
+      },
+      {
+        "label": "Marina Canalis: profilo professionale",
+        "href": "https://www.mc-design.site/it/about"
+      }
+    ]
   },
   {
     path: `${PASSION_PATH}/cucina-primo-laboratorio`,
