@@ -1,7 +1,8 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-vi.mock("./seo/loadEvents", () => ({ loadFilteredPublishedEvents: vi.fn(async () => ({ events: [], error: null })) }));
+vi.mock("./seo/loadEvents", () => ({ mapPublishedEvent: (row: unknown) => row }));
+vi.mock("./supabase/public", () => ({ createPublicClient: () => ({ from: () => ({ select: () => ({ eq: () => ({ eq: () => ({ like: () => ({ order: async () => ({ data: [], error: null }) }) }) }) }) }) }) }));
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { EDITORIAL_LEARNING_PATHS, NEW_PASSION_PATHS, PASSION_PATH } from "./editorial-learning-paths";
