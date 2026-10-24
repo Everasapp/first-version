@@ -5,7 +5,7 @@ export default function EditorialLearningSection({ path }: { path: EditorialLear
   return (
     <section id="prova-e-approfondisci" aria-labelledby="percorso-pratico-title" className="mt-12 scroll-mt-24 rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-8">
       <Link href={IDEAS_PATH} prefetch={false} className="text-sm font-bold text-[#075EAE] underline underline-offset-4">Idee e percorsi</Link>
-      <h2 id="percorso-pratico-title" className="mt-3 text-2xl font-bold text-slate-900">Scopri, prova, approfondisci</h2>
+      <h2 id="percorso-pratico-title" className="mt-3 text-2xl font-bold text-slate-900">Guida pratica: scopri, prova e approfondisci</h2>
       <p className="mt-4 max-w-4xl leading-relaxed text-slate-700">{path.discover}</p>
       <h3 className="mt-7 text-xl font-bold text-slate-900">{path.exercise.title}</h3>
       <ol className="mt-4 max-w-4xl list-decimal space-y-3 pl-6 leading-relaxed text-slate-700">
