@@ -33,8 +33,15 @@ describe("passion collection and guides", () => {
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     expect(html).toContain('id="prova-e-approfondisci"');
     expect(html).toContain(guide.image.src);
+    expect(html).toContain(`https://www.everas.it${guide.image.src}`);
+    expect(html).not.toContain("/images/learning/imparare-sardegna-og.jpg");
     expect(html).toContain("disciplina=");
-    expect((await generateMetadata(props(slug))).alternates?.canonical).toBe(guide.path);
+    const metadata = await generateMetadata(props(slug));
+    expect(metadata.alternates?.canonical).toBe(guide.path);
+    const ogImages = metadata.openGraph?.images;
+    const ogImage = Array.isArray(ogImages) ? ogImages[0] : ogImages;
+    expect(ogImage).toMatchObject({ url: guide.image.src, width: 1200, height: 900, alt: guide.image.alt });
+    expect(metadata.twitter?.images).toEqual([guide.image.src]);
     for (const link of guide.links) {
       const discipline = new URL(link.href, "https://www.everas.it").searchParams.get("disciplina");
       expect(learningDisciplines.some((item) => item.slug === discipline)).toBe(true);
