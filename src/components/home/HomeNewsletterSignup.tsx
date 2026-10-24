@@ -6,7 +6,7 @@ import { LoaderCircle, Mail } from "lucide-react";
 import NewsletterPreferenceFields from "@/src/components/newsletter/NewsletterPreferenceFields";
 import { sanitizeNewsletterSelection } from "@/src/lib/newsletter-preferences";
 
-export default function HomeNewsletterSignup() {
+export default function HomeNewsletterSignup({ onSuccess }: { onSuccess?: () => void } = {}) {
   const [email, setEmail] = useState("");
   const [areas, setAreas] = useState<string[]>([]);
   const [disciplines, setDisciplines] = useState<string[]>([]);
@@ -53,6 +53,7 @@ export default function HomeNewsletterSignup() {
       setEmail("");
       setAreas([]);
       setDisciplines([]);
+      onSuccess?.();
     } catch {
       setErrorMessage("Iscrizione non riuscita. Riprova.");
     } finally {
