@@ -21,10 +21,10 @@ const authButtonClassName =
 
 function scrollToRicerca(event: MouseEvent<HTMLAnchorElement>) {
   if (window.location.pathname !== "/imparare-e-fare-in-sardegna") return;
+  const searchForm = document.getElementById("ricerca");
+  if (!searchForm) return;
   event.preventDefault();
-  document
-    .getElementById("ricerca")
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  searchForm.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 export default function Header() {
