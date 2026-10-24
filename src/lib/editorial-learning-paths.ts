@@ -99,7 +99,7 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
     title: "Inglese parlato: come allenarsi anche senza un corso",
     category: "Lingue e comunicazione",
     summary: "Un piano pratico di sette giorni per iniziare a parlare inglese, anche da soli, e capire quando serve un insegnante.",
-    image: { src: "/images/learning/imparare-sardegna-hero.webp", alt: "Formazione, lingue e competenze: illustrazione EVERAS" },
+    image: { src: "/images/learning/english-learning-workspace.webp", alt: "Cuffie, quaderno e lezione audio per esercitarsi con l'inglese parlato" },
     discover: "Capire una parola non significa riuscire a usarla in una conversazione. Per sbloccare il parlato serve una pratica breve e ripetuta, fatta di frasi utili, ascolto attento e piccoli tentativi di risposta. Questa guida propone un esercizio originale EVERAS, non sostituisce la valutazione del livello né promette di diventare fluenti in una settimana.",
     body: [
       { title: "Perché conosci le parole ma ti blocchi quando parli", text: "Quando leggi, hai tempo di rileggere; durante una conversazione devi recuperare parole e costruire frasi in pochi secondi. Ecco perché sapere la grammatica non è sufficiente. Invece di imparare altre liste di vocaboli, prova a riutilizzare ogni giorno cinque frasi legate alla tua vita: presentarti, chiedere un'informazione, raccontare cosa hai fatto e spiegare cosa vorresti fare. Il traguardo iniziale non è parlare senza errori: è farti capire e riuscire a continuare." },
