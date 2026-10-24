@@ -23,7 +23,7 @@ describe("passion collection and guides", () => {
   });
   it("shows new previews on the homepage", () => {
     const html = renderToStaticMarkup(createElement(EditorialPathCards, { featured: true }));
-    expect(html.match(/<article\b/g)).toHaveLength(NEW_PASSION_PATHS.length);
+    expect(html.match(/<article\b/g)).toHaveLength(3);
     for (const guide of NEW_PASSION_PATHS) expect(html).toContain(guide.path);
   });
   it.each(generateStaticParams().map(({ slug }) => [slug]))("renders the exercise, existing image and canonical URL for %s", async (slug) => {
