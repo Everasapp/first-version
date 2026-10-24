@@ -123,7 +123,7 @@ export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
       "Se ti serve l'inglese per lavoro, chiedi esercitazioni su chiamate, email, presentazioni o colloqui, non soltanto dialoghi da viaggio.",
       "Verifica calendario, costo totale, frequenza richiesta e modalità online o in presenza. Un corso generico non implica il conseguimento di una certificazione linguistica.",
     ],
-    links: [{ label: "Cerca corsi di inglese", href: `${LEARNING_PATH}?q=inglese` }, { label: "Tutte le lingue", href: `${LEARNING_PATH}?disciplina=lingue` }],
+    links: [{ label: "Cerca corsi di inglese", href: `${LEARNING_PATH}?disciplina=lingue&q=inglese` }, { label: "Tutte le lingue", href: `${LEARNING_PATH}?disciplina=lingue` }],
   },
 
   {
