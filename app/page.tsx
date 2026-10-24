@@ -10,6 +10,7 @@ import CareerPathCards from "@/src/components/seo/CareerPathCards";
 import EditorialPathCards from "@/src/components/seo/EditorialPathCards";
 import { PASSION_PATH } from "@/src/lib/editorial-learning-paths";
 import Hero from "@/src/components/home/Hero";
+import NewsletterSignupPopup from "@/src/components/home/NewsletterSignupPopup";
 import HappeningToday from "@/src/components/home/HappeningToday";
 import HomeSponsoredSection from "@/src/components/ads/HomeSponsoredSection";
 import type { EventCardData } from "@/src/components/home/EventCard";
@@ -166,6 +167,7 @@ export default function Home() {
   return (
     <>
       <Header />
+      <NewsletterSignupPopup />
       {/* Keep the footer below the viewport while event sections stream in. */}
       <main className="min-h-screen min-w-0 max-w-full">
         <Hero />
