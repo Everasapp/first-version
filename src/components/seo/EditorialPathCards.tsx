@@ -16,5 +16,6 @@ export default function EditorialPathCards({ featured = false }: { featured?: bo
         <Link href={`${path.path}#prova-e-approfondisci`} prefetch={false} className="mt-4 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline underline-offset-4">Leggi la guida e prova l’esercizio →</Link>
       </div>
     </article>)}
-  </div>;
+  );
+  return featured ? <HomepageCardCarousel label="Guide pratiche">{cards}</HomepageCardCarousel> : <div className="grid gap-6 md:grid-cols-3">{cards}</div>;
 }
