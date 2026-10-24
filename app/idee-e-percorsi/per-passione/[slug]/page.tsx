@@ -12,6 +12,7 @@ import { breadcrumbListSchema } from "@/src/lib/seo/schema";
 import { absoluteUrl } from "@/src/lib/seo/site";
 
 export const dynamicParams = false;
+export const revalidate = 300;
 type Props = { params: Promise<{ slug: string }> };
 const findGuide = (slug: string) => NEW_PASSION_PATHS.find((path) => path.path === `${PASSION_PATH}/${slug}`);
 
