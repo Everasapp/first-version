@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!guide) notFound();
   return {
     title: guide.title, description: guide.summary, alternates: { canonical: guide.path },
-    openGraph: { title: guide.title, description: guide.summary, url: guide.path, type: "article", images: [{ url: "/images/learning/imparare-sardegna-og.jpg", width: 1200, height: 630 }] },
-    twitter: { card: "summary_large_image", title: guide.title, description: guide.summary, images: ["/images/learning/imparare-sardegna-og.jpg"] },
+    openGraph: { title: guide.title, description: guide.summary, url: guide.path, type: "article", images: [{ url: guide.image.src, width: 1200, height: 900, alt: guide.image.alt }] },
+    twitter: { card: "summary_large_image", title: guide.title, description: guide.summary, images: [guide.image.src] },
   };
 }
 
@@ -33,7 +33,7 @@ export default async function PassionGuidePage({ params }: Props) {
   return <>
     <Header />
     <JsonLd data={breadcrumbListSchema([{ name: "Home", path: "/" }, { name: "Idee e percorsi", path: IDEAS_PATH }, { name: "Per passione", path: PASSION_PATH }, { name: guide.title, path: guide.path }])} />
-    <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.summary, dateModified: "2026-10-23", author: { "@type": "Organization", name: "EVERAS", url: absoluteUrl("/") }, mainEntityOfPage: absoluteUrl(guide.path), image: absoluteUrl("/images/learning/imparare-sardegna-og.jpg") }} />
+    <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: guide.title, description: guide.summary, dateModified: "2026-10-23", author: { "@type": "Organization", name: "EVERAS", url: absoluteUrl("/") }, mainEntityOfPage: absoluteUrl(guide.path), image: absoluteUrl(guide.image.src) }} />
     <main className="bg-slate-50 pb-16">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
