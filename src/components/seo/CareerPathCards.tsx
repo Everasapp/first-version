@@ -16,5 +16,6 @@ export default function CareerPathCards({ featured = false }: { featured?: boole
       <Link href={careerPathUrl(path.slug)} prefetch={false} className="mt-auto inline-flex min-h-11 items-center font-bold text-[#075EAE] underline underline-offset-4">Esplora il percorso →</Link>
       </div>
     </article>)}
-  </div>;
+  );
+  return featured ? <HomepageCardCarousel label="Idee e percorsi professionali">{cards}</HomepageCardCarousel> : <div className="grid gap-6 md:grid-cols-3">{cards}</div>;
 }
