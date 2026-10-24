@@ -95,6 +95,38 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
 
 export const NEW_PASSION_PATHS: EditorialLearningPath[] = [
   {
+    path: `${PASSION_PATH}/inglese-parlato-esercizi-principianti`,
+    title: "Inglese parlato: come allenarsi anche senza un corso",
+    category: "Lingue e comunicazione",
+    summary: "Un piano pratico di sette giorni per iniziare a parlare inglese, anche da soli, e capire quando serve un insegnante.",
+    image: { src: "/images/learning/imparare-sardegna-hero.webp", alt: "Formazione, lingue e competenze: illustrazione EVERAS" },
+    discover: "Capire una parola non significa riuscire a usarla in una conversazione. Per sbloccare il parlato serve una pratica breve e ripetuta, fatta di frasi utili, ascolto attento e piccoli tentativi di risposta. Questa guida propone un esercizio originale EVERAS, non sostituisce la valutazione del livello né promette di diventare fluenti in una settimana.",
+    body: [
+      { title: "Perché conosci le parole ma ti blocchi quando parli", text: "Quando leggi, hai tempo di rileggere; durante una conversazione devi recuperare parole e costruire frasi in pochi secondi. Ecco perché sapere la grammatica non è sufficiente. Invece di imparare altre liste di vocaboli, prova a riutilizzare ogni giorno cinque frasi legate alla tua vita: presentarti, chiedere un'informazione, raccontare cosa hai fatto e spiegare cosa vorresti fare. Il traguardo iniziale non è parlare senza errori: è farti capire e riuscire a continuare." },
+      { title: "Prepara un piccolo repertorio personale", text: "Scrivi tre situazioni che potresti vivere davvero: un viaggio, una telefonata o una presentazione di lavoro. Per ciascuna prepara due domande e due possibili risposte, scegliendo parole che sai già pronunciare. Ad esempio, al posto di cercare una frase complicata per chiedere indicazioni, puoi partire da 'How can I get to the station?' e 'Is it far from here?'. Prova anche a cambiare un solo elemento: station diventa museum oppure hospital. Questo è un modo per passare dalla memorizzazione alla costruzione di nuove frasi." },
+      { title: "Allenati ad ascoltare e a rispondere", text: "Scegli un audio breve in inglese, possibilmente accompagnato da trascrizione, su un argomento familiare. Ascoltalo una volta per capire il senso generale; poi riascoltalo fermandoti dopo ogni frase e prova a ripeterla. Infine chiudi la trascrizione e rispondi a voce a una domanda sul contenuto. Se non ricordi una parola, descrivila con parole più semplici. Il materiale deve essere abbastanza comprensibile da permetterti di riprovare senza trasformare l'esercizio in una traduzione continua." },
+      { title: "Come misurare un miglioramento reale", text: "Registra sul telefono una presentazione di 30–60 secondi il primo giorno e ripeti lo stesso compito una settimana dopo, senza leggere. Controlla se riesci a completare più frasi, usare meno pause lunghe e correggerti senza fermarti. Non confrontare accenti e velocità con quelli di un madrelingua: valuta se il messaggio è più chiaro. Conserva le due registrazioni per decidere cosa allenare nel mese successivo." },
+      { title: "Quando conviene cercare un corso o un insegnante", text: "La pratica autonoma aiuta a prendere confidenza, ma può non bastare per riconoscere errori ricorrenti o affrontare conversazioni impreviste. Un corso di conversazione dovrebbe lasciarti tempo per parlare e ricevere un riscontro comprensibile, non limitarsi a spiegazioni frontali. Chiedi quante persone partecipano, quanto tempo effettivo è dedicato al parlato, quali livelli sono ammessi e se è prevista una prova orientativa. Se devi preparare un esame certificato, cerca invece un percorso dedicato all'esame richiesto." },
+    ],
+    exercise: { title: "Sette giorni, dieci minuti al giorno", steps: [
+      "Giorno 1: registra una presentazione di 30 secondi. Riascoltala e scegli soltanto due difficoltà su cui lavorare.",
+      "Giorno 2: scrivi cinque frasi utili su di te e pronunciale lentamente senza leggerle almeno due volte.",
+      "Giorno 3: trasforma le cinque frasi in domande e rispondi a voce con informazioni vere.",
+      "Giorno 4: ascolta un minuto di audio semplice con trascrizione, poi ripeti tre frasi facendo attenzione alle pause.",
+      "Giorno 5: simula una situazione pratica, come ordinare qualcosa o chiedere indicazioni. Inventa due risposte possibili.",
+      "Giorno 6: racconta in un minuto cosa hai fatto ieri e cosa farai domani. Se manca una parola, prova a spiegarla con parole più semplici.",
+      "Giorno 7: ripeti la registrazione del primo giorno. Annota un miglioramento concreto e una difficoltà che merita un aiuto esterno.",
+    ] },
+    choose: [
+      "Se sei all'inizio, cerca corsi che consentano di fare domande semplici e dialoghi guidati. Una classe di livello troppo alto può lasciarti in silenzio.",
+      "Se comprendi già testi e audio ma parli poco, valuta lezioni di conversazione con gruppi piccoli e correzioni puntuali.",
+      "Se ti serve l'inglese per lavoro, chiedi esercitazioni su chiamate, email, presentazioni o colloqui, non soltanto dialoghi da viaggio.",
+      "Verifica calendario, costo totale, frequenza richiesta e modalità online o in presenza. Un corso generico non implica il conseguimento di una certificazione linguistica.",
+    ],
+    links: [{ label: "Cerca corsi di inglese", href: `${LEARNING_PATH}?disciplina=lingue&q=inglese` }, { label: "Tutte le lingue", href: `${LEARNING_PATH}?disciplina=lingue` }],
+  },
+
+  {
     path: `${PASSION_PATH}/ceramica-forme-e-materiali`,
     title: "Ceramica: dalla curiosità al primo oggetto",
     category: "Ceramica e manualità",
