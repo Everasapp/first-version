@@ -14,16 +14,16 @@ vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND
 const props = (slug: string) => ({ params: Promise.resolve({ slug }) });
 
 describe("passion collection and guides", () => {
-  it("lists all six guides, preserving the three existing cultural URLs", () => {
+  it("lists all guides, preserving the three existing cultural URLs", () => {
     const html = renderToStaticMarkup(createElement(PassionIndexPage));
-    expect(html.match(/<article\b/g)).toHaveLength(6);
+    expect(html.match(/<article\b/g)).toHaveLength(EDITORIAL_LEARNING_PATHS.length);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     for (const guide of EDITORIAL_LEARNING_PATHS) expect(html).toContain(guide.path);
     expect(html).toContain("/cultura/giuseppe-biasi-pittore-sardegna");
   });
-  it("shows only the three new previews on the homepage", () => {
+  it("shows new previews on the homepage", () => {
     const html = renderToStaticMarkup(createElement(EditorialPathCards, { featured: true }));
-    expect(html.match(/<article\b/g)).toHaveLength(3);
+    expect(html.match(/<article\b/g)).toHaveLength(NEW_PASSION_PATHS.length);
     for (const guide of NEW_PASSION_PATHS) expect(html).toContain(guide.path);
   });
   it.each(generateStaticParams().map(({ slug }) => [slug]))("renders the exercise, existing image and canonical URL for %s", async (slug) => {
