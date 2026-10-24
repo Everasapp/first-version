@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
+import { mapPublishedEvent, type PublishedEventRow } from "@/src/lib/seo/loadEvents";
+import { createPublicClient } from "@/src/lib/supabase/public";
 import { notFound } from "next/navigation";
 import Header from "@/src/components/home/Header";
 import EditorialLearningSection from "@/src/components/seo/EditorialLearningSection";
@@ -31,9 +32,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PassionGuidePage({ params }: Props) {
   const guide = findGuide((await params).slug);
   if (!guide) notFound();
-  const wellnessCourses = guide.path.endsWith("/stretching-relax-preghiera")
-    ? (await loadFilteredPublishedEvents({ categorySlug: "benessere-movimento", learningOnly: true })).events
-    : [];
+  // Read the exact published discipline directly: do not depend on the shared
+  // homepage/catalogue inventory or its stale cross-request cache.
+  let wellnessCourses: ReturnType<typeof mapPublishedEvent>[] = [];
+  if (guide.path.endsWith("/stretching-relax-preghiera")) {
+    const { data, error } = await createPublicClient()
+      .from("events")
+      .select("id,title,category,categories,subcategory,province,municipality,location_name,start_at,end_at,schedule_mode,image_url,slug,is_free,price_from,status,is_featured,views_count,favorites_count,shares_count")
+      .eq("status", "published")
+      .eq("category", "benessere-movimento")
+      .like("subcategory", "imparare-%")
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("Impossibile recuperare i corsi di benessere:", error.message);
+    } else {
+      wellnessCourses = ((data ?? []) as PublishedEventRow[]).map(mapPublishedEvent);
+    }
+  }
   return <>
     <Header />
     <JsonLd data={breadcrumbListSchema([{ name: "Home", path: "/" }, { name: "Idee e percorsi", path: IDEAS_PATH }, { name: "Per passione", path: PASSION_PATH }, { name: guide.title, path: guide.path }])} />
