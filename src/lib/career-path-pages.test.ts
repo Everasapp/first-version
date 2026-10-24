@@ -68,9 +68,9 @@ describe("career guide routes", () => {
     expect(html).toContain("/cultura/artigianato-sardo");
     expect(loadRows).not.toHaveBeenCalled();
   });
-  it("uses only three static preview cards on the homepage", () => {
+  it("shows all career paths in the homepage carousel", () => {
     const html = renderToStaticMarkup(createElement(CareerPathCards, { featured: true }));
-    expect(html.match(/<article\b/g)).toHaveLength(3);
+    expect(html.match(/<article\b/g)).toHaveLength(CAREER_LEARNING_PATHS.length);
     expect(loadRows).not.toHaveBeenCalled();
   });
 });
