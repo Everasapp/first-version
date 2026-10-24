@@ -27,7 +27,7 @@ export const learningDisciplines: readonly LearningDiscipline[] = [
   { slug: "musica", name: "Musica", areas: ["corsi-workshop"] },
   { slug: "teatro", name: "Teatro e arti espressive", areas: ["corsi-workshop"] },
   { slug: "cucina", name: "Cucina e pasticceria", areas: ["formazione", "corsi-workshop"] },
-  { slug: "benessere-movimento", name: "Benessere e movimento", areas: ["formazione", "corsi-workshop"] },
+  { slug: "benessere-movimento", name: "Benessere fisico e spirituale", areas: ["formazione", "corsi-workshop"] },
   { slug: "ambiente-sostenibilita", name: "Ambiente e sostenibilità", areas: ["formazione", "corsi-workshop"] },
   { slug: "natura-saperi", name: "Natura e saperi del territorio", areas: ["corsi-workshop"] },
   { slug: "laboratori-bambini", name: "Laboratori per bambini e famiglie", areas: ["corsi-workshop"] },
