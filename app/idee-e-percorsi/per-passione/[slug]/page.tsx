@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
 import { notFound } from "next/navigation";
 import Header from "@/src/components/home/Header";
 import EditorialLearningSection from "@/src/components/seo/EditorialLearningSection";
@@ -30,6 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PassionGuidePage({ params }: Props) {
   const guide = findGuide((await params).slug);
   if (!guide) notFound();
+  const wellnessCourses = guide.path.endsWith("/stretching-relax-preghiera")
+    ? (await loadFilteredPublishedEvents({ categorySlug: "benessere-movimento", learningOnly: true })).events
+    : [];
   return <>
     <Header />
     <JsonLd data={breadcrumbListSchema([{ name: "Home", path: "/" }, { name: "Idee e percorsi", path: IDEAS_PATH }, { name: "Per passione", path: PASSION_PATH }, { name: guide.title, path: guide.path }])} />
@@ -47,7 +51,7 @@ export default async function PassionGuidePage({ params }: Props) {
       <article className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
         <Image src={guide.image.src} alt={guide.image.alt} width={800} height={533} unoptimized className="aspect-[3/2] w-full rounded-2xl border border-slate-200 object-cover" />
         <div className="mt-10 space-y-8">{guide.body?.map((section) => <section key={section.title}><h2 className="text-2xl font-bold text-slate-900">{section.title}</h2><p className="mt-3 leading-relaxed text-slate-700">{section.text}</p></section>)}</div>
-        <EditorialLearningSection path={guide} />
+        <EditorialLearningSection path={guide} wellnessCourses={wellnessCourses} />
         <section aria-labelledby="note-title" className="mt-10 border-t border-slate-200 pt-6">
           <h2 id="note-title" className="text-xl font-bold text-slate-900">Per continuare a esplorare</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">Percorso ed esercizi originali di EVERAS. I riferimenti culturali sono spunti di osservazione: non indicano corsi attivi o appuntamenti organizzati dai musei citati.</p>
