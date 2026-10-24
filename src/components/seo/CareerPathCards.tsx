@@ -6,6 +6,7 @@ import { CAREER_LEARNING_PATHS, careerPathUrl } from "@/src/lib/career-learning-
 export default function CareerPathCards({ featured = false }: { featured?: boolean }) {
   const paths = featured ? CAREER_LEARNING_PATHS : CAREER_LEARNING_PATHS;
   const cards = (
+    <>
     {paths.map((path) => <article data-carousel-card={featured ? "" : undefined} key={path.slug} className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <Image src={`/images/career-paths/${path.slug}-blue.svg`} alt="" width={800} height={450} unoptimized className="aspect-[16/9] w-full border-b border-slate-100 object-cover" />
       <div className="flex flex-1 flex-col p-6">
@@ -16,6 +17,7 @@ export default function CareerPathCards({ featured = false }: { featured?: boole
       <Link href={careerPathUrl(path.slug)} prefetch={false} className="mt-auto inline-flex min-h-11 items-center font-bold text-[#075EAE] underline underline-offset-4">Esplora il percorso →</Link>
       </div>
     </article>)}
+    </>
   );
   return featured ? <HomepageCardCarousel label="Idee e percorsi professionali">{cards}</HomepageCardCarousel> : <div className="grid gap-6 md:grid-cols-3">{cards}</div>;
 }
