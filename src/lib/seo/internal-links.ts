@@ -1,4 +1,5 @@
 import { categories } from "@/src/data/categories";
+import { LEARNING_PATH } from "@/src/lib/learning-courses";
 import {
   CALENDAR_YEAR_MIN,
   currentMonthLanding,
@@ -88,6 +89,23 @@ export type EventContextLinkInput = {
   categoryLabel: string;
   startAt: string | null;
 };
+
+/** Learning pages keep discovery in the course catalog, including remote courses. */
+export function courseContextLinks(input: {
+  municipality: string;
+  categorySlug: string;
+  categoryLabel: string;
+  online: boolean;
+}): LandingLink[] {
+  const city = input.online ? "Online" : input.municipality;
+  const categoryHref = publicCategoryHref(input.categorySlug);
+  return dedupeLinks([
+    { href: `${LEARNING_PATH}?city=${encodeURIComponent(city)}#ricerca`, label: input.online ? "Corsi online" : `Corsi a ${city}` },
+    ...(categoryHref ? [{ href: categoryHref, label: input.categoryLabel }] : []),
+    { href: "/idee-e-percorsi", label: "Idee e percorsi per imparare" },
+    { href: LEARNING_PATH, label: "Tutti i corsi e laboratori" },
+  ]);
+}
 
 function eventMonthLink(startAt: string | null, from: Date): LandingLink | null {
   if (!startAt) return null;

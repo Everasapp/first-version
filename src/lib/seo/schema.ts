@@ -1,5 +1,6 @@
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/src/lib/seo/site";
 import { EVENTS_EXPLORE_GRID_DEFAULT_INITIAL } from "@/src/lib/seo/explore-grid";
+import { isOnlineLocation } from "@/src/lib/course-location";
 
 export function websiteSearchActionSchema() {
   return {
@@ -85,6 +86,7 @@ export function eventSchema(input: {
   /** Past events stay noindex; do not advertise InStock offers. */
   isExpired?: boolean;
 }) {
+  const online = isOnlineLocation({ municipality: input.city, location_name: input.locationName, address: input.address });
   const offers =
     input.isExpired ||
     !(input.ticketUrl || input.isFree || input.priceFrom !== undefined)
@@ -105,10 +107,10 @@ export function eventSchema(input: {
     startDate: input.startAt,
     endDate: input.endAt || undefined,
     eventStatus: "https://schema.org/EventScheduled",
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventAttendanceMode: online ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
     image: input.imageUrl ? [input.imageUrl] : undefined,
     url: input.url,
-    location: placeSchema({
+    location: online ? { "@type": "VirtualLocation", name: input.locationName } : placeSchema({
       name: input.locationName,
       address: input.address,
       city: input.city,

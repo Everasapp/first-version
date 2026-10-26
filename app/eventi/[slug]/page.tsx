@@ -6,7 +6,6 @@ import { cache } from "react";
 import {
   Building2,
   ExternalLink,
-  MapPin,
   Pencil,
   Ticket,
 } from "lucide-react";
@@ -14,6 +13,7 @@ import {
 import CalendarButton from "@/src/components/events/CalendarButton";
 import EventDescription from "@/src/components/events/EventDescription";
 import EventContextLinks from "@/src/components/events/EventContextLinks";
+import EventLocationDetails from "@/src/components/events/EventLocationDetails";
 import EventPracticalFacts from "@/src/components/events/EventPracticalFacts";
 import ExpiredEventNotice from "@/src/components/events/ExpiredEventNotice";
 import FavoriteButton from "@/src/components/events/FavoriteButton";
@@ -35,7 +35,7 @@ import {
   buildCityLandingMetadata,
 } from "@/src/components/seo/GeoCategoryLandings";
 import { loadFilteredPublishedEvents } from "@/src/lib/seo/loadEvents";
-import { eventContextLinks } from "@/src/lib/seo/internal-links";
+import { eventContextLinks, courseContextLinks } from "@/src/lib/seo/internal-links";
 import { findNextEventEdition } from "@/src/lib/seo/event-edition";
 import { romeDayRange, romeYmd } from "@/src/lib/seo/rome-time";
 import { filterWorkshopRelevantEvents } from "@/src/lib/seo/workshop-relevance";
@@ -59,7 +59,7 @@ import {
 } from "@/src/lib/organizer-page";
 import { PROFILE_SELECT, type Profile } from "@/src/lib/profile";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
-import { formatHowToArrive } from "@/src/lib/event-practical";
+import { isOnlineLocation } from "@/src/lib/course-location";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { stripHtml } from "@/src/lib/sanitizeHtml";
 import { isLearningEvent, LEARNING_PATH } from "@/src/lib/learning-courses";
@@ -347,6 +347,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
   }
 
   const event = data as EventRow;
+  const isOnline = isOnlineLocation(event);
   const now = new Date();
   const isExpired = !isPublicEventActive(
     event.start_at,
@@ -408,7 +409,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
       .from("events")
       .select(eventCardSelect)
       .eq("status", "published")
-      .eq("municipality", event.municipality)
+      .eq("municipality", isOnline ? "Online" : event.municipality)
       .neq("id", event.id)
       .or(activeEventFilter)
       .order("start_at", { ascending: true })
@@ -492,8 +493,9 @@ async function EventDetailPage({ slug }: { slug: string }) {
     .slice(0, 6)
     .map((item) => mapEventForCard(item, favoriteIds.has(item.id)));
 
-  const cultureHref =
-    findCultureTown(cityToSlug(event.municipality))?.path ?? null;
+  const cultureHref = isOnline
+    ? null
+    : findCultureTown(cityToSlug(event.municipality))?.path ?? null;
   const culturaArticle = findCulturaArticleForEventSlug(event.slug);
 
   const pricing = resolveEventPricing(event.is_free, event.price_from);
@@ -506,37 +508,23 @@ async function EventDetailPage({ slug }: { slug: string }) {
       : pricing.label;
 
   const eventLocation = event.location_name || event.municipality;
-  const locationDetails = [event.address, event.municipality, event.province]
-    .filter(Boolean)
-    .join(" · ");
-
-  const mapAddress = [
-    event.location_name,
-    event.address,
-    event.municipality,
-    event.province,
-    "Sardegna",
-  ]
-    .filter(Boolean)
-    .join(", ");
-
-  const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(
-    mapAddress,
-  )}&output=embed`;
-
-  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    mapAddress,
-  )}`;
-
   const categoryLabels = resolveCategoryLabels(event);
   const categoryName = categoryLabels[0] ?? event.category;
   const primaryCategorySlug =
     eventCategorySlugs(event)[0] ?? event.category;
   const isCourse = isLearningEvent(event);
 
-  const cityPath = cityEventsPath(event.municipality);
+  const locationLabel = isOnline ? "Online" : event.municipality;
+  const cityPath = isCourse
+    ? `${LEARNING_PATH}?city=${encodeURIComponent(isOnline ? "Online" : event.municipality)}#ricerca`
+    : cityEventsPath(event.municipality);
   const categoryPath = publicCategoryHref(primaryCategorySlug);
-  const contextualLinks = eventContextLinks({
+  const contextualLinks = isCourse ? courseContextLinks({
+    municipality: event.municipality,
+    categorySlug: primaryCategorySlug,
+    categoryLabel: categoryName,
+    online: isOnline,
+  }) : eventContextLinks({
     municipality: event.municipality,
     categorySlug: primaryCategorySlug,
     categoryLabel: categoryName,
@@ -589,8 +577,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
       <JsonLd
         data={breadcrumbListSchema([
           { name: "Home", path: "/" },
-          { name: "Eventi", path: "/eventi" },
-          { name: event.municipality, path: cityPath },
+          { name: isCourse ? "Corsi e workshop" : "Eventi", path: isCourse ? LEARNING_PATH : "/eventi" },
+          { name: locationLabel, path: cityPath },
           ...(categoryPath ? [{ name: categoryName, path: categoryPath }] : []),
           { name: event.title, path: `/eventi/${event.slug}` },
         ])}
@@ -603,8 +591,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
           <Breadcrumbs
             items={[
               { name: "Home", href: "/" },
-              { name: "Eventi", href: "/eventi" },
-              { name: event.municipality, href: cityPath },
+              { name: isCourse ? "Corsi e workshop" : "Eventi", href: isCourse ? LEARNING_PATH : "/eventi" },
+              { name: locationLabel, href: cityPath },
               ...(categoryPath ? [{ name: categoryName, href: categoryPath }] : []),
               { name: event.title },
             ]}
@@ -673,7 +661,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
               })}
               {" · "}
               <Link href={cityPath} className="hover:underline">
-                {event.municipality}
+                {locationLabel}
               </Link>
               {cultureHref ? (
                 <>
@@ -708,6 +696,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
             {isExpired ? (
               <ExpiredEventNotice
                 municipality={event.municipality}
+                isCourse={isCourse}
+                online={isOnline}
                 cityPath={cityPath}
                 categoryLabel={categoryPath ? categoryName : undefined}
                 categoryPath={categoryPath}
@@ -748,6 +738,8 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
             <EventContextLinks
               municipality={event.municipality}
+              isCourse={isCourse}
+              online={isOnline}
               links={contextualLinks}
             />
 
@@ -760,106 +752,14 @@ async function EventDetailPage({ slug }: { slug: string }) {
               </div>
             ) : null}
 
-            <div className="border-t border-slate-200 py-10">
-              <h2 className="text-3xl font-bold text-slate-900">
-                Come arrivare
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
-                {formatHowToArrive({
-                  locationName: event.location_name,
-                  address: event.address,
-                  municipality: event.municipality,
-                  province: event.province,
-                })}
-              </p>
-
-              <div className="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
-                <iframe
-                  title={`Mappa di ${event.title}`}
-                  src={mapUrl}
-                  width="100%"
-                  height="360"
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="block w-full border-0"
-                />
-
-                <div className="flex flex-col gap-4 border-t border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-start gap-3">
-                    <MapPin
-                      aria-hidden="true"
-                      className="mt-0.5 h-5 w-5 shrink-0 text-[#075EAE]"
-                    />
-
-                    <div>
-                      <p className="font-bold text-slate-900">
-                        {eventLocation}
-                      </p>
-
-                      {locationDetails && (
-                        <p className="mt-1 text-sm text-slate-600">
-                          {locationDetails}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <a
-                    href={directionsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-2 font-bold text-[#075EAE] hover:underline"
-                  >
-                    Apri su Google Maps
-                    <ExternalLink aria-hidden="true" className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-
-              <p className="mt-5 text-sm leading-relaxed text-slate-600">
-                Altri eventi a{" "}
-                <Link
-                  href={cityPath}
-                  className="font-semibold text-[#075EAE] hover:underline"
-                >
-                  {event.municipality}
-                </Link>
-                {cultureHref ? (
-                  <>
-                    {" "}
-                    · guida culturale di{" "}
-                    <Link
-                      href={cultureHref}
-                      className="font-semibold text-[#075EAE] hover:underline"
-                    >
-                      {event.municipality}
-                    </Link>
-                  </>
-                ) : null}
-                {culturaArticle ? (
-                  <>
-                    {" "}
-                    ·{" "}
-                    <Link
-                      href={culturaArticle.path}
-                      className="font-semibold text-[#075EAE] hover:underline"
-                    >
-                      {culturaArticle.h1}
-                    </Link>
-                  </>
-                ) : null}
-                {" "}
-                ·{" "}
-                <Link
-                  href="/eventi-sardegna"
-                  className="font-semibold text-[#075EAE] hover:underline"
-                >
-                  Tutti gli eventi in Sardegna
-                </Link>
-                .
-              </p>
-            </div>
+            <EventLocationDetails
+              title={event.title}
+              municipality={event.municipality}
+              province={event.province}
+              location_name={event.location_name}
+              address={event.address}
+              registrationUrl={event.ticket_url || event.source_url}
+            />
 
             {organizer || directory ? (
               <div className="flex flex-col gap-4 border-t border-slate-200 py-8 sm:flex-row sm:items-center sm:justify-between">
@@ -1000,19 +900,20 @@ async function EventDetailPage({ slug }: { slug: string }) {
           <section className="border-t border-slate-200 py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
-                {isExpired ? "In programma" : "Stessa città"}
+                {isExpired ? "In programma" : isOnline ? "Da seguire a distanza" : "Stessa città"}
               </p>
 
               <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <h2 className="text-3xl font-bold text-slate-900">
-                  {isExpired ? "Eventi attuali" : "Altri eventi"} a{" "}
-                  {event.municipality}
+                  {isCourse
+                    ? `${isExpired ? "Corsi attuali" : "Altri corsi"} ${isOnline ? "online" : `a ${event.municipality}`}`
+                    : `${isExpired ? "Eventi attuali" : "Altri eventi"} a ${event.municipality}`}
                 </h2>
                 <Link
                   href={cityPath}
                   className="text-sm font-bold text-[#075EAE] hover:underline"
                 >
-                  Tutti gli eventi a {event.municipality}
+                  {isCourse ? `Tutti i corsi ${isOnline ? "online" : `a ${event.municipality}`}` : `Tutti gli eventi a ${event.municipality}`}
                 </Link>
               </div>
 

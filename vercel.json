@@ -15,6 +15,7 @@
   ],
   "git": {
     "deploymentEnabled": {
+      "fix/adsense-readiness-20261026": false,
       "feat/career-change-paths-20261023": false,
       "maintenance/speaking-fluently-tracking": false,
       "feat/imparare-fare-sardegna-20261013": false,
