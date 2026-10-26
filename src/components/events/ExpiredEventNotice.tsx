@@ -2,6 +2,8 @@ import Link from "next/link";
 
 type ExpiredEventNoticeProps = {
   municipality: string;
+  isCourse?: boolean;
+  online?: boolean;
   cityPath: string;
   categoryLabel?: string;
   categoryPath?: string | null;
@@ -14,6 +16,8 @@ type ExpiredEventNoticeProps = {
 
 export default function ExpiredEventNotice({
   municipality,
+  isCourse = false,
+  online = false,
   cityPath,
   categoryLabel,
   categoryPath,
@@ -37,12 +41,13 @@ export default function ExpiredEventNotice({
         id="expired-event-title"
         className="mt-2 text-2xl font-black text-slate-900"
       >
-        Questo evento è terminato
+        {isCourse ? "Questa edizione del corso è conclusa" : "Questo evento è terminato"}
       </h2>
       <p className="mt-3 max-w-3xl leading-relaxed text-slate-700">
         Conserviamo online date, programma e informazioni di questa edizione.
-        Per scegliere cosa fare ora, consulta gli appuntamenti aggiornati a{" "}
-        {municipality} o nella stessa categoria.
+        {isCourse
+          ? `Per scegliere il prossimo percorso, consulta i corsi aggiornati ${online ? "online" : `a ${municipality}`} o nella stessa disciplina.`
+          : `Per scegliere cosa fare ora, consulta gli appuntamenti aggiornati a ${municipality} o nella stessa categoria.`}
       </p>
 
       {nextEdition ? (
@@ -67,7 +72,7 @@ export default function ExpiredEventNotice({
               href={cityPath}
               className="inline-flex min-h-11 items-center rounded-full bg-[#075EAE] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#064a8a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#075EAE] focus-visible:ring-offset-2"
             >
-              Eventi attuali a {municipality}
+              {isCourse ? `Corsi attuali ${online ? "online" : `a ${municipality}`}` : `Eventi attuali a ${municipality}`}
             </Link>
           </li>
           {categoryPath && categoryCta ? (

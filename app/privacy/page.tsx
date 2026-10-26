@@ -5,21 +5,40 @@ import LegalPage from "@/src/components/home/LegalPage";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Come EVERAS tratta i dati personali e gestisce la scelta per Google Analytics.",
+    "Dati personali su EVERAS: account, corsi e laboratori, contatti, newsletter e preferenze di consenso.",
   alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updatedAt="4 ottobre 2026">
+    <LegalPage title="Privacy Policy" updatedAt="26 ottobre 2026">
       <p>
         EVERAS tratta i dati personali degli utenti per erogare il servizio di
-        scoperta e pubblicazione eventi in Sardegna, gestire gli account e
-        rispondere alle richieste di contatto.
+        ricerca e pubblicazione di formazione, corsi, workshop ed esperienze
+        in Sardegna e online, gestire gli account e rispondere alle richieste
+        di contatto. Il sito propone anche guide e percorsi editoriali per
+        orientare la scelta di cosa imparare.
       </p>
       <p>
         I dati raccolti possono includere nome, email, informazioni del profilo
-        organizzatore e contenuti relativi agli eventi pubblicati.
+        organizzatore, messaggi inviati e contenuti relativi alle attività
+        pubblicate. I dati inseriti nelle schede e nei profili organizzatore
+        destinati alla pubblicazione sono visibili ai visitatori: evita di
+        inserire informazioni personali non necessarie.
+      </p>
+      <p>
+        Se ti iscrivi alla newsletter, utilizziamo l’indirizzo email e le
+        preferenze sulle zone e sulle discipline per inviarti le proposte
+        selezionate. Puoi annullare l’iscrizione dal collegamento presente
+        nelle email. L’account EVERAS e l’iscrizione alla newsletter sono
+        distinti dalla candidatura a un corso.
+      </p>
+      <p>
+        I collegamenti per informazioni, candidature e pagamenti dei corsi
+        possono aprire siti esterni gestiti dagli organizzatori. Prima di
+        inviare dati o documenti a un ente, consulta la sua informativa:
+        la pubblicazione di una scheda su EVERAS non comporta l’invio
+        automatico dei tuoi dati all’organizzatore.
       </p>
       <p>
         In produzione, Google Analytics misura visite e utenti del sito dopo
