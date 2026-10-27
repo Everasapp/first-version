@@ -25,7 +25,8 @@ import DashboardEventSearch from "@/src/components/dashboard/DashboardEventSearc
 import LogoutButton from "@/src/components/dashboard/LogoutButton";
 import PromoteEventButton from "@/src/components/dashboard/PromoteEventButton";
 import PublishEventButton from "@/src/components/dashboard/PublishEventButton";
-import { requireOrganizer } from "@/src/lib/auth";
+import { requireOrganizer, requireProfile } from "@/src/lib/auth";
+import { isOrganizer } from "@/src/lib/profile";
 import {
   buildDashboardHref,
   eventMatchesDashboardSearch,
@@ -581,7 +582,46 @@ async function OrganizerDashboard({
 export default async function DashboardPage({
   searchParams,
 }: DashboardPageProps) {
-  const { supabase, user, profile } = await requireOrganizer("/dashboard");
+  const { supabase, user, profile } = await requireProfile("/dashboard");
+
+  if (!isOrganizer(profile)) {
+    const links = [
+      { href: "/dashboard/preferiti", title: "I miei preferiti", description: "Ritrova i corsi e le attività che hai salvato.", icon: Heart },
+      { href: "/dashboard/calendario", title: "Il mio calendario", description: "Consulta le attività aggiunte al tuo calendario.", icon: CalendarDays },
+      { href: "/dashboard/organizzatori", title: "Organizzatori seguiti", description: "Ritrova gli organizzatori che segui.", icon: Users },
+      { href: "/dashboard/newsletter", title: "Newsletter", description: "Scegli zone e discipline o disattiva le email.", icon: Mail },
+    ];
+    const name = profile.full_name?.trim() || profile.display_name?.trim();
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-slate-50">
+          <section className="border-b border-slate-200 bg-white">
+            <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">Area personale</p>
+              <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{name ? `Ciao, ${name}` : "Il mio account"}</h1>
+              <p className="mt-3 max-w-2xl text-lg text-slate-600">Tieni a portata di mano le attività che ti interessano e gestisci le tue preferenze.</p>
+            </div>
+          </section>
+          <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {links.map(({ href, title, description, icon: Icon }) => (
+                <Link key={href} href={href} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-[#075EAE] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#075EAE]">
+                  <Icon aria-hidden="true" className="h-6 w-6 text-[#075EAE]" />
+                  <h2 className="mt-4 text-xl font-bold text-slate-900">{title}</h2>
+                  <p className="mt-2 text-sm text-slate-600">{description}</p>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link href="/diventa-organizzatore" className="rounded-xl bg-[#075EAE] px-5 py-3 font-bold text-white">Diventa organizzatore</Link>
+              <LogoutButton />
+            </div>
+          </section>
+        </main>
+      </>
+    );
+  }
 
   return (
     <OrganizerDashboard

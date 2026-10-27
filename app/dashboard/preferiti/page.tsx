@@ -10,10 +10,10 @@ import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { engagementFromRow } from "@/src/lib/event-engagement";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { getFavoriteEvents } from "@/src/lib/favorites";
-import { requireOrganizer } from "@/src/lib/auth";
+import { requireProfile } from "@/src/lib/auth";
 
 export default async function PreferitiPage() {
-  const { user } = await requireOrganizer("/dashboard/preferiti");
+  const { user } = await requireProfile("/dashboard/preferiti");
   const favorites = await getFavoriteEvents(user.id);
 
   const cards: EventCardData[] = favorites.map((event) => {

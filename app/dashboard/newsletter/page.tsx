@@ -3,14 +3,14 @@ import { Mail } from "lucide-react";
 
 import NewsletterPreferencesForm from "@/src/components/dashboard/NewsletterPreferencesForm";
 import Header from "@/src/components/home/Header";
-import { requireOrganizer } from "@/src/lib/auth";
+import { requireProfile } from "@/src/lib/auth";
 import {
   formatDisciplineList,
   resolveStoredNewsletterPreferences,
 } from "@/src/lib/newsletter-preferences";
 
 export default async function NewsletterPreferencesPage() {
-  const { profile } = await requireOrganizer("/dashboard/newsletter");
+  const { profile } = await requireProfile("/dashboard/newsletter");
 
   return (
     <>

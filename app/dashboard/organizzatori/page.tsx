@@ -3,14 +3,14 @@ import { Building2, Users } from "lucide-react";
 
 import FollowOrganizerButton from "@/src/components/events/FollowOrganizerButton";
 import Header from "@/src/components/home/Header";
-import { requireOrganizer } from "@/src/lib/auth";
+import { requireProfile } from "@/src/lib/auth";
 import {
   getFollowedOrganizers,
   getOrganizerDisplayName,
 } from "@/src/lib/follows";
 
 export default async function OrganizzatoriSeguitiPage() {
-  const { user } = await requireOrganizer("/dashboard/organizzatori");
+  const { user } = await requireProfile("/dashboard/organizzatori");
   const organizers = await getFollowedOrganizers(user.id);
 
   return (

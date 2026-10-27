@@ -3,7 +3,7 @@ import { CalendarDays } from "lucide-react";
 
 import CalendarButton from "@/src/components/events/CalendarButton";
 import Header from "@/src/components/home/Header";
-import { requireOrganizer } from "@/src/lib/auth";
+import { requireProfile } from "@/src/lib/auth";
 import { currentTimeMs } from "@/src/lib/clock";
 import { getCalendarEvents } from "@/src/lib/calendar";
 import { resolveCategoryLabels } from "@/src/lib/event-categories";
@@ -39,7 +39,7 @@ function formatPastDate(startAt: string) {
 }
 
 export default async function CalendarioPage() {
-  const { user } = await requireOrganizer("/dashboard/calendario");
+  const { user } = await requireProfile("/dashboard/calendario");
   const events = await getCalendarEvents(user.id);
   const now = currentTimeMs();
 
