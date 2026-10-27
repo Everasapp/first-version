@@ -13,7 +13,6 @@ import {
   featuredNavLinks,
   getPrimaryNavLinks,
 } from "@/src/lib/nav/primary-links";
-import { isOrganizerRole, type UserRole } from "@/src/lib/profile";
 import { createClient } from "@/src/lib/supabase/client";
 
 const authButtonClassName =
@@ -30,7 +29,6 @@ function scrollToRicerca(event: MouseEvent<HTMLAnchorElement>) {
 export default function Header() {
   // Default: nuovo visitatore → Registrati (evita layout shift su mobile).
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isOrganizerAccount, setIsOrganizerAccount] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
@@ -47,22 +45,13 @@ export default function Header() {
       setIsAuthenticated(loggedIn);
 
       if (!loggedIn) {
-        setIsOrganizerAccount(false);
         return;
       }
 
       markEverasAccountKnown();
       setHasAccount(true);
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId!)
-        .maybeSingle();
 
-      setIsOrganizerAccount(
-        isOrganizerRole((profile?.role as UserRole | null | undefined) ?? null),
-      );
     }
 
     supabase.auth.getUser().then(({ data }) => {
@@ -143,17 +132,9 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
-          {isAuthenticated && isOrganizerAccount ? (
+          {isAuthenticated ? (
             <Link href="/dashboard" className={authButtonClassName}>
-              Dashboard
-            </Link>
-          ) : isAuthenticated ? (
-            <Link
-              href="/diventa-organizzatore"
-              className={authButtonClassName}
-            >
-              <span className="sm:hidden">Organizzatore</span>
-              <span className="hidden sm:inline">Diventa organizzatore</span>
+              Il mio account
             </Link>
           ) : hasAccount ? (
             <Link href="/accedi" className={authButtonClassName}>
