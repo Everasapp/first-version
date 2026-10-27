@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import Header from "@/src/components/home/Header";
-import { buildAuthHref } from "@/src/lib/auth-urls";
+import { OrganizerActions, OrganizerStatusProvider } from "@/src/components/home/OrganizerActions";
 
 const pageTitle = "Organizzi corsi o laboratori in Sardegna?";
 const pageDescription =
@@ -16,11 +15,6 @@ const socialImage = {
 
 const PROPOSAL_EMAIL = "info@everas.it";
 const SUPPORT_MAILTO = `mailto:${PROPOSAL_EMAIL}?subject=${encodeURIComponent("Assistenza organizzatori")}`;
-const ORGANIZER_PATH = "/diventa-organizzatore?next=%2Fpubblica";
-const REGISTER_HREF = buildAuthHref("/registrati", { redirect: ORGANIZER_PATH });
-const LOGIN_HREF = buildAuthHref("/accedi", { redirect: ORGANIZER_PATH });
-const actionClassName =
-  "inline-flex min-h-11 items-center justify-center rounded-full bg-[#B95408] px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-[#A94B06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]";
 
 const steps = [
   {
@@ -83,6 +77,7 @@ export default function PerGliOrganizzatoriPage() {
     <>
       <Header />
 
+      <OrganizerStatusProvider>
       <main className="flex-1 bg-white">
         <article className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#075EAE]">
@@ -95,19 +90,7 @@ export default function PerGliOrganizzatoriPage() {
             {pageDescription}
           </p>
           <div className="mt-6">
-            <Link href={REGISTER_HREF} className={actionClassName}>
-              Crea un account e proponi un corso
-            </Link>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
-              Hai già un account?{" "}
-              <Link
-                href={LOGIN_HREF}
-                className="font-semibold text-[#075EAE] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]"
-              >
-                Accedi
-              </Link>
-              .
-            </p>
+            <OrganizerActions />
           </div>
           <h2 className="mt-10 text-2xl font-bold tracking-tight text-slate-900">
             Come iniziare
@@ -153,9 +136,7 @@ export default function PerGliOrganizzatoriPage() {
           </p>
 
           <div className="mt-10">
-            <Link href={REGISTER_HREF} className={actionClassName}>
-              Crea un account e proponi un corso
-            </Link>
+            <OrganizerActions />
             <p className="mt-4 text-base leading-7 text-slate-700">
               Hai bisogno di aiuto? Scrivici a{" "}
               <a
@@ -169,6 +150,7 @@ export default function PerGliOrganizzatoriPage() {
           </div>
         </article>
       </main>
+      </OrganizerStatusProvider>
     </>
   );
 }

@@ -15,6 +15,7 @@
   ],
   "git": {
     "deploymentEnabled": {
+      "fix/organizer-cta-session-20261027": false,
       "fix/personal-account-20261027": false,
       "fix/adsense-readiness-20261026": false,
       "feat/career-change-paths-20261023": false,
