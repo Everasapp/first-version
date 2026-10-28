@@ -28,9 +28,9 @@ describe("career guide routes", () => {
     await expect(generateMetadata(props("not-a-guide"))).rejects.toThrow("NOT_FOUND");
     expect(loadRows).not.toHaveBeenCalled();
   });
-  it("has six unique route params and canonical URLs", async () => {
+  it("has unique route params and canonical URLs", async () => {
     const params = generateStaticParams();
-    expect(new Set(params.map((p) => p.slug)).size).toBe(6);
+    expect(new Set(params.map((p) => p.slug)).size).toBe(CAREER_LEARNING_PATHS.length);
     for (const { slug } of params) {
       expect((await generateMetadata(props(slug))).alternates?.canonical).toBe(careerPathUrl(slug));
     }
@@ -39,7 +39,7 @@ describe("career guide routes", () => {
   it.each(CAREER_LEARNING_PATHS.map((path) => [path.slug]))("renders an evergreen guide with one H1 and course fallback: %s", async (slug) => {
     const html = renderToStaticMarkup(await CareerPathPage(props(slug)));
     expect(html.match(/<h1\b/g)).toHaveLength(1);
-    expect(html).toContain("Al momento non ci sono edizioni");
+    expect(html).toContain("Al momento non ci sono corsi");
     expect(html).toContain('id="progetto"');
     expect(html).toContain('id="fonti-title"');
     expect(loadRows).toHaveBeenCalledTimes(1);
@@ -48,7 +48,7 @@ describe("career guide routes", () => {
     loadRows.mockResolvedValue({ rows: [], error: { message: "service unavailable" } });
     const html = renderToStaticMarkup(await CareerPathPage(props(path.slug)));
     expect(html).toContain("temporaneamente non disponibili");
-    expect(html).not.toContain("Al momento non ci sono edizioni");
+    expect(html).not.toContain("Al momento non ci sono corsi");
     expect(html).not.toContain("service unavailable");
   });
   it("renders a real course link, current price and editorial coverage", async () => {
@@ -57,7 +57,7 @@ describe("career guide routes", () => {
     expect(html).toContain(`/eventi/${path.courses[0].slug}`);
     expect(html).toContain("Da €150,00");
     expect(html).toContain("Cosa può coprire");
-    expect(html).not.toContain("Al momento non ci sono edizioni");
+    expect(html).not.toContain("Al momento non ci sono corsi");
   });
   it("retains the three cultural guides on the index alongside the six career guides", () => {
     const html = renderToStaticMarkup(createElement(IdeasPage));

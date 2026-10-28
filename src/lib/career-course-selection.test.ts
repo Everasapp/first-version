@@ -4,7 +4,7 @@ import { selectCareerCourses } from "./career-course-selection";
 import type { HomeEventRow } from "./home/load-events";
 
 const now = Date.parse("2026-10-23T12:00:00Z");
-const path = CAREER_LEARNING_PATHS[1];
+const path = CAREER_LEARNING_PATHS.find((p) => p.slug === "diventare-addetto-paghe-personale")!;
 function row(overrides: Partial<HomeEventRow> = {}): HomeEventRow {
   return { id: "course", slug: path.courses[0].slug, title: "Corso pubblicato", category: "risorse-umane", province: null, municipality: "Online", location_name: null, start_at: "2026-10-28T08:00:00Z", end_at: "2026-12-01T12:00:00Z", image_url: null, is_free: true, price_from: 0, is_featured: false, ...overrides };
 }
@@ -35,4 +35,8 @@ describe("career course selection from the published learning cache", () => {
     expect(selectCareerCourses(path, [], now)).toEqual([]);
     expect(selectCareerCourses(path, [row(), row()], now)).toHaveLength(1);
   });
+});
+
+it("includes an enrollment course without inventing dates", () => {
+ expect(selectCareerCourses(path, [row({schedule_mode: "enrollment", start_at: null, end_at: null})], now)).toHaveLength(1);
 });
