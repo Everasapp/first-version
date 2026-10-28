@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { mapPublishedEvent, type PublishedEventRow } from "@/src/lib/seo/loadEvents";
-import { createPublicClient } from "@/src/lib/supabase/public";
 import { notFound } from "next/navigation";
 import Header from "@/src/components/home/Header";
 import EditorialLearningSection from "@/src/components/seo/EditorialLearningSection";
@@ -33,23 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PassionGuidePage({ params }: Props) {
   const guide = findGuide((await params).slug);
   if (!guide) notFound();
-  // Read the exact published discipline directly: do not depend on the shared
-  // homepage/catalogue inventory or its stale cross-request cache.
-  let wellnessCourses: ReturnType<typeof mapPublishedEvent>[] = [];
-  if (guide.path.endsWith("/stretching-relax-preghiera")) {
-    const { data, error } = await createPublicClient()
-      .from("events")
-      .select("id,title,category,categories,subcategory,province,municipality,location_name,start_at,end_at,schedule_mode,image_url,slug,is_free,price_from,status,is_featured,views_count,favorites_count,shares_count")
-      .eq("status", "published")
-      .eq("category", "benessere-movimento")
-      .like("subcategory", "imparare-%")
-      .order("created_at", { ascending: false });
-    if (error) {
-      console.error("Impossibile recuperare i corsi di benessere:", error.message);
-    } else {
-      wellnessCourses = ((data ?? []) as PublishedEventRow[]).map(mapPublishedEvent);
-    }
-  }
   return <>
     <Header />
     <JsonLd data={breadcrumbListSchema([{ name: "Home", path: "/" }, { name: "Idee e percorsi", path: IDEAS_PATH }, { name: "Per passione", path: PASSION_PATH }, { name: guide.title, path: guide.path }])} />
@@ -68,7 +49,7 @@ export default async function PassionGuidePage({ params }: Props) {
       <article className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
         <Image src={guide.image.src} alt={guide.image.alt} width={800} height={533} unoptimized className="aspect-[3/2] w-full rounded-2xl border border-slate-200 object-cover" />
         <div className="mt-10 space-y-8">{guide.body?.map((section) => <section key={section.title}><h2 className="text-2xl font-bold text-slate-900">{section.title}</h2><p className="mt-3 leading-relaxed text-slate-700">{section.text}</p>{section.items?.length ? <ul className="mt-4 list-disc space-y-3 pl-6 leading-relaxed text-slate-700">{section.items.map((item) => <li key={item}>{item}</li>)}</ul> : null}</section>)}</div>
-        <EditorialLearningSection path={guide} wellnessCourses={wellnessCourses} />
+        <EditorialLearningSection path={guide} />
         <section aria-labelledby="note-title" className="mt-10 border-t border-slate-200 pt-6">
           <h2 id="note-title" className="text-xl font-bold text-slate-900">Per continuare a esplorare</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">{guide.sourcesNote ?? "Percorso ed esercizi originali di EVERAS. I riferimenti culturali sono spunti di osservazione: non indicano corsi attivi o appuntamenti organizzati dai musei citati."}</p>
