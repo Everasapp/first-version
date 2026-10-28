@@ -2,9 +2,7 @@ import Link from "next/link";
 
 import DeleteOrganizerButton from "@/src/components/admin/DeleteOrganizerButton";
 import DeleteUnusedOrganizersButton from "@/src/components/admin/DeleteUnusedOrganizersButton";
-import ExportEmailsPanel from "@/src/components/admin/ExportEmailsPanel";
 import { requireAdmin } from "@/src/lib/auth";
-import { collectOrganizerEmails } from "@/src/lib/admin/export-emails";
 import type { OrganizerDirectoryRow } from "@/src/lib/admin/organizer-directory";
 
 export const dynamic = "force-dynamic";
@@ -92,8 +90,6 @@ export default async function AdminOrganizzatoriPage({
     return true;
   });
 
-  const exportEmails = collectOrganizerEmails(visibleOrganizers);
-
   const filterChips: { id: UsageFilter; label: string; count: number }[] = [
     { id: "tutti", label: "Tutti", count: organizers.length },
     { id: "in-uso", label: "In uso", count: inUseCount },
@@ -163,10 +159,6 @@ export default async function AdminOrganizzatoriPage({
             <DeleteUnusedOrganizersButton unusedIds={unusedIds} />
           </div>
         ) : null}
-      </div>
-
-      <div className="mt-8">
-        <ExportEmailsPanel emails={exportEmails} />
       </div>
 
       {organizers.length === 0 ? (
