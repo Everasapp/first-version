@@ -99,6 +99,7 @@ export default async function CareerPathPage({ params }: Props) {
         </section>
         <section aria-labelledby="candidatura-title"><h2 id="candidatura-title" className="text-2xl font-bold text-slate-900">Come preparare la candidatura</h2><TextList items={path.applications} /></section>
         <section aria-labelledby="attestati-title"><h2 id="attestati-title" className="text-2xl font-bold text-slate-900">Attestati, qualifiche e obiettivo del percorso</h2><p className="mt-4 leading-relaxed text-slate-700">{path.credentials}</p></section>
+        <aside className="rounded-2xl border border-blue-100 bg-blue-50 p-6"><h2 className="text-xl font-bold text-slate-900">Hai dubbi prima di scegliere?</h2><p className="mt-3 leading-relaxed text-slate-700">Approfondisci titoli, corsi gratuiti, modalità di studio e preparazione del CV.</p><Link href="/idee-e-percorsi/guide" prefetch={false} className="mt-3 inline-flex min-h-11 items-center font-bold text-[#075EAE] underline">Le guide per decidere →</Link></aside>
         <section aria-labelledby="fonti-title" className="border-t border-slate-200 pt-8">
           <h2 id="fonti-title" className="text-xl font-bold text-slate-900">Fonti e metodo</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">Le fonti seguenti aiutano a descrivere le competenze. Tappe, esercizi e associazioni ai corsi sono una proposta editoriale EVERAS, non un programma ufficiale né una promessa di impiego. Le schede dei corsi rimandano ai rispettivi enti per programma e condizioni.</p>

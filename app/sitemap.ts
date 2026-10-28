@@ -1,3 +1,4 @@
+import { DECISION_GUIDES, DECISION_GUIDES_PATH, decisionGuideUrl } from "@/src/lib/career-decision-guides";
 import type { MetadataRoute } from "next";
 import { NEW_PASSION_PATHS, PASSION_PATH } from "@/src/lib/editorial-learning-paths";
 import { CAREER_LEARNING_PATHS, careerPathUrl } from "@/src/lib/career-learning-paths";
@@ -52,6 +53,7 @@ const loadLearningSitemapRows = unstable_cache(async () => {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = [...new Set([
     "/", LEARNING_PATH, "/idee-e-percorsi", "/cultura", "/cultura-sarda",
+    DECISION_GUIDES_PATH, ...DECISION_GUIDES.map((guide) => decisionGuideUrl(guide.slug)),
     ...CAREER_LEARNING_PATHS.map((path) => careerPathUrl(path.slug)),
     PASSION_PATH, ...NEW_PASSION_PATHS.map((path) => path.path),
     "/per-gli-organizzatori", "/chi-siamo", "/contatti", "/privacy", "/cookie", "/termini", "/pubblicita",

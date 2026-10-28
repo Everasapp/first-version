@@ -1,3 +1,4 @@
+import DecisionGuideCards from "@/src/components/seo/DecisionGuideCards";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/src/components/home/Header";
@@ -37,6 +38,7 @@ export default function IdeasPage() {
           <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Nove percorsi per orientarti verso un ruolo junior, capire da dove partire e scegliere cosa studiare. I corsi possono essere alternative o coprire una parte della preparazione; ogni guida indica anche cosa manca.</p>
           <CareerPathCards />
         </section>
+        <section aria-labelledby="decisioni-title" className="mt-12"><h2 id="decisioni-title" className="text-2xl font-bold text-slate-900">Scegliere formazione e lavoro</h2><p className="mb-6 mt-3 leading-relaxed text-slate-600">Cinque guide per confrontare percorsi, capire i titoli e preparare il prossimo passo.</p><DecisionGuideCards /></section>
         <section aria-labelledby="percorsi-title" className="mt-12">
           <h2 id="percorsi-title" className="mb-6 text-2xl font-bold text-slate-900">Per passione: arte, materiali e territorio</h2>
           <EditorialPathCards />
