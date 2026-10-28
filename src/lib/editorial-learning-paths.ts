@@ -27,7 +27,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Sassari: dal territorio a una nuova competenza",
     category: "Imparare in città",
     summary: "Osserva la città con un taccuino e scegli tra un percorso per il lavoro e un corso per passione.",
-    image: { src: "/images/passion-paths/sassari-territorio-orange.svg", alt: "Sassari: città e territorio, grafica EVERAS su fondo arancione" },
+    image: { src: "/images/cultura/sassari-panorama.webp", alt: "Panorama di Sassari tra colline, uliveti e campagna" },
     discover: "Una città può diventare un punto di partenza per imparare: un dettaglio architettonico da disegnare, una scena da fotografare o un mestiere da approfondire. La guida qui sopra racconta Sassari; questo percorso ti aiuta a trasformare la curiosità in una scelta concreta.",
     exercise: {
       title: "Un taccuino di osservazione in 20 minuti",
@@ -52,7 +52,11 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Giuseppe Biasi: osservare per iniziare a dipingere",
     category: "Arte da sperimentare",
     summary: "Dalla lettura delle opere a un esercizio personale di colore e composizione, senza esperienza richiesta.",
-    image: { src: "/images/passion-paths/giuseppe-biasi-pittura-orange.svg", alt: "Giuseppe Biasi: osservare e dipingere, grafica EVERAS su fondo arancione" },
+    image: {
+      src: "/images/cultura/giuseppe-biasi-ballo-tondo-everas.webp",
+      alt: "Ballo tondo di Giuseppe Biasi: figure in cerchio davanti a un paese sardo",
+      credit: { label: "Foto: Sailko · Giuseppe Biasi, Ballo tondo (1934–35) · CC BY 3.0 · ritaglio per il web", href: "https://commons.wikimedia.org/wiki/File:Giuseppe_biasi,_ballo_tondo,_1934-35.jpg" },
+    },
     discover: "Dopo aver letto la storia dell’artista, torna a una delle immagini della guida. Guarda come sono distribuite le figure, dove cade l’attenzione e quali colori ricompaiono. Puoi osservare questi elementi senza cercare subito di riprodurre il dipinto.",
     exercise: {
       title: "Tre colori, una composizione: prova in 30 minuti",
@@ -74,7 +78,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Artigianato sardo: scegli cosa provare con le mani",
     category: "Materiali e manualità",
     summary: "Ceramica, tessuti e intreccio: parti dai materiali e impara a valutare un laboratorio creativo.",
-    image: { src: "/images/passion-paths/artigianato-materiali-orange.svg", alt: "Artigianato sardo: materiali e manualità, grafica EVERAS su fondo arancione" },
+    image: { src: "/images/cultura/pattada-coltellinaio.webp", alt: "Artigiano in una bottega di coltelleria a Pattada, con utensili e materiali sul banco" },
     discover: "Le tecniche raccontate nella guida richiedono strumenti e tempi diversi. Per scegliere il primo laboratorio, parti dal materiale che ti incuriosisce e dal tipo di esperienza che vuoi fare: provare un gesto, completare un oggetto o seguire un percorso continuativo.",
     exercise: {
       title: "Una trama di carta in 20 minuti",
