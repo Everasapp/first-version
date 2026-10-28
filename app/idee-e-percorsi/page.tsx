@@ -34,7 +34,7 @@ export default function IdeasPage() {
       <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
         <section aria-labelledby="carriera-title">
           <h2 id="carriera-title" className="text-2xl font-bold text-slate-900">Cambiare lavoro: scegli una professione</h2>
-          <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Sei percorsi per orientarti verso un ruolo junior, capire da dove partire e scegliere cosa studiare. I corsi possono essere alternative o coprire una parte della preparazione; ogni guida indica anche cosa manca.</p>
+          <p className="mb-6 mt-3 max-w-3xl leading-relaxed text-slate-600">Nove percorsi per orientarti verso un ruolo junior, capire da dove partire e scegliere cosa studiare. I corsi possono essere alternative o coprire una parte della preparazione; ogni guida indica anche cosa manca.</p>
           <CareerPathCards />
         </section>
         <section aria-labelledby="percorsi-title" className="mt-12">

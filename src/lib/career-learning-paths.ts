@@ -13,6 +13,331 @@ export const CAREER_PATH_REVIEWED = "2026-10-23";
 export const careerPathUrl = (slug: string) => `/idee-e-percorsi/${slug}`;
 
 export const CAREER_LEARNING_PATHS: CareerLearningPath[] = [
+{
+  "slug": "diventare-estetista",
+  "role": "Estetista",
+  "summary": "Dalla scelta della qualifica alla pratica supervisionata: costruisci un percorso nel settore estetico e scegli gli aggiornamenti utili.",
+  "introduction": "Se vuoi cambiare lavoro e occuparti della cura estetica della persona, parti dal percorso professionale richiesto, prima di acquistare singole tecniche. Accoglienza, precisione, igiene e capacità di ascolto contano quanto la manualità. I corsi brevi collegati in questa pagina sono integrazioni: non costituiscono da soli un percorso per diventare estetista.",
+  "startingPoint": "Raccogli titolo di studio, eventuali qualifiche ed esperienza. Chiedi a un ente accreditato in Sardegna quale percorso autorizzato è adatto alla tua situazione, quali requisiti richiede e quale titolo rilascia. Confronta costo totale, pratica in aula, stage, esame e materiali.",
+  "firstExperiment": "Visita una scuola e chiedi di osservare una lezione dimostrativa. Prepara una simulazione di accoglienza e organizzazione della postazione, senza eseguire trattamenti su persone. Valuta se ti interessano lavoro di precisione, relazione con la clientela e routine di igiene.",
+  "skills": [
+    "Igiene e sicurezza",
+    "Anatomia e cosmetologia",
+    "Manualità supervisionata",
+    "Accoglienza e organizzazione della cabina"
+  ],
+  "steps": [
+    {
+      "title": "Scegli il percorso di qualifica",
+      "learn": "Differenza tra qualifica professionale, specializzazione e attestato di un corso privato.",
+      "practice": "Confronta due offerte autorizzate chiedendo gli estremi di riconoscimento e il titolo finale.",
+      "check": "La scuola conferma per iscritto accesso, ore, pratica, esame, costo complessivo e finalità del titolo."
+    },
+    {
+      "title": "Costruisci le basi in aula",
+      "learn": "Anatomia della pelle, cosmetici, igiene, controindicazioni, preparazione della cabina e limiti del ruolo.",
+      "practice": "Segui esercitazioni e protocolli sotto la guida dei docenti, usando i materiali previsti dalla scuola.",
+      "check": "Sai motivare la scelta dei prodotti, riconoscere quando non procedere e seguire le procedure senza saltare passaggi."
+    },
+    {
+      "title": "Consolida la pratica supervisionata",
+      "learn": "Trattamenti viso e corpo previsti dal programma, cura delle unghie, epilazione e comunicazione con la cliente.",
+      "practice": "Documenta esercitazioni e stage autorizzati con una scheda di osservazione, rispettando riservatezza e consenso.",
+      "check": "Il tutor verifica manualità, igiene, tempi e capacità di riconoscere i tuoi limiti."
+    },
+    {
+      "title": "Completa il titolo e scegli una specializzazione",
+      "learn": "Preparazione all’esame, aggiornamento tecnico, organizzazione degli appuntamenti e presentazione delle competenze.",
+      "practice": "Dopo aver verificato i requisiti scegli un corso breve coerente, ad esempio viso o ciglia, evitando acquisti sovrapposti.",
+      "check": "Distingui chiaramente nel curriculum qualifica, esperienza supervisionata e attestati privati."
+    }
+  ],
+  "portfolio": [
+    "Schede didattiche anonime approvate dal tutor.",
+    "Checklist di igiene e preparazione della cabina.",
+    "Registro delle esercitazioni con valutazione del docente."
+  ],
+  "applications": [
+    "Valuta centri estetici e strutture benessere verificando titolo richiesto, mansioni e affiancamento.",
+    "Prima di aprire un’attività verifica i requisiti professionali e amministrativi con Regione e SUAPE competente."
+  ],
+  "gaps": [
+    "Nel catalogo collegato non è ancora presente un percorso completo di qualifica iniziale verificato: questi corsi non coprono quel passaggio.",
+    "Le videolezioni non sostituiscono la pratica supervisionata e l’esame del percorso professionale.",
+    "Microblading e PMU richiedono una verifica specifica dei requisiti: non sono una tappa obbligatoria per diventare estetista."
+  ],
+  "credentials": "L’attività di estetista è disciplinata dalla legge 1/1990. Prima dell’iscrizione verifica con Regione e scuola accreditata il percorso riconosciuto adatto al tuo caso. I corsi tecnici qui collegati non sono presentati come qualifiche abilitanti. Sono escluse dal ruolo le prestazioni con finalità terapeutica.",
+  "courses": [
+    {
+      "slug": "pulizia-viso-oligenesi-online",
+      "stages": [
+        2,
+        4
+      ],
+      "coverage": "Ripasso del protocollo viso e dell’organizzazione della postazione.",
+      "limit": "Videocorso integrativo; non sostituisce la formazione professionale iniziale o la pratica in aula."
+    },
+    {
+      "slug": "extension-ciglia-rcr-sassari-2026",
+      "stages": [
+        4
+      ],
+      "coverage": "Approfondimento pratico sulla tecnica ciglia a Sassari.",
+      "limit": "Corso breve con quota mensile: concorda calendario e verifica i requisiti per applicare la tecnica professionalmente."
+    },
+    {
+      "slug": "laminazione-ciglia-rcr-sassari-2026",
+      "stages": [
+        4
+      ],
+      "coverage": "Una possibile specializzazione sulle ciglia naturali.",
+      "limit": "Non è necessario seguire tutte le specializzazioni; scegli in base agli obiettivi e alla preparazione."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Normattiva — Legge 4 gennaio 1990, n. 1",
+      "href": "https://www.normattiva.it/eli/id/1990/01/05/090G0009/CONSOLIDATED",
+      "note": "Disciplina dell’attività di estetista; verificare il testo vigente e le disposizioni regionali applicabili."
+    }
+  ]
+},
+{
+  "slug": "diventare-massaggiatore-benessere",
+  "role": "Massaggiatore del benessere",
+  "summary": "Anatomia, sicurezza e pratica guidata: orientati nel massaggio non sanitario e scegli una specializzazione coerente.",
+  "introduction": "Questo percorso riguarda il massaggio per il benessere, non la riabilitazione o il trattamento di patologie. Prima delle tecniche avanzate servono ascolto, igiene, conoscenza dei limiti e manualità supervisionata. Le singole specializzazioni non equivalgono a una preparazione professionale completa.",
+  "startingPoint": "Chiarisci quali servizi vuoi offrire e verifica requisiti, limiti operativi e adempimenti con gli uffici competenti. Confronta programmi con anatomia, controindicazioni e molte esercitazioni corrette dal docente; chiedi esattamente che valore ha l’attestato.",
+  "firstExperiment": "Osserva una dimostrazione in una scuola. Simula accoglienza, preparazione della postazione e colloquio iniziale; non improvvisare trattamenti su persone con dolore o problemi di salute.",
+  "skills": [
+    "Anatomia di base",
+    "Igiene e controindicazioni",
+    "Postura e manualità",
+    "Ascolto e limiti del ruolo"
+  ],
+  "steps": [
+    {
+      "title": "Costruisci le basi",
+      "learn": "Anatomia, igiene, controindicazioni, ergonomia e differenza tra benessere e prestazione sanitaria.",
+      "practice": "Confronta due programmi e prepara una checklist di sicurezza.",
+      "check": "Sai spiegare quando fermarti e rinviare a un professionista sanitario."
+    },
+    {
+      "title": "Impara sotto supervisione",
+      "learn": "Manovre fondamentali, pressione, ritmo e postura dell’operatore.",
+      "practice": "Esercitati in aula con feedback individuale e documenta le correzioni del tutor.",
+      "check": "Il docente verifica esecuzione, sicurezza e gestione della seduta."
+    },
+    {
+      "title": "Scegli una tecnica complementare",
+      "learn": "Confronta destinatari e prerequisiti di Lomi Lomi, Kobido e altri approfondimenti.",
+      "practice": "Scegli un solo corso coerente con la preparazione; Kobido richiede basi già acquisite.",
+      "check": "Sai descrivere cosa aggiunge la specializzazione e cosa non copre."
+    },
+    {
+      "title": "Prepara l’ingresso nel lavoro",
+      "learn": "Consenso, riservatezza, organizzazione degli appuntamenti e presentazione corretta dei servizi.",
+      "practice": "Prepara un portfolio didattico e chiedi a una struttura quali competenze e requisiti richiede.",
+      "check": "Non dichiari abilitazioni sanitarie o capacità terapeutiche ottenute da un corso breve."
+    }
+  ],
+  "portfolio": [
+    "Registro delle esercitazioni validato dal tutor.",
+    "Checklist di igiene, accoglienza e controindicazioni.",
+    "Descrizione di una seduta di benessere senza promesse terapeutiche."
+  ],
+  "applications": [
+    "Valuta strutture benessere verificando attività effettive, affiancamento e requisiti.",
+    "Prima di lavorare in autonomia verifica il servizio concreto con SUAPE e uffici competenti."
+  ],
+  "gaps": [
+    "I corsi brevi non sostituiscono un percorso completo con pratica supervisionata.",
+    "Non sono corsi per diventare fisioterapista, massofisioterapista o massaggiatore capo bagnino."
+  ],
+  "credentials": "Gli attestati dei corsi collegati non sono qualifiche sanitarie. Il massaggio di benessere va distinto dalle professioni e arti sanitarie elencate dal Ministero della Salute. Verifica separatamente i requisiti se il servizio ricade nell’attività estetica.",
+  "courses": [
+    {
+      "slug": "massaggio-rilassante-drenante-rcr-sassari-2026",
+      "stages": [
+        1,
+        2
+      ],
+      "coverage": "Introduzione teorico-pratica a Sassari.",
+      "limit": "Da concordare ore totali e calendario; quota mensile, non qualifica sanitaria."
+    },
+    {
+      "slug": "massaggio-anticellulite-oligenesi-online",
+      "stages": [
+        3
+      ],
+      "coverage": "Integrazione video sulle manualità estetiche.",
+      "limit": "Non sostituisce correzione in aula o requisiti per esercitare attività estetica."
+    },
+    {
+      "slug": "massaggio-lomi-lomi-tao-sassari-2026-11-21",
+      "stages": [
+        3
+      ],
+      "coverage": "Approfondimento Lomi Lomi a Sassari, aperto anche a principianti.",
+      "limit": "Edizione territoriale alternativa: non occorre frequentare tutte le sedi; non copre da sola l’intera preparazione."
+    },
+    {
+      "slug": "massaggio-kobido-tao-sassari-2026-11-07",
+      "stages": [
+        3
+      ],
+      "coverage": "Specializzazione viso Kobido a Sassari.",
+      "limit": "Richiede preparazione nel massaggio classico svedese; non è il primo corso per chi parte da zero."
+    },
+    {
+      "slug": "massaggio-lomi-lomi-tao-oristano-2026-11-21",
+      "stages": [
+        3
+      ],
+      "coverage": "Approfondimento Lomi Lomi a Oristano, aperto anche a principianti.",
+      "limit": "Edizione territoriale alternativa: non occorre frequentare tutte le sedi; non copre da sola l’intera preparazione."
+    },
+    {
+      "slug": "massaggio-kobido-tao-oristano-2026-11-07",
+      "stages": [
+        3
+      ],
+      "coverage": "Specializzazione viso Kobido a Oristano.",
+      "limit": "Richiede preparazione nel massaggio classico svedese; non è il primo corso per chi parte da zero."
+    },
+    {
+      "slug": "massaggio-lomi-lomi-tao-nuoro-2026-11-21",
+      "stages": [
+        3
+      ],
+      "coverage": "Approfondimento Lomi Lomi a Nuoro, aperto anche a principianti.",
+      "limit": "Edizione territoriale alternativa: non occorre frequentare tutte le sedi; non copre da sola l’intera preparazione."
+    },
+    {
+      "slug": "massaggio-kobido-tao-nuoro-2026-11-07",
+      "stages": [
+        3
+      ],
+      "coverage": "Specializzazione viso Kobido a Nuoro.",
+      "limit": "Richiede preparazione nel massaggio classico svedese; non è il primo corso per chi parte da zero."
+    },
+    {
+      "slug": "massaggio-lomi-lomi-tao-cagliari-2026-11-21",
+      "stages": [
+        3
+      ],
+      "coverage": "Approfondimento Lomi Lomi a Cagliari, aperto anche a principianti.",
+      "limit": "Edizione territoriale alternativa: non occorre frequentare tutte le sedi; non copre da sola l’intera preparazione."
+    },
+    {
+      "slug": "massaggio-kobido-tao-cagliari-2026-11-07",
+      "stages": [
+        3
+      ],
+      "coverage": "Specializzazione viso Kobido a Cagliari.",
+      "limit": "Richiede preparazione nel massaggio classico svedese; non è il primo corso per chi parte da zero."
+    }
+  ],
+  "sources": [
+    {
+      "label": "Ministero della Salute — Elenco professioni",
+      "href": "https://www.salute.gov.it/new/it/tema/professioni-sanitarie/elenco-professioni/",
+      "note": "Riferimento per distinguere il percorso benessere dalle professioni e arti sanitarie."
+    }
+  ]
+},
+{
+  "slug": "diventare-parrucchiere-acconciatore",
+  "role": "Parrucchiere e acconciatore",
+  "summary": "Dalla formazione riconosciuta alla pratica in salone: scegli le basi prima di specializzarti in taglio, colore o styling.",
+  "introduction": "Cambiare lavoro per entrare in salone significa combinare manualità, attenzione alla persona e organizzazione. Il punto di partenza è individuare il percorso professionale riconosciuto adatto alla propria situazione: un video o un seminario non bastano a ottenere l’abilitazione.",
+  "startingPoint": "Raccogli titoli ed esperienza e chiedi a un ente accreditato quale percorso autorizzato puoi frequentare. Confronta titolo finale, laboratorio, stage, esame, costo dei materiali e requisiti per il ruolo a cui aspiri.",
+  "firstExperiment": "Visita una scuola o osserva una giornata in salone con il consenso del responsabile. Simula accoglienza e preparazione della postazione, senza eseguire colorazioni o trattamenti su persone.",
+  "skills": [
+    "Igiene e sicurezza",
+    "Taglio e styling",
+    "Colorimetria",
+    "Consulenza e lavoro in salone"
+  ],
+  "steps": [
+    {
+      "title": "Verifica il percorso professionale",
+      "learn": "Qualifica, abilitazione e requisiti per le diverse responsabilità in salone.",
+      "practice": "Richiedi a due scuole gli estremi di riconoscimento e il titolo rilasciato.",
+      "check": "Hai conferma scritta di accesso, pratica, esame e costo totale."
+    },
+    {
+      "title": "Impara le basi in laboratorio",
+      "learn": "Capello e cuoio capelluto, igiene, strumenti, lavaggio e asciugatura.",
+      "practice": "Lavora su testina e nelle esercitazioni autorizzate, sotto guida del docente.",
+      "check": "Il tutor verifica postura, ordine e corretto uso degli strumenti."
+    },
+    {
+      "title": "Consolida taglio e colore",
+      "learn": "Geometrie di taglio, colorimetria, prodotti e precauzioni.",
+      "practice": "Prepara schede tecniche e prove supervisionate documentando il procedimento.",
+      "check": "Sai motivare le scelte e riconoscere situazioni da non trattare autonomamente."
+    },
+    {
+      "title": "Passa al lavoro in salone",
+      "learn": "Accoglienza, tempi, appuntamenti, collaborazione e aggiornamento.",
+      "practice": "Costruisci un portfolio con consenso e cerca opportunità con affiancamento.",
+      "check": "Distingui nel curriculum titoli riconosciuti, pratica e seminari privati."
+    }
+  ],
+  "portfolio": [
+    "Portfolio di esercitazioni con valutazione del tutor.",
+    "Schede tecniche di taglio e colore svolte in formazione.",
+    "Checklist di preparazione e riordino."
+  ],
+  "applications": [
+    "Cerca ruoli coerenti con il titolo e verifica mansioni e affiancamento.",
+    "Per aprire un salone verifica requisiti e responsabile tecnico con SUAPE e Comune."
+  ],
+  "gaps": [
+    "La formazione online integra la pratica supervisionata e non sostituisce il percorso professionale riconosciuto.",
+    "Concorda le date delle dirette e verifica materiali necessari e livello di ingresso."
+  ],
+  "credentials": "L’attività è disciplinata dalla legge 174/2005. Verifica requisiti professionali e amministrativi con il Comune competente; i corsi privati di aggiornamento non vanno confusi con un percorso riconosciuto abilitante.",
+  "courses": [
+    {
+      "slug": "taglio-donna-serrone-online",
+      "stages": [
+        3
+      ],
+      "coverage": "Geometrie, divisioni e forme del taglio donna.",
+      "limit": "Aggiornamento tecnico online, non titolo abilitante. Un corso costa 179 € per 6 mesi; valuta il pacchetto con corsi aggiuntivi per evitare acquisti sovrapposti."
+    },
+    {
+      "slug": "colorimetria-serrone-online",
+      "stages": [
+        3
+      ],
+      "coverage": "Pigmenti, schiariture e gestione del colore.",
+      "limit": "Aggiornamento tecnico online, non titolo abilitante. Un corso costa 179 € per 6 mesi; valuta il pacchetto con corsi aggiuntivi per evitare acquisti sovrapposti."
+    },
+    {
+      "slug": "acconciatura-sposa-serrone-online",
+      "stages": [
+        4
+      ],
+      "coverage": "Approfondimento su raccolti e styling sposa.",
+      "limit": "Aggiornamento tecnico online, non titolo abilitante. Un corso costa 179 € per 6 mesi; valuta il pacchetto con corsi aggiuntivi per evitare acquisti sovrapposti."
+    }
+  ],
+  "sources": [
+    {
+      "label": "SardegnaImpresa — Acconciatori",
+      "href": "https://www.sardegnaimpresa.eu/it/acconciatori",
+      "note": "Quadro degli adempimenti per l’attività in Sardegna."
+    },
+    {
+      "label": "Camera di commercio Nord Sardegna — Imprese artigiane",
+      "href": "https://www.ss.camcom.it/servizi-amministrativi-per-le-imprese/imprese-artigiane/albo-imprese-artigiane",
+      "note": "Accertamento dei requisiti professionali da parte del Comune."
+    }
+  ]
+},
   {
     slug: "diventare-addetto-amministrativo-contabile",
     role: "Addetto amministrativo contabile",
