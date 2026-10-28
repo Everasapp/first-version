@@ -78,7 +78,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Artigianato sardo: scegli cosa provare con le mani",
     category: "Materiali e manualità",
     summary: "Ceramica, tessuti e intreccio: parti dai materiali e impara a valutare un laboratorio creativo.",
-    image: { src: "/images/cultura/pattada-coltellinaio.webp", alt: "Artigiano in una bottega di coltelleria a Pattada, con utensili e materiali sul banco" },
+    image: { src: "/images/cultura/pattada-coltellinaio-everas.webp", alt: "Artigiano al lavoro sulla resolza pattadese in bottega a Pattada" },
     discover: "Le tecniche raccontate nella guida richiedono strumenti e tempi diversi. Per scegliere il primo laboratorio, parti dal materiale che ti incuriosisce e dal tipo di esperienza che vuoi fare: provare un gesto, completare un oggetto o seguire un percorso continuativo.",
     exercise: {
       title: "Una trama di carta in 20 minuti",
