@@ -41,6 +41,9 @@ describe("career guide routes", () => {
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     expect(html).toContain("Al momento non ci sono corsi");
     expect(html).toContain('id="progetto"');
+    expect(html).toContain('id="cambio-carriera"');
+    expect(html).toContain('id="prima-candidatura"');
+    expect(html).toContain('id="cercare-lavoro"');
     expect(html).toContain('id="fonti-title"');
     expect(loadRows).toHaveBeenCalledTimes(1);
   });

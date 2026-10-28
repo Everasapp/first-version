@@ -9,7 +9,7 @@ export type CareerLearningPath = {
   sources: { label: string; href: string; note: string }[];
 };
 
-export const CAREER_PATH_REVIEWED = "2026-10-23";
+export const CAREER_PATH_REVIEWED = "2026-10-28";
 export const careerPathUrl = (slug: string) => `/idee-e-percorsi/${slug}`;
 
 export const CAREER_LEARNING_PATHS: CareerLearningPath[] = [

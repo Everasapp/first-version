@@ -1,3 +1,5 @@
+import CareerChangeSections from "@/src/components/seo/CareerChangeSections";
+import { CAREER_CHANGE_DETAILS } from "@/src/lib/career-change-details";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -53,8 +55,9 @@ export default async function CareerPathPage({ params }: Props) {
           <h1 className="mt-3 text-4xl font-black text-slate-900 sm:text-5xl">{path.role}: il percorso per cominciare</h1>
           <p className="mt-5 text-xl leading-relaxed text-slate-600">{path.summary}</p>
           <p className="mt-5 leading-relaxed text-slate-700">{path.introduction}</p>
-          <p className="mt-4 text-sm text-slate-500">Guida editoriale EVERAS · aggiornata il <time dateTime={CAREER_PATH_REVIEWED}>23 ottobre 2026</time></p>
+          <p className="mt-4 text-sm text-slate-500">Guida editoriale EVERAS · aggiornata il <time dateTime={CAREER_PATH_REVIEWED}>28 ottobre 2026</time></p>
           <nav aria-label="In questa guida" className="mt-6 flex flex-wrap gap-3">
+            <a href="#cambio-carriera" className="inline-flex min-h-11 items-center px-3 font-bold text-[#075EAE] underline">Cambiare mestiere</a>
             <a href="#piano" className="inline-flex min-h-11 items-center rounded-full bg-[#075EAE] px-5 py-3 font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">Le tappe da seguire</a>
             <a href="#corsi" className="inline-flex min-h-11 items-center rounded-full border border-slate-300 px-5 py-3 font-bold text-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">Corsi collegati</a>
             <a href="#progetto" className="inline-flex min-h-11 items-center px-3 font-bold text-[#075EAE] underline">Il progetto pratico</a>
@@ -68,6 +71,7 @@ export default async function CareerPathPage({ params }: Props) {
           <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-6"><h3 className="font-bold text-slate-900">Prima di iscriverti, fai una prova</h3><p className="mt-2 leading-relaxed text-slate-700">{path.firstExperiment}</p></div>
           <ul aria-label="Competenze del percorso" className="mt-5 flex flex-wrap gap-2">{path.skills.map((skill) => <li key={skill} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">{skill}</li>)}</ul>
         </section>
+        {CAREER_CHANGE_DETAILS[path.slug] && <CareerChangeSections details={CAREER_CHANGE_DETAILS[path.slug]} />}
         <section id="piano" aria-labelledby="piano-title" className="scroll-mt-28">
           <h2 id="piano-title" className="text-2xl font-bold text-slate-900">Il piano, una tappa alla volta</h2>
           <p className="mt-3 leading-relaxed text-slate-600">È una proposta di studio EVERAS, da adattare alle tue basi. Passa alla tappa successiva quando riesci a completare la prova. Le tappe non sono altrettanti corsi obbligatori: uno stesso corso può coprirne più di una.</p>
