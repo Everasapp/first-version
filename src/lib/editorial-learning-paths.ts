@@ -27,7 +27,7 @@ const ORIGINAL_EDITORIAL_PATHS: EditorialLearningPath[] = [
     title: "Sassari: dal territorio a una nuova competenza",
     category: "Imparare in città",
     summary: "Osserva la città con un taccuino e scegli tra un percorso per il lavoro e un corso per passione.",
-    image: { src: "/images/cultura/sassari-panorama.webp", alt: "Panorama di Sassari tra colline, uliveti e campagna" },
+    image: { src: "/images/cultura/sassari-panorama-everas.webp", alt: "Piazza d’Italia a Sassari, con il Palazzo della Provincia e le palme" },
     discover: "Una città può diventare un punto di partenza per imparare: un dettaglio architettonico da disegnare, una scena da fotografare o un mestiere da approfondire. La guida qui sopra racconta Sassari; questo percorso ti aiuta a trasformare la curiosità in una scelta concreta.",
     exercise: {
       title: "Un taccuino di osservazione in 20 minuti",
