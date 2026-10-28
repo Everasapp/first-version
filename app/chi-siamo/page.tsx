@@ -47,7 +47,6 @@ export default function ChiSiamoPage() {
           <p className="mt-4 text-lg leading-relaxed text-slate-600">
             EVERAS ti aiuta a trovare formazione per il lavoro e corsi,
             workshop ed esperienze per coltivare una passione in Sardegna.
-
           </p>
           <p className="mt-4 text-base leading-7 text-slate-700">
             Due percorsi guidano la scelta: Formazione, per acquisire competenze
@@ -63,6 +62,78 @@ export default function ChiSiamoPage() {
               per imparare sono raccolte nei due percorsi Formazione e Corsi e
               workshop, con informazioni utili a confrontare le attività.
             </p>
+            <section aria-labelledby="missione-everas" className="space-y-5">
+              <h2
+                id="missione-everas"
+                className="pt-5 text-2xl font-bold tracking-tight text-slate-900"
+              >
+                La nostra missione
+              </h2>
+              <p className="text-lg font-semibold text-slate-900">
+                Facilitare l’accesso all’apprendimento e ridurre le barriere
+                informative e territoriali che rendono più difficile partecipare.
+              </p>
+              <p>
+                Vogliamo aiutare chi vive in Sardegna a conoscere le opportunità
+                disponibili, capire a chi sono rivolte e scegliere quelle più
+                adatte ai propri interessi e obiettivi. Con attenzione anche ai
+                piccoli comuni e alle realtà meno visibili.
+              </p>
+            </section>
+            <section aria-labelledby="valori-everas" className="space-y-5">
+              <h2
+                id="valori-everas"
+                className="pt-5 text-2xl font-bold tracking-tight text-slate-900"
+              >
+                In cosa crediamo
+              </h2>
+              <p>
+                Imparare ha valore in ogni fase della vita. Può aiutare a trovare
+                nuove prospettive nel lavoro, esprimere la propria creatività,
+                conoscere altre persone e sentirsi parte di una comunità.
+              </p>
+              <p>
+                La Sardegna custodisce competenze, saperi e iniziative che
+                meritano di essere conosciuti. Vogliamo contribuire a mettere
+                in relazione chi desidera imparare con chi ha qualcosa da
+                insegnare.
+              </p>
+            </section>
+            <section aria-labelledby="obiettivi-everas" className="space-y-5">
+              <h2
+                id="obiettivi-everas"
+                className="pt-5 text-2xl font-bold tracking-tight text-slate-900"
+              >
+                Come lavoriamo per questo obiettivo
+              </h2>
+              <ul className="list-disc space-y-3 pl-5">
+                <li>
+                  <strong>Rendiamo più semplice la ricerca</strong>, raccogliendo
+                  opportunità consultabili per territorio, disciplina e interesse.
+                </li>
+                <li>
+                  <strong>Diamo visibilità alla formazione gratuita e agevolata</strong>,
+                  per aiutare le persone a conoscere le possibilità di accesso.
+                </li>
+                <li>
+                  <strong>Affianchiamo formazione professionale e passioni personali</strong>,
+                  perché l’apprendimento comprende sia il lavoro sia il piacere
+                  di sperimentare.
+                </li>
+                <li>
+                  <strong>Valorizziamo le iniziative locali</strong>, dai percorsi
+                  degli enti formativi ai laboratori di associazioni, insegnanti
+                  e artigiani.
+                </li>
+                <li>
+                  <strong>Pubblichiamo guide e risorse</strong>, per aiutare a
+                  esplorare un interesse e prepararsi a scegliere un percorso.
+                </li>
+              </ul>
+            </section>
+            <h2 className="pt-5 text-2xl font-bold tracking-tight text-slate-900">
+              Le proposte e la partecipazione
+            </h2>
             <p>
               Le attività su EVERAS arrivano da organizzatori che pubblicano
               dalla piattaforma, da segnalazioni della community e da lavoro di
@@ -95,6 +166,9 @@ export default function ChiSiamoPage() {
               </Link>
               .
             </p>
+            <h2 className="pt-5 text-2xl font-bold tracking-tight text-slate-900">
+              Chi c’è dietro EVERAS
+            </h2>
             <p>
               EVERAS è un progetto indipendente ideato e sviluppato da Marina
               Canalis, attraverso{" "}
@@ -137,7 +211,7 @@ export default function ChiSiamoPage() {
               Le guide ai comuni raccolgono storia, tradizioni e luoghi da
               visitare, con riferimenti alle fonti nelle pagine. Orari,
               programmi, prezzi e condizioni di accesso possono cambiare:
-              prima di partire, verifica le ultime comunicazioni
+              prima di iscriverti o partire, verifica le ultime comunicazioni
               dell’organizzatore o del gestore del luogo.
             </p>
             <p>
