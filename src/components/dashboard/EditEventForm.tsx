@@ -30,9 +30,13 @@ import {
   normalizeEventCategories,
 } from "@/src/lib/event-categories";
 import {
+  attendanceModeForMunicipality,
   isValidTicketUrl,
   normalizeTicketUrl,
   parsePrice,
+  placeFieldsForSave,
+  placeValidationErrors,
+  type AttendanceMode,
 } from "@/src/lib/eventForm";
 import {
   EVENT_SCHEDULE_MODE_OPTIONS,
@@ -161,8 +165,12 @@ export default function EditEventForm({
   const [scheduleMode, setScheduleMode] = useState<EventScheduleMode>(() =>
     parseEventScheduleMode(event.schedule_mode),
   );
-  const [area, setArea] = useState(cityRecord?.area ?? "");
-  const [city, setCity] = useState(event.municipality);
+  const storedOnline = attendanceModeForMunicipality(event.municipality) === "online";
+  const [attendance, setAttendance] = useState<AttendanceMode>(
+    storedOnline ? "online" : "in_person",
+  );
+  const [area, setArea] = useState(storedOnline ? "" : (cityRecord?.area ?? ""));
+  const [city, setCity] = useState(storedOnline ? "" : event.municipality);
   const [venue, setVenue] = useState(
     event.location_name ?? event.address ?? "",
   );
@@ -243,17 +251,10 @@ export default function EditEventForm({
       nextErrors.endDate = "Inserisci anche la data di fine.";
     }
 
-    if (!area) {
-      nextErrors.area = "Seleziona un'area.";
-    }
-
-    if (!city) {
-      nextErrors.city = "Seleziona una città.";
-    }
-
-    if (!venue.trim()) {
-      nextErrors.venue = "Inserisci il luogo o l'indirizzo.";
-    }
+    Object.assign(
+      nextErrors,
+      placeValidationErrors({ attendance, area, city, venue }),
+    );
 
     if (pricing === "paid") {
       if (parsePrice(price) === null) {
@@ -262,10 +263,10 @@ export default function EditEventForm({
       }
 
       if (!ticketUrl.trim()) {
-        nextErrors.ticketUrl = "Inserisci il link per acquistare il biglietto.";
+        nextErrors.ticketUrl = "Inserisci il link della pagina di iscrizione o dei biglietti.";
       } else if (!isValidTicketUrl(ticketUrl)) {
         nextErrors.ticketUrl =
-          "Inserisci un link valido (es. www.ticketone.it).";
+          "Inserisci un indirizzo web valido, per esempio la pagina dell'organizzatore.";
       }
     }
 
@@ -363,6 +364,14 @@ export default function EditEventForm({
       }
 
       const selectedCity = cities.find((item) => item.city === city);
+      const place = placeFieldsForSave({
+        attendance,
+        city,
+        venue,
+        provinceForCity: selectedCity?.province ?? null,
+        storedProvince: event.province,
+        storedOnline,
+      });
       const startAt = scheduleMode === "enrollment" ? null : buildRomeIso(startDate, startTime);
       let endAt: string | null = null;
       if (scheduleMode !== "enrollment" && endDate.trim()) {
@@ -382,10 +391,10 @@ export default function EditEventForm({
         category: normalizeEventCategories(categorySlugs)[0],
         categories: normalizeEventCategories(categorySlugs),
         subcategory: learningTopic.trim() || null,
-        province: selectedCity?.province ?? null,
-        municipality: city,
-        location_name: venue.trim(),
-        address: venue.trim(),
+        province: place.province,
+        municipality: place.municipality,
+        location_name: place.location_name,
+        address: place.address,
         start_at: startAt,
         end_at: endAt,
         schedule_mode: scheduleMode,
@@ -768,6 +777,46 @@ export default function EditEventForm({
               </div>
             </fieldset>
 
+            <fieldset className="sm:col-span-2">
+              <legend className="text-sm font-bold text-slate-900">
+                Modalità di partecipazione
+              </legend>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {(
+                  [
+                    ["in_person", "In presenza"],
+                    ["online", "Online"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <label
+                    key={value}
+                    className={`flex cursor-pointer gap-3 rounded-2xl border px-4 py-3 ${
+                      attendance === value
+                        ? "border-[#075EAE] bg-blue-50/60"
+                        : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="attendance"
+                      value={value}
+                      checked={attendance === value}
+                      onChange={() => {
+                        setAttendance(value);
+                        clearError("area");
+                        clearError("city");
+                        clearError("venue");
+                      }}
+                      className="mt-1"
+                    />
+                    <span className="font-semibold text-slate-900">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            {attendance === "in_person" ? (
+              <>
             <label className="block">
               <span className="text-sm font-bold text-slate-900">Area</span>
               <select
@@ -813,15 +862,24 @@ export default function EditEventForm({
                 <p className="mt-2 text-sm text-red-600">{errors.city}</p>
               )}
             </div>
+              </>
+            ) : null}
 
             <label className="block sm:col-span-2">
               <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
                 <MapPin className="h-4 w-4 text-[#075EAE]" />
-                Indirizzo o luogo
+                {attendance === "online"
+                  ? "Descrizione della modalità (opzionale)"
+                  : "Indirizzo o luogo"}
               </span>
               <input
                 type="text"
                 value={venue}
+                placeholder={
+                  attendance === "online"
+                    ? "Online – videolezioni registrate"
+                    : undefined
+                }
                 onChange={(changeEvent) => {
                   setVenue(changeEvent.target.value);
                   clearError("venue");
@@ -911,7 +969,7 @@ export default function EditEventForm({
               <Link2 className="h-4 w-4 text-[#075EAE]" />
               {pricing === "free"
                 ? "Link per prenotare (opzionale)"
-                : "Link biglietti"}
+                : "Link iscrizione o biglietti"}
             </span>
             <input
               type="url"
@@ -933,7 +991,7 @@ export default function EditEventForm({
               placeholder={
                 pricing === "free"
                   ? "www.esempio.it/prenota"
-                  : "www.ticketone.it"
+                  : "https://sito-organizzatore.it/iscrizione"
               }
               className={`${fieldClassName} ${
                 errors.ticketUrl ? "border-red-400" : "border-slate-300"
@@ -945,7 +1003,7 @@ export default function EditEventForm({
             <p className="mt-2 text-sm text-slate-500">
               {pricing === "free"
                 ? "Se c’è un form o una pagina di prenotazione, inseriscila qui: il pulsante comparirà solo se compilato."
-                : "Basta un indirizzo come www.ticketone.it — se manca https:// lo aggiungiamo noi."}
+                : "Incolla la pagina ufficiale di iscrizione o di acquisto. Se manca https:// lo aggiungiamo noi."}
             </p>
           </label>
 

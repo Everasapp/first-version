@@ -33,6 +33,9 @@ import {
   isValidTicketUrl,
   normalizeTicketUrl,
   parsePrice,
+  placeFieldsForSave,
+  placeValidationErrors,
+  type AttendanceMode,
 } from "@/src/lib/eventForm";
 import {
   EVENT_SCHEDULE_MODE_OPTIONS,
@@ -83,6 +86,7 @@ export default function PublishEventPage() {
   const [startTime, setStartTime] = useState("");
   const [scheduleMode, setScheduleMode] =
     useState<EventScheduleMode>("single");
+  const [attendance, setAttendance] = useState<AttendanceMode>("in_person");
   const [area, setArea] = useState("");
   const [city, setCity] = useState("");
   const [venue, setVenue] = useState("");
@@ -241,17 +245,10 @@ export default function PublishEventPage() {
         nextErrors.startTime = "Seleziona l'ora di inizio.";
       }
 
-      if (!area) {
-        nextErrors.area = "Seleziona un'area.";
-      }
-
-      if (!city) {
-        nextErrors.city = "Seleziona una città.";
-      }
-
-      if (!venue.trim()) {
-        nextErrors.venue = "Inserisci il luogo o l'indirizzo.";
-      }
+      Object.assign(
+        nextErrors,
+        placeValidationErrors({ attendance, area, city, venue }),
+      );
     }
 
     if (step === 2 && pricing === "paid") {
@@ -261,10 +258,10 @@ export default function PublishEventPage() {
       }
 
       if (!ticketUrl.trim()) {
-        nextErrors.ticketUrl = "Inserisci il link per acquistare il biglietto.";
+        nextErrors.ticketUrl = "Inserisci il link della pagina di iscrizione o dei biglietti.";
       } else if (!isValidTicketUrl(ticketUrl)) {
         nextErrors.ticketUrl =
-          "Inserisci un link valido (es. www.ticketone.it).";
+          "Inserisci un indirizzo web valido, per esempio la pagina dell'organizzatore.";
       }
     }
 
@@ -353,6 +350,14 @@ export default function PublishEventPage() {
       }
 
       const cityRecord = cities.find((item) => item.city === city);
+      const place = placeFieldsForSave({
+        attendance,
+        city,
+        venue,
+        provinceForCity: cityRecord?.province ?? null,
+        storedProvince: "",
+        storedOnline: false,
+      });
       const baseSlug = createSlug(title) || "evento";
       const uniqueSlug = `${baseSlug}-${Date.now().toString(36)}`;
 
@@ -379,10 +384,10 @@ export default function PublishEventPage() {
           category: normalizeEventCategories(categorySlugs)[0],
           categories: normalizeEventCategories(categorySlugs),
           subcategory: isLearningTopic(learningTopic) ? learningTopic : null,
-          province: cityRecord?.province ?? null,
-          municipality: city,
-          location_name: venue.trim(),
-          address: venue.trim(),
+          province: place.province,
+          municipality: place.municipality,
+          location_name: place.location_name,
+          address: place.address,
           start_at: startAt,
           end_at: null,
           schedule_mode: scheduleMode,
@@ -823,6 +828,48 @@ export default function PublishEventPage() {
                       </div>
                     </fieldset>
 
+                    <fieldset className="sm:col-span-2">
+                      <legend className="text-sm font-bold text-slate-900">
+                        Modalità di partecipazione
+                      </legend>
+                      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                        {(
+                          [
+                            ["in_person", "In presenza"],
+                            ["online", "Online"],
+                          ] as const
+                        ).map(([value, label]) => (
+                          <label
+                            key={value}
+                            className={`flex cursor-pointer gap-3 rounded-2xl border px-4 py-3 ${
+                              attendance === value
+                                ? "border-[#075EAE] bg-blue-50/60"
+                                : "border-slate-200 bg-white"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="attendance"
+                              value={value}
+                              checked={attendance === value}
+                              onChange={() => {
+                                setAttendance(value);
+                                clearError("area");
+                                clearError("city");
+                                clearError("venue");
+                              }}
+                              className="mt-1"
+                            />
+                            <span className="font-semibold text-slate-900">
+                              {label}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+
+                    {attendance === "in_person" ? (
+                      <>
                     <label className="block">
                       <span className="text-sm font-bold text-slate-900">
                         Area
@@ -889,11 +936,15 @@ export default function PublishEventPage() {
                         </p>
                       )}
                     </div>
+                      </>
+                    ) : null}
 
                     <label className="block sm:col-span-2">
                       <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
                         <MapPin className="h-4 w-4 text-[#075EAE]" />
-                        Indirizzo o luogo
+                        {attendance === "online"
+                          ? "Descrizione della modalità (opzionale)"
+                          : "Indirizzo o luogo"}
                       </span>
 
                       <input
@@ -904,7 +955,11 @@ export default function PublishEventPage() {
                           setVenue(event.target.value);
                           clearError("venue");
                         }}
-                        placeholder="Es. Lungomare Dante, Alghero"
+                        placeholder={
+                          attendance === "online"
+                            ? "Online – videolezioni registrate"
+                            : "Es. Lungomare Dante, Alghero"
+                        }
                         aria-invalid={Boolean(errors.venue)}
                         className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
                           errors.venue
@@ -1031,7 +1086,7 @@ export default function PublishEventPage() {
                         <Link2 className="h-4 w-4 text-[#075EAE]" />
                         {pricing === "free"
                           ? "Link per prenotare (opzionale)"
-                          : "Link per acquistare il biglietto"}
+                          : "Link iscrizione o biglietti"}
                       </span>
 
                       <input
@@ -1055,7 +1110,7 @@ export default function PublishEventPage() {
                         placeholder={
                           pricing === "free"
                             ? "www.esempio.it/prenota"
-                            : "www.ticketone.it"
+                            : "https://sito-organizzatore.it/iscrizione"
                         }
                         aria-invalid={Boolean(errors.ticketUrl)}
                         className={`mt-2 w-full rounded-2xl border px-4 py-3 text-slate-900 placeholder:text-slate-400 outline-none ${
@@ -1074,7 +1129,7 @@ export default function PublishEventPage() {
                       <p className="mt-2 text-sm text-slate-500">
                         {pricing === "free"
                           ? "Se c’è un form o una pagina di prenotazione, inseriscila qui: il pulsante comparirà solo se compilato."
-                          : "Basta un indirizzo come www.ticketone.it — se manca https:// lo aggiungiamo noi."}
+                          : "Incolla la pagina ufficiale di iscrizione o di acquisto. Se manca https:// lo aggiungiamo noi."}
                       </p>
                     </label>
                   </div>
@@ -1254,8 +1309,10 @@ export default function PublishEventPage() {
                       </p>
                       <p className="mt-1 text-slate-700">{formattedDate}</p>
                       <p className="text-slate-700">
-                        {[venue, city, area].filter(Boolean).join(" · ") ||
-                          "Luogo da definire"}
+                        {attendance === "online"
+                          ? venue.trim() || "Online"
+                          : [venue, city, area].filter(Boolean).join(" · ") ||
+                            "Luogo da definire"}
                       </p>
                     </div>
 
@@ -1411,8 +1468,10 @@ export default function PublishEventPage() {
                     <div className="flex items-start gap-2">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#075EAE]" />
                       <span>
-                        {[venue, city, area].filter(Boolean).join(" · ") ||
-                          "Luogo da definire"}
+                        {attendance === "online"
+                          ? venue.trim() || "Online"
+                          : [venue, city, area].filter(Boolean).join(" · ") ||
+                            "Luogo da definire"}
                       </span>
                     </div>
                   </div>
