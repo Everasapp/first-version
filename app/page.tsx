@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { isLearningTopic, learningAreaForTopic, LEARNING_AREAS, LEARNING_PATH } from "@/src/lib/learning-courses";
 import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
-import { getCourseDeadline } from "@/src/lib/course-registration-deadlines";
+import { getCourseDeadline, getCourseRegistrationLabel } from "@/src/lib/course-registration-deadlines";
 import Header from "@/src/components/home/Header";
 import Link from "next/link";
 import LearningCollectionLinks from "@/src/components/seo/LearningCollectionLinks";
@@ -110,6 +110,7 @@ function mapEvent(event: EventRow, now: Date = new Date()): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    registrationLabel: getCourseRegistrationLabel(event.slug, event.schedule_mode, now),
     createdAt: event.created_at ?? undefined,
     ...engagementFromRow(event),
   };

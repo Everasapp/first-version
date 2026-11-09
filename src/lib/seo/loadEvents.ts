@@ -10,6 +10,7 @@ import {
 } from "@/src/lib/event-categories";
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
+import { getCourseRegistrationLabel } from "@/src/lib/course-registration-deadlines";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
 import { isOnlineLocation } from "@/src/lib/course-location";
 import { isPublicEventActive } from "@/src/lib/eventActive";
@@ -66,7 +67,8 @@ function getEventArea(municipality: string | null) {
 }
 
 export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
-  const status = resolveEventStatusBadge(event.start_at, event.end_at, new Date(), event.schedule_mode);
+  const now = new Date();
+  const status = resolveEventStatusBadge(event.start_at, event.end_at, now, event.schedule_mode);
   const pricing = resolveEventPricing(event.is_free, event.price_from);
   const categoryLabels = resolveCategoryLabels(event);
   const scheduleMode = parseEventScheduleMode(event.schedule_mode);
@@ -92,6 +94,9 @@ export function mapPublishedEvent(event: PublishedEventRow): EventCardData {
     happeningNow: status.happeningNow,
     isActiveEvent: status.isActiveEvent,
     statusLabel: status.statusLabel,
+    registrationLabel: isLearningEvent(event) && event.slug
+      ? getCourseRegistrationLabel(event.slug, event.schedule_mode, now)
+      : undefined,
     ...engagementFromRow(event),
   };
 }
