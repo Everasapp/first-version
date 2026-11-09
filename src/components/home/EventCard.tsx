@@ -47,6 +47,7 @@ export type EventCardData = {
   /** Mostre / periodi lunghi attualmente aperti (tag blu). */
   isActiveEvent?: boolean;
   statusLabel?: string;
+  registrationLabel?: string;
   isFavorite?: boolean;
   likesCount?: number;
   viewsCount?: number;
@@ -83,6 +84,8 @@ export default function EventCard({
   const pricing = resolveEventPricing(event.isFree, event.priceFrom);
   const categoryLabels = learningCardLabels(event);
   const eventHref = `/eventi/${event.id}`;
+  const isCourse = Boolean(event.learningTopic) || event.scheduleMode === "enrollment";
+  const { registrationLabel } = event;
 
   return (
     <article className="group relative isolate flex h-full min-w-0 w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -104,7 +107,14 @@ export default function EventCard({
         />
 
         <div className="absolute left-4 top-4 z-[1] flex flex-wrap gap-2">
-          {event.happeningNow && (
+          {registrationLabel && (
+            <span className="flex items-center gap-1.5 rounded-full bg-red-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-white" />
+              {registrationLabel}
+            </span>
+          )}
+
+          {!registrationLabel && event.happeningNow && (
             <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-70" />
@@ -117,9 +127,9 @@ export default function EventCard({
             </span>
           )}
 
-          {!event.happeningNow && event.isActiveEvent && (
+          {!registrationLabel && !event.happeningNow && event.isActiveEvent && (
             <span className="flex items-center gap-1.5 rounded-full bg-[#075EAE] px-3 py-1.5 text-xs font-bold text-white shadow-sm">
-              {event.statusLabel ?? "Evento attivo"}
+              {isCourse ? "Corso iniziato" : event.statusLabel ?? "Evento attivo"}
             </span>
           )}
 

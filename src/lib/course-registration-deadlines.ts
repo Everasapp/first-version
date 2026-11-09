@@ -23,3 +23,10 @@ export function getCourseDeadline(slug: string, now: Date = new Date()) {
   // End-of-day is only the display cutoff when no submission hour is published.
   return remaining >= 0 && remaining <= 30 * 24 * 60 * 60 * 1000 ? deadline : undefined;
 }
+
+export function getCourseRegistrationLabel(slug: string, scheduleMode: string | null | undefined, now: Date) {
+  const deadline = COURSE_REGISTRATION_DEADLINES[slug];
+  if (deadline && Date.parse(deadline.closesAt) < now.getTime()) return undefined;
+  if (scheduleMode === "enrollment") return "Preiscrizioni aperte";
+  return deadline ? "Iscrizioni aperte" : undefined;
+}
