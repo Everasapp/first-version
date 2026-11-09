@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { LEARNING_PATH } from "@/src/lib/learning-courses";
+
 const collections = [
   { slug: "per-disoccupati", title: "Corsi gratuiti per disoccupati", text: "Confronta i percorsi e verifica con l’ente i requisiti di accesso." },
   { slug: "nord-sardegna", title: "Corsi e workshop nel Nord Sardegna", text: "Trova attività a Sassari, in Gallura e negli altri comuni del Nord." },
@@ -9,16 +11,19 @@ const collections = [
   { slug: "amministrazione-contabilita", title: "Lavorare in amministrazione", text: "Scegli i corsi di amministrazione e contabilità e consulta il percorso per cambiare lavoro." },
 ] as const;
 
-export default function LearningCollectionLinks() {
+export default function LearningCollectionLinks({ hasClosingSoon }: { hasClosingSoon: boolean }) {
   return <section aria-labelledby="raccolte-corsi-title" className="border-t border-slate-200 bg-white py-10">
     <div className="mx-auto max-w-7xl px-5 sm:px-8">
       <h2 id="raccolte-corsi-title" className="text-2xl font-bold text-slate-900">Trova il corso per le tue esigenze</h2>
       <p className="mt-3 text-slate-600">Scegli per destinatari, territorio o termine di iscrizione. Ogni raccolta rimanda alle schede aggiornate del catalogo.</p>
       <nav aria-label="Raccolte di corsi" className="mt-6 grid gap-4 md:grid-cols-3">
-        {collections.map((item) => <Link key={item.slug} href={`/corsi/${item.slug}`} prefetch={false} className="rounded-2xl border border-slate-200 p-5 transition hover:border-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">
-          <h3 className="text-lg font-bold text-[#075EAE]">{item.title} →</h3>
-          <p className="mt-3 leading-relaxed text-slate-600">{item.text}</p>
-        </Link>)}
+        {collections.map((item) => {
+          const showCatalog = item.slug === "iscrizioni-in-scadenza" && !hasClosingSoon;
+          return <Link key={item.slug} href={showCatalog ? LEARNING_PATH : `/corsi/${item.slug}`} prefetch={false} className="rounded-2xl border border-slate-200 p-5 transition hover:border-[#075EAE] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#075EAE]">
+            <h3 className="text-lg font-bold text-[#075EAE]">{showCatalog ? "Esplora tutti i corsi" : item.title} →</h3>
+            <p className="mt-3 leading-relaxed text-slate-600">{showCatalog ? "Consulta il catalogo e filtra per disciplina o zona." : item.text}</p>
+          </Link>;
+        })}
       </nav>
     </div>
   </section>;

@@ -56,6 +56,12 @@ export default function Hero() {
           >
             Formazione per il lavoro
           </Link>
+          <Link
+            href={`${LEARNING_PATH}?modalita=online`}
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/80 bg-white/10 px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Corsi online
+          </Link>
         </div>
 
         <form

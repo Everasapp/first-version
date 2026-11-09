@@ -55,9 +55,6 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
-  other: {
-    "google-adsense-account": "ca-pub-5513319548780658",
-  },
   openGraph: {
     title: "EVERAS | Formazione, corsi e workshop in Sardegna",
     description:

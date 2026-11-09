@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { isLearningTopic, learningAreaForTopic, LEARNING_AREAS, LEARNING_PATH } from "@/src/lib/learning-courses";
 import { mixWeekEvents } from "@/src/lib/home/mix-week-events";
 
+import { getCourseDeadline } from "@/src/lib/course-registration-deadlines";
 import Header from "@/src/components/home/Header";
 import Link from "next/link";
 import LearningCollectionLinks from "@/src/components/seo/LearningCollectionLinks";
@@ -131,6 +132,7 @@ async function HomeContent() {
   ).map((event) => ({
     ...mapEvent(event, now), isFavorite: favoriteIds.has(event.id),
   })), now);
+  const hasClosingSoon = learningEvents.some((event) => getCourseDeadline(event.id, now));
   const homepageItemList = eventsItemListSchema({
     name: "Formazione, corsi e workshop in Sardegna",
     path: "/",
@@ -159,6 +161,7 @@ async function HomeContent() {
         />;
       })}
       <HomeSponsoredSection paidAds={paidAds} />
+      <LearningCollectionLinks hasClosingSoon={hasClosingSoon} />
     </>
   );
 }
@@ -183,7 +186,6 @@ export default function Home() {
         >
           <HomeContent />
         </Suspense>
-        <LearningCollectionLinks />
         <section aria-labelledby="idee-percorsi-title" className="border-t border-slate-200 bg-slate-50 py-12">
           <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <h2 id="idee-percorsi-title" className="text-2xl font-bold text-slate-900">Idee e percorsi - Career change</h2>

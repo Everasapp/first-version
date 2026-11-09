@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updatedAt="26 ottobre 2026">
+    <LegalPage title="Privacy Policy" updatedAt="9 novembre 2026">
       <p>
         EVERAS tratta i dati personali degli utenti per erogare il servizio di
         ricerca e pubblicazione di formazione, corsi, workshop ed esperienze
@@ -47,11 +47,8 @@ export default function PrivacyPage() {
         il tag Analytics.
       </p>
       <p>
-        Dal 4 ottobre 2026, Google AdSense e il suo banner Privacy &amp;
-        messaging sono temporaneamente sospesi su tutto il sito. EVERAS non
-        carica il tag pubblicitario AdSense e non mostra annunci tramite questa
-        integrazione. Il nuovo banner InMobi Choice gestisce le preferenze
-        per Analytics e le finalità pubblicitarie, comprese le scelte per Google.
+        EVERAS non utilizza Google AdSense. InMobi Choice gestisce le
+        preferenze per Analytics e le finalità pubblicitarie.
       </p>
       <p>
         Puoi accettare, rifiutare o personalizzare i cookie dal banner InMobi

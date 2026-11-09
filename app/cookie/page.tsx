@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function CookiePage() {
   return (
-    <LegalPage title="Cookie Policy" updatedAt="4 ottobre 2026">
+    <LegalPage title="Cookie Policy" updatedAt="9 novembre 2026">
       <p>
         EVERAS utilizza cookie e tecnologie simili per garantire il
         funzionamento del sito, mantenere la sessione di accesso e migliorare
@@ -41,9 +41,7 @@ export default function CookiePage() {
       </p>
       <p>
         Il banner InMobi Choice consente anche di scegliere le finalità e i
-        partner pubblicitari. Al momento il tag Google AdSense e gli annunci
-        sono sospesi su tutto il sito, in attesa dell&apos;approvazione.
-        Accettare una finalità pubblicitaria non attiva il tag AdSense.
+        partner pubblicitari. EVERAS non utilizza Google AdSense.
         Per informazioni su come Google
         tratta i dati:{" "}
         <a href="https://policies.google.com/privacy" target="_blank"

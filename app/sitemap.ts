@@ -23,6 +23,9 @@ export const revalidate = 900;
 type LearningSitemapRow = {
   slug: string | null;
   updated_at: string | null;
+  start_at: string | null;
+  end_at: string | null;
+  schedule_mode: string | null;
   category: string | null;
   categories: string[] | null;
   subcategory: string | null;
@@ -34,7 +37,7 @@ const loadLearningSitemapRows = unstable_cache(async () => {
   const pageSize = 1000;
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await supabase.from("events")
-      .select("slug, updated_at, category, categories, subcategory")
+      .select("slug, updated_at, start_at, end_at, schedule_mode, category, categories, subcategory")
       .eq("status", "published")
       .or(PUBLIC_LEARNING_FILTER)
       .not("slug", "is", null)
@@ -45,7 +48,7 @@ const loadLearningSitemapRows = unstable_cache(async () => {
     rows.push(...chunk.filter(isLearningEvent));
     if (chunk.length < pageSize) return rows;
   }
-}, ["learning-sitemap-v1"], {
+}, ["learning-sitemap-v2"], {
   revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
   tags: [PUBLISHED_EVENTS_CACHE_TAG],
 });
@@ -63,7 +66,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ])];
   // Only list populated evergreen SEO pages; empty ones remain noindex.
   const { rows: homeRows, error: homeError } = await loadHomeEventRows();
-  const activeLearning = homeRows.filter((row) => isPublicEventActive(row.start_at, row.end_at, new Date(), row.schedule_mode));
+  const now = new Date();
+  const activeLearning = homeRows.filter((row) => isPublicEventActive(row.start_at, row.end_at, now, row.schedule_mode));
   if (!homeError) {
     for (const page of learningSeoPages) {
       if (activeLearning.some((row) => matchesLearningSeoPage({
@@ -76,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         categories: resolveCategoryLabels(row),
         category: row.category,
         isFree: resolveEventPricing(row.is_free, row.price_from).isFree,
-      }, page))) {
+      }, page, now))) {
         pages.push(`/corsi/${page.slug}`);
       }
     }
@@ -89,7 +93,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
   try {
     const rows = await loadLearningSitemapRows();
-    const unique = new Map(rows.filter((row) => row.slug).map((row) => [row.slug!, row]));
+    const unique = new Map(rows
+      .filter((row) => row.slug && isPublicEventActive(row.start_at, row.end_at, now, row.schedule_mode))
+      .map((row) => [row.slug!, row]));
     return [...base, ...Array.from(unique, ([slug, row]) => {
       const updatedAt = row.updated_at ? new Date(row.updated_at) : undefined;
       return {
