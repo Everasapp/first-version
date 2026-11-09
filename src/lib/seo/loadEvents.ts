@@ -11,6 +11,7 @@ import {
 import { formatEventDateRange } from "@/src/lib/formatEventDate";
 import { resolveEventPricing } from "@/src/lib/eventPricing";
 import { resolveEventStatusBadge } from "@/src/lib/eventStatusBadge";
+import { isOnlineLocation } from "@/src/lib/course-location";
 import { isPublicEventActive } from "@/src/lib/eventActive";
 import {
   parseEventScheduleMode,
@@ -40,6 +41,7 @@ export type PublishedEventRow = {
   province: string | null;
   municipality: string | null;
   location_name: string | null;
+  address?: string | null;
   start_at: string | null;
   end_at: string | null;
   schedule_mode?: string | null;
@@ -111,6 +113,7 @@ export type EventListFilters = {
   /** Schede puntuali (articoli Cultura): includi questi slug. */
   slugs?: string[];
   learningOnly?: boolean;
+  onlineOnly?: boolean;
 };
 
 const PUBLISHED_EVENT_SELECT_BASE = `
@@ -122,6 +125,7 @@ const PUBLISHED_EVENT_SELECT_BASE = `
         province,
         municipality,
         location_name,
+        address,
         start_at,
         end_at,
         image_url,
@@ -144,6 +148,7 @@ const PUBLISHED_EVENT_SELECT_WITH_MODE = `
         province,
         municipality,
         location_name,
+        address,
         start_at,
         end_at,
         schedule_mode,
@@ -215,7 +220,7 @@ async function fetchAllPublishedEventRows(city?: string) {
 // dataset, never the user's favorites/session. City remains part of the cache key.
 const fetchCachedPublishedEventRows = unstable_cache(
   async (city: string | null) => fetchAllPublishedEventRows(city ?? undefined),
-  ["published-learning-event-rows-v6"],
+  ["published-learning-event-rows-v7"],
   {
     revalidate: PUBLISHED_EVENTS_CACHE_SECONDS,
     tags: [PUBLISHED_EVENTS_CACHE_TAG],
@@ -338,6 +343,7 @@ export const loadFilteredPublishedEvents = cache(
     const mappedEvents = rows
       .filter((event) => {
         if (!isLearningEvent(event)) return false;
+        if (filters.onlineOnly && !isOnlineLocation(event)) return false;
         if (
           !filters.includeExpired &&
           !isPublicEventActive(event.start_at, event.end_at, now, event.schedule_mode)

@@ -38,7 +38,7 @@ describe("passion collection and guides", () => {
     expect(html).toContain(`https://www.everas.it${guide.image.src}`);
     expect(html).not.toContain("/images/learning/imparare-sardegna-og.jpg");
     if (slug === "stretching-relax-preghiera") {
-      expect(html).toContain("Corsi di benessere e movimento");
+      expect(html).toContain('href="/imparare-e-fare-in-sardegna?disciplina=benessere-movimento"');
     } else {
       expect(html).toContain("disciplina=");
     }

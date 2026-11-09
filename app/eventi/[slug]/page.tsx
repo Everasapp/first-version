@@ -536,6 +536,12 @@ async function EventDetailPage({ slug }: { slug: string }) {
     ? absoluteUrl(eventShareImagePath(event.slug, event.image_url))
     : undefined;
   const scheduleMode = parseEventScheduleMode(event.schedule_mode);
+  const participationUrl = isExpired ? null : event.ticket_url || (isCourse ? event.source_url : null);
+  const courseCta = !event.ticket_url
+    ? "Informazioni presso l’organizzatore"
+    : scheduleMode === "enrollment"
+      ? "Preiscriviti presso l’organizzatore"
+      : "Informazioni e iscrizioni";
   const detailDescription =
     stripHtml(event.description || "").slice(0, 300) ||
     `${event.title} a ${event.municipality}`;
@@ -718,11 +724,13 @@ async function EventDetailPage({ slug }: { slug: string }) {
 
             <EventPracticalFacts
               scheduleMode={scheduleMode}
+              isCourse={isCourse}
+              courseCta={courseCta}
               startAt={event.start_at}
               endAt={event.end_at}
               isFree={event.is_free}
               priceFrom={event.price_from}
-              ticketUrl={isExpired ? null : event.ticket_url}
+              ticketUrl={participationUrl}
             />
 
             <div className="py-10">
@@ -758,7 +766,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
               province={event.province}
               location_name={event.location_name}
               address={event.address}
-              registrationUrl={event.ticket_url || event.source_url}
+              registrationUrl={isCourse ? participationUrl : event.ticket_url || event.source_url}
             />
 
             {organizer || directory ? (
@@ -843,16 +851,16 @@ async function EventDetailPage({ slug }: { slug: string }) {
                   </Link>
                 ) : null}
 
-                {!isExpired && event.ticket_url ? (
+                {participationUrl ? (
                   <a
-                    href={event.ticket_url}
+                    href={participationUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-center font-bold text-white transition ${isCourse ? "bg-[#B95408] hover:bg-[#A94B06]" : "bg-[#E67E22] hover:bg-[#C96A1A]"}`}
                   >
                     <Ticket aria-hidden="true" className="h-5 w-5" />
                     {isCourse
-                      ? "Informazioni e iscrizioni"
+                      ? courseCta
                       : pricing.isFree === null
                       ? "Informazioni e prenotazioni"
                       : pricing.isFree ? "Prenota" : "Acquista il biglietto"}
@@ -881,7 +889,7 @@ async function EventDetailPage({ slug }: { slug: string }) {
                 </Link>
               </div>
 
-              {!isExpired && event.ticket_url ? (
+              {participationUrl ? (
                 <p className="mt-5 text-center text-xs leading-5 text-slate-500">
                   {isCourse
                     ? "Il collegamento apre il canale esterno indicato dall’organizzatore. Verifica costi, requisiti e disponibilità prima di iscriverti."

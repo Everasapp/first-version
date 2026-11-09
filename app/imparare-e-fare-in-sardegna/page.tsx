@@ -24,7 +24,7 @@ const pageMetadata: Metadata = {
 };
 
 type LearningPageProps = {
-  searchParams: Promise<{ area?: string; city?: string; q?: string; disciplina?: string }>;
+  searchParams: Promise<{ area?: string; city?: string; q?: string; disciplina?: string; modalita?: string }>;
 };
 const areas: Record<string, string> = {
   "nord-sardegna": "Nord Sardegna",
@@ -37,17 +37,20 @@ function readLearningSearch(params: {
   city?: string;
   q?: string;
   disciplina?: string;
+  modalita?: string;
 }) {
   const selectedDiscipline = learningDisciplines.find((item) => item.slug === params.disciplina) ?? null;
   const selectedArea = typeof params.area === "string" && areas[params.area] ? params.area : "";
   const selectedCity = typeof params.city === "string" ? params.city.trim() : "";
   const query = typeof params.q === "string" ? params.q.trim() : "";
+  const onlineOnly = params.modalita === "online";
   return {
+    onlineOnly,
     selectedDiscipline,
     selectedArea,
     selectedCity,
     query,
-    isFilteredSearch: Boolean(selectedDiscipline || selectedArea || selectedCity || query),
+    isFilteredSearch: Boolean(onlineOnly || selectedDiscipline || selectedArea || selectedCity || query),
   };
 }
 
@@ -59,9 +62,10 @@ export async function generateMetadata({ searchParams }: LearningPageProps): Pro
 
 export default async function LearningPage({ searchParams }: LearningPageProps) {
   const search = readLearningSearch(await searchParams);
-  const { selectedDiscipline, selectedArea, selectedCity, query, isFilteredSearch } = search;
+  const { onlineOnly, selectedDiscipline, selectedArea, selectedCity, query, isFilteredSearch } = search;
   const { events: matchedEvents, error } = await loadFilteredPublishedEvents({
     learningOnly: true,
+    onlineOnly,
     categorySlug: selectedDiscipline?.slug,
     areaLabel: selectedArea ? areas[selectedArea] : undefined,
     city: selectedCity || undefined,
@@ -79,8 +83,9 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
       ? selectedDiscipline.slug === "benessere-movimento"
         ? selectedDiscipline.name
         : `Corsi di ${selectedDiscipline.name.toLocaleLowerCase("it")}`
-      : "Risultati della ricerca corsi";
+      : onlineOnly ? "Corsi online" : "Risultati della ricerca corsi";
     const context = [
+      onlineOnly && selectedDiscipline ? "Online" : "",
       selectedCity,
       selectedArea ? areas[selectedArea] : "",
       query ? `Ricerca: ${query}` : "",
@@ -104,6 +109,7 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
             <details className="w-full" open={events.length === 0}>
               <summary className="inline-flex cursor-pointer list-none rounded-full bg-[#075EAE] px-5 py-3 text-sm font-bold text-white hover:bg-[#064a8a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#075EAE]">Modifica la ricerca</summary>
               <form action={LEARNING_PATH} method="get" className="mt-4 grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 sm:grid-cols-2 lg:grid-cols-5">
+                {onlineOnly ? <input type="hidden" name="modalita" value="online" /> : null}
                 <label className="text-sm font-semibold text-slate-900">Zona
                   <select name="area" defaultValue={selectedArea} className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2">
                     <option value="">Tutte le zone</option>
@@ -181,6 +187,7 @@ export default async function LearningPage({ searchParams }: LearningPageProps) 
           <h2 className="text-2xl font-bold text-slate-900">Trova corsi per città, disciplina o obiettivo</h2>
           <p className="mt-2 max-w-3xl text-slate-600">Esplora percorsi dedicati a formazione professionale, corsi gratuiti, lingue, creatività e attività per bambini.</p>
           <div className="mt-5 flex flex-wrap gap-3">
+            <Link href={`${LEARNING_PATH}?modalita=online`} className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#075EAE] hover:border-[#075EAE]">Corsi online</Link>
             {learningSeoPages.map((page) => <Link key={page.slug} href={`/corsi/${page.slug}`} className="rounded-full border border-slate-300 px-4 py-2 font-semibold text-[#075EAE] hover:border-[#075EAE]">{page.title}</Link>)}
           </div>
         </nav>
