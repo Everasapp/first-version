@@ -53,6 +53,30 @@ jobs:
           grep -n -o -E '.{0,100}yoga\\.wasm.{0,100}' .open-next/server-functions/default/handler.mjs | head -5 || true
           echo "OpenNext server function directory:"
           ls -la .open-next/server-functions/default | head -25
+      - name: Normalize absolute WASM imports for Wrangler
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const handlerPath = '.open-next/server-functions/default/handler.mjs';
+          const file = path.resolve(handlerPath);
+          const base = path.dirname(file);
+          let source = fs.readFileSync(file, 'utf8');
+          const regex = /(["'])(\\/[^"']*?\\/node_modules\\/next\\/dist\\/compiled\\/@vercel\\/og\\/yoga\\.wasm)\\1/g;
+          let matches = 0;
+          source = source.replace(regex, (_match, quote, absolute) => {
+            const target = path.join(base, 'node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
+            fs.mkdirSync(path.dirname(target), {recursive: true});
+            const original = path.resolve('node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
+            if (!fs.existsSync(original)) throw new Error('Missing original WASM: ' + original);
+            fs.copyFileSync(original, target);
+            matches++;
+            return quote + './node_modules/next/dist/compiled/@vercel/og/yoga.wasm' + quote;
+          });
+          if (!matches) throw new Error('Expected absolute yoga.wasm import not found in generated handler');
+          fs.writeFileSync(file, source);
+          console.log('Normalized ' + matches + ' yoga.wasm imports');
+          NODE
       - name: Deploy to existing everas-preview Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
