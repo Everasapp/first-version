@@ -65,16 +65,17 @@ jobs:
           if (!fs.existsSync(original)) throw new Error('Missing source WASM: ' + original);
           fs.mkdirSync(path.dirname(target), { recursive: true });
           fs.copyFileSync(original, target);
-          const marker = '/node_modules/next/dist/compiled/@vercel/og/yoga.wasm';
-          const pattern = new RegExp('(["\\x27])(/[^"\\x27]*' + marker.replaceAll('/', '\\/') + ')\\1', 'g');
-          let count = 0;
-          source = source.replace(pattern, (_whole, quote) => {
-            count++;
-            return quote + './node_modules/next/dist/compiled/@vercel/og/yoga.wasm' + quote;
-          });
-          if (count === 0) throw new Error('No absolute yoga.wasm import found');
+          const pattern = /\\/home\\/runner\\/[^"'\\s]*?yoga\\.wasm/g;
+          const matches = [...source.matchAll(pattern)];
+          console.log('Found ' + matches.length + ' absolute yoga.wasm paths');
+          for (const match of matches.slice(0, 3)) console.log(match[0].slice(0, 250));
+          if (!matches.length) {
+            const pos = source.indexOf('yoga.wasm');
+            console.log('Nearby yoga.wasm reference:', pos >= 0 ? source.slice(Math.max(0, pos - 280), pos + 80) : 'none');
+            throw new Error('No absolute yoga.wasm path found');
+          }
+          source = source.replace(pattern, './node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
           fs.writeFileSync(file, source);
-          console.log('Rewrote ' + count + ' WASM import(s)');
           NODE
       - name: Deploy to existing everas-preview Worker
         env:
