@@ -58,24 +58,23 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const path = require('node:path');
-          const handlerPath = '.open-next/server-functions/default/handler.mjs';
-          const file = path.resolve(handlerPath);
-          const base = path.dirname(file);
+          const file = '.open-next/server-functions/default/handler.mjs';
           let source = fs.readFileSync(file, 'utf8');
-          const regex = /(["'])(\\/[^"']*?\\/node_modules\\/next\\/dist\\/compiled\\/@vercel\\/og\\/yoga\\.wasm)\\1/g;
-          let matches = 0;
-          source = source.replace(regex, (_match, quote, absolute) => {
-            const target = path.join(base, 'node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
-            fs.mkdirSync(path.dirname(target), {recursive: true});
-            const original = path.resolve('node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
-            if (!fs.existsSync(original)) throw new Error('Missing original WASM: ' + original);
-            fs.copyFileSync(original, target);
-            matches++;
+          const original = path.resolve('node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
+          const target = path.resolve('.open-next/server-functions/default/node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
+          if (!fs.existsSync(original)) throw new Error('Missing source WASM: ' + original);
+          fs.mkdirSync(path.dirname(target), { recursive: true });
+          fs.copyFileSync(original, target);
+          const marker = '/node_modules/next/dist/compiled/@vercel/og/yoga.wasm';
+          const pattern = new RegExp('(["\\x27])(/[^"\\x27]*' + marker.replaceAll('/', '\\/') + ')\\1', 'g');
+          let count = 0;
+          source = source.replace(pattern, (_whole, quote) => {
+            count++;
             return quote + './node_modules/next/dist/compiled/@vercel/og/yoga.wasm' + quote;
           });
-          if (!matches) throw new Error('Expected absolute yoga.wasm import not found in generated handler');
+          if (count === 0) throw new Error('No absolute yoga.wasm import found');
           fs.writeFileSync(file, source);
-          console.log('Normalized ' + matches + ' yoga.wasm imports');
+          console.log('Rewrote ' + count + ' WASM import(s)');
           NODE
       - name: Deploy to existing everas-preview Worker
         env:
