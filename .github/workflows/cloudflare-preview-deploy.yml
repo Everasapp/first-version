@@ -65,7 +65,7 @@ jobs:
           if (!fs.existsSync(original)) throw new Error('Missing source WASM: ' + original);
           fs.mkdirSync(path.dirname(target), { recursive: true });
           fs.copyFileSync(original, target);
-          const pattern = /\\/home\\/runner\\/[^"'\\s]*?yoga\\.wasm/g;
+          const pattern = new RegExp('/home/runner/[^" ]*?yoga[.]wasm', 'g');
           const matches = [...source.matchAll(pattern)];
           console.log('Found ' + matches.length + ' absolute yoga.wasm paths');
           for (const match of matches.slice(0, 3)) console.log(match[0].slice(0, 250));
