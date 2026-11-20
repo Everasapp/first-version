@@ -12,18 +12,20 @@ export async function GET() {
     })();
     const supabase = createPublicClient();
     const [all, published, learning] = await Promise.all([
-      supabase.from("events").select("id", { count: "exact", head: true }),
-      supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "published"),
-      supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "published").like("subcategory", "imparare-%"),
+      supabase.from("events").select("id").limit(3),
+      supabase.from("events").select("id").eq("status", "published").limit(3),
+      supabase.from("events").select("id,subcategory").eq("status", "published").like("subcategory", "imparare-%").limit(3),
     ]);
+    const errors = [all.error, published.error, learning.error].filter(Boolean).map(e => ({ code: e?.code, message: e?.message }));
     const result = {
-      ok: !all.error && !published.error && !learning.error,
+      ok: errors.length === 0,
       configuredProject,
       expectedProjectMatches: configuredProject === "pxybrwkbbcghegcezxbn",
-      visibleEvents: all.count,
-      publishedEvents: published.count,
-      publishedLearningCourses: learning.count,
-      errors: [all.error, published.error, learning.error].filter(Boolean).map(e => ({ code: e?.code, message: e?.message })),
+      sampleVisibleEvents: all.data?.length ?? null,
+      samplePublishedEvents: published.data?.length ?? null,
+      sampleLearningCourses: learning.data?.length ?? null,
+      responseDataMissing: [all.data, published.data, learning.data].some(data => data === null),
+      errors,
     };
     return NextResponse.json(result, { status: result.ok ? 200 : 503, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
