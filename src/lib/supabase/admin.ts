@@ -115,7 +115,9 @@ export function tryCreateAdminClient() {
     return null;
   }
 
-  return createSupabaseClient(url, key, {
+  const normalizedUrl = url.trim().replace(/\/(?:rest\/v1)\/?$/i, "").replace(/\/$/, "");
+
+  return createSupabaseClient(normalizedUrl, key, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
