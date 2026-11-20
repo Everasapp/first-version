@@ -11,7 +11,10 @@ function getSupabaseEnv() {
     );
   }
 
-  return { url, publishableKey };
+  // Supabase clients append /auth/v1 and /rest/v1 themselves.
+  // Strip a legacy REST suffix to avoid requests to /rest/v1/auth/v1/token.
+  const normalizedUrl = url.trim().replace(/\/(?:rest\/v1)\/?$/i, "").replace(/\/$/, "");
+  return { url: normalizedUrl, publishableKey };
 }
 
 export async function createClient() {
