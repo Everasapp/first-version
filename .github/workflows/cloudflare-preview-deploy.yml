@@ -77,6 +77,26 @@ jobs:
           source = source.replace(pattern, './node_modules/next/dist/compiled/@vercel/og/yoga.wasm');
           fs.writeFileSync(file, source);
           NODE
+      - name: Configure public Supabase variables for Worker runtime
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const configPath = 'wrangler.jsonc';
+          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+          const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+          if (!url || !key) throw new Error('Missing public Supabase Worker variables');
+          config.vars = {
+            ...(config.vars || {}),
+            NEXT_PUBLIC_SUPABASE_URL: url,
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
+          };
+          fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+          console.log('Configured public Supabase runtime variables for everas-preview');
+          NODE
       - name: Deploy to existing everas-preview Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
