@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/expire-advertising",
-      "schedule": "30 4 * * *"
-    }
-  ],
   "git": {
     "deploymentEnabled": {
       "fix/organizer-cta-session-20261027": false,
