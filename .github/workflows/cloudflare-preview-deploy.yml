@@ -1,8 +1,11 @@
 name: Deploy EVERAS preview to Cloudflare Workers
 
-# Manual only. Never deploy from main or automatically on push.
+# Deploy only from the isolated preview branch, never from main.
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - optimization/static-catalog-20261120
 
 permissions:
   contents: read
