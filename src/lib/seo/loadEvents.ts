@@ -236,6 +236,7 @@ async function loadPublishedEventRows(city?: string) {
   try {
     return await fetchCachedPublishedEventRows(city?.toLocaleLowerCase("it") ?? null);
   } catch (error) {
+    console.error("[EVERAS preview] Learning catalog Supabase query failed:", error);
     return {
       rows: [] as PublishedEventRow[],
       error: {
