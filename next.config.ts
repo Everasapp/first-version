@@ -5,6 +5,9 @@ import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs
 
 const nextConfig: NextConfig = {
   images: {
+    // Cloudflare preview: serve original already-compressed images without the Sharp runtime optimizer.
+    // Preserve rendered image dimensions and homepage layout.
+    unoptimized: true,
     // Hobby free tier: cut transformation variants hard.
     // Event photos are already compressed WebP in Supabase; most UI assets skip optimizer via `unoptimized`.
     formats: ["image/webp"],
