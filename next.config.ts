@@ -3,6 +3,7 @@ import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { assertProductionBuildConfig } from "./src/lib/env/production-build";
 import { CONSOLIDATED_EVENT_SLUGS } from "./src/lib/seo/consolidated-event-slugs";
 
+// Cloudflare OpenNext: avoid the host-based catch-all redirect that caused a loop.
 const nextConfig: NextConfig = {
   images: {
     // Cloudflare preview: serve original already-compressed images without the Sharp runtime optimizer.
