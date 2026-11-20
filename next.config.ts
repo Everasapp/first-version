@@ -53,12 +53,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       })),
       {
-        source: "/:path*",
-        has: [{ type: "host", value: "everas.it" }],
-        destination: "https://www.everas.it/:path*",
-        permanent: true,
-      },
-      {
         source: "/eventi/festa-del-gusto",
         destination:
           "/eventi/festa-del-gusto-santa-teresa-gallura-turismo-mt0en8v5",
