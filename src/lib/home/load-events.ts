@@ -68,6 +68,7 @@ export async function loadHomeEventRows() {
   try {
     return { rows: await fetchCachedHomeEventRows(), error: null };
   } catch (error) {
+    console.error("[EVERAS preview] Homepage catalog Supabase query failed:", error);
     return {
       rows: [] as HomeEventRow[],
       error: {
