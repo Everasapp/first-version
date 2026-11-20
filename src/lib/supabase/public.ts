@@ -11,7 +11,11 @@ export function createPublicClient() {
     );
   }
 
-  return createClient(url, publishableKey, {
+  // The SDK appends /rest/v1 itself. Accept a URL copied from the REST API
+  // settings without accidentally requesting /rest/v1/rest/v1/events.
+  const supabaseUrl = new URL(url).origin;
+
+  return createClient(supabaseUrl, publishableKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
