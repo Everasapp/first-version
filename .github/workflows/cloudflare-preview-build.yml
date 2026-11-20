@@ -1,9 +1,7 @@
 name: Cloudflare preview build (no deploy)
 on:
+  # Run diagnostic builds only when explicitly requested.
   workflow_dispatch:
-  push:
-    branches:
-      - optimization/static-catalog-20261120
 jobs:
   build:
     runs-on: ubuntu-latest
